@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scci">
+      <UniqueIdentifier>{ce515818-efe8-478b-873b-63274ada23c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\FITOM core">
+      <UniqueIdentifier>{ea72aebd-692d-4fbe-9964-e310f88328ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\FITOM core">
+      <UniqueIdentifier>{9dd335a9-cbf5-47a2-bb08-4c6e5d315a52}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FITOMApp.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FITOMAppDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiMonitor.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiChCtrlDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="VoicePicker.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="VoiceEditDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TestButton.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DevMonitor.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DrumMapPicker.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DrumEditDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DrumNoteEditDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SCCIWrapper.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="codec.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\scci\scci.h">
+      <Filter>ヘッダー ファイル\scci</Filter>
+    </ClInclude>
+    <ClInclude Include="..\scci\SCCIDefines.h">
+      <Filter>ヘッダー ファイル\scci</Filter>
+    </ClInclude>
+    <ClInclude Include="ADPCM.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="FITOM.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="FMS.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="MIDI.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="MIDIDEV.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiDev.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="OPK.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="OPL.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="OPLL.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="OPM.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="OPN.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="Port.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundDev.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="SSG.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="tables.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="TYPES.H">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="FITOMCfg.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="Fnum.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="SplashDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TextVoiceEditDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="OPL4.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FITOMApp.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="FITOMAppDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiMonitor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiChCtrlDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="VoicePicker.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceEditDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TestButton.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DevMonitor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DrumMapPicker.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DrumEditDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DrumNoteEditDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SCCIWrapper.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="codec.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ADPCM.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvLFO.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="FITOM.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="FMS.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="Fnum.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="MIDI.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="MIDIWin.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiDev.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="OPK.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="OPL.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="OPL3.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="OPLL.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="OPM.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="OPN.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="OPN2.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="Port.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundDev.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="SpanDev.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="SSG.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="Stereo.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="Unison.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="FITOMCfg.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="SplashDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TextVoiceEditDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressDlg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OPL4.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceBank.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="PortWin.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="FITOMCfgWin.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FITOMApp.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\FITOMApp.rc2">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\FITOMApp.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\fitom_logo.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\fitom_logo.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bitmap2.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bitmap3.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\opn_al1.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\opn_al0.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\opn_al2.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\opn_al3.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\opn_al4.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\opn_al5.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\opn_al6.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\opn_al7.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\fitom_splash.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\fitom_splash.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
