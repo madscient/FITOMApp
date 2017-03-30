@@ -24,27 +24,29 @@ CMidiChCtrlDlg::CMultiCtrl::CMultiCtrl() : value(-1), pGetter(0), pSetter(0)
 }
 
 CMidiChCtrlDlg::CMultiCtrl::CMultiCtrl
-(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int), int min, int max)
+(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int), int min, int max) :
+	pGetter(0), pSetter(0), pParent(0), isValid(0)
 {
-	Attach(par, idedt, idspn, idsld, pget, pset);
+	isValid = Attach(par, idedt, idspn, idsld, pget, pset);
 	SetRange(min, max);
 }
 
-void CMidiChCtrlDlg::CMultiCtrl::Attach(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int))
+BOOL CMidiChCtrlDlg::CMultiCtrl::Attach(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int))
 {
 	pParent = par;
-	Edit.SubclassDlgItem(idedt, pParent);
-	Spin.SubclassDlgItem(idspn, pParent);
-	Slider.SubclassDlgItem(idsld, pParent);
+	if (!Edit.SubclassDlgItem(idedt, pParent)) { return FALSE; }
+	if (!Spin.SubclassDlgItem(idspn, pParent)) { return FALSE; }
+	if (!Slider.SubclassDlgItem(idsld, pParent)) { return FALSE; }
 	Spin.SetBase(10);
 	Spin.SetBuddy(&Edit);
 	pGetter = pget;
 	pSetter = pset;
+	return TRUE;
 }
 
 void CMidiChCtrlDlg::CMultiCtrl::SetValue()
 {
-	if (pGetter) {
+	if (isValid && pGetter) {
 		int val = (pParent->*pGetter)();
 		if (value != val) {
 			CString tmp;
@@ -59,24 +61,29 @@ void CMidiChCtrlDlg::CMultiCtrl::SetValue()
 
 void CMidiChCtrlDlg::CMultiCtrl::SetRange(int min, int max)
 {
-	Spin.SetRange32(min, max);
-	Slider.SetRange(min, max, TRUE);
+	if (isValid) {
+		Spin.SetRange32(min, max);
+		Slider.SetRange(min, max, TRUE);
+	}
 }
 
 BOOL CMidiChCtrlDlg::CMultiCtrl::IsMember(int id)
 {
-	if (id == Edit.GetDlgCtrlID() || id == Spin.GetDlgCtrlID() || id == Slider.GetDlgCtrlID()) {
-		return TRUE;
+	if (isValid) {
+		if (id == Edit.GetDlgCtrlID() || id == Spin.GetDlgCtrlID() || id == Slider.GetDlgCtrlID()) {
+			return TRUE;
+		}
 	}
 	return FALSE;
 }
 
-void CMidiChCtrlDlg::CChecker::Attach(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int))
+BOOL CMidiChCtrlDlg::CChecker::Attach(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int))
 {
+	if (!Btn.SubclassDlgItem(id, par)) { return FALSE; }
 	pParent = par;
-	Btn.SubclassDlgItem(id, par);
 	pGetter = pget;
 	pSetter = pset;
+	return TRUE;
 }
 
 IMPLEMENT_DYNAMIC(CMidiChCtrlDlg, CDialogEx)
@@ -419,10 +426,10 @@ void CMidiChCtrlDlg::OnTimer(UINT_PTR nIDEvent)
 	if (theCh) {
 		RefreshDevice();
 		for (int i = 0; i < numMultiCtrl; i++) {
-			pMulCtrl[i]->SetValue();
+			pMulCtrl[i] ? pMulCtrl[i]->SetValue() : 0;
 		}
 		for (int i = 0; i < numChecker; i++) {
-			pChecker[i]->UpdateState();
+			pChecker[i] ? pChecker[i]->UpdateState() : 0;
 		}
 	}
 	CDialogEx::OnTimer(nIDEvent);
@@ -474,7 +481,7 @@ void CMidiChCtrlDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
 	for (int i = 0; i < numMultiCtrl; i++) {
-		if (pMulCtrl[i]->IsMember(pScrollBar->GetDlgCtrlID())) {
+		if (pMulCtrl[i] && pMulCtrl[i]->IsMember(pScrollBar->GetDlgCtrlID())) {
 			NMUPDOWN nms;
 			nms.hdr.hwndFrom = pScrollBar->GetSafeHwnd();
 			nms.hdr.idFrom = pScrollBar->GetDlgCtrlID();
@@ -492,7 +499,7 @@ void CMidiChCtrlDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 void CMidiChCtrlDlg::OnEnChangeEdit(UINT id)
 {
 	for (int i = 0; i < numMultiCtrl; i++) {
-		if (pMulCtrl[i]->IsMember(id)) {
+		if (pMulCtrl[i] && pMulCtrl[i]->IsMember(id)) {
 			NMHDR nms;
 			nms.code = EN_CHANGE;
 			nms.hwndFrom = GetDlgItem(id)->GetSafeHwnd();
@@ -508,7 +515,7 @@ void CMidiChCtrlDlg::OnDeltaposSpin(UINT id, NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	for (int i = 0; i < numMultiCtrl; i++) {
-		if (pMulCtrl[i]->IsMember(id)) {
+		if (pMulCtrl[i] && pMulCtrl[i]->IsMember(id)) {
 			pMulCtrl[i]->OnNotify(UDN_DELTAPOS, LPARAM(pNMHDR), pResult);
 		}
 	}
@@ -519,7 +526,7 @@ void CMidiChCtrlDlg::OnBnClickedCheck(UINT id)
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	for (int i = 0; i < numChecker; i++){
-		if (pChecker[i]->IsMember(id)) {
+		if (pChecker[i] && pChecker[i]->IsMember(id)) {
 			pChecker[i]->OnClicked();
 		}
 	}

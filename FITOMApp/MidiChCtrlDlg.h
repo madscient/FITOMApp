@@ -85,22 +85,24 @@ public:
 	CComboBox cmbProg;
 	class CChecker {
 	protected:
+		BOOL isValid;
 		CButton Btn;
 		CMidiChCtrlDlg* pParent;
 		int (CMidiChCtrlDlg::*pGetter)();
 		void (CMidiChCtrlDlg::*pSetter)(int val);
 	public:
 		CChecker() : pParent(0), pGetter(0), pSetter(0){};
-		CChecker(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int)) { Attach(par, id, pget, pset); };
-		void Attach(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int));
-		BOOL IsMember(int id) { return (id == Btn.GetDlgCtrlID()); };
+		CChecker(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int)) { isValid = Attach(par, id, pget, pset); };
+		BOOL Attach(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int));
+		BOOL IsMember(int id) { return (isValid && id == Btn.GetDlgCtrlID()); };
 		void OnClicked() { (pParent->*pSetter)(Checked()); };
-		BOOL Checked() { return Btn.GetCheck(); };
-		void UpdateState() { Btn.SetCheck((pParent->*pGetter)()!=0); };
+		BOOL Checked() { return isValid && Btn.GetCheck(); };
+		void UpdateState() { isValid ? Btn.SetCheck((pParent->*pGetter)()!=0) : void(); };
 	};
 	class CMultiCtrl {
 	protected:
 		int value;
+		BOOL isValid;
 		CMidiChCtrlDlg* pParent;
 		int (CMidiChCtrlDlg::*pGetter)();
 		void (CMidiChCtrlDlg::*pSetter)(int val);
@@ -115,7 +117,7 @@ public:
 		BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 		CMultiCtrl();
 		CMultiCtrl(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int), int min, int max);
-		void Attach(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int));
+		BOOL Attach(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int));
 	};
 	CMultiCtrl* pMulCtrl[numMultiCtrl];
 	CChecker* pChecker[numChecker];

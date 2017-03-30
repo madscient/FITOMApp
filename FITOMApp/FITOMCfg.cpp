@@ -606,7 +606,7 @@ int CFITOMConfig::LoadConfig()
 	std::terr << LoadMidiConfig() << _T(" MIDI IN ports configured.") << std::endl;
 	pProgressMessage ? pProgressMessage(_T("Loading Voice Setting...")) : 0;
 	LoadVoiceConfig();
-	pProgressMessage ? pProgressMessage(_T("")) : 0;
+	pProgressMessage ? pProgressMessage(_T(" ")) : 0;
 	return 0;
 }
 
@@ -665,7 +665,7 @@ int CFITOMConfig::LoadDeviceConfig()
 {
 	//SCCI devices
 	int res = 0;
-	int devices = fitom_ini.get<int>(_T("Device.Count"), 0);
+	int devices = fitom_ini.get<int>(_T("Device.count"), 0);
 	for (int i = 0; i < devices; i++) {
 		std::tstring strkeyname = (boost::format(_T("Device.device%1%")) % i).str();
 		boost::optional<std::tstring> valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
@@ -748,7 +748,7 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 						pProgressFilename ? pProgressFilename(strwavfile.c_str()) : 0;
 						std::terr << _T("Loading: ") << strwavfile << _T("...") << std::endl;
 						Adpcm adpcm;
-						size_t length = boost::filesystem::file_size(boost::filesystem::path(strwavfile));
+						size_t length = boost::filesystem::file_size(boost::filesystem::path(strwavfile), err);
 						std::ifstream infile(strwavfile, std::ios::in | std::ios::binary);
 						LPBYTE pdata = new BYTE[length];
 						infile.read((char*)pdata, length);
@@ -976,29 +976,33 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 					std::vector<int> opparam;
 					std::vector<std::tstring> lstopparam;
 					stropparam = bankfile.get<std::tstring>(strprogkey + std::tstring(_T(".ALFB")), _T("0 0 0 0"));
+					boost::trim(stropparam);
 					boost::split(lstopparam, stropparam, boost::is_space());
-					BOOST_FOREACH(std::tstring s, lstopparam) { opparam.push_back(stoi(s)); }
+					BOOST_FOREACH(std::tstring s, lstopparam) { if (s != _T("")) opparam.push_back(stoi(s)); }
 					(this->*parseFunc)(&voice, 0, opparam);
 					lstopparam.clear();
 					opparam.clear();
 					stropparam = bankfile.get<std::tstring>(strprogkey + std::tstring(_T(".LFO0")), _T("0 0 0 0 0"));
+					boost::trim(stropparam);
 					boost::split(lstopparam, stropparam, boost::is_space());
-					BOOST_FOREACH(std::tstring s, lstopparam) { opparam.push_back(stoi(s)); }
+					BOOST_FOREACH(std::tstring s, lstopparam) { if (s != _T("")) opparam.push_back(stoi(s)); }
 					ParseLFOParam(&voice, 0, opparam);
 					for (int k = 0; k < 4; k++) {
 						std::tstring stropkey = (boost::format(_T("%1%.OP%2%")) % strprogkey % (k + 1)).str();
 						lstopparam.clear();
 						opparam.clear();
 						stropparam = bankfile.get<std::tstring>(stropkey, _T("0 0 0 0 0 0 0 0 0 0 0"));
+						boost::trim(stropparam);
 						boost::split(lstopparam, stropparam, boost::is_space());
-						BOOST_FOREACH(std::tstring s, lstopparam) { opparam.push_back(stoi(s)); }
+						BOOST_FOREACH(std::tstring s, lstopparam) { if (s != _T("")) opparam.push_back(stoi(s)); }
 						(this->*parseFunc)(&voice, k + 1, opparam);
 						stropkey = (boost::format(_T("%1%.LFO%2%")) % strprogkey % (k + 1)).str();
 						lstopparam.clear();
 						opparam.clear();
 						stropparam = bankfile.get<std::tstring>(stropkey, _T("0 0 0 0 0"));
+						boost::trim(stropparam);
 						boost::split(lstopparam, stropparam, boost::is_space());
-						BOOST_FOREACH(std::tstring s, lstopparam) { opparam.push_back(stoi(s)); }
+						BOOST_FOREACH(std::tstring s, lstopparam) { if (s != _T("")) opparam.push_back(stoi(s)); }
 						ParseLFOParam(&voice, k + 1, opparam);
 					}
 					voice.ID = (groupcode << 24) | (i << 8) | j;
