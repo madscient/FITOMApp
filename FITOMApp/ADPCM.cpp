@@ -5,7 +5,7 @@
 #define YMDELTA_OFFSET	448
 #define YMZ280_OFFSET	356
 
-CAdPcmBase::CAdPcmBase(CPort* pt, int fsamp, int devide, int offset, size_t memsize, size_t maxch, UINT8 pardev)
+CAdPcmBase::CAdPcmBase(CPort* pt, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev)
 	: CSoundDevice(DEVICE_ADPCM, maxch, fsamp, devide, offset, FnumTableType::DeltaN, pt)
 	, maxmem(memsize), usedmem(0), boundary(0), parentdev(pardev), fcode(fsamp)
 {

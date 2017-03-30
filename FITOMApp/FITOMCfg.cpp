@@ -614,17 +614,17 @@ int CFITOMConfig::LoadMidiConfig()
 {
 	//MIDI Input
 	int res = 0;
-	int clockrx = fitom_ini.get_optional<int>(_T("MIDI.ClockRx")).get();
+	int clockrx = fitom_ini.get<int>(_T("MIDI.ClockRx"), 0);
 	SetMIDIClockCh(clockrx);
 	for (int i = 0; i < MAX_MPUS; i++) {
 		std::tstring strkeyname;
-		boost::optional<std::tstring> valportname;
+		std::tstring strportname;
 		strkeyname = (boost::format(_T("MIDI.MIDIIN%1%")) % (i + 1)).str();
-		valportname = fitom_ini.get_optional<std::tstring>(strkeyname);
+		strportname = fitom_ini.get<std::tstring>(strkeyname, _T("**NONE**"));
 		CMidiIn* midiport = 0;
-		if (valportname) {
+		if (strportname.compare(_T("**NONE**"))) {
 			try {
-				midiport = CreateMidiInPort(valportname.get().c_str());
+				midiport = CreateMidiInPort(strportname.c_str());
 			}
 			catch (CResourceException* e) {
 			}
@@ -633,11 +633,10 @@ int CFITOMConfig::LoadMidiConfig()
 				res++;
 				for (int j = 0; j < 16; j++) {
 					std::tstring strchkey;
-					boost::optional<std::tstring> valparam;
+					std::tstring strparam;
 					strchkey = (boost::format(_T("Channel.ch%1%")) % (j + 1)).str();
-					valparam = fitom_ini.get_optional<std::tstring>(strchkey);
-					if (valparam) {
-						std::tstring strparam = valparam.get();
+					strparam = fitom_ini.get<std::tstring>(strchkey, _T("**NONE**"));
+					if (strparam.compare(_T("**NONE**"))) {
 						if (strparam.compare(_T("RHYTHM"))) {
 							std::vector<std::tstring> lstdevparam;
 							boost::split(lstdevparam, strparam, boost::is_any_of(_T(":")));
@@ -666,12 +665,10 @@ int CFITOMConfig::LoadDeviceConfig()
 {
 	//SCCI devices
 	int res = 0;
-	int devices = fitom_ini.get_optional<int>(_T("Device.Count")).get();
+	int devices = fitom_ini.get<int>(_T("Device.Count"), 0);
 	for (int i = 0; i < devices; i++) {
-		std::tstring strkeyname;
-		boost::optional<std::tstring> valparam;
-		strkeyname = (boost::format(_T("Device.device%1%")) % i).str();
-		valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
+		std::tstring strkeyname = (boost::format(_T("Device.device%1%")) % i).str();
+		boost::optional<std::tstring> valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
 		if (valparam && CreateDevice(valparam.get().c_str()) == 0) {
 			res++;
 		}
@@ -695,14 +692,13 @@ int CFITOMConfig::LoadADPCMConfig()
 {
 	//SCCI devices
 	int res = 0;
-	int devices = fitom_ini.get_optional<int>(_T("ADPCM.Count")).get();
+	int devices = fitom_ini.get<int>(_T("ADPCM.Count"), 0);
 	for (int i = 0; i < devices; i++) {
 		std::tstring strkeyname;
-		boost::optional<std::tstring> valparam;
+		std::tstring strparam;
 		strkeyname = (boost::format(_T("ADPCM.device%1%")) % i).str();
-		valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
-		if (valparam) {
-			std::tstring strparam(valparam.get());
+		strparam = fitom_ini.get<std::tstring>(strkeyname, _T("**NONE**"));
+		if (strparam.compare(_T("**NONE**"))) {
 			std::tstring strdev;
 			std::tstring strport;
 			std::tstring strbankfile;
@@ -714,7 +710,7 @@ int CFITOMConfig::LoadADPCMConfig()
 				strbankfile = lstparam[2];
 				strparam = (boost::format(_T("%1%,%2%")) % strdev % strport).str();
 				boost::system::error_code err;
-				bool exists = boost::filesystem::exists(boost::filesystem::path(strbankfile.c_str()), err);
+				bool exists = boost::filesystem::exists(boost::filesystem::path(strbankfile), err);
 				if (exists && !err && CreateDevice(strparam.c_str()) == 0) {
 					std::terr << LoadADPCMBank(i, strbankfile.c_str()) << _T(" files loaded for ") << strparam;
 					res++;
@@ -734,16 +730,15 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 		std::tstring strbankname;
 		boost::property_tree::ptree bnkfile;
 		boost::property_tree::read_ini(fname, bnkfile);
-		//boost::optional<std::tstring> strbankname;
-		strbankname = (bnkfile.get_optional<std::tstring>(_T("Header.BankName"))).get();
+		strbankname = (bnkfile.get<std::tstring>(_T("Header.BankName"), _T("**NONE**")));
 		pbank->SetBankName(strbankname.c_str());
 		for (int i = 0; i < 128; i++) {
 			std::tstring strkeyname;
 			strkeyname = (boost::format(_T("Bank.prog%1%")) % i).str();
-			boost::optional<std::tstring> strparam = bnkfile.get_optional<std::tstring>(strkeyname);
-			if (strparam.is_initialized()) {
+			std::tstring strparam = bnkfile.get<std::tstring>(strkeyname, _T("**NONE**"));
+			if (strparam.compare(_T("**NONE**"))) {
 				std::vector<std::tstring> lstparam;
-				boost::split(lstparam, strparam.get(), boost::is_any_of(_T(",")));
+				boost::split(lstparam, strparam, boost::is_any_of(_T(",")));
 				if (lstparam.size() > 1) {
 					std::tstring strwavfile = lstparam[0];
 					int hirate = std::stoi(lstparam[1]);
@@ -790,11 +785,10 @@ int CFITOMConfig::ParseRhythmBank()
 		std::tstring strbankfile;
 		strkeyname = (boost::format(_T("DRUM.prog%1%")) % i).str();
 		boost::property_tree::ptree bankfile;
-		strbankfile = fitom_ini.get_optional<std::tstring>(strkeyname).get();
+		strbankfile = fitom_ini.get<std::tstring>(strkeyname, _T("**NONE**"));
 		boost::system::error_code err;
 		bool exists = boost::filesystem::exists(boost::filesystem::path(strbankfile), err);
 		if (exists && !err) {
-			boost::property_tree::read_ini(strbankfile, bankfile);
 			pProgressFilename ? pProgressFilename(strbankfile.c_str()) : 0;
 			CDrumBank* bank = AllocDrumBank(i);
 			if (bank) {
@@ -820,16 +814,14 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 		boost::property_tree::ptree bankfile;
 		std::tstring strtmp;
 		boost::property_tree::read_ini(fname, bankfile);
-		boost::optional<std::tstring> profval;
-		strtmp = bankfile.get_optional<std::tstring>(_T("Header.Type")).get();
+		strtmp = bankfile.get<std::tstring>(_T("Header.Type"), _T("**NONE**"));
 		if (strtmp.compare(_T("RHYTHM"))) { return -1; }
-		profval = bankfile.get_optional<std::tstring>(_T("Header.BankName"));
-		if (profval) { bank->SetBankName(strtmp.c_str()); }
+		strtmp = bankfile.get<std::tstring>(_T("Header.BankName"), _T("**NONE**"));
+		if (strtmp.compare(_T("**NONE**"))) { bank->SetBankName(strtmp.c_str()); }
 		for (int note = 0; note < 128; note++) {
 			std::tstring strkeyname = (boost::format(_T("Bank.Note%1%")) % note).str();
-			profval = bankfile.get_optional<std::tstring>(strkeyname);
-			if (profval) {
-				strtmp = profval.get();
+			strtmp = bankfile.get<std::tstring>(strkeyname, _T("**NONE**"));
+			if (strtmp.compare(_T("**NONE**"))) {
 				int prog = 0;
 				int pan = 0;
 				int gate = 0;
@@ -956,7 +948,7 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 		std::tstring strkeyname;
 		std::tstring strbankfile;
 		strkeyname = (boost::format(_T("%1%.bank%2%")) % groupname % i).str();
-		strbankfile = fitom_ini.get_optional<std::tstring>(strkeyname).get();
+		strbankfile = fitom_ini.get<std::tstring>(strkeyname, _T(""));
 		boost::system::error_code err;
 		bool exists = boost::filesystem::exists(boost::filesystem::path(strbankfile), err);
 		if (exists && !err) {
@@ -964,13 +956,13 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 			CFMBank* bank = AllocFMBank(groupcode, i);
 			if (bank) {
 				std::tstring strbankname;
-				boost::optional<std::tstring> strprofval;
+				std::tstring strprofval;
 				boost::property_tree::ptree bankfile;
 				boost::property_tree::read_ini(strbankfile, bankfile);
-				strprofval = bankfile.get_optional<std::tstring>(_T("Header.BankName"));
+				strprofval = bankfile.get<std::tstring>(_T("Header.BankName"), _T("**NONE**"));
 				bank->SetFileName(strbankfile.c_str());
-				if (strprofval) {
-					bank->SetBankName(strprofval.get().c_str());
+				if (strprofval.compare(_T("**NONE**"))) {
+					bank->SetBankName(strprofval.c_str());
 				}
 				for (int j = 0; j < 128; j++) {
 					std::tstring strprogkey;
@@ -979,17 +971,17 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 					std::memset(&voice, 0, sizeof(FMVOICE));
 					std::tstring strprogname;
 					std::tstring stropparam;
-					strprogname = bankfile.get_optional<std::tstring>(strprogkey + std::tstring(_T(".Name"))).get();
+					strprogname = bankfile.get<std::tstring>(strprogkey + std::tstring(_T(".Name")), _T("**NONE**"));
 					std::strncpy(voice.name, strprogname.c_str(), 15);
 					std::vector<int> opparam;
 					std::vector<std::tstring> lstopparam;
-					stropparam = bankfile.get_optional<std::tstring>(strprogkey + std::tstring(_T(".ALFB"))).get();
+					stropparam = bankfile.get<std::tstring>(strprogkey + std::tstring(_T(".ALFB")), _T("0 0 0 0"));
 					boost::split(lstopparam, stropparam, boost::is_space());
 					BOOST_FOREACH(std::tstring s, lstopparam) { opparam.push_back(stoi(s)); }
 					(this->*parseFunc)(&voice, 0, opparam);
 					lstopparam.clear();
 					opparam.clear();
-					stropparam = bankfile.get_optional<std::tstring>(strprogkey + std::tstring(_T(".LFO0"))).get();
+					stropparam = bankfile.get<std::tstring>(strprogkey + std::tstring(_T(".LFO0")), _T("0 0 0 0 0"));
 					boost::split(lstopparam, stropparam, boost::is_space());
 					BOOST_FOREACH(std::tstring s, lstopparam) { opparam.push_back(stoi(s)); }
 					ParseLFOParam(&voice, 0, opparam);
@@ -997,14 +989,14 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 						std::tstring stropkey = (boost::format(_T("%1%.OP%2%")) % strprogkey % (k + 1)).str();
 						lstopparam.clear();
 						opparam.clear();
-						stropparam = bankfile.get_optional<std::tstring>(stropkey).get();
+						stropparam = bankfile.get<std::tstring>(stropkey, _T("0 0 0 0 0 0 0 0 0 0 0"));
 						boost::split(lstopparam, stropparam, boost::is_space());
 						BOOST_FOREACH(std::tstring s, lstopparam) { opparam.push_back(stoi(s)); }
 						(this->*parseFunc)(&voice, k + 1, opparam);
 						stropkey = (boost::format(_T("%1%.LFO%2%")) % strprogkey % (k + 1)).str();
 						lstopparam.clear();
 						opparam.clear();
-						stropparam = bankfile.get_optional<std::tstring>(stropkey).get();
+						stropparam = bankfile.get<std::tstring>(stropkey, _T("0 0 0 0 0"));
 						boost::split(lstopparam, stropparam, boost::is_space());
 						BOOST_FOREACH(std::tstring s, lstopparam) { opparam.push_back(stoi(s)); }
 						ParseLFOParam(&voice, k + 1, opparam);

@@ -30,7 +30,7 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon) {};
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
 public:
-	CAdPcmBase(CPort* pt, int fsamp, int devide, int offset, size_t memsize, size_t maxch, UINT8 pardev);
+	CAdPcmBase(CPort* pt, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev);
 	virtual UINT8 GetParentDev() { return parentdev; };
 	virtual void LoadVoice(int prog, UINT8* data, size_t length) = 0;
 	virtual void TimerCallBack(UINT32 tick) {};
