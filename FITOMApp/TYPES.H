@@ -13,7 +13,7 @@ inline UINT8 min(UINT8 a, UINT8 b) { return (a<b) ? a : b; };
 #define TRUE	(!FALSE)
 #endif
 
-#if _MSC_VER < 1300
+#if defined(_WIN32) && (_MSC_VER < 1300)
 typedef unsigned char UINT8;
 typedef unsigned short UINT16;
 typedef unsigned long DWORD_PTR;
@@ -32,16 +32,23 @@ typedef CHAR TCHAR;
 #endif
 
 #ifndef _WIN32
+typedef unsigned int UINT;
 typedef uint32_t UINT32;
 typedef wchar_t WCHAR;
 typedef bool BOOL;
+typedef unsigned char UINT8;
+typedef unsigned short UINT16;
+typedef unsigned long DWORD_PTR;
 typedef uint8_t BYTE;
 typedef uint16_t WORD;
 typedef uint32_t DWORD;
+typedef BYTE* LPBYTE;
+typedef WORD* LPWORD;
+typedef DWORD* LPDWORD;
 typedef TCHAR TSTR;
 typedef TSTR* PTSTR;
 typedef PTSTR LPTSTR;
-typedef const PTSTR	PCTSTR;
+typedef const TCHAR* PCTSTR;
 typedef PCTSTR LPCTSTR;
 #define MAX_PATH	520
 #define ZeroMemory(d,l)	memset(d,0,l)

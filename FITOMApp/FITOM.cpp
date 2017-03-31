@@ -106,7 +106,7 @@ UINT8* CFITOM::GetCompatiList(UINT8 devid)
 const UINT8 CFITOM::GetDeviceIDFromName(LPCTSTR name)
 {
 	for (int i = 0; i<(sizeof(ROM::devmap) / sizeof(ROM::DEVIDMAP)); i++) {
-		if (std::strcmp(ROM::devmap[i].chipname, name) == 0 || std::strcmp(ROM::devmap[i].chipcode, name) == 0) {
+		if (strcmp(ROM::devmap[i].chipname, name) == 0 || strcmp(ROM::devmap[i].chipcode, name) == 0) {
 			return ROM::devmap[i].devid;
 		}
 	}
@@ -175,10 +175,10 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 		if (pbank) {
 			PCMPROG pcmprog;
 			pbank->GetVoice(prog, &pcmprog);
-			StringCbCopyA(voice->name, 16, CT2A(pcmprog.progname));
+			strncpy(voice->name, pcmprog.progname, 15);
 		}
 		else {
-			StringCbPrintfA(voice->name, 16, "PCM:%03i:%03i", bank, prog);
+			std::sprintf(voice->name, "PCM:%03i:%03i", bank, prog);
 		}
 		return 0;
 	}
@@ -188,7 +188,7 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 		voice->AL = prog;
 		voice->FB = bank;
 		{
-			StringCbPrintfA(voice->name, 16, "OPL4:%03i:%03i", bank, prog);
+			std::sprintf(voice->name, "OPL4:%03i:%03i", bank, prog);
 		}
 		return 0;
 	}
@@ -198,7 +198,7 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 	if (xmem == NULL) {
 		memset(voice, 0, sizeof(FMVOICE));
 		voice->ID = (0xff000000L) | (UINT16(bank) << 8) | prog;
-		StringCchPrintf(voice->name, 16, _T("%03i:%03i"), bank, prog);
+		std::sprintf(voice->name, _T("%03i:%03i"), bank, prog);
 	}
 	return 0;
 }
@@ -276,10 +276,10 @@ void CFITOM::TimerCallBack(UINT32 tick)
 {
 	if (!timerprocessing) {
 		timerprocessing = 1;
-		DWORD tfrom = timeGetTime();
 		int wait = 0;
 		for (wait = 0; pollprocessing; wait++);
 #ifdef _DEBUG
+		DWORD tfrom = timeGetTime();
 		if (wait) {
 		//	DWORD delay = timeGetTime() - tfrom;
 		//	fprintf(stderr, _T("%i: poller waited for %icounts (%ims)\n"), tick, wait, delay);

@@ -598,15 +598,15 @@ int CFITOMConfig::GetDeviceName(UINT32 devid, TCHAR* name, size_t count)
 
 int CFITOMConfig::LoadConfig()
 {
-	pProgressMessage ? pProgressMessage(_T("Loading Device Setting...")) : 0;
+	pProgressMessage ? pProgressMessage(_T("Loading Device Setting...")) : void(0);
 	std::terr << LoadDeviceConfig() << _T(" SCCI Devices configured.") << std::endl;
-	pProgressMessage ? pProgressMessage(_T("Loading ADPCM Setting...")) : 0;
+	pProgressMessage ? pProgressMessage(_T("Loading ADPCM Setting...")) : void(0);
 	std::terr << LoadADPCMConfig() << _T(" ADPCM Devices configured.") << std::endl;
-	pProgressMessage ? pProgressMessage(_T("Loading MIDI Setting...")) : 0;
+	pProgressMessage ? pProgressMessage(_T("Loading MIDI Setting...")) : void(0);
 	std::terr << LoadMidiConfig() << _T(" MIDI IN ports configured.") << std::endl;
-	pProgressMessage ? pProgressMessage(_T("Loading Voice Setting...")) : 0;
+	pProgressMessage ? pProgressMessage(_T("Loading Voice Setting...")) : void(0);
 	LoadVoiceConfig();
-	pProgressMessage ? pProgressMessage(_T(" ")) : 0;
+	pProgressMessage ? pProgressMessage(_T(" ")) : void(0);
 	return 0;
 }
 
@@ -623,11 +623,7 @@ int CFITOMConfig::LoadMidiConfig()
 		strportname = fitom_ini.get<std::tstring>(strkeyname, _T("**NONE**"));
 		CMidiIn* midiport = 0;
 		if (strportname.compare(_T("**NONE**"))) {
-			try {
-				midiport = CreateMidiInPort(strportname.c_str());
-			}
-			catch (CResourceException* e) {
-			}
+			midiport = CreateMidiInPort(strportname.c_str());
 			if (midiport) {
 				AddDevice(midiport);
 				res++;
@@ -745,7 +741,7 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 					boost::system::error_code err;
 					bool exists = boost::filesystem::exists(strwavfile, err);
 					if (exists && !err) {
-						pProgressFilename ? pProgressFilename(strwavfile.c_str()) : 0;
+						pProgressFilename ? pProgressFilename(strwavfile.c_str()) : void(0);
 						std::terr << _T("Loading: ") << strwavfile << _T("...") << std::endl;
 						Adpcm adpcm;
 						size_t length = boost::filesystem::file_size(boost::filesystem::path(strwavfile), err);
@@ -789,7 +785,7 @@ int CFITOMConfig::ParseRhythmBank()
 		boost::system::error_code err;
 		bool exists = boost::filesystem::exists(boost::filesystem::path(strbankfile), err);
 		if (exists && !err) {
-			pProgressFilename ? pProgressFilename(strbankfile.c_str()) : 0;
+			pProgressFilename ? pProgressFilename(strbankfile.c_str()) : void(0);
 			CDrumBank* bank = AllocDrumBank(i);
 			if (bank) {
 				if (!LoadDrumBank(bank, strbankfile.c_str())) {
@@ -845,7 +841,8 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 					gate = std::stoi(lstparam[6]);
 					if (strnote[0] == _T('#')) {
 						std::vector<std::tstring> lstnote;
-						boost::split(lstnote, strnote.substr(1), boost::is_any_of(_T(":")));
+						strnote = strnote.substr(1);
+						boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
 						if (lstnote.size() > 1) {
 							num = std::stoi(lstnote[0]) | 0x80;
 							fnum = std::stoi(lstnote[1], 0, 16);

@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\FITOMApp\ADPCM.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\EnvLFO.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\FITOM.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\FITOMCfg.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\FMS.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\Fnum.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\MIDI.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\MIDIWin.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\MultiDev.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\OPK.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\OPL.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\OPL3.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\OPL4.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\OPLL.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\OPM.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\OPN.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\OPN2.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\Port.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\SoundDev.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\SpanDev.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\SSG.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\Stereo.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\Unison.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FITOMApp\VoiceBank.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="MIDIOPi.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="PortOpi.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="SPFMUart.cpp">
+      <Filter>ソースファイル\FITOM core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ヘッダーファイル">
+      <UniqueIdentifier>{4be248ee-ff2c-4f44-b214-4b0cef26eb68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル">
+      <UniqueIdentifier>{3e47cebe-2e46-456f-b0cc-b16cbc783dcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\FITOM core">
+      <UniqueIdentifier>{47e51822-7add-44fb-92ac-83d090c4834f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\FITOM core">
+      <UniqueIdentifier>{c3edbc12-c629-463e-bbc6-eff2679c12bb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\FITOMApp\ADPCM.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\FITOM.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\FITOMCfg.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\FMS.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\Fnum.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\MIDI.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\MIDIDEV.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\MultiDev.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\OPK.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\OPL.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\OPL4.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\OPLL.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\OPM.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\OPN.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\Port.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\SoundDev.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\SSG.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\tables.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FITOMApp\TYPES.H">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="SPFMUart.h">
+      <Filter>ヘッダーファイル\FITOM core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

@@ -70,8 +70,8 @@ void CYmDelta::LoadVoice(int prog, UINT8* data, size_t length)
 	SetReg(regmap.startMSB, (st >> 13) & 0xff);
 	SetReg(regmap.endLSB, (ed >> 5) & 0xff);
 	SetReg(regmap.endMSB, (ed >> 13) & 0xff);
-	(regmap.limitLSB != 0xff) ? SetReg(regmap.limitLSB, (ed >> 5) & 0xff) : 0;
-	(regmap.limitMSB != 0xff) ? SetReg(regmap.limitMSB, (ed >> 13) & 0xff) : 0;
+	(regmap.limitLSB != 0xff) ? SetReg(regmap.limitLSB, (ed >> 5) & 0xff) : void(0);
+	(regmap.limitMSB != 0xff) ? SetReg(regmap.limitMSB, (ed >> 13) & 0xff) : void(0);
 	for (size_t i = 0; i < (blk >> 3); i++) {
 		if (i < length) {
 			SetReg(regmap.memory, data[i]);
@@ -109,8 +109,8 @@ void CYmDelta::PlayPCM(UINT8 ch, UINT8 num, UINT8 volume, SINT8 pan, SINT32 offs
 		SetReg(regmap.startMSB, (st >> 13) & 0xff);
 		SetReg(regmap.endLSB, (ed >> 5) & 0xff);
 		SetReg(regmap.endMSB, (ed >> 13) & 0xff);
-		(regmap.limitLSB != 0xff) ? SetReg(regmap.limitLSB, (ed >> 5) & 0xff) : 0;
-		(regmap.limitMSB != 0xff) ? SetReg(regmap.limitMSB, (ed >> 13) & 0xff) : 0;
+		(regmap.limitLSB != 0xff) ? SetReg(regmap.limitLSB, (ed >> 5) & 0xff) : void(0);
+		(regmap.limitMSB != 0xff) ? SetReg(regmap.limitMSB, (ed >> 13) & 0xff) : void(0);
 		SetReg(regmap.deltanLSB, (deltan)& 0xff);
 		SetReg(regmap.deltanMSB, (deltan >> 8) & 0xff);
 		SetReg(regmap.volume, (volume << 1) | (volume >> 6));
@@ -191,8 +191,8 @@ void CYmDelta::UpdateVoice(UINT8 ch)
 	SetReg(regmap.startMSB, (st >> 13) & 0xff);
 	SetReg(regmap.endLSB, (ed >> 5) & 0xff);
 	SetReg(regmap.endMSB, (ed >> 13) & 0xff);
-	(regmap.limitLSB != 0xff) ? SetReg(regmap.limitLSB, (ed >> 5) & 0xff) : 0;
-	(regmap.limitMSB != 0xff) ? SetReg(regmap.limitMSB, (ed >> 13) & 0xff) : 0;
+	(regmap.limitLSB != 0xff) ? SetReg(regmap.limitLSB, (ed >> 5) & 0xff) : void(0);
+	(regmap.limitMSB != 0xff) ? SetReg(regmap.limitMSB, (ed >> 13) & 0xff) : void(0);
 }
 
 //CAdPcm3801 YM3801 aka Y8950
@@ -214,7 +214,7 @@ CAdPcm2608::CAdPcm2608(CPort* pt, int fsamp, size_t memsize) : CYmDelta(pt, fsam
 }
 
 //CAdPcmZ280 YMZ280 aka PCMD8
-CAdPcmZ280::CAdPcmZ280(CPort* pt, int fsamp, UINT32 memsize)
+CAdPcmZ280::CAdPcmZ280(CPort* pt, int fsamp, size_t memsize)
 	: CAdPcmBase(pt, fsamp, 384, YMZ280_OFFSET, memsize, 8, DEVICE_PCMD8)
 {
 	SetReg(0xff, 0xc0);	// KON enable/Memory enable

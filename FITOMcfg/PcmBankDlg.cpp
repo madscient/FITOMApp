@@ -134,6 +134,10 @@ void CPcmBankDlg::OnBtnOpen()
 				}
 			}
 		}
+		else {
+			wavfiles.clear();
+			bModified = TRUE;
+		}
 		Refresh();
 	}
 }
@@ -151,10 +155,10 @@ void CPcmBankDlg::OnBtnAdd()
 	CFileDialog dlg(TRUE, _T(".wav"), 0, OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_EXPLORER | OFN_ENABLESIZING,
 		_T("Wave file(*.wav)|*.wav|All files(*.*)|*.*||"), this);
 	if (dlg.DoModal() == IDOK) {
-		filename = dlg.GetPathName();
-		if (::PathFileExists(filename)) {
+		CString wfname = dlg.GetPathName();
+		if (::PathFileExists(wfname)) {
 			WAVFILES wf;
-			StringCchCopy(wf.filename, _countof(wf.filename), filename);
+			StringCchCopy(wf.filename, _countof(wf.filename), wfname);
 			wf.rate = 0;	// 16kHz as default
 			int selidx = lstPcmBank.GetSelectionMark();
 			if (selidx >= 0) {

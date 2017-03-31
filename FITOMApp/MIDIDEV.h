@@ -143,4 +143,19 @@ public:
 };
 #endif
 
+#ifdef _LINUX
+class CUartMidiIn : public CMidiIn
+{
+protected:
+	char desc[32];
+	int hUart;
+public:
+	CUartMidiIn(const char* param);
+	~CUartMidiIn();
+	virtual UINT8	IsReceived();
+	virtual UINT8	Read();
+	virtual const char* GetDescriptor() { return desc; };
+};
+#endif
+
 #endif
