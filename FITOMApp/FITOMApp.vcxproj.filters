@@ -147,6 +147,9 @@
     <ClInclude Include="OPL4.h">
       <Filter>ヘッダー ファイル\FITOM core</Filter>
     </ClInclude>
+    <ClInclude Include="volume_manager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FITOMApp.cpp">
@@ -277,6 +280,9 @@
     </ClCompile>
     <ClCompile Include="FITOMCfgWin.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="volume_manager.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

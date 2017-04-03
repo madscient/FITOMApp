@@ -112,6 +112,7 @@
     <ClInclude Include="ExportIns.h" />
     <ClInclude Include="FITOMcfg.h" />
     <ClInclude Include="FITOMcfgDlg.h" />
+    <ClInclude Include="LineInputDlg.h" />
     <ClInclude Include="MidiCfgDlg.h" />
     <ClInclude Include="PcmBankDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -125,6 +126,7 @@
     <ClCompile Include="ExportIns.cpp" />
     <ClCompile Include="FITOMcfg.cpp" />
     <ClCompile Include="FITOMcfgDlg.cpp" />
+    <ClCompile Include="LineInputDlg.cpp" />
     <ClCompile Include="MidiCfgDlg.cpp" />
     <ClCompile Include="PcmBankDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
