@@ -48,4 +48,5 @@ public:
 	afx_msg void OnUpdateBtnDown(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateBtnDel(CCmdUI *pCmdUI);
 	virtual void OnCancel();
+	afx_msg void OnEnChangeEdtBankname();
 };

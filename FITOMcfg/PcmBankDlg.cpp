@@ -27,7 +27,7 @@ void CPcmBankDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_PCM_BANK, lstPcmBank);
-	DDX_Control(pDX, IDC_EDT_FILENAME2, edtBankName);
+	DDX_Control(pDX, IDC_EDT_BANKNAME, edtBankName);
 	DDX_Control(pDX, IDC_EDT_FILENAME, edtFileName);
 }
 
@@ -46,6 +46,7 @@ BEGIN_MESSAGE_MAP(CPcmBankDlg, CDialogEx)
 	ON_UPDATE_COMMAND_UI(IDC_BTN_DOWN, &CPcmBankDlg::OnUpdateBtnDown)
 	ON_UPDATE_COMMAND_UI(IDC_BTN_DEL, &CPcmBankDlg::OnUpdateBtnDel)
 	ON_UPDATE_COMMAND_UI(IDC_BTN_HILO, &CPcmBankDlg::OnUpdateBtnDel)
+	ON_EN_CHANGE(IDC_EDT_BANKNAME, &CPcmBankDlg::OnEnChangeEdtBankname)
 END_MESSAGE_MAP()
 
 LRESULT CPcmBankDlg::OnKickIdle(WPARAM wParam, LPARAM lParam)
@@ -243,4 +244,16 @@ void CPcmBankDlg::OnCancel()
 		}
 	}
 	CDialogEx::OnCancel();
+}
+
+
+void CPcmBankDlg::OnEnChangeEdtBankname()
+{
+	// TODO: これが RICHEDIT コントロールの場合、このコントロールが
+	// この通知を送信するには、CDialogEx::OnInitDialog() 関数をオーバーライドし、
+	// CRichEditCtrl().SetEventMask() を
+	// OR 状態の ENM_CHANGE フラグをマスクに入れて呼び出す必要があります。
+
+	// TODO: ここにコントロール通知ハンドラー コードを追加してください。
+	edtBankName.GetWindowText(bankname);
 }
