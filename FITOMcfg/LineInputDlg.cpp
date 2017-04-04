@@ -35,6 +35,7 @@ void CLineInputDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CLineInputDlg, CDialogEx)
+	ON_WM_NCDESTROY()
 END_MESSAGE_MAP()
 
 
@@ -46,14 +47,16 @@ BOOL CLineInputDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO: ここに初期化を追加してください
+	TCHAR lineindev[256];
+	::GetPrivateProfileString(_T("LINEIN"), _T("device"), _T(""), lineindev, _countof(lineindev), _T(".\\FITOM.ini"));
 	cmbLineIn.ResetContent();
 	int n = cmbLineIn.AddString(_T("(None)"));
-	cmbLineIn.SetItemData(n, -1);
+	cmbLineIn.SetItemData(n, 0);
 	IMMDeviceEnumerator* pmmenum = 0;
 	HRESULT hres = ::CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pmmenum));
 	if (SUCCEEDED(hres)) {
 		IMMDeviceCollection* pmmcol = 0;
-		hres = pmmenum->EnumAudioEndpoints(EDataFlow::eCapture, DEVICE_STATE_ACTIVE, &pmmcol);
+		hres = pmmenum->EnumAudioEndpoints(EDataFlow::eCapture, DEVICE_STATE_ACTIVE | DEVICE_STATE_UNPLUGGED, &pmmcol);
 		if (SUCCEEDED(hres)) {
 			UINT count = 0;
 			hres = pmmcol->GetCount(&count);
@@ -69,10 +72,12 @@ BOOL CLineInputDlg::OnInitDialog()
 						LPWSTR devid;
 						hres = pmmdev->GetId(&devid);
 						if (SUCCEEDED(hres) && SUCCEEDED(pps->GetValue(PKEY_Device_FriendlyName, &varName))) {
-							n = cmbLineIn.AddString(CW2T(devid));
-							cmbLineIn.SetItemData(n, i);
+							n = cmbLineIn.AddString(CW2T(varName.pwszVal));
+							cmbLineIn.SetItemData(n, (DWORD_PTR)devid);
+							if (lstrcmp(lineindev, CW2T(devid)) == 0) {
+								cmbLineIn.SetCurSel(n);
+							}
 						}
-						CoTaskMemFree(devid);
 						devid = 0;
 					}
 					SAFE_RELEASE(pps);
@@ -83,6 +88,9 @@ BOOL CLineInputDlg::OnInitDialog()
 		SAFE_RELEASE(pmmcol);
 	}
 	SAFE_RELEASE(pmmenum);
+	if (cmbLineIn.GetCurSel() < 0) {
+		cmbLineIn.SetCurSel(0);
+	}
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 例外 : OCX プロパティ ページは必ず FALSE を返します。
 }
@@ -91,6 +99,20 @@ BOOL CLineInputDlg::OnInitDialog()
 void CLineInputDlg::OnOK()
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
-
+	::WritePrivateProfileString(_T("LINEIN"), _T("device"), CW2T((LPWSTR)cmbLineIn.GetItemData(cmbLineIn.GetCurSel())), _T(".\\FITOM.ini"));
 	CDialogEx::OnOK();
+}
+
+
+void CLineInputDlg::OnNcDestroy()
+{
+	CDialogEx::OnNcDestroy();
+
+	// TODO: ここにメッセージ ハンドラー コードを追加します。
+	for (int i = 0; i < cmbLineIn.GetCount(); i++) {
+		LPWSTR devid = (LPWSTR)cmbLineIn.GetItemData(i);
+		if (devid) {
+			CoTaskMemFree(devid);
+		}
+	}
 }

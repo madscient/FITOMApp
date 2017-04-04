@@ -25,4 +25,5 @@ public:
 	CComboBox cmbLineIn;
 	virtual BOOL OnInitDialog();
 	virtual void OnOK();
+	afx_msg void OnNcDestroy();
 };
