@@ -11,8 +11,6 @@
 
 #pragma comment(lib, "psapi.lib")
 
-#pragma comment (lib, "volume_manager.lib")
-
 class ComBase {
 private:
    static unsigned int counter;

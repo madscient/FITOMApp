@@ -13,6 +13,7 @@
 #include "AdPcmDevDlg.h"
 #include "PcmBankDlg.h"
 #include "ExportIns.h"
+#include "LineInputDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,6 +76,7 @@ BEGIN_MESSAGE_MAP(CFITOMcfgDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_ADPCM, &CFITOMcfgDlg::OnBnClickedButtonAdpcm)
 	ON_BN_CLICKED(IDC_BUTTON_ADPCM_BANK, &CFITOMcfgDlg::OnBnClickedButtonAdpcmBank)
 	ON_BN_CLICKED(IDC_BUTTON_EXPORT, &CFITOMcfgDlg::OnBnClickedButtonExport)
+	ON_BN_CLICKED(IDC_BUTTON_LINEIN, &CFITOMcfgDlg::OnBnClickedButtonLinein)
 END_MESSAGE_MAP()
 
 
@@ -219,4 +221,15 @@ void CFITOMcfgDlg::OnBnClickedButtonExport()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	ExportInsFile();
+}
+
+
+void CFITOMcfgDlg::OnBnClickedButtonLinein()
+{
+	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	CLineInputDlg dlg(this);
+	if (dlg.DoModal() == IDOK)
+	{
+
+	}
 }

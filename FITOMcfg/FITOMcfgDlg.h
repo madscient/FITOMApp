@@ -36,4 +36,5 @@ public:
 	afx_msg void OnBnClickedButtonAdpcm();
 	afx_msg void OnBnClickedButtonAdpcmBank();
 	afx_msg void OnBnClickedButtonExport();
+	afx_msg void OnBnClickedButtonLinein();
 };

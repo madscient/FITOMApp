@@ -23,4 +23,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CComboBox cmbLineIn;
+	virtual BOOL OnInitDialog();
+	virtual void OnOK();
 };
