@@ -35,7 +35,8 @@ void CLineInputDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CLineInputDlg, CDialogEx)
-	ON_WM_NCDESTROY()
+//	ON_WM_NCDESTROY()
+ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -103,16 +104,14 @@ void CLineInputDlg::OnOK()
 	CDialogEx::OnOK();
 }
 
-
-void CLineInputDlg::OnNcDestroy()
+void CLineInputDlg::OnClose()
 {
-	CDialogEx::OnNcDestroy();
-
-	// TODO: ここにメッセージ ハンドラー コードを追加します。
+	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
 	for (int i = 0; i < cmbLineIn.GetCount(); i++) {
 		LPWSTR devid = (LPWSTR)cmbLineIn.GetItemData(i);
 		if (devid) {
 			CoTaskMemFree(devid);
 		}
 	}
+	CDialogEx::OnClose();
 }

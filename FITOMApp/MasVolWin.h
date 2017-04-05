@@ -1,12 +1,26 @@
 #pragma once
 #include "MasterVolumeCtrl.h"
-class CMasterVolumeWin :
-	public CMasterVolumeCtrl
+#include <mmdeviceapi.h>
+#include <endpointvolume.h>
+
+class CMasVolWin32 : public CMasterVolumeCtrl
 {
 protected:
+	IAudioEndpointVolume* pVol;
+	float volmin, volmax, volstep;
 	virtual void UpdateVolume();
 public:
-	CMasterVolumeWin(const char* param);
-	~CMasterVolumeWin();
+	CMasVolWin32(const char* param);
+	~CMasVolWin32();
 };
 
+class CMasVolWinXp : public CMasterVolumeCtrl
+{
+protected:
+	HANDLE hVol;
+	virtual void UpdateVolume();
+public:
+	CMasVolWinXp() {};
+	CMasVolWinXp(const char* param);
+	~CMasVolWinXp();
+};

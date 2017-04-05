@@ -2,7 +2,7 @@
 #include "MasterVolumeCtrl.h"
 
 
-CMasterVolumeCtrl::CMasterVolumeCtrl(const char* param) : volume(0)
+CMasterVolumeCtrl::CMasterVolumeCtrl() : volume(127), valid(FALSE)
 {
 }
 

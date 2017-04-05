@@ -1,13 +1,18 @@
 #pragma once
+
+#include <mmdeviceapi.h>
+#include <mmsystem.h>
+
 class CMasterVolumeCtrl
 {
 protected:
 	uint32_t volume;
+	BOOL valid;
 	virtual void UpdateVolume();
 public:
-	CMasterVolumeCtrl(const char* param);
+	CMasterVolumeCtrl() {};
 	~CMasterVolumeCtrl();
 	void SetVolume(uint32_t vol);
 	uint32_t GetVolume();
+	BOOL IsValid() { return valid; };
 };
-
