@@ -47,6 +47,13 @@ UINT8 CW32MidiIn::Read(void)
 	return ret;
 }
 
+int CW32MidiIn::AddBuffer(BYTE msg)
+{
+	buf[wpt] = msg;
+	wpt = (wpt + 1) & (RING_MAX - 1);
+	return 0;
+}
+
 int CW32MidiIn::AddBuffer(DWORD msg)
 {
 	buf[wpt] = LOBYTE(LOWORD(msg));
@@ -58,12 +65,26 @@ int CW32MidiIn::AddBuffer(DWORD msg)
 	return 0;
 }
 
+int CW32MidiIn::AddBuffer(MIDIHDR msg)
+{
+	for (int i = 0; i < msg.dwBytesRecorded; i++) {
+		AddBuffer((BYTE)msg.lpData[i]);
+	}
+	return 0;
+}
+
 int CW32MidiIn::InstProc(DWORD msg)
 {
 	buf[0] = LOBYTE(LOWORD(msg));
 	buf[1] = HIBYTE(LOWORD(msg));
 	buf[2] = LOBYTE(HIWORD(msg));
 	pMidiInst->InterruptCallBack(buf, 3);
+	return 0;
+}
+
+int CW32MidiIn::InstProc(MIDIHDR msg)
+{
+	pMidiInst->InterruptCallBack(LPBYTE(msg.lpData), msg.dwBytesRecorded);
 	return 0;
 }
 
@@ -86,6 +107,15 @@ void CALLBACK CW32MidiIn::MidiInProc(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstanc
 	case MIM_CLOSE:		// 入力デバイスをクローズ
 		break;
 	case MIM_LONGDATA:	// 入力バッファのコールバック
+		{
+			CW32MidiIn* mpu = (CW32MidiIn*)dwInstance;
+			if (mpu->pMidiInst) {
+				mpu->InstProc(*(LPMIDIHDR(dwParam1)));
+			}
+			else {
+				mpu->AddBuffer(*(LPMIDIHDR(dwParam1)));
+			}
+		}
 		break;
 	case MIM_ERROR:		// 入力デバイス エラー コールバック
 		break;

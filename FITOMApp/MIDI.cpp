@@ -422,7 +422,24 @@ UINT16 CMidiInst::Control()
 
 UINT16 CMidiInst::SysEx()
 {
-	//currently ignore
+	int rdpt = 0;
+	if (SysExBuf[0] == 0xf0 && SysExBuf[SysExPt - 1] == 0xf7) {
+		DWORD mID = SysExBuf[++rdpt];
+		if (mID == 0) {
+			mID = mID | (SysExBuf[++rdpt] << 8) | (SysExBuf[++rdpt] << 16);
+		}
+		DWORD dID = SysExBuf[++rdpt];
+		switch (mID) {
+		case MID_ROLAND:
+			break;
+		case MID_YAMAHA:
+			break;
+		case MID_UNRT:
+			break;
+		case MID_URT:
+			break;
+		}
+	}
 	cond = COND_READY;
 	SysExPt = 0;
 	return 0;

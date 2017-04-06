@@ -1,7 +1,7 @@
 #ifndef __MIDI_H__
 #define __MIDI_H__
 
-#define	MAX_SYSEX	4096
+#define	MAX_SYSEX	8192
 #define	RPN_ENTRY	1
 #define	NRPN_ENTRY	2
 #define	RPN_PITCHBEND	0
@@ -28,6 +28,15 @@
 #define NRPN_DRUM_POFF	0x2100
 
 #define	RPN_NULL		16383
+
+
+#define MID_KAWAI	0x40
+#define MID_ROLAND	0x41
+#define MID_KORG	0x42
+#define MID_YAMAHA	0x43
+#define MID_UNRT	0x7e
+#define MID_URT		0x7f
+
 
 class CFITOM;
 
@@ -378,6 +387,10 @@ public:
 	int InterruptCallBack(BYTE* buf, size_t length);
 	void TimerCallBack(UINT32 tick);
 	void MIDIClockCallBack(UINT32 tick);
+	UINT16 SysExYamaha();
+	UINT16 SysExRoland();
+	UINT16 SysExUNRT();
+	UINT16 SysExURT();
 	const UINT16 GetCurrentStatus() { return currentstatus; };
 };
 

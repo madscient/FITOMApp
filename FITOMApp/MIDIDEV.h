@@ -99,8 +99,11 @@ public:
 	virtual const char* GetDescriptor() { return desc; };
 	virtual BOOL RegistInterrupt(CMidiInst* pInst) { pMidiInst = pInst; return TRUE; };
 protected:
+	int AddBuffer(BYTE msg);
 	int AddBuffer(DWORD msg);
+	int AddBuffer(MIDIHDR msg);
 	int InstProc(DWORD msg);
+	int InstProc(MIDIHDR msg);
 	HMIDIIN hIn;
 	MIDIHDR mhdr;
 	UINT8 buf[RING_MAX];
