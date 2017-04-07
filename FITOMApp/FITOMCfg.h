@@ -5,6 +5,8 @@ struct FMVOICE;
 #include <boost/property_tree/ptree.hpp>
 #include <vector>
 
+class CMasterVolumeCtrl;
+
 class CFITOMDeviceConfig {
 public:
 	CFITOMDeviceConfig(LPCTSTR cfgstr);
@@ -79,6 +81,7 @@ struct ChannelMap {
 class CFITOMConfig {
 protected:
 	boost::property_tree::ptree fitom_ini;
+	CMasterVolumeCtrl* pMasVol;
 	CMidiIn* vMidiIn[MAX_MPUS];
 	//CMidiInst* vMidiInst[MAX_MPUS];
 	CSoundDevice* vPhyDev[MAX_DEVS];
@@ -123,6 +126,7 @@ public:
 	virtual CPort* CreatePort(int devtype, LPCTSTR params) = 0;
 	virtual CMidiIn* CreateMidiInPort(LPCTSTR params) = 0;
 	virtual int CreateDevice(LPCTSTR param);
+	virtual CMasterVolumeCtrl* CreateMasVol(LPCTSTR param) = 0;
 	int CreateSingleDevice(int devtype, LPCTSTR param);
 	int CreateADPCMDevice(int devtype, LPCTSTR param);
 	CFMBank* AllocFMBank(int voicegroup, int bank);
@@ -166,6 +170,8 @@ public:
 	int GetMIDIClockCh() { return MIDIClockCh; };
 	void SetProgressMsgFunc(void(*pFunc)(LPCTSTR str)) { pProgressMessage = pFunc; };
 	void SetProgressFileFunc(void(*pFunc)(LPCTSTR str)) { pProgressFilename = pFunc; };
+	void SetMasterVolume(UINT8 vol);
+	UINT8 GetMasterVolume();
 
 	int ParseOPMVoice(FMVOICE* voice, int index, std::vector<int>& param);
 	int ParseOPNVoice(FMVOICE* voice, int index, std::vector<int>& param);
@@ -193,5 +199,6 @@ public:
 	~CFITOMConfigWin32();
 	virtual CPort* CreatePort(int devtype, LPCTSTR params);
 	virtual CMidiIn* CreateMidiInPort(LPCTSTR params);
+	virtual CMasterVolumeCtrl* CreateMasVol(LPCTSTR param);
 	CSCCIWrapper* GetScci() { return pScci; };
 };

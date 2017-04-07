@@ -11,6 +11,7 @@
 #include "SCCIWrapper.h"
 #include "Port.h"
 #include "MIDI.h"
+#include "MasVolWin.h"
 
 
 // CFITOMConfigWin32
@@ -79,3 +80,7 @@ CMidiIn* CFITOMConfigWin32::CreateMidiInPort(LPCTSTR param)
 	return ret;
 }
 
+CMasterVolumeCtrl* CFITOMConfigWin32::CreateMasVol(LPCTSTR param)
+{
+	return new CMasVolWin32(param);
+}

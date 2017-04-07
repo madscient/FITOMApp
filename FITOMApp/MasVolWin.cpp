@@ -5,7 +5,7 @@
               if ((punk) != NULL)  \
                 { (punk)->Release(); (punk) = NULL; }
 
-CMasVolWin32::CMasVolWin32(const char* param) : pVol(0)
+CMasVolWin32::CMasVolWin32(const TCHAR* param) : pVol(0)
 {
 	TCHAR lineindev[256];
 	IMMDeviceEnumerator* pmmenum = 0;
@@ -32,8 +32,4 @@ CMasVolWin32::~CMasVolWin32()
 void CMasVolWin32::UpdateVolume()
 {
 	pVol->SetMasterVolumeLevelScalar(volume / 127.0, NULL);
-}
-
-CMasVolWinXp::CMasVolWinXp(const char* param) : hVol(0)
-{
 }

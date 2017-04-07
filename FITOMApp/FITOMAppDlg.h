@@ -5,6 +5,7 @@
 #pragma once
 
 #include "afxwin.h"
+#include "afxcmn.h"
 
 class CMidiMonitor;
 class CFITOM;
@@ -47,4 +48,7 @@ public:
 	afx_msg void OnVEdit();
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedButtonDedit();
+	CStatic bmpLCDdisp;
+	CSliderCtrl sldMasterVol;
+	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
 };

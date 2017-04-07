@@ -24,8 +24,10 @@
 #include "OPK.h"
 #include "SSG.h"
 #include "codec.h"
+#include "MasterVolumeCtrl.h"
 
-CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : phydevs(0), logdevs(0), pcmdevs(0), mpus(0), pProgressMessage(0), pProgressFilename(0)
+CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : phydevs(0), logdevs(0), pcmdevs(0), mpus(0)
+, pProgressMessage(0), pProgressFilename(0), pMasVol(0)
 {
 	boost::property_tree::read_ini(_T(".\\FITOM.ini"), fitom_ini);
 	for (int i = 0; i < MAX_MPUS; i++) {
@@ -598,6 +600,10 @@ int CFITOMConfig::GetDeviceName(UINT32 devid, TCHAR* name, size_t count)
 
 int CFITOMConfig::LoadConfig()
 {
+	std::tstring strlinein = fitom_ini.get<std::tstring>(_T("LINEIN.device"), _T("**NONE**"));
+	if (strlinein.compare(_T("**NONE**"))) {
+		pMasVol = CreateMasVol(strlinein.c_str());
+	}
 	pProgressMessage ? pProgressMessage(_T("Loading Device Setting...")) : void(0);
 	std::terr << LoadDeviceConfig() << _T(" SCCI Devices configured.") << std::endl;
 	pProgressMessage ? pProgressMessage(_T("Loading ADPCM Setting...")) : void(0);
@@ -1298,4 +1304,14 @@ int CFITOMConfig::BuildPSGVoice(FMVOICE* voice, int index, TCHAR* result, size_t
 		% voice->op[k].AR % voice->op[k].DR % voice->op[k].SR % voice->op[k].RR % voice->op[k].SL
 		% voice->op[k].EGS % voice->op[k].EGT % 0 % 0 % voice->op[k].WS % 0).str();
 	return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+}
+
+void CFITOMConfig::SetMasterVolume(UINT8 vol)
+{
+	pMasVol ? pMasVol->SetVolume(vol) : void(0);
+}
+
+UINT8 CFITOMConfig::GetMasterVolume()
+{
+	return pMasVol ? pMasVol->GetVolume() : 0;
 }

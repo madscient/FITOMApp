@@ -10,17 +10,6 @@ protected:
 	float volmin, volmax, volstep;
 	virtual void UpdateVolume();
 public:
-	CMasVolWin32(const char* param);
+	CMasVolWin32(const TCHAR* param);
 	~CMasVolWin32();
-};
-
-class CMasVolWinXp : public CMasterVolumeCtrl
-{
-protected:
-	HANDLE hVol;
-	virtual void UpdateVolume();
-public:
-	CMasVolWinXp() {};
-	CMasVolWinXp(const char* param);
-	~CMasVolWinXp();
 };

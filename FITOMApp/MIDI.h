@@ -37,7 +37,6 @@
 #define MID_UNRT	0x7e
 #define MID_URT		0x7f
 
-
 class CFITOM;
 
 class CMidiCh {
@@ -387,10 +386,10 @@ public:
 	int InterruptCallBack(BYTE* buf, size_t length);
 	void TimerCallBack(UINT32 tick);
 	void MIDIClockCallBack(UINT32 tick);
-	UINT16 SysExYamaha();
-	UINT16 SysExRoland();
-	UINT16 SysExUNRT();
-	UINT16 SysExURT();
+	UINT16 SysExYamaha(BYTE* buf, size_t length);
+	UINT16 SysExRoland(BYTE* buf, size_t length);
+	UINT16 SysExUNRT(BYTE* buf, size_t length);
+	UINT16 SysExURT(BYTE* buf, size_t length);
 	const UINT16 GetCurrentStatus() { return currentstatus; };
 };
 

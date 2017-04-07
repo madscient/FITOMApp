@@ -422,26 +422,59 @@ UINT16 CMidiInst::Control()
 
 UINT16 CMidiInst::SysEx()
 {
-	int rdpt = 0;
+	UINT16 ret = 0;
+	int rdpt = 1;
 	if (SysExBuf[0] == 0xf0 && SysExBuf[SysExPt - 1] == 0xf7) {
-		DWORD mID = SysExBuf[++rdpt];
+		DWORD mID = SysExBuf[rdpt++];
 		if (mID == 0) {
-			mID = mID | (SysExBuf[++rdpt] << 8) | (SysExBuf[++rdpt] << 16);
+			mID = mID | (SysExBuf[rdpt+1] << 8) | (SysExBuf[rdpt+2] << 16);
+			rdpt += 2;
 		}
-		DWORD dID = SysExBuf[++rdpt];
 		switch (mID) {
 		case MID_ROLAND:
+			ret = SysExRoland(&SysExBuf[rdpt], SysExPt - rdpt);
 			break;
 		case MID_YAMAHA:
+			ret = SysExYamaha(&SysExBuf[rdpt], SysExPt - rdpt);
 			break;
 		case MID_UNRT:
+			ret = SysExUNRT(&SysExBuf[rdpt], SysExPt - rdpt);
 			break;
 		case MID_URT:
+			ret = SysExURT(&SysExBuf[rdpt], SysExPt - rdpt);
 			break;
 		}
 	}
 	cond = COND_READY;
-	SysExPt = 0;
+	SysExPt = ret;
+	return 0;
+}
+
+UINT16 CMidiInst::SysExRoland(BYTE* buf, size_t length)
+{
+	size_t rdpt = 0;
+	BYTE devID = buf[rdpt++];	// device ID
+	BYTE modID = buf[rdpt++];	// model ID
+	BYTE comID = buf[rdpt++];	// command ID
+	if (modID == 0x45 && comID == 0x12) {	// Roland LCD
+
+	}
+	return 0;
+}
+
+UINT16 CMidiInst::SysExYamaha(BYTE* buf, size_t length)
+{
+	return 0;
+}
+
+UINT16 CMidiInst::SysExURT(BYTE* buf, size_t length)
+{
+	return 0;
+
+}
+
+UINT16 CMidiInst::SysExUNRT(BYTE* buf, size_t length)
+{
 	return 0;
 }
 

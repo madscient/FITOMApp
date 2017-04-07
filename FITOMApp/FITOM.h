@@ -136,12 +136,11 @@ public:
 protected:
 	CMidiInst* midi[MAX_MPUS];
 	CFITOMConfig* theConfig;
-	UINT16 MasterVolume;
-	UINT16 timerskipped;
 	volatile int timerprocessing;
 	volatile int pollprocessing;
 	TCHAR profile[MAX_PATH];
-	//CSCCIWrapper* pScci;
+	BYTE LCDdot[16][16];
+	BYTE LCDstr[17];
 
 	//Configuration
 	int ImportConfig(CFITOMConfig* config);
@@ -179,6 +178,17 @@ public:
 	UINT32 GetDeviceUniqID(CAdPcmBase* pdev) { return theConfig ? theConfig->GetDeviceUniqID(pdev) : 0; };
 	CSoundDevice* GetDeviceFromUniqID(UINT32 uid) { return theConfig ? theConfig->GetDeviceFromUniqID(uid) : 0; };
 	int SetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 num);
+	void SetMasterVolume(UINT8 vol) { theConfig ? theConfig->SetMasterVolume(vol) : void(0); };
+	UINT8 GetMasterVolume() { return theConfig ? theConfig->GetMasterVolume() : 0; };
+	void SetLCDdot(int x, int y, int val);
+	void SetLCDrow(int r, BYTE src[16]);
+	void SetLCDcol(int c, BYTE src[16]);
+	void SetLCDall(BYTE lcd[16][16]);
+	BYTE GetLCDdot(int x, int y);
+	void GetLCDrow(BYTE dst[16], int r);
+	void GetLCDcol(BYTE dst[16], int c);
+	void GetLCDall(BYTE dst[16][16]);
+
 
 	//Callback
 	int PollingCallBack();

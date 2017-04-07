@@ -65,6 +65,8 @@ void CFITOMAppDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_CHECK_MIDIMON, btnMidiMon);
 	DDX_Check(pDX, IDC_CHECK_MIDIMON, bMidMon);
+	DDX_Control(pDX, IDC_LCD_BITMAP, bmpLCDdisp);
+	DDX_Control(pDX, IDC_MASVOL, sldMasterVol);
 }
 
 BEGIN_MESSAGE_MAP(CFITOMAppDlg, CDialogEx)
@@ -77,6 +79,7 @@ BEGIN_MESSAGE_MAP(CFITOMAppDlg, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_CONFIG, OnConfig)
 	ON_COMMAND(IDC_BUTTON_VEDIT, OnVEdit)
 	ON_BN_CLICKED(IDC_BUTTON_DEDIT, &CFITOMAppDlg::OnBnClickedButtonDedit)
+	ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
 
 
@@ -237,4 +240,15 @@ void CFITOMAppDlg::OnBnClickedButtonDedit()
 
 		}
 	}
+}
+
+
+void CFITOMAppDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
+{
+	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
+	if (nIDCtl == IDC_LCD_BITMAP) {
+
+	}
+
+	CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }

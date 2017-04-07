@@ -1,8 +1,5 @@
 #pragma once
 
-#include <mmdeviceapi.h>
-#include <mmsystem.h>
-
 class CMasterVolumeCtrl
 {
 protected:
