@@ -82,5 +82,10 @@ CMidiIn* CFITOMConfigWin32::CreateMidiInPort(LPCTSTR param)
 
 CMasterVolumeCtrl* CFITOMConfigWin32::CreateMasVol(LPCTSTR param)
 {
-	return new CMasVolWin32(param);
+	CMasterVolumeCtrl* pctrl = new CMasVolWin32(param);
+	if (pctrl->IsValid()) {
+		return pctrl;
+	}
+	delete pctrl;
+	return 0;
 }

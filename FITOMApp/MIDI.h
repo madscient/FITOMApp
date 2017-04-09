@@ -126,7 +126,7 @@ public:
 	virtual UINT8 GetSustain() const { return 0; };
 	virtual UINT8 GetSostenuto() const { return 0; }
 	virtual UINT8 GetForceDamp() const { return 0; };
-	virtual SINT16 GetPitchBend() const { return 0; };
+	virtual UINT16 GetPitchBend() const { return 0; };
 	virtual UINT8 GetBendRange() const { return 0; };
 	virtual UINT16 GetFineTune() const { return 8192; };
 	virtual UINT8 GetPhyCh() const { return 127; };
@@ -291,7 +291,7 @@ public:
 	virtual UINT8 GetSustain() const { return Sustain; };
 	virtual UINT8 GetSostenuto() const { return Sostenuto; };
 	virtual UINT8 GetForceDamp() const { return ForceDamp; };
-	virtual SINT16 GetPitchBend() const { return PitchBend; };
+	virtual UINT16 GetPitchBend() const { return PitchBend; };
 	virtual UINT16 GetFineTune() const { return Tuning; };
 	virtual UINT8 GetBendRange() const { return BendRange; };
 	virtual UINT8 GetPhyCh() const { return PhyCh; };
@@ -473,7 +473,7 @@ public:
 	virtual UINT8 GetPortTime() const { return PortTime; };
 	virtual UINT8 GetLegato() const { return Legato; };
 	virtual UINT8 GetSustain() const { return Sustain; };
-	virtual SINT16 GetPitchBend() const { return PitchBend; };
+	virtual UINT16 GetPitchBend() const { return PitchBend; };
 	virtual UINT8 GetBendRange() const { return BendRange; };
 
 	virtual int IsThru() { return TRUE; }

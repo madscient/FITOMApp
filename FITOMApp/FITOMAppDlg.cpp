@@ -249,6 +249,7 @@ void CFITOMAppDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 	if (nIDCtl == IDC_LCD_BITMAP) {
 
 	}
-
-	CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
+	else {
+		CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
+	}
 }

@@ -80,7 +80,7 @@ struct ChannelMap {
 };
 class CFITOMConfig {
 protected:
-	boost::property_tree::ptree fitom_ini;
+	boost::property_tree::tiptree fitom_ini;
 	CMasterVolumeCtrl* pMasVol;
 	CMidiIn* vMidiIn[MAX_MPUS];
 	//CMidiInst* vMidiInst[MAX_MPUS];

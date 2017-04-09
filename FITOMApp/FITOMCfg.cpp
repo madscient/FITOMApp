@@ -694,7 +694,7 @@ int CFITOMConfig::LoadADPCMConfig()
 {
 	//SCCI devices
 	int res = 0;
-	int devices = fitom_ini.get<int>(_T("ADPCM.Count"), 0);
+	int devices = fitom_ini.get<int>(_T("ADPCM.count"), 0);
 	for (int i = 0; i < devices; i++) {
 		std::tstring strkeyname;
 		std::tstring strparam;
@@ -730,13 +730,13 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 	if (pdev) {
 		CPcmBank* pbank = AllocPcmBank(bank);
 		std::tstring strbankname;
-		boost::property_tree::ptree bnkfile;
+		boost::property_tree::tiptree bnkfile;
 		boost::property_tree::read_ini(fname, bnkfile);
 		strbankname = (bnkfile.get<std::tstring>(_T("Header.BankName"), _T("**NONE**")));
 		pbank->SetBankName(strbankname.c_str());
 		for (int i = 0; i < 128; i++) {
 			std::tstring strkeyname;
-			strkeyname = (boost::format(_T("Bank.prog%1%")) % i).str();
+			strkeyname = (boost::format(_T("Bank.Prog%1%")) % i).str();
 			std::tstring strparam = bnkfile.get<std::tstring>(strkeyname, _T("**NONE**"));
 			if (strparam.compare(_T("**NONE**"))) {
 				std::vector<std::tstring> lstparam;
@@ -786,7 +786,7 @@ int CFITOMConfig::ParseRhythmBank()
 		std::tstring strkeyname;
 		std::tstring strbankfile;
 		strkeyname = (boost::format(_T("DRUM.prog%1%")) % i).str();
-		boost::property_tree::ptree bankfile;
+		boost::property_tree::tiptree bankfile;
 		strbankfile = fitom_ini.get<std::tstring>(strkeyname, _T("**NONE**"));
 		boost::system::error_code err;
 		bool exists = boost::filesystem::exists(boost::filesystem::path(strbankfile), err);
@@ -813,7 +813,7 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 	boost::system::error_code err;
 	bool exists = boost::filesystem::exists(boost::filesystem::path(fname), err);
 	if (exists && !err) {
-		boost::property_tree::ptree bankfile;
+		boost::property_tree::tiptree bankfile;
 		std::tstring strtmp;
 		boost::property_tree::read_ini(fname, bankfile);
 		strtmp = bankfile.get<std::tstring>(_T("Header.Type"), _T("**NONE**"));
@@ -849,21 +849,21 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 						std::vector<std::tstring> lstnote;
 						strnote = strnote.substr(1);
 						boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
+						num = std::stoi(lstnote[0]) | 0x80;
 						if (lstnote.size() > 1) {
-							num = std::stoi(lstnote[0]) | 0x80;
 							fnum = std::stoi(lstnote[1], 0, 16);
 						}
 					}
 					else {
 						std::vector<std::tstring> lstnote;
 						boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
+						num = std::stoi(lstnote[0]);
 						if (lstnote.size() > 1) {
-							num = std::stoi(lstnote[0]) | 0x80;
 							fnum = std::stoi(lstnote[1], 0, 16);
 						}
 					}
-					std::strncpy(drumnote.name, strnote.c_str(), (sizeof(DRUMMAP::name) / sizeof(TCHAR)) - 1);
-					if (strdevname.find(_T(':')) > 0) {
+					std::strncpy(drumnote.name, strnotename.c_str(), (sizeof(DRUMMAP::name) / sizeof(TCHAR)) - 1);
+					if (strdevname.find(_T(':')) != std::string::npos) {
 						int ifid, slid;
 						std::vector<std::tstring> lstaddparam;
 						boost::split(lstaddparam, strdevname, boost::is_any_of(_T(":")));
@@ -960,7 +960,7 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 			if (bank) {
 				std::tstring strbankname;
 				std::tstring strprofval;
-				boost::property_tree::ptree bankfile;
+				boost::property_tree::tiptree bankfile;
 				boost::property_tree::read_ini(strbankfile, bankfile);
 				strprofval = bankfile.get<std::tstring>(_T("Header.BankName"), _T("**NONE**"));
 				bank->SetFileName(strbankfile.c_str());

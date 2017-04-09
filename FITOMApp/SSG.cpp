@@ -385,7 +385,7 @@ UINT8 CDCSG::AllocCh(CMidiCh* par, FMVOICE* voice)
 
 //-------------------------------
 
-CAPSG::CAPSG(CPort* pt, UINT8 fsamp) : CPSGBase(DEVICE_SSG, pt, 3, fsamp)
+CAPSG::CAPSG(CPort* pt, UINT8 fsamp) : CPSGBase(DEVICE_APSG, pt, 3, fsamp)
 {
 	SetReg(0xd, 0xb0, 1);	//Enable expand mode
 	SetReg(0x9, 0xff, 1);	//Noise "AND" mask

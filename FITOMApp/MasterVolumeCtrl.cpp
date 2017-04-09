@@ -22,6 +22,3 @@ uint32_t CMasterVolumeCtrl::GetVolume()
 	return volume;
 }
 
-void CMasterVolumeCtrl::UpdateVolume()
-{
-}

@@ -5,7 +5,7 @@
               if ((punk) != NULL)  \
                 { (punk)->Release(); (punk) = NULL; }
 
-CMasVolWin32::CMasVolWin32(const TCHAR* param) : pVol(0)
+CMasVolWin32::CMasVolWin32(const TCHAR* param) : CMasterVolumeCtrl(), pVol(0)
 {
 	TCHAR lineindev[256];
 	IMMDeviceEnumerator* pmmenum = 0;
@@ -14,7 +14,7 @@ CMasVolWin32::CMasVolWin32(const TCHAR* param) : pVol(0)
 		IMMDevice* pDev = 0;
 		hres = pmmenum->GetDevice(CT2W(param), &pDev);
 		if (SUCCEEDED(hres)) {
-			if (SUCCEEDED(pDev->Activate(IID_IAudioEndpointVolume, CLSCTX_INPROC_SERVER, nullptr, (void**)&pVol))) {
+			if (SUCCEEDED(pDev->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_INPROC_SERVER, nullptr, (void**)&pVol))) {
 				valid = TRUE;
 			}
 		}

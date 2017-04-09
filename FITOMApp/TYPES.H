@@ -70,10 +70,12 @@ typedef PCTSTR LPCTSTR;
 #define tstring wstring
 #define terr wcerr
 #define generic_tstring generic_wstring
+#define tiptree wiptree
 #else
 #define tstring string
 #define terr cerr
 #define generic_tstring generic_string
+#define tiptree iptree
 #endif
 
 #endif

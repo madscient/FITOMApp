@@ -104,7 +104,8 @@ BOOL CAdPcmDevDlg::OnInitDialog()
 						sdp->pssci->iSoundChip == SC_TYPE_YM2608 ||
 						sdp->pssci->iSoundChip == SC_TYPE_YM2610 ||
 						sdp->pssci->iSoundChip == SC_TYPE_YM2610B ||
-						sdp->pssci->iSoundChip == SC_TYPE_YMF286) {
+						sdp->pssci->iSoundChip == SC_TYPE_YMF286 ||
+						sdp->pssci->iSoundChip == SC_TYPE_YMZ280) {
 						sdp->ifid = i;
 						sdp->slid = j;
 						psi->sdps.push_back(sdp);

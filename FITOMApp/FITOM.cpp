@@ -86,7 +86,7 @@ CPcmBank* CFITOM::GetPcmBank(UINT8 bank)
 
 const UINT8 CFITOM::GetDeviceVoiceType(UINT8 devid)
 {
-	for (int i = 0; i<(sizeof(ROM::devmap) / sizeof(ROM::DEVIDMAP)); i++) {
+	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {
 			return ROM::devmap[i].voicetype;
 		}
@@ -96,7 +96,7 @@ const UINT8 CFITOM::GetDeviceVoiceType(UINT8 devid)
 
 const UINT8 CFITOM::GetDeviceVoiceGroupMask(UINT8 devid)
 {
-	for (int i = 0; i<(sizeof(ROM::devmap) / sizeof(ROM::DEVIDMAP)); i++) {
+	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {
 			return ROM::devmap[i].voicegroup;
 		}
@@ -106,7 +106,7 @@ const UINT8 CFITOM::GetDeviceVoiceGroupMask(UINT8 devid)
 
 const DWORD CFITOM::GetDeviceRegSize(UINT8 devid)
 {
-	for (int i = 0; i<(sizeof(ROM::devmap) / sizeof(ROM::DEVIDMAP)); i++) {
+	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {
 			return ROM::devmap[i].regsize;
 		}
@@ -125,7 +125,7 @@ UINT8* CFITOM::GetCompatiList(UINT8 devid)
 
 const UINT8 CFITOM::GetDeviceIDFromName(LPCTSTR name)
 {
-	for (int i = 0; i<(sizeof(ROM::devmap) / sizeof(ROM::DEVIDMAP)); i++) {
+	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (strcmp(ROM::devmap[i].chipname, name) == 0 || strcmp(ROM::devmap[i].chipcode, name) == 0) {
 			return ROM::devmap[i].devid;
 		}
@@ -135,7 +135,7 @@ const UINT8 CFITOM::GetDeviceIDFromName(LPCTSTR name)
 
 const TCHAR* CFITOM::GetDeviceNameFromID(UINT8 devid)
 {
-	for (int i = 0; i<(sizeof(ROM::devmap) / sizeof(ROM::DEVIDMAP)); i++) {
+	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {
 			return ROM::devmap[i].chipname;
 		}
@@ -270,7 +270,7 @@ void CFITOM::ResetAllCtrl()
 			}
 		}
 	}
-	std::strncpy(LCDstr, FITOMTITLE, 16);
+	std::strncpy((char*)LCDstr, FITOMTITLE, 16);
 	std::memcpy(LCDdot, LCDINIT, 16 * 16);
 }
 
