@@ -156,6 +156,9 @@
     <ClInclude Include="MasVolWin.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="LCDView.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FITOMApp.cpp">
@@ -294,6 +297,9 @@
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
     <ClCompile Include="MasVolWin.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="LCDView.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
