@@ -18,6 +18,7 @@ protected:
 	LPVOID pBmp;
 	char caption[17];
 	BYTE lcddot[16][16];
+	void DrawChar(int x, int y, char ch);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnPaint();
