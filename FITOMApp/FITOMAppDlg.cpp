@@ -80,6 +80,7 @@ BEGIN_MESSAGE_MAP(CFITOMAppDlg, CDialogEx)
 	ON_COMMAND(IDC_BUTTON_VEDIT, OnVEdit)
 	ON_BN_CLICKED(IDC_BUTTON_DEDIT, &CFITOMAppDlg::OnBnClickedButtonDedit)
 	ON_WM_DRAWITEM()
+	ON_NOTIFY(TRBN_THUMBPOSCHANGING, IDC_MASVOL, &CFITOMAppDlg::OnTRBNThumbPosChangingMasvol)
 END_MESSAGE_MAP()
 
 
@@ -117,7 +118,9 @@ BOOL CFITOMAppDlg::OnInitDialog()
 	// TODO: 初期化をここに追加します。
 	theFitom = ((CFITOMApp*)AfxGetApp())->GetFitom();
 	dlgMidi = new CMidiMonitor(theFitom, this);
-
+	SetTimer(IDD, 15, NULL);
+	sldMasterVol.SetRange(0, 127);
+	sldMasterVol.SetPos(theFitom->GetMasterVolume());
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
 }
 
@@ -173,7 +176,13 @@ HCURSOR CFITOMAppDlg::OnQueryDragIcon()
 void CFITOMAppDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
-
+	sldMasterVol.SetPos(theFitom->GetMasterVolume());
+	char lcdstr[17];
+	BYTE lcddot[16][16];
+	theFitom->GetLCDstr(lcdstr);
+	theFitom->GetLCDall(lcddot);
+	bmpLCDdisp.SetCap(lcdstr);
+	bmpLCDdisp.SetDot(lcddot);
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -243,13 +252,24 @@ void CFITOMAppDlg::OnBnClickedButtonDedit()
 }
 
 
+
 void CFITOMAppDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
 	if (nIDCtl == IDC_LCD_BITMAP) {
-
+		bmpLCDdisp.OnPaint();
 	}
 	else {
 		CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
 	}
+}
+
+void CFITOMAppDlg::OnTRBNThumbPosChangingMasvol(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// この機能には Windows Vista 以降のバージョンが必要です。
+	// シンボル _WIN32_WINNT は >= 0x0600 にする必要があります。
+	NMTRBTHUMBPOSCHANGING *pNMTPC = reinterpret_cast<NMTRBTHUMBPOSCHANGING *>(pNMHDR);
+	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	theFitom->SetMasterVolume((UINT8)sldMasterVol.GetPos());
+	*pResult = 0;
 }

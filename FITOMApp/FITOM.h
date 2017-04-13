@@ -184,10 +184,12 @@ public:
 	void SetLCDrow(int r, BYTE src[16]);
 	void SetLCDcol(int c, BYTE src[16]);
 	void SetLCDall(BYTE lcd[16][16]);
+	void SetLCDstr(char src[17]);
 	BYTE GetLCDdot(int x, int y);
 	void GetLCDrow(BYTE dst[16], int r);
 	void GetLCDcol(BYTE dst[16], int c);
 	void GetLCDall(BYTE dst[16][16]);
+	void GetLCDstr(char dst[17]);
 
 
 	//Callback

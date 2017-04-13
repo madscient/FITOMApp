@@ -7,6 +7,8 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 
+#include "LCDView.h"
+
 class CMidiMonitor;
 class CFITOM;
 
@@ -48,7 +50,8 @@ public:
 	afx_msg void OnVEdit();
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedButtonDedit();
-	CStatic bmpLCDdisp;
+	CLCDView bmpLCDdisp;
 	CSliderCtrl sldMasterVol;
 	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
+	afx_msg void OnTRBNThumbPosChangingMasvol(NMHDR *pNMHDR, LRESULT *pResult);
 };

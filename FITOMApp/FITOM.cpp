@@ -428,3 +428,13 @@ void CFITOM::SetLCDall(BYTE src[16][16])
 		}
 	}
 }
+
+void CFITOM::GetLCDstr(char dst[17])
+{
+	lstrcpynA(dst, (LPCSTR)LCDstr, 16);
+}
+
+void CFITOM::SetLCDstr(char src[17])
+{
+	lstrcpynA((LPSTR)LCDstr, src, 16);
+}
