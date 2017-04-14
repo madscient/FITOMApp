@@ -8,6 +8,7 @@
 #include <boost/format.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/filesystem.hpp>
+#include <gdiplus.h>
 
 #include "FITOM.h"
 #include "SoundDev.h"
@@ -82,6 +83,10 @@ BOOL CFITOMApp::InitInstance()
 	// これを設定します。
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
+
+	Gdiplus::GdiplusStartupInput gpSI;
+	ULONG_PTR lpToken;
+	Gdiplus::GdiplusStartup(&lpToken, &gpSI, NULL);
 
 	CWinApp::InitInstance();
 	pSplash = new CSplashDlg();
@@ -158,6 +163,9 @@ BOOL CFITOMApp::InitInstance()
 	{
 		delete pShellManager;
 	}
+
+	/* GDI+終了 */
+	Gdiplus::GdiplusShutdown(lpToken);
 
 	// ダイアログは閉じられました。アプリケーションのメッセージ ポンプを開始しないで
 	//  アプリケーションを終了するために FALSE を返してください。

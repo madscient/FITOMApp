@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "FITOMApp.h"
 #include "LCDView.h"
+#include <gdiplus.h>
 
 BYTE fonttable[] = {
 	0x000, 0x000, 0x000, 0x000, 0x000, 0x000, 0x000, 0x000,
@@ -139,14 +140,14 @@ BYTE fonttable[] = {
 
 IMPLEMENT_DYNAMIC(CLCDView, CStatic)
 
-#define BG_COL	RGB(167, 234, 209)
-#define FG_COL	RGB(16, 23, 20)
-#define OS_CX	108
-#define OS_CY	80
-#define HMGN	6
-#define VMGN	8
+#define BG_COL	RGB(167, 255, 180)
+#define FG_COL	RGB(32, 48, 40)
 #define CHAR_CX	6
 #define CHAR_CY	8
+#define HMGN	6
+#define VMGN	4
+#define OS_CX	((CHAR_CX*16)+(HMGN*2))
+#define OS_CY	((CHAR_CY*9)+(VMGN*2))
 
 CLCDView::CLCDView()
 {
@@ -155,7 +156,7 @@ CLCDView::CLCDView()
 	bmi.bmiHeader.biBitCount = 24;
 	bmi.bmiHeader.biClrImportant = 0;
 	bmi.bmiHeader.biClrUsed = 0;
-	bmi.bmiHeader.biCompression = 0;
+	bmi.bmiHeader.biCompression = BI_RGB;
 	bmi.bmiHeader.biHeight = OS_CY;
 	bmi.bmiHeader.biPlanes = 1;
 	bmi.bmiHeader.biSize = sizeof(BITMAPINFO);
@@ -181,6 +182,7 @@ CLCDView::~CLCDView()
 
 BEGIN_MESSAGE_MAP(CLCDView, CStatic)
 	ON_WM_PAINT()
+	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 
@@ -192,12 +194,12 @@ void CLCDView::OnPaint()
 	CPaintDC dc(this); // device context for painting
 					   // TODO: ここにメッセージ ハンドラー コードを追加します。
 					   // 描画メッセージで CStatic::OnPaint() を呼び出さないでください。
-	CDC memDC;
-	memDC.Attach(hMemDC);
-	CRect rcbounds;
-	this->GetWindowRect(&rcbounds);
-	dc.StretchBlt(0, 0, rcbounds.Width(), rcbounds.Height(), &memDC, 0, 0, 108, 80, SRCCOPY);
-	memDC.Detach();
+	CRect rc;
+	this->GetWindowRect(&rc);
+	Gdiplus::Graphics* gr = new Gdiplus::Graphics(dc);
+	Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(hBmp, 0);
+	gr->DrawImage(bmp, Gdiplus::Rect(0, 0, rc.Width(), rc.Height()));
+	//dc.StretchBlt(0, 0, rcbounds.Width(), rcbounds.Height(), &memDC, 0, 0, 108, 80, SRCCOPY);
 }
 
 void CLCDView::SetCap(char* cap)
@@ -215,23 +217,56 @@ void CLCDView::SetDot(BYTE dot[16][16])
 {
 	if (memcmp(dot, lcddot, 16 * 16)) {
 		memcpy(lcddot, dot, 16 * 16);
+		for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 16; j++) {
+				DrawDot(HMGN + (i * CHAR_CX), (VMGN + CHAR_CY) + (16 - j) * (CHAR_CY / 2), lcddot[j][i]!=0);
+			}
+		}
 		InvalidateRect(0, 0);
 	}
 }
 
 void CLCDView::DrawChar(int x, int y, char ch)
 {
-	CDC memDC;
-	memDC.Attach(hMemDC);
 	ch &= 0x7f;
-	for (int v = 0; v < 8; v++) {
+	int bound = OS_CX * 3;
+	if (bound % 4) {
+		bound = ((bound / 4) + 1) << 2;
+	}
+	for (int v = 0; v < CHAR_CY; v++) {
 		BYTE bitpat = fonttable[ch * 8 + v];
 		BYTE mask = 0x80;
-		for (int u = 0; u < 6; u++) {
+		for (int u = 0; u < CHAR_CX; u++) {
+			int addr = ((OS_CY - (y + v)) * bound) + (x + u) * 3;
 			COLORREF col = (bitpat & mask) ? FG_COL : BG_COL;
-			memDC.FillSolidRect(x + u, y + v, 1, 1, col);
+			((BYTE*)pBmp)[addr + 0] = GetBValue(col);
+			((BYTE*)pBmp)[addr + 1] = GetGValue(col);
+			((BYTE*)pBmp)[addr + 2] = GetRValue(col);
 			mask >>= 1;
 		}
 	}
-	memDC.Detach();
+}
+
+void CLCDView::DrawDot(int x, int y, bool dot)
+{
+	int bound = OS_CX * 3;
+	if (bound % 4) {
+		bound = ((bound / 4) + 1) << 2;
+	}
+	for (int v = 1; v < (CHAR_CY/2); v++) {
+		for (int u = 0; u < (CHAR_CX-1); u++) {
+			int addr = ((OS_CY - (y + v)) * bound) + (x + u) * 3;
+			COLORREF col = (dot) ? FG_COL : BG_COL;
+			((BYTE*)pBmp)[addr + 0] = GetBValue(col);
+			((BYTE*)pBmp)[addr + 1] = GetGValue(col);
+			((BYTE*)pBmp)[addr + 2] = GetRValue(col);
+		}
+	}
+}
+
+void CLCDView::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	CStatic::OnShowWindow(bShow, nStatus);
+
+	// TODO: ここにメッセージ ハンドラー コードを追加します。
 }

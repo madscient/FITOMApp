@@ -18,17 +18,7 @@ UINT8 COPM::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 COPM::COPM(CPort* pt, int fsamp) : CSoundDevice(DEVICE_OPM, 8, 0, 0, 0, FnumTableType::none, pt), lfos(1)
 {
 	lfores = new LFORESOURCE[1];
-	switch (CFITOM::GetClockCode(fsamp)) {
-	case CLKCODE399: //3.9936MHz
-		MasterTune = -122;
-		break;
-	case CLKCODE400: //4.0000MHz
-		MasterTune = -123;
-		break;
-	case CLKCODE358: //3.579545MHz
-		MasterTune = 0;
-		break;
-	}
+	MasterTune = 768.0 * log2(3579545.0/(double)fsamp);
 	NoteOffset = -61;	// origin note: O4C+
 	SetReg(0x01, 0x00, 1);
 	SetReg(0x14, 0x00, 1);

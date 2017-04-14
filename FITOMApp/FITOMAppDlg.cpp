@@ -121,6 +121,8 @@ BOOL CFITOMAppDlg::OnInitDialog()
 	SetTimer(IDD, 15, NULL);
 	sldMasterVol.SetRange(0, 127);
 	sldMasterVol.SetPos(theFitom->GetMasterVolume());
+	CRect rc;
+	bmpLCDdisp.GetWindowRect(rc);
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
 }
 
