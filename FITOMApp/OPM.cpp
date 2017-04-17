@@ -275,6 +275,14 @@ void COPM::SetDevPMRate(UINT8 ch, UINT8 rate)
 COPP::COPP(CPort* pt, int fsamp) : COPM(pt, fsamp)
 {
 	SetDevice(DEVICE_OPP);
+	SetReg(0x00, 0x10, 1);
+	SetReg(0x01, 0x0, 1);
+	SetReg(0x02, 0x10, 1);
+	SetReg(0x03, 0x10, 1);
+	SetReg(0x04, 0x10, 1);
+	SetReg(0x05, 0x10, 1);
+	SetReg(0x06, 0x10, 1);
+	SetReg(0x07, 0x10, 1);
 }
 
 //-----
