@@ -469,8 +469,18 @@ UINT16 CMidiInst::SysExYamaha(BYTE* buf, size_t length)
 
 UINT16 CMidiInst::SysExURT(BYTE* buf, size_t length)
 {
+	size_t rdpt = 0;
+	BYTE devID = buf[rdpt++];	// device ID
+	BYTE sub1 = buf[rdpt++];
+	BYTE sub2 = buf[rdpt++];
+	if (sub1 == 0x04 && length > 4) {
+		switch (sub2) {
+		case	0x01:	// Master Volume
+			Parent->SetMasterVolume(buf[rdpt+1]);
+			break;
+		}
+	}
 	return 0;
-
 }
 
 UINT16 CMidiInst::SysExUNRT(BYTE* buf, size_t length)
