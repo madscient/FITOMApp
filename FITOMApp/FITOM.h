@@ -139,8 +139,9 @@ protected:
 	volatile int timerprocessing;
 	volatile int pollprocessing;
 	TCHAR profile[MAX_PATH];
-	BYTE LCDdot[16][16];
+	BYTE LCDdot[11][16][16];
 	BYTE LCDstr[17];
+	int LCDdisp;
 
 	//Configuration
 	int ImportConfig(CFITOMConfig* config);
@@ -180,10 +181,11 @@ public:
 	int SetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 num);
 	void SetMasterVolume(UINT8 vol) { theConfig ? theConfig->SetMasterVolume(vol) : void(0); };
 	UINT8 GetMasterVolume() { return theConfig ? theConfig->GetMasterVolume() : 0; };
-	void SetLCDdot(int x, int y, int val);
-	void SetLCDrow(int r, BYTE src[16]);
-	void SetLCDcol(int c, BYTE src[16]);
-	void SetLCDall(BYTE lcd[16][16]);
+	void SetLCDdot(int page, int x, int y, int val);
+	void SetLCDrow(int page, int r, BYTE src[16]);
+	void SetLCDcol(int page, int c, BYTE src[16]);
+	void SetLCDall(int page, BYTE lcd[16][16]);
+	void SetLCDpage(int page);
 	void SetLCDstr(char src[17]);
 	BYTE GetLCDdot(int x, int y);
 	void GetLCDrow(BYTE dst[16], int r);

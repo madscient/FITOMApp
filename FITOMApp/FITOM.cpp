@@ -12,24 +12,6 @@
 #include "tables.h"
 
 const char* FITOMTITLE = "FITOM Windows";
-const BYTE LCDINIT[16][16] = {
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
-};
 
 int CFITOM::InitInstance(CFITOMConfig* config)
 {
@@ -53,7 +35,7 @@ int CFITOM::InitInstance(CFITOMConfig* config)
 	return 0;
 }
 
-CFITOM::CFITOM() : MIDItick(0), timerprocessing(0), pollprocessing(0), theConfig(0)
+CFITOM::CFITOM() : MIDItick(0), timerprocessing(0), pollprocessing(0), theConfig(0), LCDdisp(0)
 {
 	//Multiple Oscilator Technology Integration Firmware
 	std::cerr << _T("FM Instruments Total Operating Middleware") << std::endl << std::endl;
@@ -271,7 +253,8 @@ void CFITOM::ResetAllCtrl()
 		}
 	}
 	std::strncpy((char*)LCDstr, FITOMTITLE, 16);
-	std::memcpy(LCDdot, LCDINIT, 16 * 16);
+	std::memset(LCDdot, 0, 16 * 16 * 11);
+	LCDdisp = 0;
 }
 
 int CFITOM::PollingCallBack()
@@ -365,14 +348,14 @@ int CFITOM::ImportConfig(CFITOMConfig* cfg)
 
 BYTE CFITOM::GetLCDdot(int x, int y)
 {
-	return ((0<=x && x < 16) && (0 <= y && y< 16)) ? LCDdot[y][x] : 0;
+	return ((0<=x && x < 16) && (0 <= y && y< 16)) ? LCDdot[LCDdisp][y][x] : 0;
 }
 
 void CFITOM::GetLCDrow(BYTE dst[16], int r)
 {
 	if (0 <= r && r < 16) {
 		for (int i = 0; i < 16; i++) {
-			dst[i] = LCDdot[r][i];
+			dst[i] = LCDdot[LCDdisp][r][i];
 		}
 	}
 }
@@ -381,7 +364,7 @@ void CFITOM::GetLCDcol(BYTE dst[16], int c)
 {
 	if (0 <= c && c < 16) {
 		for (int i = 0; i < 16; i++) {
-			dst[i] = LCDdot[i][c];
+			dst[i] = LCDdot[LCDdisp][i][c];
 		}
 	}
 }
@@ -390,41 +373,41 @@ void CFITOM::GetLCDall(BYTE dst[16][16])
 {
 	for (int i = 0; i < 16; i++) {
 		for (int j = 0; j < 16; j++) {
-			dst[i][j] = LCDdot[i][j];
+			dst[i][j] = LCDdot[LCDdisp][i][j];
 		}
 	}
 }
 
-void CFITOM::SetLCDdot(int x, int y, int val)
+void CFITOM::SetLCDdot(int page, int x, int y, int val)
 {
 	if ((0 <= x && x < 16) && (0 <= y && y < 16)) {
-		LCDdot[y][x] = BYTE(val);
+		LCDdot[page][y][x] = BYTE(val);
 	}
 }
 
-void CFITOM::SetLCDrow(int r, BYTE src[16])
+void CFITOM::SetLCDrow(int page, int r, BYTE src[16])
 {
 	if (0 <= r && r < 16) {
 		for (int i = 0; i < 16; i++) {
-			LCDdot[r][i] = src[i];
+			LCDdot[page][r][i] = src[i];
 		}
 	}
 }
 
-void CFITOM::SetLCDcol(int c, BYTE src[16])
+void CFITOM::SetLCDcol(int page, int c, BYTE src[16])
 {
 	if (0 <= c && c < 16) {
 		for (int i = 0; i < 16; i++) {
-			LCDdot[i][c] = src[i];
+			LCDdot[page][i][c] = src[i];
 		}
 	}
 }
 
-void CFITOM::SetLCDall(BYTE src[16][16])
+void CFITOM::SetLCDall(int page, BYTE src[16][16])
 {
 	for (int i = 0; i < 16; i++) {
 		for (int j = 0; j < 16; j++) {
-			LCDdot[i][j] = src[i][j];
+			LCDdot[page][i][j] = src[i][j];
 		}
 	}
 }
@@ -437,4 +420,11 @@ void CFITOM::GetLCDstr(char dst[17])
 void CFITOM::SetLCDstr(char src[17])
 {
 	lstrcpynA((LPSTR)LCDstr, src, 16);
+}
+
+void CFITOM::SetLCDpage(int page)
+{
+	if (0 <= page && page <= 10) {
+		LCDdisp = page;
+	}
 }
