@@ -22,17 +22,23 @@
     <Filter Include="ヘッダー ファイル\FITOM core">
       <UniqueIdentifier>{9dd335a9-cbf5-47a2-bb08-4c6e5d315a52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Win32 GUI">
+      <UniqueIdentifier>{02b18775-f4f4-4dc6-bff6-675786fd3e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Win32 Device">
+      <UniqueIdentifier>{87da1a22-0701-4bbf-b8e2-ec0975df3893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Win32 GUI">
+      <UniqueIdentifier>{277811e2-e87b-415f-994c-e5569f449728}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Win32 Device">
+      <UniqueIdentifier>{8927643e-732b-4c12-9f29-b387d9f5676d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FITOMApp.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="FITOMAppDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -40,39 +46,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="MidiMonitor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="MidiChCtrlDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="VoicePicker.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="VoiceEditDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="TestButton.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DevMonitor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DrumMapPicker.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DrumEditDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DrumNoteEditDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SCCIWrapper.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="codec.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="..\scci\scci.h">
@@ -135,72 +108,72 @@
     <ClInclude Include="Fnum.h">
       <Filter>ヘッダー ファイル\FITOM core</Filter>
     </ClInclude>
-    <ClInclude Include="SplashDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="TextVoiceEditDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ProgressDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="OPL4.h">
       <Filter>ヘッダー ファイル\FITOM core</Filter>
-    </ClInclude>
-    <ClInclude Include="volume_manager.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="MasterVolumeCtrl.h">
       <Filter>ヘッダー ファイル\FITOM core</Filter>
     </ClInclude>
-    <ClInclude Include="MasVolWin.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="codec.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="DevMonitor.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="DrumEditDlg.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="DrumMapPicker.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="DrumNoteEditDlg.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FITOMApp.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FITOMAppDlg.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
     </ClInclude>
     <ClInclude Include="LCDView.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiChCtrlDlg.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MidiMonitor.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressDlg.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SplashDlg.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="TestButton.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="TextVoiceEditDlg.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="VoicePicker.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="VoiceEditDlg.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MasVolWin.h">
+      <Filter>ヘッダー ファイル\Win32 Device</Filter>
+    </ClInclude>
+    <ClInclude Include="SCCIWrapper.h">
+      <Filter>ヘッダー ファイル\Win32 Device</Filter>
+    </ClInclude>
+    <ClInclude Include="volume_manager.h">
+      <Filter>ヘッダー ファイル\Win32 Device</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FITOMApp.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="FITOMAppDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="MidiMonitor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="MidiChCtrlDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="VoicePicker.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="VoiceEditDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="TestButton.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DevMonitor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DrumMapPicker.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DrumEditDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DrumNoteEditDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SCCIWrapper.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="codec.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ADPCM.cpp">
@@ -269,15 +242,6 @@
     <ClCompile Include="FITOMCfg.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
-    <ClCompile Include="SplashDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="TextVoiceEditDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ProgressDlg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="OPL4.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
@@ -287,20 +251,68 @@
     <ClCompile Include="PortWin.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
-    <ClCompile Include="FITOMCfgWin.cpp">
-      <Filter>ソース ファイル\FITOM core</Filter>
-    </ClCompile>
-    <ClCompile Include="volume_manager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="MasterVolumeCtrl.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
-    <ClCompile Include="MasVolWin.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="DevMonitor.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DrumEditDlg.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DrumMapPicker.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DrumNoteEditDlg.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FITOMApp.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FITOMAppDlg.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
     <ClCompile Include="LCDView.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiChCtrlDlg.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MidiMonitor.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressDlg.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SplashDlg.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="TestButton.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="TextVoiceEditDlg.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceEditDlg.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="VoicePicker.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="codec.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="SCCIWrapper.cpp">
+      <Filter>ソース ファイル\Win32 Device</Filter>
+    </ClCompile>
+    <ClCompile Include="MasVolWin.cpp">
+      <Filter>ソース ファイル\Win32 Device</Filter>
+    </ClCompile>
+    <ClCompile Include="volume_manager.cpp">
+      <Filter>ソース ファイル\Win32 Device</Filter>
+    </ClCompile>
+    <ClCompile Include="FITOMCfgWin.cpp">
+      <Filter>ソース ファイル\Win32 Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

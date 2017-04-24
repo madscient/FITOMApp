@@ -13,3 +13,11 @@ public:
 	uint32_t GetVolume();
 	BOOL IsValid() { return valid; };
 };
+
+class CMasVolDummy : public CMasterVolumeCtrl
+{
+protected:
+	virtual void UpdateVolume() {};
+public:
+	CMasVolDummy() : CMasterVolumeCtrl() {};
+};

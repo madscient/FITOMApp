@@ -50,8 +50,6 @@ public:
 	afx_msg void OnVEdit();
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedButtonDedit();
-	CLCDView bmpLCDdisp;
 	CSliderCtrl sldMasterVol;
-	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
-	afx_msg void OnTRBNThumbPosChangingMasvol(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 };

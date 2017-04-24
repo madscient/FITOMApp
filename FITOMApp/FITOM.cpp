@@ -254,6 +254,7 @@ void CFITOM::ResetAllCtrl()
 	}
 	std::strncpy((char*)LCDstr, FITOMTITLE, 16);
 	std::memset(LCDdot, 0, 16 * 16 * 11);
+	theConfig->SetMasterVolume(127);
 	LCDdisp = 0;
 }
 

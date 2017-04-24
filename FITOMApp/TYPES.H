@@ -71,11 +71,15 @@ typedef PCTSTR LPCTSTR;
 #define terr wcerr
 #define generic_tstring generic_wstring
 #define tiptree wiptree
+#define tcsncpy wcsncpy
+#define tcslen wcslen
 #else
 #define tstring string
 #define terr cerr
 #define generic_tstring generic_string
 #define tiptree iptree
+#define tcsncpy strncpy
+#define tcslen strlen
 #endif
 
 #endif

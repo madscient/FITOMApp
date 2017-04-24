@@ -87,5 +87,6 @@ CMasterVolumeCtrl* CFITOMConfigWin32::CreateMasVol(LPCTSTR param)
 		return pctrl;
 	}
 	delete pctrl;
-	return 0;
+	pctrl = new CMasVolDummy();
+	return pctrl;
 }

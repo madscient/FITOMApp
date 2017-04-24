@@ -26,5 +26,5 @@ int CDblPort::GetDesc(TCHAR* str, int len)
 	int off = port[0]->GetDesc(str, len);
 	str[off] = _T('\n');
 	int res = port[1]->GetDesc(&str[off+1], (len - off - 1));
-	return strlen(str);
+	return tcslen(str);
 }

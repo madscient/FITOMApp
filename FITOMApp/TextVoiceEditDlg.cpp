@@ -211,9 +211,11 @@ void CTextVoiceEditDlg::Update()
 	edtALFB.GetWindowText(str);
 	std::vector<int> param;
 	std::vector<std::tstring> lstparam;
-	boost::split(lstparam, std::tstring(LPCTSTR(str)), boost::is_space());
+	boost::split(lstparam, boost::trim_copy(std::tstring(LPCTSTR(str))), boost::is_space());
 	BOOST_FOREACH(std::tstring s, lstparam) {
-		param.push_back(stoi(s));
+		if (!s.empty()) {
+			param.push_back(stoi(s));
+		}
 	}
 	CFITOMApp* pApp = (CFITOMApp*)AfxGetApp();
 	(theConfig->*(VoiceTypeTable[typeidx].parseFunc))(&theVoice, 0, param);
@@ -230,9 +232,11 @@ void CTextVoiceEditDlg::Update()
 		if (line.GetLength()) {
 			param.clear();
 			lstparam.clear();
-			boost::split(lstparam, std::tstring(LPCTSTR(str)), boost::is_space());
+			boost::split(lstparam, boost::trim_copy(std::tstring(LPCTSTR(str))), boost::is_space());
 			BOOST_FOREACH(std::tstring s, lstparam) {
-				param.push_back(stoi(s));
+				if (!s.empty()) {
+					param.push_back(stoi(s));
+				}
 			}
 			(theConfig->*(VoiceTypeTable[typeidx].parseFunc))(&theVoice, ++count, param);
 		}
@@ -251,9 +255,11 @@ void CTextVoiceEditDlg::Update()
 		if (line.GetLength()) {
 			param.clear();
 			lstparam.clear();
-			boost::split(lstparam, std::tstring(LPCTSTR(str)), boost::is_space());
+			boost::split(lstparam, boost::trim_copy(std::tstring(LPCTSTR(str))), boost::is_space());
 			BOOST_FOREACH(std::tstring s, lstparam) {
-				param.push_back(stoi(s));
+				if (!s.empty()) {
+					param.push_back(stoi(s));
+				}
 			}
 			theConfig->ParseLFOParam(&theVoice, ++count, param);
 		}

@@ -552,14 +552,14 @@ int CFITOMConfig::GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* na
 		if (bank < pcmdevs) {
 			PCMPROG pcmprog;
 			vPcmBank[bank]->GetVoice(prog, &pcmprog);
-			std::strncpy(name, pcmprog.progname, count);
-			ret = std::strlen(name);
+			tcsncpy(name, pcmprog.progname, count);
+			ret = tcslen(name);
 		}
 	}
 	else if (devid == RHYTHM_BANK) {
 		if (prog < MAX_BANK && vDrumBank[prog]) {
-			std::strncpy(name, vDrumBank[prog]->GetBankName(), count);
-			ret = std::strlen(name);
+			tcsncpy(name, vDrumBank[prog]->GetBankName(), count);
+			ret = tcslen(name);
 		}
 	}
 	else {
@@ -570,13 +570,13 @@ int CFITOMConfig::GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* na
 			char vname[17];
 			memcpy(vname, voice.name, 16);
 			vname[16] = '\0';
-			std::strncpy(name, vname, count);
-			ret = std::strlen(name);
+			tcsncpy(name, vname, count);
+			ret = tcslen(name);
 		}
 	}
 	if (ret == 0) {
-		std::strncpy(name, _T("--------"), count);
-		ret = std::strlen(name);
+		tcsncpy(name, _T("--------"), count);
+		ret = tcslen(name);
 	}
 	return ret;
 }
@@ -593,7 +593,7 @@ int CFITOMConfig::GetDeviceName(UINT32 devid, TCHAR* name, size_t count)
 		res = std::tstring(devname);
 	}
 	if (res.compare(_T("")) != 0) {
-		std::strncpy(name, res.c_str(), count);
+		tcsncpy(name, res.c_str(), count);
 	}
 	return ret;
 }
@@ -601,9 +601,7 @@ int CFITOMConfig::GetDeviceName(UINT32 devid, TCHAR* name, size_t count)
 int CFITOMConfig::LoadConfig()
 {
 	std::tstring strlinein = fitom_ini.get<std::tstring>(_T("LINEIN.device"), _T("**NONE**"));
-	if (strlinein.compare(_T("**NONE**"))) {
-		pMasVol = CreateMasVol(strlinein.c_str());
-	}
+	pMasVol = CreateMasVol(strlinein.c_str());
 	pProgressMessage ? pProgressMessage(_T("Loading Device Setting...")) : void(0);
 	std::terr << LoadDeviceConfig() << _T(" SCCI Devices configured.") << std::endl;
 	pProgressMessage ? pProgressMessage(_T("Loading ADPCM Setting...")) : void(0);
@@ -763,7 +761,7 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 						std::terr << _T("wrote to device.") << std::endl;
 						strwavfile = boost::filesystem::path(strwavfile).stem().generic_tstring();
 						PCMPROG pcmprog;
-						std::strncpy(pcmprog.progname, strwavfile.c_str(), (sizeof(PCMPROG::progname) / sizeof(TCHAR)) - 1);
+						tcsncpy(pcmprog.progname, strwavfile.c_str(), (sizeof(PCMPROG::progname) / sizeof(TCHAR)) - 1);
 						pcmprog.hirate = hirate;
 						pbank->SetVoice(i, &pcmprog);
 						delete[] pdata;
@@ -862,7 +860,7 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 							fnum = std::stoi(lstnote[1], 0, 16);
 						}
 					}
-					std::strncpy(drumnote.name, strnotename.c_str(), (sizeof(DRUMMAP::name) / sizeof(TCHAR)) - 1);
+					tcsncpy(drumnote.name, strnotename.c_str(), (sizeof(DRUMMAP::name) / sizeof(TCHAR)) - 1);
 					if (strdevname.find(_T(':')) != std::string::npos) {
 						int ifid, slid;
 						std::vector<std::tstring> lstaddparam;
@@ -975,20 +973,20 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 					std::tstring strprogname;
 					std::tstring stropparam;
 					strprogname = bankfile.get<std::tstring>(strprogkey + std::tstring(_T(".Name")), _T("**NONE**"));
-					std::strncpy(voice.name, strprogname.c_str(), 15);
+					tcsncpy(voice.name, strprogname.c_str(), 15);
 					std::vector<int> opparam;
 					std::vector<std::tstring> lstopparam;
 					stropparam = bankfile.get<std::tstring>(strprogkey + std::tstring(_T(".ALFB")), _T("0 0 0 0"));
 					boost::trim(stropparam);
 					boost::split(lstopparam, stropparam, boost::is_space());
-					BOOST_FOREACH(std::tstring s, lstopparam) { if (s != _T("")) opparam.push_back(stoi(s)); }
+					BOOST_FOREACH(std::tstring s, lstopparam) { if (!s.empty()) opparam.push_back(stoi(s)); }
 					(this->*parseFunc)(&voice, 0, opparam);
 					lstopparam.clear();
 					opparam.clear();
 					stropparam = bankfile.get<std::tstring>(strprogkey + std::tstring(_T(".LFO0")), _T("0 0 0 0 0"));
 					boost::trim(stropparam);
 					boost::split(lstopparam, stropparam, boost::is_space());
-					BOOST_FOREACH(std::tstring s, lstopparam) { if (s != _T("")) opparam.push_back(stoi(s)); }
+					BOOST_FOREACH(std::tstring s, lstopparam) { if (!s.empty()) opparam.push_back(stoi(s)); }
 					ParseLFOParam(&voice, 0, opparam);
 					for (int k = 0; k < 4; k++) {
 						std::tstring stropkey = (boost::format(_T("%1%.OP%2%")) % strprogkey % (k + 1)).str();
@@ -997,7 +995,7 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 						stropparam = bankfile.get<std::tstring>(stropkey, _T("0 0 0 0 0 0 0 0 0 0 0"));
 						boost::trim(stropparam);
 						boost::split(lstopparam, stropparam, boost::is_space());
-						BOOST_FOREACH(std::tstring s, lstopparam) { if (s != _T("")) opparam.push_back(stoi(s)); }
+						BOOST_FOREACH(std::tstring s, lstopparam) { if (!s.empty()) opparam.push_back(stoi(s)); }
 						(this->*parseFunc)(&voice, k + 1, opparam);
 						stropkey = (boost::format(_T("%1%.LFO%2%")) % strprogkey % (k + 1)).str();
 						lstopparam.clear();
@@ -1005,7 +1003,7 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 						stropparam = bankfile.get<std::tstring>(stropkey, _T("0 0 0 0 0"));
 						boost::trim(stropparam);
 						boost::split(lstopparam, stropparam, boost::is_space());
-						BOOST_FOREACH(std::tstring s, lstopparam) { if (s != _T("")) opparam.push_back(stoi(s)); }
+						BOOST_FOREACH(std::tstring s, lstopparam) { if (!s.empty()) opparam.push_back(stoi(s)); }
 						ParseLFOParam(&voice, k + 1, opparam);
 					}
 					voice.ID = (groupcode << 24) | (i << 8) | j;
@@ -1200,74 +1198,74 @@ int CFITOMConfig::BuildLFOParam(FMVOICE* voice, int index, TCHAR* result, size_t
 	if (index == 0) {
 		int depth = (voice->LDM << 7) | voice->LDL;
 		if (depth > 8191) { depth -= 16384; }
-		strres = (boost::format(_T("%1% %2% %3% %4% %5%")) % voice->LWF % voice->LFD % voice->LFR % depth % voice->LFO).str();
-		return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		strres = (boost::format(_T("%5i %5i %5i %5i %5i")) % int(voice->LWF) % int(voice->LFD) % int(voice->LFR) % depth % int(voice->LFO)).str();
+		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
 	int depth = voice->op[k].SLD;
 	if (depth > 63) { depth -= 128; }
-	strres = (boost::format(_T("%1% %2% %3% %4% %5%")) % voice->op[k].SLW % voice->op[k].SLY % voice->op[k].SLR % depth % voice->op[k].SLF).str();
-	return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+	strres = (boost::format(_T("%5i %5i %5i %5i %5i")) % int(voice->op[k].SLW) % int(voice->op[k].SLY) % int(voice->op[k].SLR) % depth % int(voice->op[k].SLF)).str();
+	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
 int CFITOMConfig::BuildOPMVoice(FMVOICE* voice, int index, TCHAR* result, size_t length)
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%1% %2% %3% %4%")) % (voice->AL & 7) % voice->FB % ((voice->AL & 8) >> 3) % voice->NFQ).str();
-		return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		strres = (boost::format(_T("%3i %3i %3i %3i")) % (voice->AL & 7) % int(voice->FB) % ((voice->AL & 8) >> 3) % int(voice->NFQ)).str();
+		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
-	strres = (boost::format(_T("%1% %2% %3% %4% %5% %6% %7% %8% %9% %10% %11%"))
+	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 2) % (voice->op[k].DR >> 2) % (voice->op[k].SR >> 2) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% voice->op[k].TL % voice->op[k].KSL % voice->op[k].MUL % voice->op[k].DT1 % voice->op[k].DT2 % voice->op[k].AM).str();
-	return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		% int(voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].DT2) % int(voice->op[k].AM)).str();
+	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
 int CFITOMConfig::BuildOPNVoice(FMVOICE* voice, int index, TCHAR* result, size_t length)
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%1% %2%")) % (voice->AL & 7) % voice->FB).str();
-		return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		strres = (boost::format(_T("%3i %3i")) % (voice->AL & 7) % int(voice->FB)).str();
+		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
-	strres = (boost::format(_T("%1% %2% %3% %4% %5% %6% %7% %8% %9% %10% %11%"))
+	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 2) % (voice->op[k].DR >> 2) % (voice->op[k].SR >> 2) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% voice->op[k].TL % voice->op[k].KSL % voice->op[k].MUL % voice->op[k].DT1 % voice->op[k].EGT % voice->op[k].AM).str();
-	return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		% int(voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].EGT) % int(voice->op[k].AM)).str();
+	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
 int CFITOMConfig::BuildOPL2Voice(FMVOICE* voice, int index, TCHAR* result, size_t length)
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%1% %2%")) % (voice->AL & 1) % voice->FB).str();
-		return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		strres = (boost::format(_T("%3i %3i")) % (voice->AL & 1) % int(voice->FB)).str();
+		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
 	int pdt = (voice->op[k].DT1 << 7) | voice->op[k].DT2;
 	if (pdt > 8191) { pdt -= 16384; }
-	strres = (boost::format(_T("%1% %2% %3% %4% %5% %6% %7% %8% %9% %10% %11%"))
+	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% (voice->op[k].TL >> 1) % voice->op[k].KSL % voice->op[k].MUL % pdt % voice->op[k].WS % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
-	return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		% (voice->op[k].TL >> 1) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
+	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
 int CFITOMConfig::BuildOPL3Voice(FMVOICE* voice, int index, TCHAR* result, size_t length)
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%1% %2% %3%")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7)).str();
-		return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		strres = (boost::format(_T("%3i %3i %3i")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7)).str();
+		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
 	int pdt = (voice->op[k].DT1 << 7) | voice->op[k].DT2;
 	if (pdt > 8191) { pdt -= 16384; }
-	strres = (boost::format(_T("%1% %2% %3% %4% %5% %6% %7% %8% %9% %10% %11%"))
+	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% (voice->op[k].TL >> 1) % voice->op[k].KSL % voice->op[k].MUL % pdt % voice->op[k].WS % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
-	return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		% (voice->op[k].TL >> 1) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
+	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
 int CFITOMConfig::BuildOPLLVoice(FMVOICE* voice, int index, TCHAR* result, size_t length)
@@ -1275,35 +1273,35 @@ int CFITOMConfig::BuildOPLLVoice(FMVOICE* voice, int index, TCHAR* result, size_
 	std::tstring strres;
 	if (index == 0) {
 		if (voice->AL & 0x40) {
-			strres = (boost::format(_T("%1%")) % (voice->AL & 15)).str();
-			return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+			strres = (boost::format(_T("%3i")) % (voice->AL & 15)).str();
+			return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 		}
 		else {
-			strres = (boost::format(_T("%1% %2%")) % (voice->AL & 1) % voice->FB).str();
-			return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+			strres = (boost::format(_T("%3i %3i")) % (voice->AL & 1) % int(voice->FB)).str();
+			return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 		}
 	}
 	int k = index - 1;
 	int pdt = (voice->op[k].DT1 << 7) | voice->op[k].DT2;
 	if (pdt > 8191) { pdt -= 16384; }
-	strres = (boost::format(_T("%1% %2% %3% %4% %5% %6% %7% %8% %9% %10% %11%"))
+	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% (voice->op[k].TL >> 1) % voice->op[k].KSL % voice->op[k].MUL % pdt % voice->op[k].WS % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
-	return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		% (voice->op[k].TL >> 1) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
+	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
 int CFITOMConfig::BuildPSGVoice(FMVOICE* voice, int index, TCHAR* result, size_t length)
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%1%")) % voice->AL % (voice->NFQ & 7)).str();
-		return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+		strres = (boost::format(_T("%3i %3i")) % int(voice->AL) % (voice->NFQ & 7)).str();
+		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
-	strres = (boost::format(_T("%1% %2% %3% %4% %5% %6% %7% %8% %9% %10% %11%"))
-		% voice->op[k].AR % voice->op[k].DR % voice->op[k].SR % voice->op[k].RR % voice->op[k].SL
-		% voice->op[k].EGS % voice->op[k].EGT % 0 % 0 % voice->op[k].WS % 0).str();
-	return std::strlen(std::strncpy(result, strres.c_str(), length - 1));
+	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
+		% int(voice->op[k].AR) % int(voice->op[k].DR) % int(voice->op[k].SR) % int(voice->op[k].RR) % int(voice->op[k].SL)
+		% int(voice->op[k].EGS) % int(voice->op[k].EGT) % 0 % 0 % int(voice->op[k].WS) % 0).str();
+	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
 void CFITOMConfig::SetMasterVolume(UINT8 vol)
