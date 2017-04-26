@@ -192,7 +192,7 @@ int ISoundDevice::CEnvelope::Update()
 		}
 		break;
 	case EG_SUSTAIN:
-		tmp -= (param->SR >> 3);
+		tmp -= param->SR;
 		if (tmp > 0) {
 			value = tmp;
 		} else {
