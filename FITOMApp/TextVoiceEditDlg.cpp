@@ -135,6 +135,8 @@ BOOL CTextVoiceEditDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 
 void CTextVoiceEditDlg::OnTestButtonDown()
 {
+	Update();
+
 	pICh->SetVolume(100);
 	pICh->SetExpress(127);
 	pICh->SetPanpot(64);
@@ -232,7 +234,7 @@ void CTextVoiceEditDlg::Update()
 		if (line.GetLength()) {
 			param.clear();
 			lstparam.clear();
-			boost::split(lstparam, boost::trim_copy(std::tstring(LPCTSTR(str))), boost::is_space());
+			boost::split(lstparam, boost::trim_copy(std::tstring(LPCTSTR(line))), boost::is_space());
 			BOOST_FOREACH(std::tstring s, lstparam) {
 				if (!s.empty()) {
 					param.push_back(stoi(s));

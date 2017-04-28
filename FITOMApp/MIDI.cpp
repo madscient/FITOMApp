@@ -1106,7 +1106,7 @@ void CInstCh::SetPhyCh(UINT8 ch)
 	if (Device) {
 		PhyCh = 127;
 		//AllNoteOff();
-		if (ch != 127 && Device->GetChs() < ch) {
+		if (ch != 127 && ch < Device->GetChs()) {
 			PhyCh = ch;
 			Poly = 1;
 			Mono = 1;

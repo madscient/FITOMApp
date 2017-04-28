@@ -23,6 +23,8 @@ ISoundDevice::CHATTR::CHATTR() :
 	status(CHATTR::EMPTY), express(255), volume(255), velocity(255), panpot(127),
 	lastfnum(FNUM(0, 0)), lastvel(0), lastnote(255), finefreq(0), count(0), parent(0)
 {
+	memset(&voice, 0, sizeof(FMVOICE));
+	voice.ID = 0xffffffff;
 }
 
 ISoundDevice::LFORESOURCE::LFORESOURCE() : used(0), parent(0), amrate(0), amdepth(0), pmrate(0), pmdepth(0)
@@ -40,6 +42,8 @@ void CSoundDevice::CHATTR::Init()
 	volume = 255;
 	velocity = 255;
 	count = 0;
+	memset(&voice, 0, sizeof(FMVOICE));
+	voice.ID = 0xffffffff;
 }
 
 void CSoundDevice::CHATTR::Assign(CMidiCh* parch)

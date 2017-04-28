@@ -169,6 +169,7 @@ BOOL CMidiChCtrlDlg::CMultiCtrl::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT*
 	}
 	if (value != val) {
 		(pParent->*pSetter)(val);
+		SetValue();
 		return TRUE;
 	}
 	return FALSE;
