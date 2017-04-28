@@ -47,7 +47,7 @@ protected:
 	CListCtrl* lstctls[5];
 
 	void UpdateListCtrl(int op, BOOL bInit=FALSE);
-	void UpdateVoiceView();
+	void UpdateVoiceView(FMVOICE* voice);
 	LRESULT OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op);
 
 	//Getter

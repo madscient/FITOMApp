@@ -218,7 +218,7 @@ BOOL CVoiceEditDlg::OnInitDialog()
 		lstctls[op]->InsertColumn(1, _T("Value"), LVCFMT_RIGHT, 46);
 	}
 
-	UpdateVoiceView();
+	UpdateVoiceView(NULL);
 	spnNote.SetRange(0, 127);
 	spnVelocity.SetRange(0, 127);
 	spnNote.SetPos(60);
@@ -239,13 +239,13 @@ BOOL CVoiceEditDlg::OnInitDialog()
 	// 例外 : OCX プロパティ ページは必ず FALSE を返します。
 }
 
-void CVoiceEditDlg::UpdateVoiceView()
+void CVoiceEditDlg::UpdateVoiceView(FMVOICE* voice)
 {
 	CString tmp;
 	int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
 	CFMBank* pbank = theConfig->GetFMBank(vg, theBank);
 	if (pbank) {
-		pbank->GetVoice(theProg, &theVoice);
+		voice ? (theVoice = *voice) : pbank->GetVoice(theProg, &theVoice);
 		TCHAR devname[64];
 		theConfig->GetDeviceName(theDevice, devname, _countof(devname));
 		tmp.Format(_T("%02X:%s"), theDevice & 0xff, devname);
@@ -273,6 +273,7 @@ void CVoiceEditDlg::OnOK()
 		if (pbank) {
 			pbank->SetVoice(theProg, &theVoice);
 			((CFITOMApp*)AfxGetApp())->SaveVoice(vg, theBank);
+			CFITOM::GetInstance()->ReloadVoice(&theVoice, theDevice, theBank, theProg);
 		}
 		bModified = FALSE;
 	}
@@ -289,7 +290,7 @@ void CVoiceEditDlg::OnBnClickedButtonPick()
 			SetDevice(dlg.GetDevice());
 			SetBank(dlg.GetBank());
 			SetProg(dlg.Getprog());
-			UpdateVoiceView();
+			UpdateVoiceView(NULL);
 			bModified = FALSE;
 		}
 	}
@@ -530,13 +531,7 @@ void CVoiceEditDlg::OnVoicePaste()
 		name[16] = 0;
 		str.Format(IDS_CONFIRM_VOICE_PASTE, theVoice.ID, LPCTSTR(name));
 		if (AfxMessageBox(str, MB_YESNO) == IDYES) {
-			DWORD vid = theVoice.ID;
-			theVoice = clip;
-			theVoice.ID = vid;
-			for (int op = 0; op < 5; op++) {
-				UpdateListCtrl(op, TRUE);
-			}
-			edtName.SetWindowText(name);
+			UpdateVoiceView(&clip);
 			bModified = TRUE;
 		}
 	}
@@ -563,6 +558,9 @@ void CVoiceEditDlg::OnBnClickedVoiceText()
 	dlg.SetVoice(&theVoice);
 	dlg.SetDevice(theDevice);
 	if (dlg.DoModal() == IDOK) {
-		dlg.GetVoice(&theVoice);
+		FMVOICE voice;
+		dlg.GetVoice(&voice);
+		UpdateVoiceView(&voice);
+		bModified = TRUE;
 	}
 }

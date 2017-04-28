@@ -179,6 +179,7 @@ public:
 	UINT32 GetDeviceUniqID(CAdPcmBase* pdev) { return theConfig ? theConfig->GetDeviceUniqID(pdev) : 0; };
 	CSoundDevice* GetDeviceFromUniqID(UINT32 uid) { return theConfig ? theConfig->GetDeviceFromUniqID(uid) : 0; };
 	int SetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 num);
+	void ReloadVoice(FMVOICE* voice, UINT32 dev, UINT8 bank, UINT8 num);
 	void SetMasterVolume(UINT8 vol) { theConfig ? theConfig->SetMasterVolume(vol) : void(0); };
 	UINT8 GetMasterVolume() { return theConfig ? theConfig->GetMasterVolume() : 0; };
 	void SetLCDdot(int page, int x, int y, int val);

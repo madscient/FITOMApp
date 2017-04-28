@@ -347,6 +347,18 @@ int CFITOM::ImportConfig(CFITOMConfig* cfg)
 	return res;
 }
 
+void CFITOM::ReloadVoice(FMVOICE* voice, UINT32 dev, UINT8 bank, UINT8 num)
+{
+	for (int i = 0; i < theConfig->GetMidiInputs(); i++) {
+		for (int j = 0; j < 16; j++) {
+			CMidiCh* pch = midi[i]->GetMidiCh(j);
+			if (pch->IsInst() && pch->GetDeviceID() == dev && pch->GetBankNo() == bank && pch->GetProgramNo() == num) {
+				pch->ProgChange(num);
+			}
+		}
+	}
+}
+
 BYTE CFITOM::GetLCDdot(int x, int y)
 {
 	return ((0<=x && x < 16) && (0 <= y && y< 16)) ? LCDdot[LCDdisp][y][x] : 0;
