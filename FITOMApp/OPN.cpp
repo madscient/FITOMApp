@@ -55,7 +55,7 @@ void COPN::UpdateVolExp(UINT8 ch)
 	FMVOICE* voice = attr->GetVoice();
 	for (int i=0; i<4; i++) {
 		if (carmsk[voice->AL&7] & (1<<i)) {
-			UINT8 tl = CalcEffectiveLevel(evol, voice->op[i].TL);
+			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
 			SetReg(0x40 + map[i] + ch, tl);
 			attr->baseTL[i] = tl;
 		}

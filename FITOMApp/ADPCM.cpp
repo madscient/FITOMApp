@@ -153,8 +153,9 @@ void CYmDelta::UpdateKey(UINT8 ch, UINT8 keyon)
 
 void CYmDelta::UpdateVolExp(UINT8 ch)
 {
-	UINT8 volume = GetChAttribute(ch)->GetEffectiveLevel();
-	SetReg(regmap.volume, (volume << 1) | (volume >> 6));
+	UINT8 volume = CalcLinearLevel(GetChAttribute(ch)->GetEffectiveLevel(), 0, 1);
+	volume = 256 - volume;
+	SetReg(regmap.volume, volume);
 }
 
 void CYmDelta::UpdateFreq(UINT8 ch, const FNUM* fnum)

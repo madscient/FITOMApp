@@ -61,7 +61,9 @@ struct FMVOICE {
 
 class CMidiCh;
 extern SINT8 GetLFOWave(UINT8 waveform, UINT8 speed, UINT16 phase);
+extern UINT8 CalcVolExpVel(UINT8 vol, UINT8 exp, UINT8 vel);
 extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl);
+extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl, int mode = 0);
 
 class ISoundDevice {
 public:
@@ -326,8 +328,5 @@ public:
 	virtual void TimerCallBack(UINT32 tick);
 };
 typedef CSoundDevice* CSoundDevicePtr;
-extern UINT8 CalcVolExpVel(UINT8 vol, UINT8 exp, UINT8 vel);
-extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl);
-extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl);
 
 #endif

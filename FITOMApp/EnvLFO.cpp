@@ -118,11 +118,11 @@ extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl)
 	return UINT8(127-evol);
 }
 
-extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl)
+extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl, int mode)
 {
 	tl = 127 - tl;
 	UINT16 evol = (vev * tl + vev + tl) >> 7;
-	return ROM::VolCurveLin[UINT8(evol)];
+	return mode ? (127-evol) : ROM::VolCurveLin[UINT8(evol)];
 }
 
 ISoundDevice::CEnvelope::CEnvelope() : phase(EG_NONE), value(0), count(0), param(0)

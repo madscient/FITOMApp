@@ -78,7 +78,7 @@ void COPL3::UpdateVolExp(UINT8 ch)
 		if ((1 << i) & carmsk[voice->AL & 0xf]) {
 			UINT8 tl;
 			UINT8 tmp;
-			tl = CalcEffectiveLevel(evol, voice->op[i].TL);
+			tl = CalcLinearLevel(evol, voice->op[i].TL);
 			attr->baseTL[i] = tl;
 			tl = (tl >= 64) ? 63 : (tl & 63);
 			tmp = (UINT8)((voice->op[i].KSL << 6) | tl);

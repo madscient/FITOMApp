@@ -48,7 +48,7 @@ void COPK::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	UINT8 evol = CalcEffectiveLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
+	UINT8 evol = CalcLinearLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
 	attr->baseTL[1] = evol;
 	SetReg(0x22 + chofs[ch], evol & 0x7f);
 }
@@ -138,7 +138,7 @@ void COPK::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
 {
 	//SetReg(0xbd, 0x20);
 	if (num < rhythmcap) {
-		UINT8 evol = (CalcEffectiveLevel(vel, 127-rhythmvol)) >> 3;
+		UINT8 evol = (CalcLinearLevel(vel, 127-rhythmvol)) >> 3;
 		UINT8 rch = GetRhythmCh(num);
 		SetReg(0x80 + rch, (num << 4) | evol, 1);
 		UINT8 tmp = GetReg(0x84, 0) & ~(0x1 << rch);

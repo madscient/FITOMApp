@@ -71,7 +71,7 @@ void COPLL::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	UINT8 evol = CalcEffectiveLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
+	UINT8 evol = CalcLinearLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
 	attr->baseTL[1] = evol;
 	evol = (evol >= 63) ? 15 : ((evol >> 2) & 0xf);
 	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xf0) | evol);
@@ -125,7 +125,7 @@ void COPLL::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
 	//SetReg(0x0e, 0x20);
 	if (num < rhythmcap) {
 		RhythmOff(num);
-		UINT8 evol = CalcEffectiveLevel(rhythmvol, 127 - vel);
+		UINT8 evol = CalcLinearLevel(rhythmvol, 127 - vel);
 		evol = ((evol > 63) ? 63 : (evol & 63)) >> 2;
 		UINT16 addr = RhythmReg[num];
 		UINT8 vch = RhythmMapCh[num];
