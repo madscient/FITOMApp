@@ -63,7 +63,17 @@ class CMidiCh;
 extern SINT8 GetLFOWave(UINT8 waveform, UINT8 speed, UINT16 phase);
 extern UINT8 CalcVolExpVel(UINT8 vol, UINT8 exp, UINT8 vel);
 extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl);
-extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl, int mode = 0);
+extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl);
+extern UINT8 Linear2dB(UINT8 evol, int range, int step, int bw);
+
+#define	RANGE96DB	0
+#define	RANGE48DB	1
+#define	RANGE24DB	2
+#define	RANGE12DB	3
+#define STEP075DB	0x7f
+#define STEP150DB	0x7e
+#define STEP300DB	0x7c
+#define STEP600DB	0x78
 
 class ISoundDevice {
 public:

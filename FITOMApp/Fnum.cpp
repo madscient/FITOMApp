@@ -74,7 +74,7 @@ const UINT16* CFnumTable::GetTPTable(int master, int devide, int offset)
 	fti.body = new UINT16[768];
 	for (int i = 0; i < 768; i++) {
 		double freq = 440 * pow(2.0, (double)(i + offset) / 768.0);
-		double sig = round((rate / 2) / freq);
+		double sig = round((8 * rate) / freq);
 		fti.body[i] = UINT16(sig);
 	}
 	tablelist.push_back(fti);

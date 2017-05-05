@@ -145,8 +145,7 @@ COPNA::COPNA(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype) : COPN2(pt1, pt2,
 
 void COPNA::UpdateRhythmVol()
 {
-	UINT8 evol = CalcLinearLevel(rhythmvol, 0);
-	evol = (evol > 63) ? 0 : (63 - evol);
+	UINT8 evol = 63 - Linear2dB(CalcLinearLevel(rhythmvol, 0), RANGE48DB, STEP075DB, 6);
 	if (GetReg(0x11, 0) != evol) {
 		SetReg(0x11, evol);
 	}
@@ -154,10 +153,20 @@ void COPNA::UpdateRhythmVol()
 
 void COPNA::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
 {
-	UINT8 evol = CalcLinearLevel(vel, 0);
-	evol = (evol > 31) ? 0 : (31 - evol);
+	UINT8 evol = 31 - Linear2dB(CalcLinearLevel(vel, 0), RANGE24DB, STEP075DB, 5);
 	if (num < rhythmcap) {
-		SetReg(0x18 + num, 0xc0 | evol, 1);	//Instrumental Level
+		pan /= 8;
+		UINT8 chena = 0;
+		if (pan >= 4) { //R
+			chena = 0x40;
+		}
+		else if (pan <= -4) { //L
+			chena = 0x80;
+		}
+		else { //C
+			chena = 0xc0;
+		}
+		SetReg(0x18 + num, chena | evol, 1);	//Instrumental Level
 		SetReg(0x10, (1 << num), 1);
 	}
 }

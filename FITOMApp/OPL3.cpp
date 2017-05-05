@@ -80,7 +80,7 @@ void COPL3::UpdateVolExp(UINT8 ch)
 			UINT8 tmp;
 			tl = CalcLinearLevel(evol, voice->op[i].TL);
 			attr->baseTL[i] = tl;
-			tl = (tl >= 64) ? 63 : (tl & 63);
+			tl = Linear2dB(tl, RANGE48DB, STEP075DB, 6);
 			tmp = (UINT8)((voice->op[i].KSL << 6) | tl);
 			SetReg(rop + 0x40 + opmap[i] + dch, tmp);
 		}

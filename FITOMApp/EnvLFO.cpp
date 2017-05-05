@@ -25,7 +25,7 @@ static UINT8 speedstep[] = {
 	1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 20, 24, 30, 40, 48, 60, 80, 120
 };
 
-extern const UINT8 VolCurveLin[] = {
+extern const UINT8 VolCurveLin[] = {	//0.75dB step;127=-96dB
 	127,56,48,43,40,37,35,34,32,31,29,28,27,26,26,25,
 	24,23,23,22,21,21,20,20,19,19,18,18,18,17,17,16,
 	16,16,15,15,15,14,14,14,13,13,13,13,12,12,12,12,
@@ -118,11 +118,28 @@ extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl)
 	return UINT8(127-evol);
 }
 
-extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl, int mode)
+extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl)
 {
 	tl = 127 - tl;
 	UINT16 evol = (vev * tl + vev + tl) >> 7;
-	return mode ? (127-evol) : ROM::VolCurveLin[UINT8(evol)];
+	return (evol);
+}
+
+extern UINT8 Linear2dB(UINT8 evol, int range, int step, int bw)
+{
+	evol = evol & step;
+	UINT8 ret;
+	UINT8 lim = (127 >> range);
+	if (evol == 0) {
+		ret = lim;
+	}
+	else {
+		ret = ROM::VolCurveLin[UINT8(evol)];
+		ret = min(ret, lim - 1);
+	}
+	ret >>= 7 - range - bw;
+	return ret;
+
 }
 
 ISoundDevice::CEnvelope::CEnvelope() : phase(EG_NONE), value(0), count(0), param(0)

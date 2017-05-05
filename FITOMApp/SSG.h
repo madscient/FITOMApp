@@ -97,7 +97,7 @@ protected:
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
 public:
-	CAPSG(CPort* pt, UINT8 fsamp = 0);
+	CAPSG(CPort* pt, int fsamp = 0);
 };
 
 class CDSG : public CSoundDevice

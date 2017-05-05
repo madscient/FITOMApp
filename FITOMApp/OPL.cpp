@@ -82,13 +82,13 @@ void COPL::UpdateVolExp(UINT8 ch)
 	if (voice->AL & 1) {
 		tl = CalcLinearLevel(evol, voice->op[0].TL);
 		attr->baseTL[0] = tl;
-		tl = (tl > 63) ? 63 : (tl & 63);
+		tl = Linear2dB(tl, RANGE48DB, STEP075DB, 6);
 		tmp = (UINT8)((voice->op[0].KSL << 6) | tl);
 		SetReg(0x40 + map[ch], tmp);
 	}
 	tl = CalcLinearLevel(evol, voice->op[1].TL);
 	attr->baseTL[1] = tl;
-	tl = (tl > 63) ? 63 : (tl & 63);
+	tl = Linear2dB(tl, RANGE48DB, STEP075DB, 6);
 	tmp = (UINT8)((voice->op[1].KSL << 6) | tl);
 	SetReg(0x43 + map[ch], tmp);
 }
@@ -175,7 +175,8 @@ void COPL::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
 	//SetReg(0xbd, 0x20);
 	if (num < rhythmcap) {
 		RhythmOff(num);
-		UINT8 evol = CalcLinearLevel(vel, 127-rhythmvol) >> 1;
+		UINT8 evol = CalcLinearLevel(vel, 127-rhythmvol);
+		evol = Linear2dB(evol, RANGE48DB, STEP075DB, 6);
 		UINT16 addr = RhythmReg[num];
 		UINT8 vch = RhythmMapCh[num];
 

@@ -94,8 +94,9 @@ void COPM::UpdateVolExp(UINT8 ch)
 	for (int i=0; i<4; i++) {
 		if (carmsk[voice->AL&7] & (1<<i)) {
 			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
-			SetReg(0x60 + map[i] * 8 + ch, tl);
 			attr->baseTL[i] = tl;
+			tl = Linear2dB(tl, RANGE96DB, STEP075DB, 7);
+			SetReg(0x60 + map[i] * 8 + ch, tl);
 		}
 	}
 }
@@ -331,8 +332,9 @@ void COPZ::UpdateVolExp(UINT8 ch)
 	for (int i = 0; i<4; i++) {
 		if (carmsk[voice->AL & 7] & (1 << i)) {
 			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
-			SetReg(0x60 + map[i] * 8 + ch, tl);
 			attr->baseTL[i] = tl;
+			tl = Linear2dB(tl, RANGE96DB, STEP075DB, 7);
+			SetReg(0x60 + map[i] * 8 + ch, tl);
 		}
 	}
 	SetReg(0x0 + ch, attr->volume, 1);

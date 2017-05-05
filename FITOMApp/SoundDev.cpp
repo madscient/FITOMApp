@@ -602,9 +602,11 @@ void CSoundDevice::NoteOn(UINT8 ch, UINT8 vel)
 		CHATTR* attr = GetChAttribute(ch);
 		FMVOICE* voice = attr->GetVoice();
 		if (attr->IsEnable()) {
+			/* ‚È‚ñ‚¾‚Á‚¯‚±‚êH
 			if (voice->AL & 0x40) {
 				UpdateKey(ch, 0);
 			}
+			*/
 			SetVelocity(ch, vel);
 			attr->Run();
 			if (voice->LFR) {

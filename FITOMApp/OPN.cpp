@@ -56,8 +56,9 @@ void COPN::UpdateVolExp(UINT8 ch)
 	for (int i=0; i<4; i++) {
 		if (carmsk[voice->AL&7] & (1<<i)) {
 			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
-			SetReg(0x40 + map[i] + ch, tl);
 			attr->baseTL[i] = tl;
+			tl = Linear2dB(tl, RANGE96DB, STEP075DB, 7);
+			SetReg(0x40 + map[i] + ch, tl);
 		}
 	}
 }
