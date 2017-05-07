@@ -285,11 +285,11 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 		switch (devtype) {
 		case DEVICE_OPN:
 			AddDevice(new COPN(pt, fs));
-			AddDevice(new CSSG(pt, fs/2));
+			AddDevice(new CSSG(pt, fs / 4));
 			break;
 		case DEVICE_OPNC:
 			AddDevice(new COPNC(pt, fs));
-			AddDevice(new CSSG(pt, fs/2));
+			AddDevice(new CSSG(pt, fs / 4));
 			break;
 		case DEVICE_OPM:
 			AddDevice(new COPM(pt, fs));
@@ -315,27 +315,27 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 		case DEVICE_OPNB:
 			pt2 = new COffsetPort(pt, 0x100);
 			AddDevice(new COPNB(pt, pt2, fs));
-			AddDevice(new CSSG(pt, fs / 2));
+			AddDevice(new CSSG(pt, fs / 4));
 			break;
 		case DEVICE_F286:
 			pt2 = new COffsetPort(pt, 0x100);
 			AddDevice(new CF286(pt, pt2, fs));
-			AddDevice(new CSSG(pt, fs / 2));
+			AddDevice(new CSSG(pt, fs / 4));
 			break;
 		case DEVICE_2610B:
 			pt2 = new COffsetPort(pt, 0x100);
 			AddDevice(new C2610B(pt, pt2, fs));
-			AddDevice(new CSSG(pt, fs / 2));
+			AddDevice(new CSSG(pt, fs / 4));
 			break;
 		case DEVICE_OPNA:
 			pt2 = new COffsetPort(pt, 0x100);
 			AddDevice(new COPNA(pt, pt2, fs));
-			AddDevice(new CSSG(pt, fs/2));
+			AddDevice(new CSSG(pt, fs / 4));
 			break;
 		case DEVICE_OPN3L:
 			pt2 = new COffsetPort(pt, 0x100);
 			AddDevice(new COPN3L(pt, pt2, fs));
-			AddDevice(new CSSG(pt, fs/2));
+			AddDevice(new CSSG(pt, fs / 4));
 			break;
 		case DEVICE_OPL3:
 			pt2 = new COffsetPort(pt, 0x100);
@@ -382,8 +382,11 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 		case DEVICE_SSG:
 			AddDevice(new CSSG(pt, fs));
 			break;
-		case DEVICE_APSG:
-			AddDevice(new CAPSG(pt, fs));
+		case DEVICE_PSG:
+			AddDevice(new CPSG(pt, fs));
+			break;
+		case DEVICE_EPSG:
+			AddDevice(new CEPSG(pt, fs));
 			break;
 		case DEVICE_DCSG:
 			AddDevice(new CDCSG(pt, fs));

@@ -23,7 +23,7 @@ enum SC_CHIP_TYPE {
 	SC_TYPE_Y8950,
 	SC_TYPE_YM2164,		// OPP:OPMとはハードウェアLFOの制御が違う
 	SC_TYPE_YM2414,		// OPZ:OPMとピンコンパチ
-	SC_TYPE_AY8930,		// APSG:拡張PSG
+	SC_TYPE_AY8930,		// EPSG:拡張PSG
 	SC_TYPE_YM2149,		// SSG:PSGとはDACが違う(YM3439とは同一とみていいと思う)
 	SC_TYPE_YMZ294,		// SSGL:SSGとはDACが違う(YMZ284とは同一とみていいと思う)
 	SC_TYPE_SN76496,	// DCSG:76489とはノイズジェネレータの生成式が違う

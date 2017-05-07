@@ -39,6 +39,12 @@ protected:
 	virtual void UpdateVoice(UINT8 ch);
 };
 
+class CPSG : public CSSG
+{
+public:
+	CPSG(CPort* pt, int fsamp);
+};
+
 class CSSGS : public CPSGBase
 {
 public:
@@ -89,15 +95,16 @@ class CSSGS : public CPSGBase
 };
 #endif
 
-class CAPSG : public CPSGBase
+class CEPSG : public CPSGBase
 {
 protected:
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
+	UINT8 prevmix;
 public:
-	CAPSG(CPort* pt, int fsamp = 0);
+	CEPSG(CPort* pt, int fsamp = 0);
 };
 
 class CDSG : public CSoundDevice

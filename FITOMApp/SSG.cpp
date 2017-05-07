@@ -91,8 +91,8 @@ void CSSG::UpdateVolExp(UINT8 ch)
 		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
-		evol = Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP300DB, 4);
-		SetReg(8 + ch, 15 - evol & 0xf, 1);
+		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP300DB, 4);
+		SetReg(8 + ch, evol & 0xf, 1);
 	}
 }
 
@@ -175,6 +175,11 @@ UINT8 CSSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		}
 	}
 	return CSoundDevice::QueryCh(parent, voice, mode);
+}
+//-------------------------------
+CPSG::CPSG(CPort* pt, int fsamp) : CSSG(pt, fsamp)
+{
+	SetDevice(DEVICE_PSG);
 }
 
 //-------------------------------
@@ -385,17 +390,22 @@ UINT8 CDCSG::AllocCh(CMidiCh* par, FMVOICE* voice)
 
 //-------------------------------
 
-CAPSG::CAPSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_APSG, pt, 3, fsamp)
+CEPSG::CEPSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_EPSG, pt, 3, fsamp), prevmix(0x3f)
 {
 	SetReg(0xd, 0xb0, 1);	//Enable expand mode
 	SetReg(0x9, 0xff, 1);	//Noise "AND" mask
 	SetReg(0xa, 0x00, 1);	//Noise "OR" mask
+	SetReg(0x04, 0, 1);
+	SetReg(0x05, 0, 1);
 	SetReg(0xd, 0xa0, 1);	//Bank select A
 	SetReg(0x07, 0x3f, 1);
+	SetReg(0x08, 0, 1);
+	SetReg(0x09, 0, 1);
+	SetReg(0x0a, 0, 1);
 	ops = 2;
 }
 
-void CAPSG::UpdateVolExp(UINT8 ch)
+void CEPSG::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
@@ -403,23 +413,23 @@ void CAPSG::UpdateVolExp(UINT8 ch)
 		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
-		evol = Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP150DB, 5);
-		SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-		SetReg(8 + ch, 31-evol & 0x1f, 1);
+		evol = 31 - Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP150DB, 5);
+		//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+		SetReg(8 + ch, evol & 0x1f, 1);
 	}
 }
 
-void CAPSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CEPSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> ((oct < 3) ? 0 : (oct - 2));
-	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+	UINT16 etp = fnum->fnum >> ((oct < 2) ? 0 : (oct - 2));
+	//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
 	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
 	SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
 }
 
-void CAPSG::UpdateVoice(UINT8 ch)
+void CEPSG::UpdateVoice(UINT8 ch)
 {
 	UINT8 mix = 8;
 	CHATTR* attr = GetChAttribute(ch);
@@ -439,35 +449,36 @@ void CAPSG::UpdateVoice(UINT8 ch)
 		break;
 	}
 	lfoTL[ch] = attr->baseTL[0] = attr->baseTL[1] = 64;
-	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-	SetReg(0x7, (GetReg(0x7, 0) & ~(0x9 << ch)) | (mix << ch), 1);
+	//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+	prevmix = (prevmix & ~(0x9 << ch)) | (mix << ch);
+	SetReg(0x7, prevmix, 1);
 	if (mix==1 || mix==0) {
 		SetReg(0x6, (voice->NFQ << 3) | (voice->FB & 0x7), 1);
 	}
 
+	bool hwenv23 = false;
+	if (voice->op[0].EGT & 0x8) {	//HW env
+		SetReg(0x8+ch, 0x20, 1);
+		if (ch == 0) {
+			SetReg(0xd, 0xa0 | (voice->op[0].EGT & 0xf), 1);
+			SetReg(0xb, (((voice->op[0].SR << 4) & 0xf0) | (voice->op[0].SL & 0xf)), 1);
+			SetReg(0xc, (((voice->op[0].DR << 2) & 0xfc) | ((voice->op[0].SR >> 4) & 0x3)), 1);
+		} else {
+			hwenv23 = true;
+		}
+	}
 	//Duty ratio
 	SetReg(0xd, 0xb0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select B
 	SetReg(0x6 + ch, voice->op[0].WS & 0xf, 1);
-	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-
-	if (voice->op[0].EGT & 0x8) {	//HW env
-		SetReg(0x8+ch, (GetReg(0x8+ch, 0) & 0xdf) | 0x20, 1);
-		if (ch == 0) {
-			SetReg(0xb, (((voice->op[0].SR << 4) & 0xf0) | (voice->op[0].SL & 0xf)), 1);
-			SetReg(0xc, (((voice->op[0].DR << 2) & 0xfc) | ((voice->op[0].SR >> 4) & 0x3)), 1);
-			SetReg(0xd,  0xa0 | (voice->op[0].EGT & 0xf), 1);
-		} else {
-			UINT8 regd = GetReg(0xd, 0) & 0xf;
-			SetReg(0xd, 0xb0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select B
-			SetReg(0x0 + (ch-1)*2, (((voice->op[0].SR << 4) & 0xf0) | (voice->op[0].SL & 0xf)), 1);
-			SetReg(0x1 + (ch-1)*2, (((voice->op[0].DR << 2) & 0xfc) | ((voice->op[0].SR >> 4) & 0x3)), 1);
-			SetReg(0x3 + ch,  (voice->op[0].EGT & 0xf), 1);
-			SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-		}
+	if (hwenv23) {
+		SetReg(0x0 + (ch - 1) * 2, (((voice->op[0].SR << 4) & 0xf0) | (voice->op[0].SL & 0xf)), 1);
+		SetReg(0x1 + (ch - 1) * 2, (((voice->op[0].DR << 2) & 0xfc) | ((voice->op[0].SR >> 4) & 0x3)), 1);
+		SetReg(0x3 + ch, (voice->op[0].EGT & 0xf), 1);
 	}
+	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
 }
 
-void CAPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void CEPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	switch (op) {
@@ -481,7 +492,7 @@ void CAPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 			SINT16 frq = SINT16(lev) - 64 + (((voice->NFQ << 2) | (voice->FB >> 1)) & 0x7f);
 			frq = (frq < 0) ? 0 : frq;
 			frq = (frq > 127) ? 127 : frq;
-			SetReg(0xd, 0xa0 | (GetReg(0xd, 0) | 0xf), 1);	//Bank select A
+			//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) | 0xf), 1);	//Bank select A
 			SetReg(0x6, lev, 1);
 		}
 		break;
