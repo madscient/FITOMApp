@@ -22,8 +22,8 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::commonItem[] = {
 	{ _T("ROM Tone"), 0, 0, 15, VOICE_GROUP_OPLL, &CVoiceEditDlg::SetROMTN, &CVoiceEditDlg::GetAL4, },
 	{ _T("Tone/Noise"), 0, 0, 3, VOICE_GROUP_PSG, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL, },
 	{ _T("Noise Enable"), 0, 0, 3, VOICE_GROUP_OPM, &CVoiceEditDlg::SetNE, &CVoiceEditDlg::GetNE, },
-	{ _T("Noise Freq"), 0, 0, 63, VOICE_GROUP_OPM | VOICE_GROUP_PSG, &CVoiceEditDlg::SetNFreq, &CVoiceEditDlg::GetNFreq, },
-	{ _T("Noise Freq2"), 0, 0, 63, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNFreq2, &CVoiceEditDlg::GetNFreq2, },
+	{ _T("Noise Freq"), 0, 0, 63, VOICE_GROUP_OPM, &CVoiceEditDlg::SetNFreq, &CVoiceEditDlg::GetNFreq, },
+	{ _T("Noise Freq"), 0, 0, 255, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNFreq2, &CVoiceEditDlg::GetNFreq2, },
 	{ _T("AM Sense"), 0, 0, 3, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAMS, &CVoiceEditDlg::GetAMS, },
 	{ _T("PM Sense"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetPMS, &CVoiceEditDlg::GetPMS, },
 	{ _T("P-LFO Wave"), 0, 0, 14, VOICE_GROUP_ALL, &CVoiceEditDlg::SetLFOWave, &CVoiceEditDlg::GetLFOWave, },
@@ -65,6 +65,8 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 	{ _T("Detune1"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetDT1, &CVoiceEditDlg::GetDT1, },
 	{ _T("Detune2"), 0, 0, 15, VOICE_GROUP_OPM, &CVoiceEditDlg::SetDT2, &CVoiceEditDlg::GetDT2, },
 	{ _T("Pseudo Detune"), 0, -8192, 8191, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetPDT, &CVoiceEditDlg::GetPDT, },
+	{ _T("Noise AND mask"), 0, 0, 255, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNAM, &CVoiceEditDlg::GetNAM, },
+	{ _T("Noise OR mask"), 0, 0, 255, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNAM, &CVoiceEditDlg::GetNAM, },
 	{ _T("Fixed Freq"), 0, 0, 32640, VOICE_GROUP_OPM, 0, &CVoiceEditDlg::GetFix, },
 	{ _T("TL-LFO Wave"), 0, 0, 6, VOICE_GROUP_ALL, &CVoiceEditDlg::SetOPLFOWave, &CVoiceEditDlg::GetOPLFOWave, },
 	{ _T("TL-LFO Depth"), 0, -64, 63, VOICE_GROUP_ALL, &CVoiceEditDlg::SetOPLFODepth, &CVoiceEditDlg::GetOPLFODepth, },
@@ -136,6 +138,8 @@ BEGIN_MESSAGE_MAP(CVoiceEditDlg, CDialogEx)
 	ON_COMMAND(IDC_VOICE_PASTE, &CVoiceEditDlg::OnVoicePaste)
 	ON_UPDATE_COMMAND_UI(IDC_VOICE_PASTE, &CVoiceEditDlg::OnUpdateVoicePaste)
 	ON_BN_CLICKED(IDC_VOICE_IMPORT, &CVoiceEditDlg::OnBnClickedVoiceText)
+	ON_BN_CLICKED(IDC_BTN_REVERT, &CVoiceEditDlg::OnClickedBtnRevert)
+	ON_BN_CLICKED(IDC_BTN_APPLY, &CVoiceEditDlg::OnClickedBtnApply)
 END_MESSAGE_MAP()
 
 
@@ -562,5 +566,23 @@ void CVoiceEditDlg::OnBnClickedVoiceText()
 		dlg.GetVoice(&voice);
 		UpdateVoiceView(&voice);
 		bModified = TRUE;
+	}
+}
+
+
+void CVoiceEditDlg::OnClickedBtnRevert()
+{
+	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+}
+
+
+void CVoiceEditDlg::OnClickedBtnApply()
+{
+	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
+	CFMBank* pbank = theConfig->GetFMBank(vg, theBank);
+	if (pbank) {
+		pbank->SetVoice(theProg, &theVoice);
+		CFITOM::GetInstance()->ReloadVoice(&theVoice, theDevice, theBank, theProg);
 	}
 }

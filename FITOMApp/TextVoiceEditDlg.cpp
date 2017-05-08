@@ -59,7 +59,7 @@ voicetypes VoiceTypeTable[] = {
 	{ VOICE_GROUP_OPL2, 2, _T("OPL2"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), &CFITOMConfig::ParseOPL2Voice, &CFITOMConfig::BuildOPL2Voice, },
 	{ VOICE_GROUP_OPL3, 4, _T("OPL3"), _T("AL FB1 FB2"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), &CFITOMConfig::ParseOPL3Voice, &CFITOMConfig::BuildOPL3Voice, },
 	{ VOICE_GROUP_OPLL, 2, _T("OPLL"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), &CFITOMConfig::ParseOPLLVoice, &CFITOMConfig::BuildOPLLVoice, },
-	{ VOICE_GROUP_PSG, 1, _T("PSG"), _T("AL NF"), _T("AR DR SR RR SL BS EG EF -- WF --"), &CFITOMConfig::ParsePSGVoice, &CFITOMConfig::BuildPSGVoice, },
+	{ VOICE_GROUP_PSG, 1, _T("PSG"), _T("AL NF"), _T("AR DR SR RR SL BS EG NAM NOM WF NS"), &CFITOMConfig::ParsePSGVoice, &CFITOMConfig::BuildPSGVoice, },
 	{ VOICE_GROUP_NONE, 0, 0, 0, 0, 0, 0, },
 };
 

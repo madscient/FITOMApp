@@ -29,6 +29,7 @@ protected:
 	UINT32 theBank;
 	UINT32 theProg;
 	FMVOICE theVoice;
+	FMVOICE orgVoice;
 	CInstCh* pICh;
 
 	struct VoiceItem {
@@ -60,7 +61,7 @@ protected:
 	int GetFB2(int op) { return theVoice.FB >> 3; };
 	int GetNE(int op) { return theVoice.AL >> 3; };
 	int GetNFreq(int op) { return theVoice.NFQ; };
-	int GetNFreq2(int op) { return (theVoice.NFQ << 3) | (theVoice.FB & 0x7); };
+	int GetNFreq2(int op) { return (theVoice.NFQ) | (theVoice.FB << 5); };
 	int GetAMS(int op) { return theVoice.AMS; };
 	int GetPMS(int op) { return theVoice.PMS; };
 	int GetLFODepth(int op) { int ldep = ((theVoice.LDM << 7) | theVoice.LDL); return (ldep > 8191) ? (ldep - 16384) : ldep; };
@@ -105,6 +106,8 @@ protected:
 	int GetOPLFOWave(int op) { return theVoice.op[op].SLW; };
 	int GetOPLFODelay(int op) { return theVoice.op[op].SLY; };
 	int GetOPLFORate(int op) { return theVoice.op[op].SLR; };
+	int GetNAM(int op) { return ((theVoice.op[op].DT1 & 15) << 4) | (theVoice.op[op].DT2 & 15); };
+	int GetNOM(int op) { return ((theVoice.op[op].DM0 & 15) << 4) | (theVoice.op[op].DM1 & 15); };
 	//Setter
 	void SetAL(int op, int val) { theVoice.AL = val; };
 	void SetAL3(int op, int val) { theVoice.AL = val | (GetNE(op) ? 0x8 : 0); };
@@ -114,7 +117,7 @@ protected:
 	void SetFB2(int op, int val) { theVoice.FB = (theVoice.FB & 0x47) | ((val & 0x7) << 3); };
 	void SetNE(int op, int val) { theVoice.AL = (theVoice.AL & 0x77) | (val ? 8 : 0); };
 	void SetNFreq(int op, int val) { theVoice.NFQ = val; };
-	void SetNFreq2(int op, int val) { theVoice.NFQ = (val >> 3); theVoice.FB = (val & 0x7); };
+	void SetNFreq2(int op, int val) { theVoice.NFQ = (val & 31); theVoice.FB = (val >> 5); };
 	void SetAMS(int op, int val) { theVoice.AMS = val; };
 	void SetPMS(int op, int val) { theVoice.PMS = val; };
 	void SetLFODepth(int op, int val) { theVoice.LDM = ((val >> 7) & 0x7f); theVoice.LDL = (val & 0x7f); };
@@ -158,6 +161,8 @@ protected:
 	void SetOPLFOWave(int op, int val) { theVoice.op[op].SLW = val; };
 	void SetOPLFODelay(int op, int val) { theVoice.op[op].SLY = val; };
 	void SetOPLFORate(int op, int val) { theVoice.op[op].SLR = val; };
+	void SetNAM(int op, int val) { theVoice.op[op].DT1 = val >> 4; theVoice.op[op].DT2 = val & 15; };
+	void SetNOM(int op, int val) { theVoice.op[op].DM0 = val >> 4; theVoice.op[op].DM1 = val & 15; };
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -203,4 +208,6 @@ public:
 	afx_msg void OnVoicePaste();
 	afx_msg void OnUpdateVoicePaste(CCmdUI *pCmdUI);
 	afx_msg void OnBnClickedVoiceText();
+	afx_msg void OnClickedBtnRevert();
+	afx_msg void OnClickedBtnApply();
 };

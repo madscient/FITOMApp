@@ -423,7 +423,7 @@ void CEPSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> ((oct < 2) ? 0 : (oct - 2));
+	UINT16 etp = fnum->fnum >> oct;
 	//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
 	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
 	SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
