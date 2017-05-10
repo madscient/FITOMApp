@@ -76,7 +76,6 @@ void CPSGBase::TimerCallBack(UINT32 tick)
 }
 
 //-------------------------------
-
 CSSG::CSSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_SSG, pt, 3, fsamp)
 {
 	SetReg(0x07, 0x3f, 1);
@@ -310,15 +309,15 @@ CDCSG::CDCSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_DCSG, pt, 4, fsamp)
 {
 	port->write(0, 0x80, 1);
 	port->write(0, 0x00, 1);
-	port->write(0, 0x90, 1);
+	port->write(0, 0x9f, 1);
 	port->write(0, 0xa0, 1);
 	port->write(0, 0x00, 1);
-	port->write(0, 0xb0, 1);
+	port->write(0, 0xbf, 1);
 	port->write(0, 0xc0, 1);
 	port->write(0, 0x00, 1);
-	port->write(0, 0xd0, 1);
+	port->write(0, 0xdf, 1);
 	port->write(0, 0xe0, 1);
-	port->write(0, 0xf0, 1);
+	port->write(0, 0xff, 1);
 }
 
 void CDCSG::UpdateVolExp(UINT8 ch)
@@ -326,7 +325,12 @@ void CDCSG::UpdateVolExp(UINT8 ch)
 	CHATTR* attr = GetChAttribute(ch);
 	UINT8 evol = attr->GetEffectiveLevel();
 	evol = Linear2dB(CalcLinearLevel(evol, 127 - egattr[ch].GetValue()), RANGE48DB, STEP300DB, 4);
-	port->write(0, 0x80 | (ch*2+1) | (15 - (evol & 0xf)), 1);
+	if (ch < 3) {
+		port->writeRaw(0, 0x90 | (ch * 32) | (evol & 0xf));
+	}
+	else {
+		port->writeRaw(0, 0xf0 | (evol & 0xf));
+	}
 }
 
 void CDCSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
@@ -334,9 +338,9 @@ void CDCSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	if (ch < 3) {
 		UINT8 oct = fnum->block;
-		UINT16 etp = fnum->fnum >> ((oct < 3) ? 3 : oct);
-		port->write(0, 0x80 | ((ch * 2) << 4) | (etp & 0xf), 1);
-		port->write(0, 0x0 | (etp >> 4), 1);
+		UINT16 etp = fnum->fnum >> (oct + 4);
+		port->writeRaw(0, 0x80 | (ch * 32) | (etp & 0xf));
+		port->writeRaw(0, 0x0 | ((etp >> 4) & 63));
 	}
 	else {
 	}
@@ -350,13 +354,15 @@ void CDCSG::UpdateVoice(UINT8 ch)
 	case 1:
 		break;
 	case 2:
+		/*
 		if (attr->GetVoice()->AL == 2) {
 			port->write(0, 0xe2 | (attr->GetVoice()->NFQ & 0x3), 1);
 		}
+		*/
 		break;
 	case 3:
 		if (attr->GetVoice()->AL == 1) {
-			port->write(0, 0xe0 | (attr->GetVoice()->NFQ & 0x3), 1);
+			port->writeRaw(0, 0xe0 | ((attr->GetVoice()->FB & 1) << 2) | (attr->GetVoice()->NFQ & 0x3));
 		}
 		break;
 	}
@@ -364,21 +370,34 @@ void CDCSG::UpdateVoice(UINT8 ch)
 
 UINT8 CDCSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
-	if (voice->AL == 1) {
+	UINT8 ret = 0xff;
+	if (voice && voice->AL == 1) {
 		CHATTR* attr = GetChAttribute(3);
 		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
-			return 3;
+			ret = 3;
 		}
-		return 0xff;
 	}
-	if (voice->AL == 2) {
+	/*
+	if (voice && voice->AL == 2) {
 		CHATTR* attr = GetChAttribute(2);
 		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
-			return 2;
+			ret = 2;
 		}
-		return 0xff;
 	}
-	return CSoundDevice::QueryCh(parent, voice, mode);
+	*/
+	ret = CSoundDevice::QueryCh(parent, voice, mode);
+	if (voice && voice->AL == 0) {
+		if (ret == 3) {
+			ret = 0;
+			for (int i = 0; i < 3; i++) {
+				CHATTR* attr = GetChAttribute(i);
+				if (attr->IsAvailable()) {
+					ret = i;
+				}
+			}
+		}
+	}
+	return ret;
 }
 
 
@@ -600,4 +619,86 @@ void CDSG::SetReg(UINT16 addr, UINT8 data, int v)
 		port->write(0, 0x80 | addr, 1);
 		port->write(0, data, 1);
 	}
+}
+
+//-------------------------------
+CSCC::CSCC(CPort* pt, int fsamp) : CPSGBase(DEVICE_SCC, pt, 5, fsamp)
+{
+	ops = 1;
+	pt->Mapping(0x9800);
+	pt->writeRaw(0xbffe, 0);	// compatible mode (if SCC+)
+	pt->writeRaw(0x9000, 0x3f);	// SCC register bank select
+}
+
+void CSCC::UpdateVolExp(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
+		UINT8 evol = attr->GetEffectiveLevel();
+		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+		lev = (lev < 0) ? 0 : lev;
+		lev = (lev > 127) ? 127 : lev;
+		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127 - UINT8(lev)), RANGE48DB, STEP300DB, 4);
+		SetReg(0x8a + ch, evol & 0xf, 1);
+	}
+}
+
+void CSCC::UpdateFreq(UINT8 ch, const FNUM* fnum)
+{
+	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
+	UINT8 oct = fnum->block;
+	UINT16 etp = fnum->fnum >> (oct + 2);
+	SetReg(ch * 2 + 0x80, UINT8(etp & 0xff), 1);
+	SetReg(ch * 2 + 0x81, UINT8(etp >> 8), 1);
+}
+
+void CSCC::UpdateVoice(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	FMVOICE* voice = attr->GetVoice();
+	lfoTL[ch] = attr->baseTL[0] = 64;
+	SetReg(0x7, (GetReg(0x7, 0) & ~(0x9 << ch)) | (mix << ch), 1);
+}
+
+void CSCC::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+{
+	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
+	switch (op) {
+	case 0:// Amplitude LFO
+	{
+		lfoTL[ch] = lev;
+	}
+	break;
+	case 1:// Noise freq LFO
+		if ((voice->AL & 3) == 1 || (voice->AL & 3) == 2) {
+			SINT16 frq = SINT16(lev) - 64 + (((voice->NFQ << 2) | (voice->NFQ >> 3)) & 0x7f);
+			frq = (frq < 0) ? 0 : frq;
+			frq = (frq > 127) ? 127 : frq;
+			SetReg(0x6, lev >> 2, 1);
+		}
+		break;
+	}
+}
+
+UINT8 CSCC::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+{
+	CHATTR* attr2 = GetChAttribute(2);
+	CHATTR* attr1 = GetChAttribute(1);
+	if (voice && (voice->AL & 0x3) != 0) {//Noise enabled
+		if (mode ? attr2->IsAvailable() : attr2->IsEnable()) {
+			return 2;
+		}
+		else {
+			return 0xff;
+		}
+	}
+	else if (voice && (voice->AL & 0x20) != 0) {//HW Envelop
+		if (mode ? attr1->IsAvailable() : attr1->IsEnable()) {
+			return 1;
+		}
+		else {
+			return 0xff;
+		}
+	}
+	return CSoundDevice::QueryCh(parent, voice, mode);
 }

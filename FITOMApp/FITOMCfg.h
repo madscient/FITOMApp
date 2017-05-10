@@ -33,6 +33,11 @@ struct DRUMMAP {
 	UINT16 gate;
 };
 
+struct SCCWAVE {
+	TCHAR name[16];
+	SINT8 wave[32];
+};
+
 class CAdPcmBase;
 struct PCMPROG {
 	TCHAR progname[32];
@@ -95,6 +100,7 @@ protected:
 	CFMBank* vPsgBank[MAX_BANK];
 	CPcmBank* vPcmBank[MAX_BANK];
 	CDrumBank* vDrumBank[MAX_BANK];
+	SCCWAVE vSccWaveForm[64];
 	int phydevs;
 	int logdevs;
 	int pcmdevs;

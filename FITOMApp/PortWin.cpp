@@ -1,7 +1,7 @@
 #include "STDAFX.H"
 #include "Port.h"
 
-CSCCIPort::CSCCIPort() : regsize(0), pInterface(0), pChip(0)
+CSCCIPort::CSCCIPort() : regsize(0), pInterface(0), pChip(0), mappedaddr(0)
 {
 }
 
@@ -11,19 +11,25 @@ CSCCIPort::CSCCIPort(SoundInterface* pif, SoundChip* pchip, size_t maxreg) : pIn
 	::ZeroMemory(regbak, maxreg);
 }
 
-
 void CSCCIPort::write(UINT16 addr, UINT16 data, int v)
 {
 	if (pChip && addr < regsize) {
 		if (v || (data != regbak[addr])) {
-			pChip->setRegister(DWORD(addr), DWORD(data));
-#ifdef DEBUG
-			TCHAR str[80];
-			StringCchPrintf(str, _countof(str), _T("reg %08x %03x %02x\n"), physical_id, addr, data);
-			OutputDebugString(str);
-#endif
+			writeRaw(DWORD(addr + mappedaddr), DWORD(data));
 		}
 		regbak[addr] = UINT8(data);
+	}
+}
+
+void CSCCIPort::writeRaw(UINT16 addr, UINT16 data)
+{
+	if (pChip) {
+		pChip->setRegister(DWORD(addr), DWORD(data));
+#ifdef DEBUG
+		TCHAR str[80];
+		StringCchPrintf(str, _countof(str), _T("reg %08x %03x %02x\n"), physical_id, addr, data);
+		OutputDebugString(str);
+#endif
 	}
 }
 

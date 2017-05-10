@@ -391,6 +391,9 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 		case DEVICE_DCSG:
 			AddDevice(new CDCSG(pt, fs));
 			break;
+		case DEVICE_SCC:
+			AddDevice(new CSCC(pt, fs/2));
+			break;
 		default:
 			res = -1;
 			delete pt;

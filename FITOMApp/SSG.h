@@ -84,12 +84,20 @@ protected:
 	virtual void UpdatePanpot(UINT8 ch);
 };
 
-#if 0
 class CSCC : public CPSGBase
 {
+public:
+	CSCC(CPort* pt, int fsamp);
+	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+protected:
+	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
+	virtual void UpdateVolExp(UINT8 ch);
+	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
+	virtual void UpdateVoice(UINT8 ch);
 };
 
 
+#if 0
 class CSSGS : public CPSGBase
 {
 };
