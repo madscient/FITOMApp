@@ -4,7 +4,13 @@
 #include "MIDI.h"
 
 CPSGBase::CPSGBase(UINT8 devid, CPort* pt, UINT8 ch, int fsamp)
-	: CSoundDevice(devid, ch, fsamp, 2, -576, FnumTableType::TonePeriod, pt)
+	: CPSGBase(devid, pt, ch, fsamp, 1, -576, FnumTableType::TonePeriod)
+//	: CSoundDevice(devid, ch, fsamp, 1, -576, FnumTableType::TonePeriod, pt)
+{
+}
+
+CPSGBase::CPSGBase(UINT8 devid, CPort* pt, UINT8 ch, int fsamp, int div, int off, FnumTableType type)
+	: CSoundDevice(devid, ch, fsamp, div, off, type, pt)
 {
 	ops = 0;
 	lfoTL = new UINT8[chs];
@@ -307,17 +313,18 @@ UINT8 CSSGS::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 //-------------------------------
 CDCSG::CDCSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_DCSG, pt, 4, fsamp)
 {
-	port->write(0, 0x80, 1);
-	port->write(0, 0x00, 1);
-	port->write(0, 0x9f, 1);
-	port->write(0, 0xa0, 1);
-	port->write(0, 0x00, 1);
-	port->write(0, 0xbf, 1);
-	port->write(0, 0xc0, 1);
-	port->write(0, 0x00, 1);
-	port->write(0, 0xdf, 1);
-	port->write(0, 0xe0, 1);
-	port->write(0, 0xff, 1);
+	port->write(0, 0x80);
+	port->write(0, 0x00);
+	port->write(0, 0x9f);
+	port->write(0, 0xa0);
+	port->write(0, 0x00);
+	port->write(0, 0xbf);
+	port->write(0, 0xc0);
+	port->write(0, 0x00);
+	port->write(0, 0xdf);
+	port->write(0, 0xe0);
+	port->write(0, 0xff);
+	GetChAttribute(3)->OutOfDVA();	// Noise ch should always be assigned manually
 }
 
 void CDCSG::UpdateVolExp(UINT8 ch)
@@ -352,13 +359,7 @@ void CDCSG::UpdateVoice(UINT8 ch)
 	switch (ch) {
 	case 0:
 	case 1:
-		break;
 	case 2:
-		/*
-		if (attr->GetVoice()->AL == 2) {
-			port->write(0, 0xe2 | (attr->GetVoice()->NFQ & 0x3), 1);
-		}
-		*/
 		break;
 	case 3:
 		if (attr->GetVoice()->AL == 1) {
@@ -372,19 +373,8 @@ UINT8 CDCSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
 	UINT8 ret = 0xff;
 	if (voice && voice->AL == 1) {
-		CHATTR* attr = GetChAttribute(3);
-		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
-			ret = 3;
-		}
+		ret = 3;
 	}
-	/*
-	if (voice && voice->AL == 2) {
-		CHATTR* attr = GetChAttribute(2);
-		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
-			ret = 2;
-		}
-	}
-	*/
 	ret = CSoundDevice::QueryCh(parent, voice, mode);
 	if (voice && voice->AL == 0) {
 		if (ret == 3) {
@@ -399,13 +389,6 @@ UINT8 CDCSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	}
 	return ret;
 }
-
-
-UINT8 CDCSG::AllocCh(CMidiCh* par, FMVOICE* voice)
-{
-	return CSoundDevice::AllocCh(par, voice);
-}
-
 
 //-------------------------------
 
@@ -616,8 +599,8 @@ void CDSG::RhythmOff(UINT8 num)
 void CDSG::SetReg(UINT16 addr, UINT8 data, int v)
 {
 	if (port) {
-		port->write(0, 0x80 | addr, 1);
-		port->write(0, data, 1);
+		port->write(0, 0x80 | addr);
+		port->write(0, data);
 	}
 }
 
@@ -625,9 +608,10 @@ void CDSG::SetReg(UINT16 addr, UINT8 data, int v)
 CSCC::CSCC(CPort* pt, int fsamp) : CPSGBase(DEVICE_SCC, pt, 5, fsamp)
 {
 	ops = 1;
-	pt->Mapping(0x9800);
 	pt->writeRaw(0xbffe, 0);	// compatible mode (if SCC+)
 	pt->writeRaw(0x9000, 0x3f);	// SCC register bank select
+	GetChAttribute(4)->OutOfDVA();	// 5th ch should always be assigned manually
+	SetReg(0x8f, 0x1f, 1);
 }
 
 void CSCC::UpdateVolExp(UINT8 ch)
@@ -657,7 +641,14 @@ void CSCC::UpdateVoice(UINT8 ch)
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	lfoTL[ch] = attr->baseTL[0] = 64;
-	SetReg(0x7, (GetReg(0x7, 0) & ~(0x9 << ch)) | (mix << ch), 1);
+	SCCWAVE wave;
+	if (ch < 4) {
+		CFITOM::GetInstance()->GetWaveform(&wave, voice->op[0].WS);
+		for (int i = 0; i < 32; i++) {
+			int idx = (i + voice->FB) & 31;
+			SetReg((ch * 32) + i, wave.wave[idx], 1);
+		}
+	}
 }
 
 void CSCC::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
@@ -669,36 +660,117 @@ void CSCC::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 		lfoTL[ch] = lev;
 	}
 	break;
-	case 1:// Noise freq LFO
-		if ((voice->AL & 3) == 1 || (voice->AL & 3) == 2) {
-			SINT16 frq = SINT16(lev) - 64 + (((voice->NFQ << 2) | (voice->NFQ >> 3)) & 0x7f);
-			frq = (frq < 0) ? 0 : frq;
-			frq = (frq > 127) ? 127 : frq;
-			SetReg(0x6, lev >> 2, 1);
-		}
-		break;
 	}
 }
 
-UINT8 CSCC::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+//-------------------------------
+CSCCP::CSCCP(CPort* pt, int fsamp) : CPSGBase(DEVICE_SCC, pt, 5, fsamp)
 {
-	CHATTR* attr2 = GetChAttribute(2);
-	CHATTR* attr1 = GetChAttribute(1);
-	if (voice && (voice->AL & 0x3) != 0) {//Noise enabled
-		if (mode ? attr2->IsAvailable() : attr2->IsEnable()) {
-			return 2;
-		}
-		else {
-			return 0xff;
-		}
+	ops = 1;
+	pt->writeRaw(0xbffe, 0x20);	// extended mode
+	pt->writeRaw(0xb000, 0x80);	// SCC register bank select
+	SetReg(0x8f, 0x1f, 1);
+}
+
+void CSCCP::UpdateVolExp(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
+		UINT8 evol = attr->GetEffectiveLevel();
+		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+		lev = (lev < 0) ? 0 : lev;
+		lev = (lev > 127) ? 127 : lev;
+		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127 - UINT8(lev)), RANGE48DB, STEP300DB, 4);
+		SetReg(0xaa + ch, evol & 0xf, 1);
 	}
-	else if (voice && (voice->AL & 0x20) != 0) {//HW Envelop
-		if (mode ? attr1->IsAvailable() : attr1->IsEnable()) {
-			return 1;
-		}
-		else {
-			return 0xff;
-		}
+}
+
+void CSCCP::UpdateFreq(UINT8 ch, const FNUM* fnum)
+{
+	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
+	UINT8 oct = fnum->block;
+	UINT16 etp = fnum->fnum >> (oct + 2);
+	SetReg(ch * 2 + 0xa0, UINT8(etp & 0xff), 1);
+	SetReg(ch * 2 + 0xa1, UINT8(etp >> 8), 1);
+}
+
+void CSCCP::UpdateVoice(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	FMVOICE* voice = attr->GetVoice();
+	lfoTL[ch] = attr->baseTL[0] = 64;
+	SCCWAVE wave;
+	CFITOM::GetInstance()->GetWaveform(&wave, voice->op[0].WS);
+	for (int i = 0; i < 32; i++) {
+		int idx = (i + voice->FB) & 31;
+		SetReg((ch * 32) + i, wave.wave[idx], 1);
 	}
-	return CSoundDevice::QueryCh(parent, voice, mode);
+}
+
+void CSCCP::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+{
+	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
+	switch (op) {
+	case 0:// Amplitude LFO
+	{
+		lfoTL[ch] = lev;
+	}
+	break;
+	}
+}
+
+//-------------------------------
+CSAA::CSAA(CPort* pt, int fsamp) : CPSGBase(DEVICE_SAA, pt, 6, fsamp, 1024*256, -640, FnumTableType::saa)
+{
+	ops = 1;
+	pt->writeRaw(0xbffe, 0x20);	// extended mode
+	pt->writeRaw(0xb000, 0x80);	// SCC register bank select
+	SetReg(0x8f, 0x1f, 1);
+}
+
+void CSAA::UpdateVolExp(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
+		UINT8 evol = attr->GetEffectiveLevel();
+		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+		lev = (lev < 0) ? 0 : lev;
+		lev = (lev > 127) ? 127 : lev;
+		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127 - UINT8(lev)), RANGE48DB, STEP300DB, 4);
+		SetReg(0xaa + ch, evol & 0xf, 1);
+	}
+}
+
+void CSAA::UpdateFreq(UINT8 ch, const FNUM* fnum)
+{
+	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
+	UINT8 oct = fnum->block;
+	UINT16 etp = fnum->fnum >> (oct + 2);
+	SetReg(ch * 2 + 0xa0, UINT8(etp & 0xff), 1);
+	SetReg(ch * 2 + 0xa1, UINT8(etp >> 8), 1);
+}
+
+void CSAA::UpdateVoice(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	FMVOICE* voice = attr->GetVoice();
+	lfoTL[ch] = attr->baseTL[0] = 64;
+	SCCWAVE wave;
+	CFITOM::GetInstance()->GetWaveform(&wave, voice->op[0].WS);
+	for (int i = 0; i < 32; i++) {
+		int idx = (i + voice->FB) & 31;
+		SetReg((ch * 32) + i, wave.wave[idx], 1);
+	}
+}
+
+void CSAA::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+{
+	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
+	switch (op) {
+	case 0:// Amplitude LFO
+	{
+		lfoTL[ch] = lev;
+	}
+	break;
+	}
 }

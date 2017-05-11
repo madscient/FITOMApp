@@ -7,6 +7,7 @@ enum FnumTableType {
 	TonePeriod = 2,
 	DeltaN = 3,
 	opl4 = 4,
+	saa = 5,
 };
 
 class CFnumTable {
@@ -25,6 +26,7 @@ public:
 	const UINT16* GetTPTable(int master, int devide, int offset);
 	const UINT16* GetDeltaNTable(int master, int devide, int offset);
 	const UINT16* GetOPL4Table(int master, int devide, int offset);
+	const UINT16* GetSAATable(int master, int devide, int offset);
 };
 
 extern CFnumTable theFnum;

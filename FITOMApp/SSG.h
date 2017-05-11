@@ -22,6 +22,7 @@ protected:
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
 public:
 	CPSGBase(UINT8 devid, CPort* pt, UINT8 ch, int fsamp);
+	CPSGBase(UINT8 devid, CPort* pt, UINT8 ch, int fsamp, int div, int off, FnumTableType type);
 	virtual void RhythmOn(UINT8 num, UINT8 vel) {};
 	virtual void PollingCallBack();
 	virtual void TimerCallBack(UINT32 tick);
@@ -67,28 +68,26 @@ protected:
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 	virtual void UpdateVoice(UINT8 ch);
-	virtual UINT8 AllocCh(CMidiCh* parent, FMVOICE* voice = 0);
 };
 
 class CSAA : public CPSGBase
 {
 public:
 	CSAA(CPort* pt, int fsamp);
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	//virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 protected:
-	virtual FNUM GetFnumber(UINT8 ch);
+	//virtual FNUM GetFnumber(UINT8 ch);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdatePanpot(UINT8 ch);
+	//virtual void UpdatePanpot(UINT8 ch);
 };
 
 class CSCC : public CPSGBase
 {
 public:
 	CSCC(CPort* pt, int fsamp);
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 protected:
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
 	virtual void UpdateVolExp(UINT8 ch);
@@ -96,12 +95,16 @@ protected:
 	virtual void UpdateVoice(UINT8 ch);
 };
 
-
-#if 0
-class CSSGS : public CPSGBase
+class CSCCP : public CPSGBase
 {
+public:
+	CSCCP(CPort* pt, int fsamp);
+protected:
+	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
+	virtual void UpdateVolExp(UINT8 ch);
+	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
+	virtual void UpdateVoice(UINT8 ch);
 };
-#endif
 
 class CEPSG : public CPSGBase
 {

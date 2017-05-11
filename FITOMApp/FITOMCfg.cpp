@@ -392,7 +392,10 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 			AddDevice(new CDCSG(pt, fs));
 			break;
 		case DEVICE_SCC:
-			AddDevice(new CSCC(pt, fs/2));
+			AddDevice(new CSCC(new COffsetPort(pt, 0x9800), fs / 2));
+			break;
+		case DEVICE_SCCP:
+			AddDevice(new CSCCP(new COffsetPort(pt, 0xb800), fs / 2));
 			break;
 		default:
 			res = -1;
@@ -616,6 +619,8 @@ int CFITOMConfig::LoadConfig()
 	std::terr << LoadMidiConfig() << _T(" MIDI IN ports configured.") << std::endl;
 	pProgressMessage ? pProgressMessage(_T("Loading Voice Setting...")) : void(0);
 	LoadVoiceConfig();
+	pProgressMessage ? pProgressMessage(_T("Loading Waveform Setting...")) : void(0);
+	std::terr << LoadSCCWaveBank() << _T("waveforms loaded.") << std::endl;
 	pProgressMessage ? pProgressMessage(_T(" ")) : void(0);
 	return 0;
 }
@@ -653,7 +658,6 @@ int CFITOMConfig::LoadMidiConfig()
 								}
 								int devid = CFITOM::GetDeviceIDFromName(lstdevparam[0].c_str());
 								SetChannelMap(j, devid, pol);
-
 							}
 						}
 						else {
@@ -917,6 +921,34 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 	return ret;
 }
 
+int CFITOMConfig::LoadSCCWaveBank()
+{
+	int wavenum = 0;
+	std::tstring fname = fitom_ini.get<std::tstring>(_T("WaveForm.file"), _T(""));
+	if (!fname.empty()) {
+		std::tifstream ifs(fname);
+		std::tstring line;
+		while (ifs && getline(ifs, line) && wavenum < 64) {
+			std::vector<std::tstring> lstparam;
+			boost::split(lstparam, line, boost::is_any_of(_T(",")));
+			if (lstparam.size() > 0) {
+				std::tstring name;
+				name = boost::trim_copy<std::tstring>(lstparam[0]);
+				lstparam.erase(lstparam.begin());
+				tcsncpy(vSccWaveForm[wavenum].name, name.c_str(), 16);
+				std::vector<int> waveform;
+				BOOST_FOREACH(std::tstring s, lstparam) { if (!s.empty()) waveform.push_back(stoi(boost::trim_copy<std::tstring>(s))); }
+				if (waveform.size() > 31) {
+					for (int i = 0; i < 32; i++) {
+						vSccWaveForm[wavenum].wave[i] = waveform[i];
+					}
+					wavenum++;
+				}
+			}
+		}
+	}
+	return wavenum;
+}
 
 int CFITOMConfig::ParseVoiceBank(int groupcode)
 {
@@ -1176,10 +1208,10 @@ int CFITOMConfig::ParsePSGVoice(FMVOICE* voice, int index, std::vector<int>& par
 		voice->op[k].MUL = (param[10] & 127); // Noise Select
 		voice->op[k].REV = 4;
 	}
-	else if (index == 0 && param.size() > 1) {
-		voice->AL = param[0] & 3;
-		voice->NFQ = param[1] & 31;
-		voice->FB = param[1] >> 5;
+	else if (index == 0 && param.size() > 2) {
+		voice->AL = param[0] & 127;
+		voice->NFQ = param[2] & 127;
+		voice->FB = param[1] & 127;
 	}
 	return 0;
 }
@@ -1307,7 +1339,7 @@ int CFITOMConfig::BuildPSGVoice(FMVOICE* voice, int index, TCHAR* result, size_t
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%3i %3i")) % int(voice->AL) % (((voice->NFQ & 31) << 3) | (voice->FB & 7))).str();
+		strres = (boost::format(_T("%3i %3i %3i")) % int(voice->AL) % int(voice->NFQ) % int(voice->FB)).str();
 		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
@@ -1327,4 +1359,11 @@ void CFITOMConfig::SetMasterVolume(UINT8 vol)
 UINT8 CFITOMConfig::GetMasterVolume()
 {
 	return pMasVol ? pMasVol->GetVolume() : 0;
+}
+
+void CFITOMConfig::GetWaveform(SCCWAVE* dst, int num)
+{
+	if (dst && num < 64) {
+		memcpy(dst, &vSccWaveForm[num], sizeof(SCCWAVE));
+	}
 }

@@ -73,6 +73,7 @@ typedef PCTSTR LPCTSTR;
 #define tiptree wiptree
 #define tcsncpy wcsncpy
 #define tcslen wcslen
+#define tifstream wifstream
 #else
 #define tstring string
 #define terr cerr
@@ -80,6 +81,7 @@ typedef PCTSTR LPCTSTR;
 #define tiptree iptree
 #define tcsncpy strncpy
 #define tcslen strlen
+#define tifstream ifstream
 #endif
 
 #endif

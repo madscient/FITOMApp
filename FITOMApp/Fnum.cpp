@@ -31,6 +31,8 @@ const UINT16* CFnumTable::GetTable(FnumTableType type, int master, int devide, i
 		return (GetTPTable(master, devide, offset));
 	case FnumTableType::opl4:
 		return (GetOPL4Table(master, devide, offset));
+	case FnumTableType::saa:
+		return (GetSAATable(master, devide, offset));
 	default:
 		return 0;
 	}
@@ -123,4 +125,26 @@ const UINT16* CFnumTable::GetOPL4Table(int master, int devide, int offset)
 	}
 	tablelist.push_back(fti);
 	return GetFnumTable(master, devide, offset);
+}
+
+// Build or get Tone No. table (for SAA1099)
+const UINT16* CFnumTable::GetSAATable(int master, int devide, int offset)
+{
+	double rate = master / devide;
+	for (int i = 0; i< tablelist.size(); i++) {
+		if (round(rate) == tablelist[i].rate && tablelist[i].type == FnumTableType::saa) {
+			return (const UINT16*)tablelist[i].body;
+		}
+	}
+	FnumTableInfo fti;
+	fti.rate = round(rate);
+	fti.type = FnumTableType::saa;
+	fti.body = new UINT16[768];
+	for (int i = 0; i < 768; i++) {
+		double freq = 440 * pow(2.0, (double)(i + offset) / 768.0);
+		double sig = round(256.0 * log2(freq / rate));
+		fti.body[i] = UINT16(sig) & 0xff;
+	}
+	tablelist.push_back(fti);
+	return GetDeltaNTable(master, devide, offset);
 }

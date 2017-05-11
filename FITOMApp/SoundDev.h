@@ -133,6 +133,7 @@ protected:
 		enum CHSTAT {
 			EMPTY = 0, DISABLED = -1, ASSIGNED = 1, RUNNING = 2,
 		} status;
+		bool dva;
 		CSoundDevice* device;
 		CMidiCh* parent;
 		FMVOICE	voice;
@@ -156,6 +157,7 @@ protected:
 		int IsAvailable() const { return (status==EMPTY); };
 		int IsRunning() const { return (status==RUNNING); };
 		int IsAssigned() const { return (status==ASSIGNED); };
+		bool IsAutoAssignable() const { return dva; };
 		CMidiCh* GetParent() const { return parent; }
 		FMVOICE* GetVoice() const { return (FMVOICE* const)&voice; };
 		UINT32 GetVoiceID() const { return voice.ID; };
@@ -168,6 +170,7 @@ protected:
 		void Release(int par);
 		void Enable(int ena);
 		void SetNoteFine(UINT8 note, SINT16 fine);
+		void OutOfDVA() { dva = false; };
 		UINT8 GetLastNote() const { return lastnote; }
 		SINT16 GetLastFineFreq() const { return finefreq; };
 		SINT16 GetChLFOValue();
@@ -254,6 +257,7 @@ protected:
 	UINT8	rhythmcap;
 	CPort*	port;
 	CHATTR*	chattr;
+	UINT8*	regbak;
 	const UINT16* Fnum;
 	int	NoteOffset;
 	int MasterTune;

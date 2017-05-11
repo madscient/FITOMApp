@@ -1,27 +1,15 @@
 #include "STDAFX.H"
 #include "Port.h"
 
-CSCCIPort::CSCCIPort() : regsize(0), pInterface(0), pChip(0), mappedaddr(0)
+CSCCIPort::CSCCIPort() : regsize(0), pInterface(0), pChip(0)
 {
 }
 
 CSCCIPort::CSCCIPort(SoundInterface* pif, SoundChip* pchip, size_t maxreg) : pInterface(pif), pChip(pchip), regsize(maxreg)
 {
-	regbak = new UINT8[maxreg];
-	::ZeroMemory(regbak, maxreg);
 }
 
-void CSCCIPort::write(UINT16 addr, UINT16 data, int v)
-{
-	if (pChip && addr < regsize) {
-		if (v || (data != regbak[addr])) {
-			writeRaw(DWORD(addr + mappedaddr), DWORD(data));
-		}
-		regbak[addr] = UINT8(data);
-	}
-}
-
-void CSCCIPort::writeRaw(UINT16 addr, UINT16 data)
+void CSCCIPort::write(UINT16 addr, UINT16 data)
 {
 	if (pChip) {
 		pChip->setRegister(DWORD(addr), DWORD(data));
@@ -33,10 +21,10 @@ void CSCCIPort::writeRaw(UINT16 addr, UINT16 data)
 	}
 }
 
-UINT8 CSCCIPort::read(UINT16 addr, int v)
+UINT8 CSCCIPort::read(UINT16 addr)
 {
 	if (pChip && addr < regsize) {
-		return v ? UINT8(pChip->getRegister(DWORD(addr))) : regbak[addr];
+		return UINT8(pChip->getRegister(DWORD(addr)));
 	}
 	return 255;
 }
@@ -50,7 +38,6 @@ void CSCCIPort::reset()
 {
 	if (pChip) {
 		pChip->init();
-		::ZeroMemory(regbak, regsize);
 	}
 }
 
@@ -92,7 +79,7 @@ int CDebugPort::GetDesc(TCHAR* str, int len)
 	return ++ret;
 }
 
-void CDebugPort::write(UINT16 addr, UINT16 data, int v)
+void CDebugPort::write(UINT16 addr, UINT16 data)
 {
 	TCHAR str[80];
 	StringCchPrintf(str, 80, _T("reg %s %03x %02x\n"), chipname, addr, data);
@@ -100,7 +87,7 @@ void CDebugPort::write(UINT16 addr, UINT16 data, int v)
 	regbak[addr] = UINT8(data);
 }
 
-UINT8 CDebugPort::read(UINT16 addr, int v)
+UINT8 CDebugPort::read(UINT16 addr)
 {
 	return (addr < regsize) ? regbak[addr] : 0;
 }

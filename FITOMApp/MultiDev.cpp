@@ -56,7 +56,7 @@ void CMultiDevice::PollingCallBack()
 void CMultiDevice::SetReg(UINT16 reg, UINT8 data, UINT8 v)
 {
 	if (!port) {
-		chips[0]->GetDevPort()->write(reg, data, v);
+		chips[0]->GetDevPort()->write(reg, data);
 	} else {
 		CSoundDevice::SetReg(reg, data, v);
 	}
@@ -66,7 +66,7 @@ UINT8 CMultiDevice::GetReg(UINT16 reg, UINT8 v)
 {
 	UINT8 ret = 0;
 	if (!port) {
-		ret = chips[0]->GetDevPort()->read(reg, v);
+		ret = chips[0]->GetDevPort()->read(reg);
 	} else {
 		ret = CSoundDevice::GetReg(reg, v);
 	}

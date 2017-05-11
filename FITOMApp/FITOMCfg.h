@@ -121,6 +121,7 @@ protected:
 	int ParseRhythmBank();
 	int LoadDrumBank(CDrumBank* bank, LPCTSTR fname);
 	int LoadADPCMBank(int bank, LPCTSTR fname);
+	int LoadSCCWaveBank();
 
 public:
 	CFITOMConfig(LPCTSTR strinifile);
@@ -141,6 +142,7 @@ public:
 	CDrumBank* GetDrumBank(int prog);
 	CPcmBank* AllocPcmBank(int prog);
 	CPcmBank* GetPcmBank(int prog);
+	void GetWaveform(SCCWAVE* dst, int num);
 	int GetDeviceName(UINT32 devid, TCHAR* name, size_t count);
 	int GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* name, size_t count);
 	const TCHAR* GetBankName(UINT32 devid, UINT32 bank);

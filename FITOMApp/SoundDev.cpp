@@ -44,6 +44,7 @@ void CSoundDevice::CHATTR::Init()
 	count = 0;
 	memset(&voice, 0, sizeof(FMVOICE));
 	voice.ID = 0xffffffff;
+	dva = true;
 }
 
 void CSoundDevice::CHATTR::Assign(CMidiCh* parch)
@@ -149,7 +150,7 @@ void CSoundDevice::CHATTR::SetNoteFine(UINT8 note, SINT16 fine)
 
 /*----------*/
 CSoundDevice::CSoundDevice(UINT8 devid, UINT8 maxchs, int fsamp, int devide, int offset, FnumTableType ftype, CPort* pt) :
-device(devid), chs(maxchs), port(pt), rhythmvol(100), ops(4), prior_ch(0), rhythmcap(0), NoteOffset(60), MasterTune(0)
+device(devid), chs(maxchs), port(pt), rhythmvol(100), ops(4), prior_ch(0), rhythmcap(0), NoteOffset(60), MasterTune(0), regbak(0)
 {
 	if (maxchs) {
 		chattr = new CHATTR[int(maxchs)];
@@ -198,13 +199,22 @@ void CSoundDevice::SetDevice(UINT8 devid)
 
 void CSoundDevice::SetReg(UINT16 reg, UINT8 data, UINT8 v)
 {
-	port ? port->write(reg, data, v) : 0;
+	if (regbak) {
+		regbak[reg] = data;
+	}
+	else {
+		v = 1;
+	}
+	if (!v && regbak) {
+		v = (regbak[reg] != data);
+	}
+	(v && port) ? port->write(reg, data) : 0;
 }
 
 UINT8 CSoundDevice::GetReg(UINT16 reg, UINT8 v)
 {
 	UINT8 ret = 0;
-	ret = port ? port->read(reg, (int)v) : 0;
+	ret = v ? (port ? port->read(reg) : 0) : (regbak ? regbak[reg] : 0);
 	return ret;
 }
 
@@ -372,7 +382,7 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		tmp = prior_ch;
 		for (int i=0; i<chs; i++) {
 			attr = GetChAttribute(tmp);
-			if (attr && (mode ? attr->IsAvailable() : attr->IsEnable()) && attr->GetVoiceID() == voice->ID && attr->GetParent() == parent) {
+			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable()) && attr->GetVoiceID() == voice->ID && attr->GetParent() == parent) {
 				ret = tmp;
 				break;
 			}
@@ -382,7 +392,7 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		tmp = prior_ch;
 		for (int i = 0; i<chs; i++) {
 			attr = GetChAttribute(tmp);
-			if (attr && (mode ? attr->IsAvailable() : attr->IsEnable()) && attr->GetVoiceID() == voice->ID) {
+			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable()) && attr->GetVoiceID() == voice->ID) {
 				ret = tmp;
 				break;
 			}
@@ -392,7 +402,7 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		tmp = prior_ch;
 		for (int i=0; i<chs; i++) {
 			attr = GetChAttribute(tmp);
-			if (attr && (mode ? attr->IsAvailable() : 1) && attr->IsEnable()) {
+			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : 1) && attr->IsEnable()) {
 				ret = tmp;
 				break;
 			}

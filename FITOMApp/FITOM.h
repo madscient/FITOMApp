@@ -182,6 +182,7 @@ public:
 	void ReloadVoice(FMVOICE* voice, UINT32 dev, UINT8 bank, UINT8 num);
 	void SetMasterVolume(UINT8 vol) { theConfig ? theConfig->SetMasterVolume(vol) : void(0); };
 	UINT8 GetMasterVolume() { return theConfig ? theConfig->GetMasterVolume() : 0; };
+	void GetWaveform(SCCWAVE* dst, int num) { theConfig ? theConfig->GetWaveform(dst, num) : void(0); };
 	void SetLCDdot(int page, int x, int y, int val);
 	void SetLCDrow(int page, int r, BYTE src[16]);
 	void SetLCDcol(int page, int c, BYTE src[16]);
