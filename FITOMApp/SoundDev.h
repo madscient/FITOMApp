@@ -277,7 +277,7 @@ protected:
 	//Internal utility
 	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0);
 public:
-	CSoundDevice(UINT8 devid, UINT8 maxchs, int fmas, int devide, int offset = FNUM_OFFSET, FnumTableType ftype = FnumTableType::Fnumber, CPort* pt = 0);
+	CSoundDevice(UINT8 devid, UINT8 maxchs, int fmas, int devide, int offset = FNUM_OFFSET, FnumTableType ftype = FnumTableType::Fnumber, CPort* pt = 0, int regsize = 0);
 	//CSoundDevice();
 	~CSoundDevice();
 

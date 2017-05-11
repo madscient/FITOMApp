@@ -3,14 +3,14 @@
 #include "FITOM.h"
 #include "MIDI.h"
 
-CPSGBase::CPSGBase(UINT8 devid, CPort* pt, UINT8 ch, int fsamp)
-	: CPSGBase(devid, pt, ch, fsamp, 1, -576, FnumTableType::TonePeriod)
+CPSGBase::CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp)
+	: CPSGBase(devid, pt, regsize, ch, fsamp, 1, -576, FnumTableType::TonePeriod)
 //	: CSoundDevice(devid, ch, fsamp, 1, -576, FnumTableType::TonePeriod, pt)
 {
 }
 
-CPSGBase::CPSGBase(UINT8 devid, CPort* pt, UINT8 ch, int fsamp, int div, int off, FnumTableType type)
-	: CSoundDevice(devid, ch, fsamp, div, off, type, pt)
+CPSGBase::CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp, int div, int off, FnumTableType type)
+	: CSoundDevice(devid, ch, fsamp, div, off, type, pt, regsize)
 {
 	ops = 0;
 	lfoTL = new UINT8[chs];
@@ -82,7 +82,7 @@ void CPSGBase::TimerCallBack(UINT32 tick)
 }
 
 //-------------------------------
-CSSG::CSSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_SSG, pt, 3, fsamp)
+CSSG::CSSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_SSG, pt, 0x20, 3, fsamp)
 {
 	SetReg(0x07, 0x3f, 1);
 	ops = 2;
@@ -105,7 +105,7 @@ void CSSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> (oct + 2);
+	UINT16 etp = fnum->fnum >> (oct + 3);
 	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
 	SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
 }
@@ -188,7 +188,7 @@ CPSG::CPSG(CPort* pt, int fsamp) : CSSG(pt, fsamp)
 }
 
 //-------------------------------
-CSSGS::CSSGS(CPort* pt, int fsamp) : CPSGBase(DEVICE_SSGS, pt, 6, fsamp)
+CSSGS::CSSGS(CPort* pt, int fsamp) : CPSGBase(DEVICE_SSGS, pt, 0x40, 6, fsamp)
 {
 	SetReg(0x07, 0x3f, 1);
 	ops = 2;
@@ -214,7 +214,7 @@ void CSSGS::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> (oct + 2);
+	UINT16 etp = fnum->fnum >> (oct + 3);
 	UINT8 off = (ch < 3) ? 0 : 0x20;
 	UINT8 dch = (ch < 3) ? ch : (ch-3);
 	SetReg(off + dch * 2 + 0, UINT8(etp & 0xff), 1);
@@ -311,7 +311,7 @@ UINT8 CSSGS::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 }
 
 //-------------------------------
-CDCSG::CDCSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_DCSG, pt, 4, fsamp)
+CDCSG::CDCSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_DCSG, pt, 0x10, 4, fsamp, 2, -576, FnumTableType::TonePeriod)
 {
 	port->write(0, 0x80);
 	port->write(0, 0x00);
@@ -345,7 +345,7 @@ void CDCSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	if (ch < 3) {
 		UINT8 oct = fnum->block;
-		UINT16 etp = fnum->fnum >> (oct + 4);
+		UINT16 etp = fnum->fnum >> (oct + 3);
 		port->writeRaw(0, 0x80 | (ch * 32) | (etp & 0xf));
 		port->writeRaw(0, 0x0 | ((etp >> 4) & 63));
 	}
@@ -375,24 +375,15 @@ UINT8 CDCSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	if (voice && voice->AL == 1) {
 		ret = 3;
 	}
-	ret = CSoundDevice::QueryCh(parent, voice, mode);
-	if (voice && voice->AL == 0) {
-		if (ret == 3) {
-			ret = 0;
-			for (int i = 0; i < 3; i++) {
-				CHATTR* attr = GetChAttribute(i);
-				if (attr->IsAvailable()) {
-					ret = i;
-				}
-			}
-		}
+	else {
+		ret = CSoundDevice::QueryCh(parent, voice, mode);
 	}
 	return ret;
 }
 
 //-------------------------------
 
-CEPSG::CEPSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_EPSG, pt, 3, fsamp), prevmix(0x3f)
+CEPSG::CEPSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_EPSG, pt, 0x20, 3, fsamp), prevmix(0x3f)
 {
 	SetReg(0xd, 0xb0, 1);	//Enable expand mode
 	SetReg(0x9, 0xff, 1);	//Noise "AND" mask
@@ -425,7 +416,7 @@ void CEPSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> oct;
+	UINT16 etp = fnum->fnum >> (oct + 2);
 	//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
 	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
 	SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
@@ -502,7 +493,7 @@ void CEPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 }
 
 //-------
-CDSG::CDSG(CPort* pt, int fsamp) : CSoundDevice(DEVICE_DSG, 4, fsamp, 2, -576, FnumTableType::TonePeriod, pt)
+CDSG::CDSG(CPort* pt, int fsamp) : CSoundDevice(DEVICE_DSG, 4, fsamp, 2, -576, FnumTableType::TonePeriod, pt, 0x80)
 {
 	SetReg(0x07, 0x3f, 1);
 	ops = 1;
@@ -605,7 +596,7 @@ void CDSG::SetReg(UINT16 addr, UINT8 data, int v)
 }
 
 //-------------------------------
-CSCC::CSCC(CPort* pt, int fsamp) : CPSGBase(DEVICE_SCC, pt, 5, fsamp)
+CSCC::CSCC(CPort* pt, int fsamp) : CPSGBase(DEVICE_SCC, pt, 0x100, 5, fsamp)
 {
 	ops = 1;
 	pt->writeRaw(0xbffe, 0);	// compatible mode (if SCC+)
@@ -664,7 +655,7 @@ void CSCC::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 }
 
 //-------------------------------
-CSCCP::CSCCP(CPort* pt, int fsamp) : CPSGBase(DEVICE_SCC, pt, 5, fsamp)
+CSCCP::CSCCP(CPort* pt, int fsamp) : CPSGBase(DEVICE_SCC, pt, 0x100, 5, fsamp)
 {
 	ops = 1;
 	pt->writeRaw(0xbffe, 0x20);	// extended mode
@@ -720,7 +711,7 @@ void CSCCP::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 }
 
 //-------------------------------
-CSAA::CSAA(CPort* pt, int fsamp) : CPSGBase(DEVICE_SAA, pt, 6, fsamp, 1024*256, -640, FnumTableType::saa)
+CSAA::CSAA(CPort* pt, int fsamp) : CPSGBase(DEVICE_SAA, pt, 0x20, 6, fsamp, 1024*256, -640, FnumTableType::saa)
 {
 	ops = 1;
 	pt->writeRaw(0xbffe, 0x20);	// extended mode

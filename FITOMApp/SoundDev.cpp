@@ -44,7 +44,7 @@ void CSoundDevice::CHATTR::Init()
 	count = 0;
 	memset(&voice, 0, sizeof(FMVOICE));
 	voice.ID = 0xffffffff;
-	dva = true;
+	dva = dva ? true : false;
 }
 
 void CSoundDevice::CHATTR::Assign(CMidiCh* parch)
@@ -149,9 +149,12 @@ void CSoundDevice::CHATTR::SetNoteFine(UINT8 note, SINT16 fine)
 }
 
 /*----------*/
-CSoundDevice::CSoundDevice(UINT8 devid, UINT8 maxchs, int fsamp, int devide, int offset, FnumTableType ftype, CPort* pt) :
+CSoundDevice::CSoundDevice(UINT8 devid, UINT8 maxchs, int fsamp, int devide, int offset, FnumTableType ftype, CPort* pt, int regsize) :
 device(devid), chs(maxchs), port(pt), rhythmvol(100), ops(4), prior_ch(0), rhythmcap(0), NoteOffset(60), MasterTune(0), regbak(0)
 {
+	if (regsize) {
+		regbak = new BYTE[regsize];
+	}
 	if (maxchs) {
 		chattr = new CHATTR[int(maxchs)];
 	} else {
@@ -324,13 +327,20 @@ UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 		ret = QueryCh(NULL, NULL, 1);
 	}
 	if (ret == 0xff) {
+		ret = QueryCh(NULL, NULL, 0);
+	}
+	if (ret == 0xff) {
 		DWORD count = 0;
+		int cand = prior_ch;
 		for (int i = 0; i < chs; i++) {
 			CHATTR* attr = GetChAttribute(i);
-			if (count <= attr->noteon) {
-				ret = i;
+			if (attr->IsAutoAssignable() && attr->IsEnable()) {
+				if (count <= attr->noteon) {
+					cand = i;
+				}
 			}
 		}
+		ret = cand;
 	}
 	/*
 	if (ret == 0xff) {
@@ -411,6 +421,9 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	}
 	if (ret == 0xff) {
 		prior_ch = (prior_ch + 1) % chs;
+	}
+	else {
+		prior_ch = ret;
 	}
 	return ret;
 }

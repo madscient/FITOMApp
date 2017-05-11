@@ -21,8 +21,8 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
 public:
-	CPSGBase(UINT8 devid, CPort* pt, UINT8 ch, int fsamp);
-	CPSGBase(UINT8 devid, CPort* pt, UINT8 ch, int fsamp, int div, int off, FnumTableType type);
+	CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp);
+	CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp, int div, int off, FnumTableType type);
 	virtual void RhythmOn(UINT8 num, UINT8 vel) {};
 	virtual void PollingCallBack();
 	virtual void TimerCallBack(UINT32 tick);

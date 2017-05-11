@@ -21,7 +21,7 @@ UINT8 COPLL::RhythmFreq[3] = { 47, 60, 53, };
 #define IS_KEY(ch) (GetReg(0x20 + ch, 0) & 0x10)
 
 COPLL::COPLL(CPort* pt, UINT8 mode, int fsamp, UINT8 devtype) :
-CSoundDevice(devtype, 9, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt), RhythmOnMap(0), RhythmOffMap(0)
+CSoundDevice(devtype, 9, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x40), RhythmOnMap(0), RhythmOffMap(0)
 {
 	ops = 2;
 	if (mode) {

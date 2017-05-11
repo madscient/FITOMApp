@@ -20,8 +20,9 @@ UINT8 COPL::RhythmFreq[] = { 47, 60, 53, };
 #define GET_RV(v,o)	(v->op[o].REV >> 3)
 
 
-COPL::COPL(CPort* pt, int fsamp, UINT8 devtype) :
-CSoundDevice(devtype, 9, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt), RhythmOnMap(0), RhythmOffMap(0)
+COPL::COPL(CPort* pt, int fsamp, UINT8 devtype)
+	: CSoundDevice(devtype, 9, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100)
+	,RhythmOnMap(0), RhythmOffMap(0)
 {
 	ops = 2;
 	if (devtype != DEVICE_OPL3_2) {

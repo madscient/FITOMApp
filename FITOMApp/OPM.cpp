@@ -15,7 +15,7 @@ UINT8 COPM::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 #define GET_TL(v,o)	(v->op[o].TL)
 #define GET_RV(v,o)	(v->op[o].REV >> 3)
 
-COPM::COPM(CPort* pt, int fsamp) : CSoundDevice(DEVICE_OPM, 8, 0, 0, 0, FnumTableType::none, pt), lfos(1)
+COPM::COPM(CPort* pt, int fsamp) : CSoundDevice(DEVICE_OPM, 8, 0, 0, 0, FnumTableType::none, pt, 0x100), lfos(1)
 {
 	lfores = new LFORESOURCE[1];
 	MasterTune = 768.0 * log2(3579545.0/(double)fsamp);

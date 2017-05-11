@@ -72,7 +72,7 @@ protected:
 		UINT32 addr;
 		UINT32 range;
 	};
-	std::vector<PORTMAP&> ports;
+	std::vector<PORTMAP> ports;
 public:
 	CMappedPort();
 	UINT32 Append(CPort* pt, UINT32 size);

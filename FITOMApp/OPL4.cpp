@@ -5,7 +5,7 @@
 
 //COPL4ML YMF704 aka OPL4-ML
 COPL4ML::COPL4ML(CPort* pt, int fsamp) :
-CSoundDevice(DEVICE_OPL4ML, 24, fsamp, 684, 0, FnumTableType::none, pt)
+CSoundDevice(DEVICE_OPL4ML, 24, fsamp, 684, 0, FnumTableType::none, pt, 0x100)
 {
 	Fnum = theFnum.GetOPL4Table(fsamp, 684, 0);
 	NoteOffset = 0;	//Origin = O3A
