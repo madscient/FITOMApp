@@ -73,13 +73,13 @@ public:
 	virtual void write(UINT16 addr, UINT16 data);
 	virtual void writeRaw(UINT16 addr, UINT16 data) { write(addr, data); };
 	virtual UINT8 read(UINT16 addr);
-	virtual UINT8 status();
+	virtual UINT8 status() { return (0 < ports.size()) ? ports[0].port->status() : 0; };
 	virtual void reset();
 	virtual int GetDesc(TCHAR* str, int len);
-	virtual int GetClock() { return 0; };
-	virtual UINT32 GetPhysicalId();
-	virtual CPort* GetSubPort(int idx);
-	virtual int GetPortCount();
+	virtual int GetClock() { return (0 < ports.size()) ? ports[0].port->GetClock() : 0; };
+	virtual UINT32 GetPhysicalId() { return 0; };
+	virtual CPort* GetSubPort(int idx) { return (idx < ports.size()) ? ports[idx].port : 0; };
+	virtual int GetPortCount() { return ports.size(); };
 };
 
 #ifdef _WIN32

@@ -68,3 +68,15 @@ UINT8 CMappedPort::read(UINT16 addr)
 	return ret;
 }
 
+void CMappedPort::reset()
+{
+	for (int i = 0; i < ports.size(); i++) {
+		ports[i].port->reset();
+	}
+}
+
+int CMappedPort::GetDesc(TCHAR* str, int len)
+{
+	tcsncpy(str, _T("Mapped Port"), len);
+	return tcslen(str);
+}

@@ -188,35 +188,51 @@ int ISoundDevice::CEnvelope::Update()
 		}
 		break;
 	case EG_DECAY:
-		tmp -= param->DR;
-		if (tmp > 0 && tmp > (127-param->SL)) {
-			value = tmp;
+		if ((count & 0x1) == 1) {	//ディケイフェーズは1/2
+			tmp -= param->DR;
+			if (tmp > 0 && tmp > (127 - param->SL)) {
+				value = tmp;
+				count++;
+			}
+			else {
+				phase = EG_SUSTAIN;
+				value = 127 - param->SL;
+				count = 0;
+			}
+		}
+		else {
 			count++;
-		} else {
-			phase = EG_SUSTAIN;
-			value = 127 - param->SL;
-			count = 0;
 		}
 		break;
 	case EG_SUSTAIN:
-		tmp -= param->SR;
-		if (tmp > 0) {
-			value = tmp;
-		} else {
-			value = 0;
+		if ((count & 0x7) == 7) {	//サスティンフェーズは1/8
+			tmp -= param->SR;
+			if (tmp > 0) {
+				value = tmp;
+			}
+			else {
+				value = 0;
+			}
 		}
 		count++;
 		break;
 	case EG_RELEASE:
-		if (tmp <= 0) {
-			Stop();
-		} else {
-			tmp -= param->RR;
-			if (tmp > 0) {
-				value = tmp;
-			} else {
-				value = 0;
-			} 
+		if ((count & 0x3) == 3) {	//リリースフェーズは1/4
+			if (tmp <= 0) {
+				Stop();
+			}
+			else {
+				tmp -= param->RR;
+				if (tmp > 0) {
+					value = tmp;
+				}
+				else {
+					value = 0;
+				}
+				count++;
+			}
+		}
+		else {
 			count++;
 		}
 		break;
