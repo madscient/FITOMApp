@@ -26,23 +26,11 @@ public:
 	virtual void SetPhysicalId(UINT32 id) { physical_id = id; };
 };
 
-
-class CDblPort : public CPort
+class CMultiPort : public CPort
 {
 public:
-	CDblPort(CPort* pta, CPort* ptb);
-	~CDblPort() {};
-	virtual void write(UINT16 addr, UINT16 data);
-	virtual void writeRaw(UINT16 addr, UINT16 data) { write(addr, data); };
-	virtual UINT8 read(UINT16 addr);
-	virtual UINT8 status();
-	virtual void reset() { if (port[0]) port[0]->reset(); if (port[1]) port[1]->reset(); };
-	virtual int GetDesc(TCHAR* str, int len);
-	virtual int GetClock() { return (port[0]) ? port[0]->GetClock() : 0; };
-	virtual UINT32 GetPhysicalId() { return port[0] ? port[0]->GetPhysicalId() : 0; };
-	CPort* GetSubPort(int idx);
-protected:
-	CPort* port[2];
+	virtual CPort* GetSubPort(int idx) = 0;
+	virtual int GetPortCount() = 0;
 };
 
 class COffsetPort : public CPort
@@ -64,7 +52,7 @@ public:
 	virtual void SetPhysicalId(UINT32 id) { parent ? parent->SetPhysicalId(id) : void(0); };
 };
 
-class CMappedPort : public CPort
+class CMappedPort : public CMultiPort
 {
 protected:
 	struct PORTMAP {
@@ -73,8 +61,13 @@ protected:
 		UINT32 range;
 	};
 	std::vector<PORTMAP> ports;
+	CPort* GetSubPort(UINT32 addr);
+	int GetPortIndex(UINT32 addr);
+	UINT32 GetNextAddress();
 public:
-	CMappedPort();
+	CMappedPort() {};
+	CMappedPort(CPort* pt, UINT32 addr, UINT32 range);
+	~CMappedPort() {};
 	UINT32 Append(CPort* pt, UINT32 size);
 	UINT32 Map(CPort* pt, UINT32 addr, UINT32 size);
 	virtual void write(UINT16 addr, UINT16 data);
@@ -85,7 +78,8 @@ public:
 	virtual int GetDesc(TCHAR* str, int len);
 	virtual int GetClock() { return 0; };
 	virtual UINT32 GetPhysicalId();
-	CPort* GetSubPort(int idx);
+	virtual CPort* GetSubPort(int idx);
+	virtual int GetPortCount();
 };
 
 #ifdef _WIN32
