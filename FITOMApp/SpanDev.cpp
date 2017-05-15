@@ -127,3 +127,8 @@ void CSpanDevice::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* f
 		}
 	}
 }
+
+int CSpanDevice::LowLevelCommand(UINT8 ch, PERFCMD cmd)
+{
+	return chips[chres[ch].dev]->LowLevelCommand(chres[ch].ch, cmd);
+}

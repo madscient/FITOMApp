@@ -42,13 +42,19 @@ ISoundDevice::FNUM CPSGBase::GetFnumber(UINT8 ch, SINT16 offset)
 void CPSGBase::UpdateKey(UINT8 ch, UINT8 keyon)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
-	if (keyon) {
-		UpdateVoice(ch);
-		if (!(voice->AL & 0x4)) {
-			egattr[ch].Start(&voice->op[0]);
+	if (voice->ID & 0x00004000) {
+		// Low level performance
+	}
+	else {
+		if (keyon) {
+			UpdateVoice(ch);
+			if (!(voice->AL & 0x4)) {
+				egattr[ch].Start(&voice->op[0]);
+			}
 		}
-	} else {
-		egattr[ch].Release();
+		else {
+			egattr[ch].Release();
+		}
 	}
 }
 
@@ -79,6 +85,56 @@ void CPSGBase::TimerCallBack(UINT32 tick)
 			UpdateVolExp(i);
 		}
 	}
+}
+
+int CPSGBase::LowLevelCommand(UINT8 ch, PERFCMD cmd)
+{
+	int ret = 1;
+	switch (cmd.cmd) {
+	case LLC_CMD_TONE:
+		LLCTone(ch, cmd.param);
+		break;
+	case LLC_CMD_FREQ:
+		LLCFreq(ch, cmd.param);
+		break;
+	case LLC_CMD_NOISE:
+		LLCNoise(ch, cmd.param);
+		break;
+	case LLC_CMD_NFREQ:
+		LLCNoiseFreq(ch, cmd.param);
+		break;
+	case LLC_CMD_NAM:
+		LLCNoiseAND(ch, cmd.param);
+		break;
+	case LLC_CMD_NOM:
+		LLCNoiseOR(ch, cmd.param);
+		break;
+	case LLC_CMD_AMP:
+		LLCAmp(ch, cmd.param);
+		break;
+	case LLC_CMD_AMPL:
+		LLCAmpL(ch, cmd.param);
+		break;
+	case LLC_CMD_AMPR:
+		LLCAmpR(ch, cmd.param);
+		break;
+	case LLC_CMD_ENVM:
+		LLCEnvMode(ch, cmd.param);
+		break;
+	case LLC_CMD_ENVF:
+		LLCEnvFreq(ch, cmd.param);
+		break;
+	case LLC_CMD_ENVS:
+		LLCEnvShape(ch, cmd.param);
+		break;
+	case LLC_CMD_ENVP:
+		LLCEnvPrec(ch, cmd.param);
+		break;
+	case LLC_CMD_ENVR:
+		LLCEnvRev(ch, cmd.param);
+		break;
+	}
+	return ret;
 }
 
 //-------------------------------
@@ -181,137 +237,62 @@ UINT8 CSSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	}
 	return CSoundDevice::QueryCh(parent, voice, mode);
 }
+
+void CSSG::LLCTone(UINT8 ch, SINT32 param)
+{
+	UINT8 mix = ((~param) & 1) << ch;
+	SetReg(0x7, (GetReg(0x7, 0) & ~(0x1 << ch)) | mix, 1);
+}
+
+void CSSG::LLCFreq(UINT8 ch, SINT32 param)
+{
+	SetReg(ch * 2 + 0, UINT8(param & 0xff), 1);
+	SetReg(ch * 2 + 1, UINT8(param >> 8) & 0xf, 1);
+}
+
+void CSSG::LLCNoise(UINT8 ch, SINT32 param)
+{
+	UINT8 mix = ((~param) & 1) << (ch + 3);
+	SetReg(0x7, (GetReg(0x7, 0) & ~(0x8 << ch)) | mix, 1);
+}
+
+void CSSG::LLCNoiseFreq(UINT8 ch, SINT32 param)
+{
+	SetReg(0x6, (param & 0x1f), 1);
+}
+
+void CSSG::LLCAmp(UINT8 ch, SINT32 param)
+{
+	SetReg(0x8 + ch, (GetReg(0x8 + ch, 0) & 0xf0) | (param & 0xf), 1);
+}
+
+void CSSG::LLCEnvMode(UINT8 ch, SINT32 param)
+{
+	SetReg(0x8 + ch, (GetReg(0x8 + ch, 0) & 0xef) | ((param & 1) << 4), 1);
+}
+
+void CSSG::LLCEnvFreq(UINT8 ch, SINT32 param)
+{
+	SetReg(0xb, (param & 0xff), 1);
+	SetReg(0xc, ((param >> 8) & 0xff), 1);
+}
+
+void CSSG::LLCEnvShape(UINT8 ch, SINT32 param)
+{
+	SetReg(0xd, (param & 0xf), 1);
+}
+
 //-------------------------------
 CPSG::CPSG(CPort* pt, int fsamp) : CSSG(pt, fsamp)
 {
 	SetDevice(DEVICE_PSG);
 }
 
-//-------------------------------
-CSSGS::CSSGS(CPort* pt, int fsamp) : CPSGBase(DEVICE_SSGS, pt, 0x40, 6, fsamp)
-{
-	SetReg(0x07, 0x3f, 1);
-	ops = 2;
-}
-
-void CSSGS::UpdateVolExp(UINT8 ch)
-{
-	CHATTR* attr = GetChAttribute(ch);
-	FMVOICE* voice = attr->GetVoice();
-	if (!(voice->op[0].EGT & 0x8)) {
-		UINT8 evol = attr->GetEffectiveLevel();
-		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
-		lev = (lev < 0) ? 0 : lev;
-		lev = (lev > 127) ? 127 : lev;
-		evol = Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP300DB, 4);
-		UINT8 off = (ch < 3) ? 8 : 0x28;
-		UINT8 dch = (ch < 3) ? ch : (ch-3);
-		SetReg(off + dch, 15-evol & 0xf, 1);
-	}
-}
-
-void CSSGS::UpdateFreq(UINT8 ch, const FNUM* fnum)
-{
-	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> (oct + 3);
-	UINT8 off = (ch < 3) ? 0 : 0x20;
-	UINT8 dch = (ch < 3) ? ch : (ch-3);
-	SetReg(off + dch * 2 + 0, UINT8(etp & 0xff), 1);
-	SetReg(off + dch * 2 + 1, UINT8(etp >> 8), 1);
-}
-
-void CSSGS::UpdateVoice(UINT8 ch)
-{
-	CHATTR* attr = GetChAttribute(ch);
-	FMVOICE* voice = attr->GetVoice();
-	UINT8 mix = 8;
-	switch (voice->AL & 3) {
-	case 0:
-		mix = 0x8;	//tone
-		break;
-	case 1:
-		mix = 0x1;	//noise
-		break;
-	case 2:
-		mix = 0x0;	//tone+noise
-		break;
-	case 3:
-		mix = 0x9;	//off
-		break;
-	}
-	lfoTL[ch] = attr->baseTL[0] = attr->baseTL[1] = 64;
-	UINT8 off = (ch < 3) ? 0 : 0x20;
-	UINT8 dch = (ch < 3) ? ch : (ch-3);
-	SetReg(off + 0x7, (GetReg(0x7, 0) & ~(0x9 << dch)) | (mix << dch), 1);
-	if (mix==0 || mix==1) {
-		SetReg(off + 0x6, voice->NFQ, 1);
-	}
-	if (voice->op[0].EGT & 0x8) {	//hw env
-		SetReg(off + 0x8 + dch, (GetReg(0x8+ch, 0) & 0xe0) | 0x10, 1);
-		SetReg(off + 0xb, (((voice->op[0].SR << 4) & 0xf0) | (voice->op[0].SL & 0xf)), 1);
-		SetReg(off + 0xc, (((voice->op[0].DR << 2) & 0xfc) | ((voice->op[0].SR >> 4) & 0x3)), 1);
-		SetReg(0xd,  (voice->op[0].EGT & 0xf), 1);
-	}
-}
-
-void CSSGS::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
-{
-	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
-	switch (op) {
-	case 0:// Amplitude LFO
-		{
-			lfoTL[ch] = lev;
-		}
-		break;
-	case 1:// Noise freq LFO
-		if ((voice->AL & 3)==1 || (voice->AL & 3)==2) {
-			SINT16 frq = SINT16(lev) - 64 + (((voice->NFQ << 2) | (voice->NFQ >> 3)) & 0x7f);
-			frq = (frq < 0) ? 0 : frq;
-			frq = (frq > 127) ? 127 : frq;
-			UINT8 off = (ch < 3) ? 0 : 0x20;
-			SetReg(off + 0x6, lev >> 2, 1);
-		}
-		break;
-	}
-}
-
-void CSSGS::UpdatePanpot(UINT8 ch)
-{
-	UINT8 off = (ch < 3) ? 0 : 0x20;
-	UINT8 dch = (ch < 3) ? ch : (ch-3);
-	SetReg(off + 0x10 + dch, (GetChAttribute(ch)->panpot >> 2), 1);
-}
-
-UINT8 CSSGS::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
-{
-	CHATTR* attr = 0;
-	if (voice && ((voice->AL & 3)==1 || (voice->AL & 3)==2)) {//Noise enabled
-		attr = GetChAttribute(2);
-		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
-			return 2;
-		}
-		attr = GetChAttribute(5);
-		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
-			return 5;
-		}
-		return 0xff;
-	} else if (voice && (voice->AL & 0x4) != 0) {//HW Envelop
-		attr = GetChAttribute(1);
-		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
-			return 1;
-		}
-		attr = GetChAttribute(4);
-		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
-			return 4;
-		}
-		return 0xff;
-	}
-	return CSoundDevice::QueryCh(parent, voice, mode);
-}
 
 //-------------------------------
-CDCSG::CDCSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_DCSG, pt, 0x10, 4, fsamp, 2, -576, FnumTableType::TonePeriod)
+CDCSG::CDCSG(CPort* pt, int fsamp)
+	: CPSGBase(DEVICE_DCSG, pt, 0x10, 4, fsamp, 2, -576, FnumTableType::TonePeriod)
+	, prevnoise(0)
 {
 	port->write(0, 0x80);
 	port->write(0, 0x00);
@@ -363,7 +344,8 @@ void CDCSG::UpdateVoice(UINT8 ch)
 		break;
 	case 3:
 		if (attr->GetVoice()->AL == 1) {
-			port->writeRaw(0, 0xe0 | ((attr->GetVoice()->FB & 1) << 2) | (attr->GetVoice()->NFQ & 0x3));
+			prevnoise = 0xe0 | ((attr->GetVoice()->FB & 1) << 2) | (attr->GetVoice()->NFQ & 0x3);
+			port->writeRaw(0, prevnoise);
 		}
 		break;
 	}
@@ -379,6 +361,36 @@ UINT8 CDCSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		ret = CSoundDevice::QueryCh(parent, voice, mode);
 	}
 	return ret;
+}
+
+void CDCSG::LLCFreq(UINT8 ch, SINT32 param)
+{
+	if (ch < 3) {
+		port->writeRaw(0, 0x80 | (ch * 32) | (param & 0xf));
+		port->writeRaw(0, 0x0 | ((param >> 4) & 0x3f));
+	}
+}
+
+void CDCSG::LLCNoise(UINT8 ch, SINT32 param)
+{
+	prevnoise = (prevnoise & 0xeb) | ((param & 1) << 2);
+	port->writeRaw(0, prevnoise);
+}
+
+void CDCSG::LLCNoiseFreq(UINT8 ch, SINT32 param)
+{
+	prevnoise = (prevnoise & 0xfc) | (param & 3);
+	port->writeRaw(0, prevnoise);
+}
+
+void CDCSG::LLCAmp(UINT8 ch, SINT32 param)
+{
+	if (ch < 3) {
+		port->writeRaw(0, 0x90 | (ch * 32) | (param & 0xf));
+	}
+	else {
+		port->writeRaw(0, 0xf0 | (param & 0xf));
+	}
 }
 
 //-------------------------------
@@ -491,6 +503,80 @@ void CEPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 		break;
 	}
 }
+
+void CEPSG::LLCTone(UINT8 ch, SINT32 param)
+{
+	prevmix = (prevmix & ~(0x1 << ch)) | ((~param) & 1) << ch;
+	SetReg(0x7, prevmix, 1);
+}
+
+void CEPSG::LLCFreq(UINT8 ch, SINT32 param)
+{
+	SetReg(ch * 2 + 0, UINT8(param & 0xff), 1);
+	SetReg(ch * 2 + 1, UINT8(param >> 8) & 0xff, 1);
+}
+
+void CEPSG::LLCWaveform(UINT8 ch, SINT32 param)
+{
+	SetReg(0xd, 0xb0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select B
+	SetReg(0x6 + ch, (param & 0xf), 1);
+	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+}
+
+void CEPSG::LLCNoise(UINT8 ch, SINT32 param)
+{
+	prevmix = (prevmix & ~(0x8 << ch)) | ((~param) & 1) << (ch + 3);
+	SetReg(0x7, prevmix, 1);
+}
+
+void CEPSG::LLCNoiseFreq(UINT8 ch, SINT32 param)
+{
+	SetReg(0x6, (param & 0xff), 1);
+}
+
+void CEPSG::LLCNoiseAND(UINT8 ch, SINT32 param)
+{
+	SetReg(0xd, 0xb0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select B
+	SetReg(0x9, (param & 0xff), 1);
+	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+}
+
+void CEPSG::LLCNoiseOR(UINT8 ch, SINT32 param)
+{
+	SetReg(0xd, 0xb0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select B
+	SetReg(0xa, (param & 0xff), 1);
+	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+}
+
+void CEPSG::LLCAmp(UINT8 ch, SINT32 param)
+{
+	SetReg(0x8 + ch, (GetReg(0x8 + ch, 0) & 0xe0) | (param & 0x1f), 1);
+}
+
+
+void CEPSG::LLCEnvMode(UINT8 ch, SINT32 param)
+{
+	SetReg(0x8 + ch, (GetReg(0x8 + ch, 0) & 0xdf) | ((param & 1) << 5), 1);
+}
+
+void CEPSG::LLCEnvFreq(UINT8 ch, SINT32 param)
+{
+	SetReg(0xb, (param & 0xff), 1);
+	SetReg(0xc, ((param >> 8) & 0xff), 1);
+}
+
+void CEPSG::LLCEnvShape(UINT8 ch, SINT32 param)
+{
+	if (ch == 0) {
+		SetReg(0xd, (param & 0xf), 1);
+	}
+	else {
+		SetReg(0xd, 0xb0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select B
+		SetReg(0x3 + ch, (param & 0xf), 1);
+		SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+	}
+}
+
 
 //-------
 CDSG::CDSG(CPort* pt, int fsamp) : CSoundDevice(DEVICE_DSG, 4, fsamp, 2, -576, FnumTableType::TonePeriod, pt, 0x80)

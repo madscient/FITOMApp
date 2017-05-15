@@ -211,6 +211,7 @@ public:
 	virtual void NoteOff(UINT8 ch) = 0;
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan=0, FMVOICE* rv=0, FNUM* fnum=0) = 0;
 	virtual void RhythmOff(UINT8 num) = 0;
+	virtual int LowLevelCommand(UINT8 ch, PERFCMD cmd) = 0;
 
 	// Ch Property settings
 	virtual void SetSustain(UINT8 ch, UINT8 sus, int update=1) = 0;
@@ -285,6 +286,7 @@ public:
 	virtual void NoteOff(UINT8 ch);
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum) {};
 	virtual void RhythmOff(UINT8 num) {};
+	virtual int LowLevelCommand(UINT8 ch, PERFCMD cmd) { return 1; };
 
 	// Device status
 	virtual void SetDevice(UINT8 devid);
