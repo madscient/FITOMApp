@@ -46,7 +46,6 @@ public:
 	virtual void AddDevice(CSoundDevice* chip);
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan=0, FMVOICE* rv=0, FNUM* fnum=0);
-	virtual int LowLevelCommand(UINT8 ch, PERFCMD cmd);
 };
 
 class CUnison : public CMultiDevice {

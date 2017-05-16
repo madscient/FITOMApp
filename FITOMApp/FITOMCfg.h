@@ -6,26 +6,6 @@ struct FMVOICE;
 #include <vector>
 #include <queue>
 
-#define LLC_CMD_NOP   0x1000
-#define LLC_CMD_NOTE  0x1001
-#define LLC_CMD_CENT  0x1002
-#define LLC_CMD_VEL   0x1003
-#define LLC_CMD_WAIT  0x10ff
-#define LLC_CMD_TONE  0x2000
-#define LLC_CMD_FREQ  0x2001
-#define LLC_CMD_NOISE 0x2010
-#define LLC_CMD_NFREQ 0x2011
-#define LLC_CMD_NAM   0x2012
-#define LLC_CMD_NOM   0x2013
-#define LLC_CMD_AMP   0x2020
-#define LLC_CMD_AMPL  0x2021
-#define LLC_CMD_AMPR  0x2022
-#define LLC_CMD_ENVM  0x2030
-#define LLC_CMD_ENVF  0x2031
-#define LLC_CMD_ENVS  0x2032
-#define LLC_CMD_ENVP  0x2033
-#define LLC_CMD_ENVR  0x2034
-
 class CMasterVolumeCtrl;
 
 class CFITOMDeviceConfig {
@@ -105,23 +85,6 @@ struct ChannelMap {
 	int polyphon;
 };
 
-struct PERFCMD {
-	UINT32	cmd;
-	SINT32	param;
-};
-
-class CLLPBank {
-protected:
-	UINT32 devid;
-	CSoundDevice* pDevice;
-	std::queue<PERFCMD> cmdlist;
-public:
-	CLLPBank();
-	int LoadPerfCmd(LPCTSTR str);
-	PERFCMD front();
-	PERFCMD pop();
-};
-
 class CFITOMConfig {
 protected:
 	boost::property_tree::tiptree fitom_ini;
@@ -139,7 +102,6 @@ protected:
 	CFMBank* vPsgBank[MAX_BANK];
 	CPcmBank* vPcmBank[MAX_BANK];
 	CDrumBank* vDrumBank[MAX_BANK];
-	CLLPBank* vPerfBank[128];
 	SCCWAVE vSccWaveForm[64];
 	int phydevs;
 	int logdevs;
@@ -162,7 +124,6 @@ protected:
 	int LoadDrumBank(CDrumBank* bank, LPCTSTR fname);
 	int LoadADPCMBank(int bank, LPCTSTR fname);
 	int LoadSCCWaveBank();
-	int LoadLowLevelPerfBank();
 
 public:
 	CFITOMConfig(LPCTSTR strinifile);
@@ -183,7 +144,6 @@ public:
 	CDrumBank* GetDrumBank(int prog);
 	CPcmBank* AllocPcmBank(int prog);
 	CPcmBank* GetPcmBank(int prog);
-	CLLPBank* GetLowLevel(int perf);
 	void GetWaveform(SCCWAVE* dst, int num);
 	int GetDeviceName(UINT32 devid, TCHAR* name, size_t count);
 	int GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* name, size_t count);
