@@ -109,6 +109,7 @@ public:
 	virtual void RhythmOff(UINT8 num);
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
+	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdatePanpot(UINT8 ch);
 };
 

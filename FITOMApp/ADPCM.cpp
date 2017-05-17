@@ -259,6 +259,76 @@ UINT8 CAdPcm2610A::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	return CSoundDevice::QueryCh(parent, voice, mode);
 }
 
+void CAdPcm2610A::LoadVoice(int prog, UINT8* data, size_t length)
+{
+	UINT32 st = 0;
+	UINT32 ed = 0;
+	if (prog) {
+		st = adpcmvoice[prog - 1].staddr + adpcmvoice[prog - 1].length;
+	}
+	size_t blk = (length) >> 8;
+	if ((blk << 8) < length) { blk++; }
+	blk <<= 8;
+	if ((st >> 16) < ((st + blk) >> 16)) {
+		st = (st + 65536) & 0xffff0000;
+	}
+	ed = st + blk;
+	adpcmvoice[prog].staddr = st;
+	adpcmvoice[prog].length = blk;
+
+	for (size_t i = 0; i < blk; i++) {
+		UINT32 addr = st + i;
+		port->writeRaw(0x200, (addr) & 0xff);
+		port->writeRaw(0x201, (addr >> 8) & 0xff);
+		port->writeRaw(0x202, (addr >> 16) & 0xff);
+		port->writeRaw(0x203, 1);
+		port->writeRaw(0x204, (i < length) ? (data[i] & 0xff) : 0);
+	}
+}
+
+void CAdPcm2610A::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
+{
+}
+
+void CAdPcm2610A::RhythmOff(UINT8 num)
+{
+}
+
+
+void CAdPcm2610A::UpdateKey(UINT8 ch, UINT8 keyon)
+{
+	if (ch < chs) {
+	}
+}
+
+void CAdPcm2610A::UpdateVolExp(UINT8 ch)
+{
+	UINT8 volume = CalcLinearLevel(GetChAttribute(ch)->GetEffectiveLevel(), 0);
+	volume = (127 - volume) << 1;
+}
+
+void CAdPcm2610A::UpdatePanpot(UINT8 ch)
+{
+	int pan = (GetChAttribute(ch)->panpot) / 8;
+	UINT8 chena = 0;
+	if (pan >= 4) { //R
+		chena = 0x40;
+	}
+	else if (pan <= -4) { //L
+		chena = 0x80;
+	}
+	else { //C
+		chena = 0xc0;
+	}
+}
+
+void CAdPcm2610A::UpdateVoice(UINT8 ch)
+{
+	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
+	int num = voice->AL;
+	UINT32 st = adpcmvoice[num].staddr;
+	UINT32 ed = st + adpcmvoice[num].length - 1;
+}
 
 //CAdPcmZ280 YMZ280 aka PCMD8
 CAdPcmZ280::CAdPcmZ280(CPort* pt, int fsamp, size_t memsize)
