@@ -90,15 +90,29 @@ public:
 	CAdPcm2608(CPort* pt, int fsamp, size_t memsize);
 };
 
+class CAdPcm2610B : public CYmDelta//YM2610 ADPCM B
+{
+protected:
+public:
+	CAdPcm2610B(CPort* pt, int fsamp, size_t memsize);
+	virtual void LoadVoice(int prog, UINT8* data, size_t length);
+};
+
+class CAdPcm2610A : public CAdPcmBase	//YM2610 ADPCM A
+{
+protected:
+public:
+	CAdPcm2610A(CPort* pt, int fsamp, size_t memsize);
+	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	virtual void LoadVoice(int prog, UINT8* data, size_t length);
+	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
+	virtual void RhythmOff(UINT8 num);
+	virtual void UpdateVolExp(UINT8 ch);
+	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
+	virtual void UpdatePanpot(UINT8 ch);
+};
+
 #if 0
-class CAdPcm2610A : public CAdPcmBase	//YM2610(B)
-{
-};
-
-class CAdPcm2610B : public CAdPcmBase	//YM2610(B)
-{
-};
-
 class CAdPcm263 : public CAdPcmBase	//YMZ263
 {
 };

@@ -214,6 +214,52 @@ CAdPcm2608::CAdPcm2608(CPort* pt, int fsamp, size_t memsize) : CYmDelta(pt, fsam
 	SetReg(0x01, 2);
 }
 
+//CAdPcm2610B YM2610 aka OPNB ADPCM_B
+CAdPcm2610B::CAdPcm2610B(CPort* pt, int fsamp, size_t memsize) : CYmDelta(pt, fsamp, 144, memsize, DEVICE_OPNB,
+{ 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0xff, 0xff, 0xff, 0x19, 0x1a, 0x1b, 0x1c, 0x01, 0x00, 0xc0 })
+{
+	boundary = 256;
+	SetDevice(DEVICE_ADPCMB);
+}
+
+void CAdPcm2610B::LoadVoice(int prog, UINT8* data, size_t length)
+{
+	UINT32 st = 0;
+	UINT32 ed = 0;
+	if (prog) {
+		st = adpcmvoice[prog - 1].staddr + adpcmvoice[prog - 1].length;
+	}
+	size_t blk = (length) >> 8;
+	if ((blk << 8) < length) { blk++; }
+	blk <<= 8;
+	ed = st + blk;
+	adpcmvoice[prog].staddr = st;
+	adpcmvoice[prog].length = blk;
+
+	for (size_t i = 0; i < blk; i++) {
+		UINT32 addr = st + i;
+		port->writeRaw(0x200, (addr) & 0xff);
+		port->writeRaw(0x201, (addr >> 8) & 0xff);
+		port->writeRaw(0x202, (addr >> 16) & 0xff);
+		port->writeRaw(0x203, 0);
+		port->writeRaw(0x204, (i < length) ? (data[i] & 0xff) : 0);
+	}
+}
+
+//CAdPcm2610A YM2610 aka OPNB ADPCM_A
+CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize)
+	: CAdPcmBase(pt, fsamp, 0, YMDELTA_OFFSET, memsize, 1, DEVICE_OPNB)
+{
+	boundary = 65536;
+	SetDevice(DEVICE_ADPCMA);
+}
+
+UINT8 CAdPcm2610A::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+{
+	return CSoundDevice::QueryCh(parent, voice, mode);
+}
+
+
 //CAdPcmZ280 YMZ280 aka PCMD8
 CAdPcmZ280::CAdPcmZ280(CPort* pt, int fsamp, size_t memsize)
 	: CAdPcmBase(pt, fsamp, 384, YMZ280_OFFSET, memsize, 8, DEVICE_PCMD8)
