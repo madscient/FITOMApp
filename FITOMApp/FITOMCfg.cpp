@@ -240,7 +240,6 @@ int CFITOMConfig::CreateADPCMDevice(int devtype, LPCTSTR param)
 	lstdev.erase(lstdev.begin());
 	int pardev = CFITOM::GetDeviceIDFromName(strdevname.c_str());
 	CPort* pt;
-	CPort* pt2 = 0;
 	if (pt = CreatePort(pardev, strport.c_str())) {
 		int fs = pt->GetClock();
 		CAdPcmBase* pdev = 0;
@@ -249,15 +248,20 @@ int CFITOMConfig::CreateADPCMDevice(int devtype, LPCTSTR param)
 			pdev = AddDevice(new CAdPcm3801(pt, fs, 256 * 1024));
 			break;
 		case DEVICE_OPNA:
-			pt2 = new COffsetPort(pt, 0x100);
-			pdev = AddDevice(new CAdPcm2608(pt2, fs, 256 * 1024));
+			pdev = AddDevice(new CAdPcm2608(new COffsetPort(pt, 0x100), fs, 256 * 1024));
 			break;
 		case DEVICE_PCMD8:
 			pdev = AddDevice(new CAdPcmZ280(pt, fs, 4096 * 1024));
 			break;
-		case DEVICE_OPNB:
 		case DEVICE_2610B:
+		case DEVICE_OPNB:
 		case DEVICE_F286:
+			if (devtype == DEVICE_ADPCMA) {
+				pdev = AddDevice(new CAdPcm2610A(new COffsetPort(pt, 0x100), fs, 16384 * 1024, pardev));
+			}
+			else if (devtype == DEVICE_ADPCMB) {
+				pdev = AddDevice(new CAdPcm2610B(pt, fs, 16384 * 1024, pardev));
+			}
 			break;
 		}
 		if (pdev) { res = 0; }
@@ -392,10 +396,10 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 			AddDevice(new CDCSG(pt, fs));
 			break;
 		case DEVICE_SCC:
-			AddDevice(new CSCC(pt, fs / 2));
+			AddDevice(new CSCC(new COffsetPort(pt, 0x9800), fs / 2));
 			break;
 		case DEVICE_SCCP:
-			AddDevice(new CSCCP(pt, fs / 2));
+			AddDevice(new CSCCP(new COffsetPort(pt, 0xb800), fs / 2));
 			break;
 		default:
 			res = -1;
@@ -764,6 +768,7 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 						infile.read((char*)pdata, length);
 						std::terr << _T(" loaded: ") << length << _T(" -->");
 						DWORD ressize = 0;
+						if (pdev->GetDevice() == DEVICE_ADPCMA) { hirate = 2; }	//fixed rate for OPNB_A
 						LPBYTE presult = adpcm.waveToAdpcm(pdata, (DWORD)length, ressize, hirate);
 						std::terr << _T(" encoded: ") << ressize << _T(" -->");
 						pdev->LoadVoice(i, presult, ressize);

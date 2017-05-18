@@ -485,7 +485,7 @@ void CDSG::SetReg(UINT16 addr, UINT8 data, int v)
 
 //-------------------------------
 CSCCBase::CSCCBase(CPort* pt, int fsamp, const REGMAP& map)
-	: CPSGBase(map.device, new COffsetPort(pt, map.offset), 0x100, 5, fsamp), regmap(map)
+	: CPSGBase(map.device, pt, 0x100, 5, fsamp), regmap(map)
 {
 	ops = 1;
 	pt->writeRaw(map.config, map.init);

@@ -87,8 +87,13 @@ short* Adpcm::resampling(DWORD &dSize, DWORD dHiRate){
 	// リサンプリング
 	int iSrcRate = static_cast<int>(m_pWaveChunk->dRate);	// waveのレート
 	int iDisRate = 16000;	// 出力のサンプルレート
-	if (dHiRate != 0){
+	switch (dHiRate) {
+	case 1:	//Hi-rate
 		iDisRate = 32000;
+		break;
+	case 2:	//fixed rate for OPNB ADPCM A
+		iDisRate = 18518;
+		break;
 	}
 	int iDiff = 0;
 	int	iSampleSize = 0;

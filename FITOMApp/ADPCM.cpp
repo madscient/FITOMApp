@@ -5,8 +5,8 @@
 #define YMDELTA_OFFSET	448
 #define YMZ280_OFFSET	356
 
-CAdPcmBase::CAdPcmBase(CPort* pt, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev)
-	: CSoundDevice(DEVICE_ADPCM, maxch, fsamp, devide, offset, FnumTableType::DeltaN, pt)
+CAdPcmBase::CAdPcmBase(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev)
+	: CSoundDevice(devid, maxch, fsamp, devide, offset, FnumTableType::DeltaN, pt, regsize)
 	, maxmem(memsize), usedmem(0), boundary(0), parentdev(pardev), fcode(fsamp)
 {
 	::ZeroMemory((void*)&adpcmvoice, sizeof(adpcmvoice));
@@ -15,8 +15,8 @@ CAdPcmBase::CAdPcmBase(CPort* pt, int fsamp, int devide, int offset, size_t mems
 	NoteOffset = -57;	// origin note: O3A
 }
 
-CYmDelta::CYmDelta(CPort* pt, int fsamp, int devide, size_t memsize, UINT8 pardev, const REGMAP& regset)
-	: CAdPcmBase(pt, fsamp, devide, YMDELTA_OFFSET, memsize, 1, pardev), regmap(regset)
+CYmDelta::CYmDelta(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, size_t memsize, UINT8 pardev, const REGMAP& regset)
+	: CAdPcmBase(devid, pt, regsize, fsamp, devide, YMDELTA_OFFSET, memsize, 1, pardev), regmap(regset)
 {
 }
 
@@ -197,7 +197,8 @@ void CYmDelta::UpdateVoice(UINT8 ch)
 }
 
 //CAdPcm3801 YM3801 aka Y8950
-CAdPcm3801::CAdPcm3801(CPort* pt, int fsamp, size_t memsize) : CYmDelta(pt, fsamp, 72, memsize, DEVICE_Y8950, 
+CAdPcm3801::CAdPcm3801(CPort* pt, int fsamp, size_t memsize)
+	: CYmDelta(DEVICE_ADPCM, pt, 0x20, fsamp, 72, memsize, DEVICE_Y8950, 
 { 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0xff, 0xff, 0x0f, 0x10, 0x11, 0x12, 0x04, 0x01, 0x00, 0x00 })
 {
 	boundary = 32;
@@ -206,7 +207,8 @@ CAdPcm3801::CAdPcm3801(CPort* pt, int fsamp, size_t memsize) : CYmDelta(pt, fsam
 }
 
 //CAdPcm2608 YM2608 aka OPNA
-CAdPcm2608::CAdPcm2608(CPort* pt, int fsamp, size_t memsize) : CYmDelta(pt, fsamp, 144, memsize, DEVICE_OPNA,
+CAdPcm2608::CAdPcm2608(CPort* pt, int fsamp, size_t memsize)
+	: CYmDelta(DEVICE_ADPCM, pt, 0x20, fsamp, 144, memsize, DEVICE_OPNA,
 { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x0c, 0x0d, 0x08, 0x09, 0x0a, 0x0b, 0x10, 0x01, 0x00, 0xc0 })
 {
 	boundary = 32;
@@ -215,7 +217,8 @@ CAdPcm2608::CAdPcm2608(CPort* pt, int fsamp, size_t memsize) : CYmDelta(pt, fsam
 }
 
 //CAdPcm2610B YM2610 aka OPNB ADPCM_B
-CAdPcm2610B::CAdPcm2610B(CPort* pt, int fsamp, size_t memsize) : CYmDelta(pt, fsamp, 144, memsize, DEVICE_OPNB,
+CAdPcm2610B::CAdPcm2610B(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
+	: CYmDelta(DEVICE_ADPCMB, pt, 0x20, fsamp, 144, memsize, pardev,
 { 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0xff, 0xff, 0xff, 0x19, 0x1a, 0x1b, 0x1c, 0x01, 0x00, 0xc0 })
 {
 	boundary = 256;
@@ -246,12 +249,23 @@ void CAdPcm2610B::LoadVoice(int prog, UINT8* data, size_t length)
 	}
 }
 
-//CAdPcm2610A YM2610 aka OPNB ADPCM_A
-CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize)
-	: CAdPcmBase(pt, fsamp, 0, YMDELTA_OFFSET, memsize, 1, DEVICE_OPNB)
+void CAdPcm2610B::UpdateVoice(UINT8 ch)
 {
-	boundary = 65536;
-	SetDevice(DEVICE_ADPCMA);
+	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
+	int num = voice->AL;
+	UINT32 st = adpcmvoice[num].staddr;
+	UINT32 ed = st + adpcmvoice[num].length;
+	SetReg(regmap.startLSB, (st >> 8) & 0xff);
+	SetReg(regmap.startMSB, (st >> 16) & 0xff);
+	SetReg(regmap.endLSB, (ed >> 8) & 0xff);
+	SetReg(regmap.endMSB, (ed >> 16) & 0xff);
+}
+
+//CAdPcm2610A YM2610 aka OPNB ADPCM_A
+CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
+	: CAdPcmBase(DEVICE_ADPCMA, pt, 0x30, fsamp, 0, YMDELTA_OFFSET, memsize, 1, pardev)
+{
+	boundary = 0x100000;
 }
 
 UINT8 CAdPcm2610A::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
@@ -269,8 +283,8 @@ void CAdPcm2610A::LoadVoice(int prog, UINT8* data, size_t length)
 	size_t blk = (length) >> 8;
 	if ((blk << 8) < length) { blk++; }
 	blk <<= 8;
-	if ((st >> 16) < ((st + blk) >> 16)) {
-		st = (st + 65536) & 0xffff0000;
+	if ((st >> 20) < ((st + blk) >> 20)) {	// break 1MB boundary
+		st = (st + 0x100000) & 0xfff00000;
 	}
 	ed = st + blk;
 	adpcmvoice[prog].staddr = st;
@@ -297,14 +311,13 @@ void CAdPcm2610A::RhythmOff(UINT8 num)
 
 void CAdPcm2610A::UpdateKey(UINT8 ch, UINT8 keyon)
 {
-	if (ch < chs) {
-	}
+	SetReg(0x00, (GetReg(0x00, 0) & ~(1 << ch)) | (keyon ? (1 << ch) : 0), 1);
 }
 
 void CAdPcm2610A::UpdateVolExp(UINT8 ch)
 {
-	UINT8 volume = CalcLinearLevel(GetChAttribute(ch)->GetEffectiveLevel(), 0);
-	volume = (127 - volume) << 1;
+	UINT8 evol = 31 - Linear2dB(CalcLinearLevel(GetChAttribute(ch)->GetEffectiveLevel(), 0), RANGE24DB, STEP075DB, 5);
+	SetReg(0x08 + ch, (GetReg(0x8 + ch, 0) & 0xe0) | evol, 1);
 }
 
 void CAdPcm2610A::UpdatePanpot(UINT8 ch)
@@ -320,6 +333,7 @@ void CAdPcm2610A::UpdatePanpot(UINT8 ch)
 	else { //C
 		chena = 0xc0;
 	}
+	SetReg(0x08 + ch, (GetReg(0x8 + ch, 0) & 0x3f) | chena, 1);
 }
 
 void CAdPcm2610A::UpdateVoice(UINT8 ch)
@@ -327,12 +341,16 @@ void CAdPcm2610A::UpdateVoice(UINT8 ch)
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
 	UINT32 st = adpcmvoice[num].staddr;
-	UINT32 ed = st + adpcmvoice[num].length - 1;
+	UINT32 ed = st + adpcmvoice[num].length;
+	SetReg(0x10 + ch, (st >> 8) & 0xff, 1);
+	SetReg(0x18 + ch, (st >> 16) & 0xff, 1);
+	SetReg(0x20 + ch, (ed >> 8) & 0xff, 1);
+	SetReg(0x28 + ch, (ed >> 16) & 0xff, 1);
 }
 
 //CAdPcmZ280 YMZ280 aka PCMD8
 CAdPcmZ280::CAdPcmZ280(CPort* pt, int fsamp, size_t memsize)
-	: CAdPcmBase(pt, fsamp, 384, YMZ280_OFFSET, memsize, 8, DEVICE_PCMD8)
+	: CAdPcmBase(DEVICE_ADPCM, pt, 0x100, fsamp, 384, YMZ280_OFFSET, memsize, 8, DEVICE_PCMD8)
 {
 	SetReg(0xff, 0xc0);	// KON enable/Memory enable
 	SetReg(0x81, 0);	// DSP disable

@@ -30,7 +30,7 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon) {};
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
 public:
-	CAdPcmBase(CPort* pt, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev);
+	CAdPcmBase(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev);
 	virtual UINT8 GetParentDev() { return parentdev; };
 	virtual void LoadVoice(int prog, UINT8* data, size_t length) = 0;
 	virtual void TimerCallBack(UINT32 tick) {};
@@ -69,7 +69,7 @@ protected:
 	};
 	REGMAP regmap;
 public:
-	CYmDelta(CPort* pt, int fsamp, int devide, size_t memsize, UINT8 pardev, const REGMAP& regset);
+	CYmDelta(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, size_t memsize, UINT8 pardev, const REGMAP& regset);
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) { return 0; };
 	virtual void LoadVoice(int prog, UINT8* data, size_t length);
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
@@ -94,15 +94,16 @@ class CAdPcm2610B : public CYmDelta//YM2610 ADPCM B
 {
 protected:
 public:
-	CAdPcm2610B(CPort* pt, int fsamp, size_t memsize);
+	CAdPcm2610B(CPort* pt, int fsamp, size_t memsize, UINT8 pardev = DEVICE_OPNB);
 	virtual void LoadVoice(int prog, UINT8* data, size_t length);
+	virtual void UpdateVoice(UINT8 ch);
 };
 
 class CAdPcm2610A : public CAdPcmBase	//YM2610 ADPCM A
 {
 protected:
 public:
-	CAdPcm2610A(CPort* pt, int fsamp, size_t memsize);
+	CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev = DEVICE_OPNB);
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	virtual void LoadVoice(int prog, UINT8* data, size_t length);
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);

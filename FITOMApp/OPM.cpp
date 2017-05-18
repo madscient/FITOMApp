@@ -337,7 +337,7 @@ void COPZ::UpdateVolExp(UINT8 ch)
 			SetReg(0x60 + map[i] * 8 + ch, tl);
 		}
 	}
-	SetReg(0x0 + ch, attr->volume, 1);
+	SetReg(0x0 + ch, Linear2dB(attr->volume, RANGE96DB, STEP075DB, 7), 1);
 }
 
 void COPZ::UpdateVoice(UINT8 ch)
