@@ -549,15 +549,9 @@ CSCC::CSCC(CPort* pt, int fsamp) : CSCCBase(pt, fsamp,
 void CSCC::UpdateVoice(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	FMVOICE* voice = attr->GetVoice();
 	lfoTL[ch] = attr->baseTL[0] = 64;
-	SCCWAVE wave;
 	if (ch < 4) {
-		CFITOM::GetInstance()->GetWaveform(&wave, voice->op[0].WS);
-		for (int i = 0; i < 32; i++) {
-			int idx = (i + voice->FB) & 31;
-			SetReg((ch * 32) + i, wave.wave[idx], 1);
-		}
+		CSCCBase::UpdateVoice(ch);
 	}
 }
 
