@@ -4,7 +4,7 @@
 #include "MIDI.h"
 
 
-CFMS::CFMS(CPort* pt, int fsamp) : CSoundDevice(DEVICE_FMS, 0, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt)
+CFMS::CFMS(CPort* pt, int fsamp) : CSoundDevice(DEVICE_FMS, 0, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100)
 {
 	SetReg(0xfe, 0);
 	for (int i=0; i<16; i++) {

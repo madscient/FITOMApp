@@ -42,19 +42,14 @@ ISoundDevice::FNUM CPSGBase::GetFnumber(UINT8 ch, SINT16 offset)
 void CPSGBase::UpdateKey(UINT8 ch, UINT8 keyon)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
-	if (voice->ID & 0x00004000) {
-		// Low level performance
+	if (keyon) {
+		UpdateVoice(ch);
+		if (!(voice->AL & 0x4)) {
+			egattr[ch].Start(&voice->op[0]);
+		}
 	}
 	else {
-		if (keyon) {
-			UpdateVoice(ch);
-			if (!(voice->AL & 0x4)) {
-				egattr[ch].Start(&voice->op[0]);
-			}
-		}
-		else {
-			egattr[ch].Release();
-		}
+		egattr[ch].Release();
 	}
 }
 
