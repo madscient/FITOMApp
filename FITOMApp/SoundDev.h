@@ -153,14 +153,14 @@ protected:
 		UINT8	baseTL[4];
 	public:
 		CHATTR();
-		int IsEnable() const { return (status!=DISABLED); };
-		int IsAvailable() const { return (status==EMPTY); };
-		int IsRunning() const { return (status==RUNNING); };
-		int IsAssigned() const { return (status==ASSIGNED); };
-		bool IsAutoAssignable() const { return dva; };
-		CMidiCh* GetParent() const { return parent; }
-		FMVOICE* GetVoice() const { return (FMVOICE* const)&voice; };
-		UINT32 GetVoiceID() const { return voice.ID; };
+		int IsEnable() { return (status!=DISABLED); };
+		int IsAvailable() { return (status==EMPTY); };
+		int IsRunning() { return (status==RUNNING); };
+		int IsAssigned() { return (status==ASSIGNED); };
+		bool IsAutoAssignable() { return dva; };
+		CMidiCh* GetParent() { return parent; }
+		FMVOICE* GetVoice() { return (FMVOICE* const)&voice; };
+		UINT32 GetVoiceID() { return voice.ID; };
 		BOOL SetVoice(FMVOICE* vc);
 		void SetVoiceID(UINT32 vcid);
 		void Init();

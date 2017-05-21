@@ -64,7 +64,7 @@ void CAdPcmDevDlg::OnOK()
 	for (int i = 0; i < devuse.size(); i++) {
 		if (lstrlen(devuse[i].bnkfile)) {
 			CString keyname;
-			keyname.Format(_T("device%i"), i);
+			keyname.Format(_T("device%i"), count);
 			LPCTSTR devkey = _T("ADPCM");
 			if (devuse[i].type == SC_TYPE_YM2610 || devuse[i].type == SC_TYPE_YM2610B || devuse[i].type == SC_TYPE_YMF286) {
 				devkey = devuse[i].subtype ? _T("ADPCM_B") : _T("ADPCM_A");

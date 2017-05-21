@@ -96,8 +96,8 @@ void CSpanDevice::UpdateFnumber(UINT8 ch, int update)
 UINT8 CSpanDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
 	UINT8 ret = 0xff;
-	UINT8 dev = 0xff;
-	UINT8 ch = 0xff;
+	volatile UINT8 dev = 0xff;
+	volatile UINT8 ch = 0xff;
 
 	for (int i=0; i<numchips && ch==0xff; i++) {
 		dev = (prior_dev + i) % numchips;
@@ -112,7 +112,7 @@ UINT8 CSpanDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		}
 	}
 	if (ret != 0xff) {
-		prior_dev = dev;
+		dev = (prior_dev + 1) % numchips;
 	}
 	return ret;
 }

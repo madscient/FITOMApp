@@ -318,8 +318,8 @@ void CSoundDevice::SetMasterVolume(UINT8 vol, int update)
 
 UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 {
-	UINT8 ret = 0xff;
-	ret = QueryCh(parent, voice, 1);
+	volatile UINT8 ret = 0xff;
+//	ret = QueryCh(parent, voice, 1);
 	if (ret == 0xff) {
 		ret = QueryCh(NULL, voice, 1);
 	}
@@ -360,7 +360,7 @@ UINT8 CSoundDevice::Assign(UINT8 ch, CMidiCh* parent, FMVOICE* voice)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (ch < chs) {
-		if (attr->IsRunning()) {
+		if (attr->IsRunning()) {	//partial out!
 			if (attr->GetParent()) {
 				if (!attr->GetParent()->IsRhythm()) {
 					attr->GetParent()->NoteOff(attr->GetLastNote());
@@ -385,28 +385,30 @@ UINT8 CSoundDevice::Assign(UINT8 ch, CMidiCh* parent, FMVOICE* voice)
 
 UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
-	UINT8 ret = 0xff;
+	volatile UINT8 ret = 0xff;
 	UINT8 tmp = 0xff;
 	CHATTR* attr = 0;
 	if (parent && voice) {
 		tmp = prior_ch;
 		for (int i=0; i<chs; i++) {
 			attr = GetChAttribute(tmp);
-			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable()) && attr->GetVoiceID() == voice->ID && attr->GetParent() == parent) {
+			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable())
+				&& memcmp(voice, attr->GetVoice(), sizeof(FMVOICE)) == 0 && attr->GetParent() == parent) {
 				ret = tmp;
 				break;
 			}
-			tmp = (prior_ch + i) % chs;
+			tmp = (tmp + i) % chs;
 		}
 	} else if (voice) {
 		tmp = prior_ch;
 		for (int i = 0; i<chs; i++) {
 			attr = GetChAttribute(tmp);
-			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable()) && attr->GetVoiceID() == voice->ID) {
+			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable())
+				&& attr->GetVoiceID() == voice->ID) {
 				ret = tmp;
 				break;
 			}
-			tmp = (prior_ch + i) % chs;
+			tmp = (tmp + i) % chs;
 		}
 	} else {
 		tmp = prior_ch;
@@ -416,14 +418,14 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 				ret = tmp;
 				break;
 			}
-			tmp = (prior_ch + i) % chs;
+			tmp = (tmp + i) % chs;
 		}
 	}
-	if (ret == 0xff) {
+	if (ret != 0xff) {
 		prior_ch = (prior_ch + 1) % chs;
 	}
 	else {
-		prior_ch = ret;
+		//prior_ch = ret;
 	}
 	return ret;
 }

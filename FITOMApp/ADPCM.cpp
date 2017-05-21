@@ -11,8 +11,19 @@ CAdPcmBase::CAdPcmBase(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int de
 {
 	::ZeroMemory((void*)&adpcmvoice, sizeof(adpcmvoice));
 	ops = 0;
-	fmaster = fsamp / devide;
+	fmaster = devide ? (fsamp / devide) : 0;
 	NoteOffset = -57;	// origin note: O3A
+}
+
+void CAdPcmBase::Debug()
+{
+#ifdef _DEBUG
+	fprintf(stderr, _T("%08X:%s\n"), CFITOM::GetInstance()->GetDeviceUniqID(this), CFITOM::GetInstance()->GetDeviceNameFromID(GetDevice()));
+	for (int i = 0; i < 128; i++) {
+		fprintf(stderr, _T("%i:%s 0x%08X,0x%08X\n"), i, adpcmvoice[i].name, adpcmvoice[i].staddr, adpcmvoice[i].length);
+	}
+#endif
+
 }
 
 CYmDelta::CYmDelta(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, size_t memsize, UINT8 pardev, const REGMAP& regset)
@@ -77,7 +88,7 @@ void CYmDelta::LoadVoice(int prog, UINT8* data, size_t length)
 			SetReg(regmap.memory, data[i]);
 		}
 		else {// padding
-			SetReg(regmap.memory, 0);
+			SetReg(regmap.memory, 0x80);
 		}
 	}
 	SetReg(regmap.control1, regmap.ctrl1init);
@@ -154,7 +165,7 @@ void CYmDelta::UpdateKey(UINT8 ch, UINT8 keyon)
 void CYmDelta::UpdateVolExp(UINT8 ch)
 {
 	UINT8 volume = CalcLinearLevel(GetChAttribute(ch)->GetEffectiveLevel(), 0);
-	volume = (127 - volume) << 1;
+	volume = (volume) << 1;
 	SetReg(regmap.volume, volume);
 }
 
@@ -244,7 +255,7 @@ void CAdPcm2610B::LoadVoice(int prog, UINT8* data, size_t length)
 		port->writeRaw(0x201, (addr >> 8) & 0xff);
 		port->writeRaw(0x202, (addr >> 16) & 0xff);
 		port->writeRaw(0x203, 0);
-		port->writeRaw(0x204, (i < length) ? (data[i] & 0xff) : 0);
+		port->writeRaw(0x204, (i < length) ? (data[i] & 0xff) : 0x80);
 	}
 }
 

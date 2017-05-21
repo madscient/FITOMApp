@@ -788,6 +788,7 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 				}
 			}
 		}
+		pdev->Debug();
 	}
 	return res;
 }

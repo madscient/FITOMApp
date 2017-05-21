@@ -34,6 +34,7 @@ public:
 	virtual UINT8 GetParentDev() { return parentdev; };
 	virtual void LoadVoice(int prog, UINT8* data, size_t length) = 0;
 	virtual void TimerCallBack(UINT32 tick) {};
+	void Debug();
 };
 
 class CYmDelta : public CAdPcmBase	//YAMAHA DeltaN ADPCM

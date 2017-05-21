@@ -219,7 +219,7 @@ void CDevCfgDlg::OnBnClickedButtonAddAll()
 	tvi.hItem = m_treeSCCI.GetRootItem();
 	tvi.cchTextMax = 64;
 	tvi.pszText = pszText;
-	if (tvi.hItem) {
+	while (tvi.hItem) {
 		m_treeSCCI.GetItem(&tvi);
 		if (tvi.cChildren) {
 			scciInterface* psi = (scciInterface*)tvi.lParam;
@@ -230,8 +230,9 @@ void CDevCfgDlg::OnBnClickedButtonAddAll()
 				}
 			}
 		}
-		RefreshUseList();
+		tvi.hItem = m_treeSCCI.GetNextItem(tvi.hItem, TVGN_NEXT);
 	}
+	RefreshUseList();
 }
 
 void CDevCfgDlg::OnBnClickedButtonDelAll()
