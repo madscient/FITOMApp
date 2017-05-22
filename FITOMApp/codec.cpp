@@ -2,22 +2,16 @@
 #include "codec.h"
 #include <math.h>
 
-static long stepsizeTable[16] =
-{
-	57, 57, 57, 57, 77, 102, 128, 153,
-	57, 57, 57, 57, 77, 102, 128, 153
-};
-
 // コンストラクタ
-Adpcm::Adpcm(){
+YmDeltaTEncoder::YmDeltaTEncoder(){
 }
 
 // デストラクタ
-Adpcm::~Adpcm(){
+YmDeltaTEncoder::~YmDeltaTEncoder(){
 }
 
 // ADPCM変換
-BYTE* Adpcm::waveToAdpcm(void *pData, DWORD dSize, DWORD &dAdpcmSize, DWORD dHiRate){
+BYTE* AdpcmEncoder::waveToAdpcm(void *pData, DWORD dSize, DWORD &dAdpcmSize, DWORD rate){
 	// RIFFヘッダ確認
 	m_pRiffHed = reinterpret_cast<RIFF_HED*>(pData);
 	// ヘッダチェック
@@ -41,7 +35,7 @@ BYTE* Adpcm::waveToAdpcm(void *pData, DWORD dSize, DWORD &dAdpcmSize, DWORD dHiR
 	m_pDataChunk = reinterpret_cast<DATA_CHUNK*>(reinterpret_cast<BYTE*>(&m_pWaveChunk->wFmt) + m_pWaveChunk->dChunkSize);
 	// waveデータリサンプリング
 	DWORD	dPcmSize;
-	short	*pPcm = resampling(dPcmSize, dHiRate);
+	short	*pPcm = resampling(dPcmSize, rate);
 	// リサンプリングできなかった場合
 	if (pPcm == NULL){
 		return NULL;
@@ -56,7 +50,7 @@ BYTE* Adpcm::waveToAdpcm(void *pData, DWORD dSize, DWORD &dAdpcmSize, DWORD dHiR
 }
 
 // リサンプリング
-short* Adpcm::resampling(DWORD &dSize, DWORD dHiRate){
+short* AdpcmEncoder::resampling(DWORD &dSize, DWORD rate){
 	// フォーマットチェック（16bit以外だったらＮＧ）
 	if (m_pWaveChunk->wSample != 16){
 		return NULL;
@@ -86,15 +80,7 @@ short* Adpcm::resampling(DWORD &dSize, DWORD dHiRate){
 	}
 	// リサンプリング
 	int iSrcRate = static_cast<int>(m_pWaveChunk->dRate);	// waveのレート
-	int iDisRate = 16000;	// 出力のサンプルレート
-	switch (dHiRate) {
-	case 1:	//Hi-rate
-		iDisRate = 32000;
-		break;
-	case 2:	//fixed rate for OPNB ADPCM A
-		iDisRate = 18518;
-		break;
-	}
+	int iDisRate = rate;	// 出力のサンプルレート
 	int iDiff = 0;
 	int	iSampleSize = 0;
 	// リサンプリング後のファイルサイズを算出
@@ -147,12 +133,13 @@ short* Adpcm::resampling(DWORD &dSize, DWORD dHiRate){
 }
 
 // エンコード
-int Adpcm::encode(short *pSrc, unsigned char *pDis, DWORD iSampleSize){
-	static long stepsizeTable[16] =
-	{
-		57, 57, 57, 57, 77, 102, 128, 153,
-		57, 57, 57, 57, 77, 102, 128, 153
-	};
+long YmDeltaTEncoder::stepsizeTable[16] =
+{
+	57, 57, 57, 57, 77, 102, 128, 153,
+	57, 57, 57, 57, 77, 102, 128, 153
+};
+
+int YmDeltaTEncoder::encode(short *pSrc, unsigned char *pDis, DWORD iSampleSize){
 	int iCnt;
 	long i, dn, xn, stepSize;
 	unsigned char adpcm;
@@ -199,3 +186,129 @@ int Adpcm::encode(short *pSrc, unsigned char *pDis, DWORD iSampleSize){
 	return 0;
 }
 
+
+///
+short Ym2610AEncoder::step_size[] = {
+	16, 17, 19, 21, 23, 25, 28, 31, 34, 37,
+	41, 45, 50, 55, 60, 66, 73, 80, 88, 97,
+	107, 118, 130, 143, 157, 173, 190, 209, 230, 253,
+	279, 307, 337, 371, 408, 449, 494, 544, 598, 658,
+	724, 796, 876, 963, 1060, 1166, 1282, 1411, 1552
+}; //49 items
+int Ym2610AEncoder::step_adj[] = { -1, -1, -1, -1, 2, 5, 7, 9, -1, -1, -1, -1, 2, 5, 7, 9 };
+
+Ym2610AEncoder::Ym2610AEncoder()
+{
+	jedi_table_init();
+}
+
+Ym2610AEncoder::~Ym2610AEncoder()
+{
+}
+
+
+				   //jedi table is used speed up decoding, run this to init the table before encoding. Mame copy-pasta.
+void Ym2610AEncoder::jedi_table_init()
+{
+	int step, nib;
+
+	jedi_table = new int[16 * 49];
+	for (step = 0; step < 49; step++)
+	{
+		for (nib = 0; nib < 16; nib++)
+		{
+			int value = (2 * (nib & 0x07) + 1) * step_size[step] / 8;
+			jedi_table[step * 16 + nib] = ((nib & 0x08) != 0) ? -value : value;
+		}
+	}
+}
+
+//decode sub, returns decoded 12bit data
+short Ym2610AEncoder::YM2610_ADPCM_A_Decode(byte code)
+{
+	acc += jedi_table[decstep + code];
+	if ((acc & ~0x7ff) != 0) // acc is > 2047
+		acc |= ~0xfff;
+	else acc &= 0xfff;
+	decstep += step_adj[code & 7] * 16;
+	if (decstep < 0) decstep = 0;
+	if (decstep > 48 * 16) decstep = 48 * 16;
+	return (short)acc;
+}
+
+// our encoding sub, returns ADPCM nibble
+byte Ym2610AEncoder::YM2610_ADPCM_A_Encode(short sample)
+{
+	int tempstep;
+	byte code;
+
+	predsample = prevsample;
+	index = previndex;
+	step = step_size[index];
+
+	diff = sample - predsample;
+	if (diff >= 0)
+		code = 0;
+	else
+	{
+		code = 8;
+		diff = -diff;
+	}
+
+	tempstep = step;
+	if (diff >= tempstep)
+	{
+		code |= 4;
+		diff -= tempstep;
+	}
+	tempstep >>= 1;
+	if (diff >= tempstep)
+	{
+		code |= 2;
+		diff -= tempstep;
+	}
+	tempstep >>= 1;
+	if (diff >= tempstep) code |= 1;
+
+	predsample = YM2610_ADPCM_A_Decode(code);
+
+	index += step_adj[code];
+	if (index < 0) index = 0;
+	if (index > 48) index = 48;
+
+	prevsample = predsample;
+	previndex = index;
+
+	return code;
+}
+
+//our main sub, init buffers and runs the encode process
+//enter this with your sound file loaded into buffer
+int Ym2610AEncoder::encode(short *pSrc, unsigned char *pDis, DWORD iSampleSize)
+{
+	int i;
+
+	//reset to initial conditions
+	acc = 0;
+	decstep = 0;
+	prevsample = 0;
+	previndex = 0;
+	//watch out for odd data count & allocate buffers
+	if (iSampleSize & 1) { iSampleSize++; }
+	inBuffer = new short[iSampleSize];
+	inBuffer[iSampleSize - 1] = 0x00;
+
+	//fix byte order and downscale data to 12 bits
+	for (i = 0; i < iSampleSize; i ++)
+	{
+		inBuffer[i / 2] = pSrc[i] >> 4;
+	}
+
+	//actual encoding
+	for (i = 0; i < iSampleSize; i += 2)
+	{
+		pDis[i / 2] = (byte)((YM2610_ADPCM_A_Encode(inBuffer[i]) << 4) | YM2610_ADPCM_A_Encode(inBuffer[i + 1]));
+	}
+	delete[] inBuffer;
+	return 0;
+}

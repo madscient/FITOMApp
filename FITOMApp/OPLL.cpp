@@ -111,7 +111,7 @@ void COPLL::UpdateKey(UINT8 ch, UINT8 keyon)
 	if (!(voice->AL & 0x40)) {//Preset Instrument
 		for (int i=0; i<2; i++) {
 			tmp = (GET_SL(voice, i) << 4) | (((keyon && GET_SR(voice, i)) ? GET_SR(voice, i) : GET_RR(voice, i)) & 0xf);
-			SetReg(0 + i, (GetReg(1, 0) & 0xdf) | (keyon ? 0 : 0x20));
+			SetReg(0 + i, (GetReg(1, 0) & 0xdf) | ((keyon && GET_SR(voice, i)) ? 0 : 0x20));
 			SetReg(6 + i, tmp);
 		}
 	}

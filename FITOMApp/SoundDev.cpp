@@ -20,7 +20,7 @@ ISoundDevice::FNUM::FNUM(UINT8 bl, UINT16 fn) : block(bl), fnum(fn)
 }
 
 ISoundDevice::CHATTR::CHATTR() : 
-	status(CHATTR::EMPTY), express(255), volume(255), velocity(255), panpot(127),
+	status(CHATTR::EMPTY), express(255), volume(255), velocity(255), panpot(127), dva(true),
 	lastfnum(FNUM(0, 0)), lastvel(0), lastnote(255), finefreq(0), count(0), parent(0)
 {
 	memset(&voice, 0, sizeof(FMVOICE));
@@ -154,6 +154,7 @@ device(devid), chs(maxchs), port(pt), rhythmvol(100), ops(4), prior_ch(0), rhyth
 {
 	if (regsize) {
 		regbak = new BYTE[regsize];
+		memset(regbak, 0, regsize);
 	}
 	if (maxchs) {
 		chattr = new CHATTR[int(maxchs)];
@@ -169,6 +170,9 @@ CSoundDevice::~CSoundDevice()
 	{
 		delete[] chattr;
 		chattr = 0;
+	}
+	if (regbak) {
+		delete[] regbak;
 	}
 }
 
@@ -339,7 +343,7 @@ UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 			}
 		}
 		ret = cand;
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_CONSOLE)
 		fprintf(stderr, _T("AllocCh:%i:partial out!!(%i)\n"), ret, count);
 #endif
 	}
@@ -386,7 +390,7 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable())
 				&& memcmp(voice, attr->GetVoice(), sizeof(FMVOICE)) == 0 && attr->GetParent() == parent) {
 				ret = tmp;
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_CONSOLE)
 				fprintf(stderr, _T("QueryCh:%i:mached parent and voice\n"), ret);
 #endif
 				break;
@@ -400,7 +404,7 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable())
 				&& attr->GetVoiceID() == voice->ID) {
 				ret = tmp;
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_CONSOLE)
 				fprintf(stderr, _T("QueryCh:%i:mached voice\n"), ret);
 #endif
 				break;
@@ -413,7 +417,7 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 			attr = GetChAttribute(tmp);
 			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : 1) && attr->IsEnable()) {
 				ret = tmp;
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_CONSOLE)
 				fprintf(stderr, _T("QueryCh:%i:new ch\n"), ret);
 #endif
 				break;

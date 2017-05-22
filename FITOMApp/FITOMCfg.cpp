@@ -761,15 +761,23 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 					if (exists && !err) {
 						pProgressFilename ? pProgressFilename(strwavfile.c_str()) : void(0);
 						std::terr << _T("Loading: ") << strwavfile << _T("...") << std::endl;
-						Adpcm adpcm;
+						AdpcmEncoder* adpcm;
 						size_t length = boost::filesystem::file_size(boost::filesystem::path(strwavfile), err);
 						std::ifstream infile(strwavfile, std::ios::in | std::ios::binary);
 						LPBYTE pdata = new BYTE[length];
 						infile.read((char*)pdata, length);
 						std::terr << _T(" loaded: ") << length << _T(" -->");
 						DWORD ressize = 0;
-						if (pdev->GetDevice() == DEVICE_ADPCMA) { hirate = 2; }	//fixed rate for OPNB_A
-						LPBYTE presult = adpcm.waveToAdpcm(pdata, (DWORD)length, ressize, hirate);
+						DWORD rate = hirate ? 32000 : 16000;
+						if (pdev->GetDevice() == DEVICE_ADPCMA) { //fixed rate for OPNB_A
+							adpcm = new Ym2610AEncoder();
+							hirate = 2;
+							rate = 18518;
+						}
+						else {
+							adpcm = new YmDeltaTEncoder();
+						}
+						LPBYTE presult = adpcm->waveToAdpcm(pdata, (DWORD)length, ressize, rate);
 						std::terr << _T(" encoded: ") << ressize << _T(" -->");
 						pdev->LoadVoice(i, presult, ressize);
 						res++;
@@ -779,6 +787,7 @@ int CFITOMConfig::LoadADPCMBank(int bank, LPCTSTR fname)
 						tcsncpy(pcmprog.progname, strwavfile.c_str(), (sizeof(PCMPROG::progname) / sizeof(TCHAR)) - 1);
 						pcmprog.hirate = hirate;
 						pbank->SetVoice(i, &pcmprog);
+						delete adpcm;
 						delete[] pdata;
 						delete[] presult;
 					}

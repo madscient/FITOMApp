@@ -115,7 +115,7 @@ BOOL CFITOMApp::InitInstance()
 	// TODO: 会社名または組織名などの適切な文字列に
 	// この文字列を変更してください。
 	SetRegistryKey(_T("FITOM"));
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_CONSOLE)
 	::AllocConsole();
 	::freopen("CONOUT$", "w", stdout);
 	::freopen("CONOUT$", "w", stderr);
@@ -155,7 +155,7 @@ BOOL CFITOMApp::InitInstance()
 		AfxMessageBox(ids);
 	}
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_CONSOLE)
 	::FreeConsole();
 #endif
 	// 上で作成されたシェル マネージャーを削除します。
