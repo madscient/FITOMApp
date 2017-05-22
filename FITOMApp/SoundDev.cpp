@@ -319,15 +319,12 @@ void CSoundDevice::SetMasterVolume(UINT8 vol, int update)
 UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 {
 	volatile UINT8 ret = 0xff;
-//	ret = QueryCh(parent, voice, 1);
+	ret = QueryCh(parent, voice, 1);
 	if (ret == 0xff) {
 		ret = QueryCh(NULL, voice, 1);
 	}
 	if (ret == 0xff) {
 		ret = QueryCh(NULL, NULL, 1);
-	}
-	if (ret == 0xff) {
-		ret = QueryCh(NULL, NULL, 0);
 	}
 	if (ret == 0xff) {
 		DWORD count = 0;
@@ -337,21 +334,15 @@ UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 			if (attr->IsAutoAssignable() && attr->IsEnable()) {
 				if (count <= attr->noteon) {
 					cand = i;
+					count = attr->noteon;
 				}
 			}
 		}
 		ret = cand;
+#ifdef _DEBUG
+		fprintf(stderr, _T("AllocCh:%i:partial out!!(%i)\n"), ret, count);
+#endif
 	}
-	/*
-	if (ret == 0xff) {
-		ret = QueryCh(parent, NULL, 0);
-	}
-	if (ret == 0xff) {
-		ret = QueryCh(NULL, voice, 0);
-	}
-	if (ret == 0xff) {
-		ret = QueryCh(NULL, NULL, 0);
-	}*/
 	Assign(ret, parent, voice);
 	return (ret);
 }
@@ -395,9 +386,12 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable())
 				&& memcmp(voice, attr->GetVoice(), sizeof(FMVOICE)) == 0 && attr->GetParent() == parent) {
 				ret = tmp;
+#ifdef _DEBUG
+				fprintf(stderr, _T("QueryCh:%i:mached parent and voice\n"), ret);
+#endif
 				break;
 			}
-			tmp = (tmp + i) % chs;
+			tmp = (tmp + 1) % chs;
 		}
 	} else if (voice) {
 		tmp = prior_ch;
@@ -406,9 +400,12 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable())
 				&& attr->GetVoiceID() == voice->ID) {
 				ret = tmp;
+#ifdef _DEBUG
+				fprintf(stderr, _T("QueryCh:%i:mached voice\n"), ret);
+#endif
 				break;
 			}
-			tmp = (tmp + i) % chs;
+			tmp = (tmp + 1) % chs;
 		}
 	} else {
 		tmp = prior_ch;
@@ -416,16 +413,16 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 			attr = GetChAttribute(tmp);
 			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : 1) && attr->IsEnable()) {
 				ret = tmp;
+#ifdef _DEBUG
+				fprintf(stderr, _T("QueryCh:%i:new ch\n"), ret);
+#endif
 				break;
 			}
-			tmp = (tmp + i) % chs;
+			tmp = (tmp + 1) % chs;
 		}
 	}
 	if (ret != 0xff) {
 		prior_ch = (prior_ch + 1) % chs;
-	}
-	else {
-		//prior_ch = ret;
 	}
 	return ret;
 }

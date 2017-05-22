@@ -311,14 +311,14 @@ void COPZ::UpdatePanpot(UINT8 ch)
 	int pan = (GetChAttribute(ch)->panpot) / 8;
 	UINT8 chena = 0;
 	UINT8 mono = 0;
-	if (pan == 0) { //C
+	if (pan > 4) { //R
+		chena = 0x80;
+	}
+	else if (pan < -4) { //L
+	}
+	else { //C
 		chena = 0x80;
 		mono = 0x1;
-	}
-	else if (pan > 0) { //R
-		chena = 0x80;
-	}
-	else if (pan < 0) { //L
 	}
 	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0x3f) | chena, 1);
 	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xfe) | mono, 1);

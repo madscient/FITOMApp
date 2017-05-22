@@ -264,7 +264,7 @@ void CAdPcm2610B::UpdateVoice(UINT8 ch)
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
 	UINT32 st = adpcmvoice[num].staddr;
-	UINT32 ed = st + adpcmvoice[num].length;
+	UINT32 ed = st + adpcmvoice[num].length - 1;
 	SetReg(regmap.startLSB, (st >> 8) & 0xff);
 	SetReg(regmap.startMSB, (st >> 16) & 0xff);
 	SetReg(regmap.endLSB, (ed >> 8) & 0xff);
@@ -277,6 +277,7 @@ CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
 {
 	boundary = 0x100000;
 	rhythmcap = 6;
+	SetReg(0, 0);
 }
 
 UINT8 CAdPcm2610A::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
@@ -307,7 +308,7 @@ void CAdPcm2610A::LoadVoice(int prog, UINT8* data, size_t length)
 		port->writeRaw(0x201, (addr >> 8) & 0xff);
 		port->writeRaw(0x202, (addr >> 16) & 0xff);
 		port->writeRaw(0x203, 1);
-		port->writeRaw(0x204, (i < length) ? (data[i] & 0xff) : 0);
+		port->writeRaw(0x204, (i < length) ? (data[i] & 0xff) : 0x80);
 	}
 }
 
@@ -369,7 +370,7 @@ void CAdPcm2610A::UpdateVoice(UINT8 ch)
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
 	UINT32 st = adpcmvoice[num].staddr;
-	UINT32 ed = st + adpcmvoice[num].length;
+	UINT32 ed = st + adpcmvoice[num].length - 1;
 	SetReg(0x10 + ch, (st >> 8) & 0xff, 1);
 	SetReg(0x18 + ch, (st >> 16) & 0xff, 1);
 	SetReg(0x20 + ch, (ed >> 8) & 0xff, 1);
