@@ -206,8 +206,6 @@ Ym2610AEncoder::~Ym2610AEncoder()
 {
 }
 
-
-				   //jedi table is used speed up decoding, run this to init the table before encoding. Mame copy-pasta.
 void Ym2610AEncoder::jedi_table_init()
 {
 	int step, nib;
