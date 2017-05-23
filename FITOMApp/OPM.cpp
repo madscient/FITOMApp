@@ -301,6 +301,8 @@ COPZ::COPZ(CPort* pt, int fsamp) : COPM(pt, fsamp)
 	SetReg(0x09, 0x0, 1);
 	SetReg(0x0a, 0x4, 1);
 	SetReg(0x0f, 0x0, 1);
+	SetReg(0x14, 0x70, 1);
+	SetReg(0x15, 0x01, 1);
 	SetReg(0x1c, 0x0, 1);
 	SetReg(0x1e, 0x0, 1);
 
@@ -315,12 +317,14 @@ void COPZ::UpdatePanpot(UINT8 ch)
 		chena = 0x80;
 	}
 	else if (pan < -4) { //L
+		chena = 0x40;
 	}
 	else { //C
-		chena = 0x80;
+		chena = 0xc0;
 		mono = 0x1;
 	}
 	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0x3f) | chena, 1);
+	//SetReg(0x28 + ch, (GetReg(0x28 + ch, 0) & 0x7f) | (mono << 7), 1);
 	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xfe) | mono, 1);
 }
 
@@ -349,8 +353,10 @@ void COPZ::UpdateVoice(UINT8 ch)
 		UINT8 tmp;
 		UINT8 ofm = voice->op[map[i]].VIB;
 		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (ofm ? (voice->op[map[i]].DT2 & 0xf) : 0);
-		SetReg(0x80 + i * 8 + ch, tmp);
+		SetReg(0x40 + i * 8 + ch, tmp);
+		/*
 		tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | (voice->op[map[i]].REV >> 4) | 0x20;
 		SetReg(0xc0 + i * 8 + ch, tmp);
+		*/
 	}
 }

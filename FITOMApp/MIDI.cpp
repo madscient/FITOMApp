@@ -784,24 +784,26 @@ void CInstCh::NoteOn(UINT8 note, UINT8 vel)
 				ch = Device->AllocCh(this, &voice);
 			}
 		}
-		Device->SetDevAMDepth(ch, AMDepth);
-		Device->SetDevPMDepth(ch, PMDepth);
-		Device->SetDevAMRate(ch, AMRate);
-		Device->SetDevPMRate(ch, PMRate);
-		Device->SetVolume(ch, Volume, 0);
-		Device->SetExpress(ch, Expression, 0);
-		Device->SetSustain(ch, Sustain, 0);
-		Device->SetPanpot(ch, Panpot);
+		if (ch != 0xff) {
+			Device->SetDevAMDepth(ch, AMDepth);
+			Device->SetDevPMDepth(ch, PMDepth);
+			Device->SetDevAMRate(ch, AMRate);
+			Device->SetDevPMRate(ch, PMRate);
+			Device->SetVolume(ch, Volume, 0);
+			Device->SetExpress(ch, Expression, 0);
+			Device->SetSustain(ch, Sustain, 0);
+			Device->SetPanpot(ch, Panpot);
 
-		Enter(ch, note, id);
-		UpdateFineTune();
+			Enter(ch, note, id);
+			UpdateFineTune();
 
-		if (noteon) {
-			Device->NoteOn(ch, vel);
-		} else {
-			Device->SetVelocity(ch, vel);
+			if (noteon) {
+				Device->NoteOn(ch, vel);
+			}
+			else {
+				Device->SetVelocity(ch, vel);
+			}
 		}
-
 	}
 }
 
@@ -1278,15 +1280,17 @@ void CRhythmCh::NoteOn(UINT8 note, UINT8 vel, DRUMMAP* dm)
 		} else { //Inst Rhythm
 			Parent->GetVoice(&dv, dm->devID, dm->bank, dm->prog);
 			UINT8 ch = dm->device->AllocCh(this, &dv);
-			dm->device->SetExpress(ch, 127);
-			dm->device->SetVolume(ch, Volume, 0);
-			dm->device->SetPanpot(ch, dm->pan + 64);
-			dm->device->SetNoteFine(ch, dm->num, (SINT16)dm->fnum);
-			dm->device->NoteOn(ch, vel);
-			Note[note].device = dm->device;
-			Note[note].ch = ch;
-			Note[note].note = dm->num;
-			Note[note].count = dm->gate;
+			if (ch != 0xff) {
+				dm->device->SetExpress(ch, 127);
+				dm->device->SetVolume(ch, Volume, 0);
+				dm->device->SetPanpot(ch, dm->pan + 64);
+				dm->device->SetNoteFine(ch, dm->num, (SINT16)dm->fnum);
+				dm->device->NoteOn(ch, vel);
+				Note[note].device = dm->device;
+				Note[note].ch = ch;
+				Note[note].note = dm->num;
+				Note[note].count = dm->gate;
+			}
 		}
 	}
 }

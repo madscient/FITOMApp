@@ -332,7 +332,7 @@ UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 	}
 	if (ret == 0xff) {
 		DWORD count = 0;
-		int cand = prior_ch;
+		int cand = 0xff;
 		for (int i = 0; i < chs; i++) {
 			CHATTR* attr = GetChAttribute(i);
 			if (attr->IsAutoAssignable() && attr->IsEnable()) {
@@ -347,7 +347,9 @@ UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 		fprintf(stderr, _T("AllocCh:%i:partial out!!(%i)\n"), ret, count);
 #endif
 	}
-	Assign(ret, parent, voice);
+	if (ret != 0xff) {
+		Assign(ret, parent, voice);
+	}
 	return (ret);
 }
 
