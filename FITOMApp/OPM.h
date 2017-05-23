@@ -44,7 +44,6 @@ public:
 
 class COPZ : public COPM {
 protected:
-	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdatePanpot(UINT8 ch);
 	UINT8 lfos;

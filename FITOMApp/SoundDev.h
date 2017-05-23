@@ -35,7 +35,7 @@ struct FMOP {
 	UINT8	MUL; // 20:Multiple: 4bit OPL/OPN/OPM
 	UINT8	DT1; // 21:Detune1: none OPL / 4bit OPN/OPM
 	UINT8	DT2; // 22:Detune2: none OPL/OPN / 3bit OPM
-	UINT8	DM1; // 23:
+	UINT8	DT3; // 23:fine frequency: 4bit OPZ ratio mode
 };
 
 struct FMVOICE {

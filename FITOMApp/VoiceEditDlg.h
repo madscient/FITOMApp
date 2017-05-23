@@ -91,6 +91,7 @@ protected:
 	int GetML(int op) { return theVoice.op[op].MUL; };
 	int GetDT1(int op) { return theVoice.op[op].DT1; };
 	int GetDT2(int op) { return theVoice.op[op].DT2; };
+	int GetDT3(int op) { return theVoice.op[op].DT3; };
 	int GetPDT(int op) { int pdt = ((GetDT1(op) << 7) | (GetDT2(op))); return (pdt > 8191) ? (pdt - 16384) : pdt; };
 	int GetAME(int op) { return theVoice.op[op].AM; };
 	int GetVIB(int op) { return theVoice.op[op].VIB; };
@@ -107,7 +108,7 @@ protected:
 	int GetOPLFODelay(int op) { return theVoice.op[op].SLY; };
 	int GetOPLFORate(int op) { return theVoice.op[op].SLR; };
 	int GetNAM(int op) { return ((theVoice.op[op].DT1 & 15) << 4) | (theVoice.op[op].DT2 & 15); };
-	int GetNOM(int op) { return ((theVoice.op[op].DM0 & 15) << 4) | (theVoice.op[op].DM1 & 15); };
+	int GetNOM(int op) { return ((theVoice.op[op].DT3 & 15) << 4) | (theVoice.op[op].DT3 & 15); };
 	//Setter
 	void SetAL(int op, int val) { theVoice.AL = val; };
 	void SetAL3(int op, int val) { theVoice.AL = val | (GetNE(op) ? 0x8 : 0); };
@@ -147,6 +148,7 @@ protected:
 	void SetML(int op, int val) { theVoice.op[op].MUL = val; };
 	void SetDT1(int op, int val) { theVoice.op[op].DT1 = val; };
 	void SetDT2(int op, int val) { theVoice.op[op].DT2 = val; };
+	void SetDT3(int op, int val) { theVoice.op[op].DT3 = val; };
 	void SetPDT(int op, int val) { theVoice.op[op].DT1 = ((val >> 7) & 0x7f); theVoice.op[op].DT2 = (val & 0x7f); };
 	void SetAME(int op, int val) { theVoice.op[op].AM = val; };
 	void SetVIB(int op, int val) { theVoice.op[op].VIB = val; };
@@ -162,7 +164,7 @@ protected:
 	void SetOPLFODelay(int op, int val) { theVoice.op[op].SLY = val; };
 	void SetOPLFORate(int op, int val) { theVoice.op[op].SLR = val; };
 	void SetNAM(int op, int val) { theVoice.op[op].DT1 = val >> 4; theVoice.op[op].DT2 = val & 15; };
-	void SetNOM(int op, int val) { theVoice.op[op].DM0 = val >> 4; theVoice.op[op].DM1 = val & 15; };
+	void SetNOM(int op, int val) { theVoice.op[op].DT3 = val >> 4; theVoice.op[op].DT3 = val & 15; };
 
 	DECLARE_MESSAGE_MAP()
 public:

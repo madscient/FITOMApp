@@ -301,7 +301,7 @@ int Ym2610AEncoder::encode(short *pSrc, unsigned char *pDis, DWORD iSampleSize)
 	//fix byte order and downscale data to 12 bits
 	for (i = 0; i < iSampleSize; i ++)
 	{
-		inBuffer[i / 2] = pSrc[i] >> 4;
+		inBuffer[i] = pSrc[i] >> 4;
 	}
 
 	//actual encoding

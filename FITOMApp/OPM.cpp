@@ -290,14 +290,14 @@ COPP::COPP(CPort* pt, int fsamp) : COPM(pt, fsamp)
 COPZ::COPZ(CPort* pt, int fsamp) : COPM(pt, fsamp)
 {
 	SetDevice(DEVICE_OPZ);
-	SetReg(0x00, 0xff, 1);
-	SetReg(0x01, 0xff, 1);
-	SetReg(0x02, 0xff, 1);
-	SetReg(0x03, 0xff, 1);
-	SetReg(0x04, 0xff, 1);
-	SetReg(0x05, 0xff, 1);
-	SetReg(0x06, 0xff, 1);
-	SetReg(0x07, 0xff, 1);
+	SetReg(0x00, 0x10, 1);
+	SetReg(0x01, 0x10, 1);
+	SetReg(0x02, 0x10, 1);
+	SetReg(0x03, 0x10, 1);
+	SetReg(0x04, 0x10, 1);
+	SetReg(0x05, 0x10, 1);
+	SetReg(0x06, 0x10, 1);
+	SetReg(0x07, 0x10, 1);
 	SetReg(0x09, 0x0, 1);
 	SetReg(0x0a, 0x4, 1);
 	SetReg(0x0f, 0x0, 1);
@@ -324,39 +324,22 @@ void COPZ::UpdatePanpot(UINT8 ch)
 		mono = 0x1;
 	}
 	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0x3f) | chena, 1);
-	//SetReg(0x28 + ch, (GetReg(0x28 + ch, 0) & 0x7f) | (mono << 7), 1);
 	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xfe) | mono, 1);
-}
-
-void COPZ::UpdateVolExp(UINT8 ch)
-{
-	CHATTR* attr = GetChAttribute(ch);
-	UINT8 evol = ::CalcVolExpVel(127, attr->express, attr->velocity);;
-	FMVOICE* voice = attr->GetVoice();
-	for (int i = 0; i<4; i++) {
-		if (carmsk[voice->AL & 7] & (1 << i)) {
-			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
-			attr->baseTL[i] = tl;
-			tl = Linear2dB(tl, RANGE96DB, STEP075DB, 7);
-			SetReg(0x60 + map[i] * 8 + ch, tl);
-		}
-	}
-	SetReg(0x0 + ch, Linear2dB(attr->volume, RANGE96DB, STEP075DB, 7), 1);
 }
 
 void COPZ::UpdateVoice(UINT8 ch)
 {
-	COPM::UpdateVoice(ch);
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	for (int i = 0; i < 4; i++) {
 		UINT8 tmp;
 		UINT8 ofm = voice->op[map[i]].VIB;
-		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (ofm ? (voice->op[map[i]].DT2 & 0xf) : 0);
+		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (ofm ? (voice->op[map[i]].DT3 & 0xf) : 0);
 		SetReg(0x40 + i * 8 + ch, tmp);
 		/*
 		tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | (voice->op[map[i]].REV >> 4) | 0x20;
 		SetReg(0xc0 + i * 8 + ch, tmp);
 		*/
 	}
+	COPM::UpdateVoice(ch);
 }
