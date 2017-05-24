@@ -54,7 +54,7 @@ struct voicetypes {
 };
 
 voicetypes VoiceTypeTable[] = {
-	{ VOICE_GROUP_OPM, 4, _T("OPM"), _T("AL FB NE NF"), _T("AR DR SR RR SL TL KS ML DT1 DT2 AMS"), &CFITOMConfig::ParseOPMVoice, &CFITOMConfig::BuildOPMVoice, },
+	{ VOICE_GROUP_OPM, 4, _T("OPM"), _T("AL FB NE NF"), _T("AR DR SR RR SL TL KS ML DT1 DT2 AMS FIX DT3 WF REV"), &CFITOMConfig::ParseOPMVoice, &CFITOMConfig::BuildOPMVoice, },
 	{ VOICE_GROUP_OPNA, 4, _T("OPNA"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML DT1  EG AMS"), &CFITOMConfig::ParseOPNVoice, &CFITOMConfig::BuildOPNVoice, },
 	{ VOICE_GROUP_OPL2, 2, _T("OPL2"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), &CFITOMConfig::ParseOPL2Voice, &CFITOMConfig::BuildOPL2Voice, },
 	{ VOICE_GROUP_OPL3, 4, _T("OPL3"), _T("AL FB1 FB2"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), &CFITOMConfig::ParseOPL3Voice, &CFITOMConfig::BuildOPL3Voice, },

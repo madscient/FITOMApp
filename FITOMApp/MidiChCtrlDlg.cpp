@@ -383,9 +383,9 @@ void CMidiChCtrlDlg::OnSelendokComboDevice()
 		theCh = theInst->GetMidiCh(iCH);
 	}
 	else {
-		theCh->BankSelMSB(theConfig->isPcmDevice(seldev) ? ADPCM_BANK : seldev & 0xff);
+		theCh->BankSelMSB(theConfig->isPcmDevice(seldev) ? ADPCM_BANK : (seldev & 0xff));
 		int bk = cmbBank.GetCurSel();
-		if ((seldev & 0xff) == ADPCM_BANK) {
+		if (theConfig->isPcmDevice(seldev)) {
 			bk = theConfig->GetPcmDeviceIndex(seldev);
 		}
 		else if ((seldev & 0xff) != RHYTHM_BANK) {
