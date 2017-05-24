@@ -17,7 +17,8 @@ UINT8 COPL::RhythmFreq[] = { 47, 60, 53, };
 #define GET_RR(v,o)	(v->op[o].RR >> 3)
 #define GET_SL(v,o)	(v->op[o].SL >> 3)
 #define GET_TL(v,o)	(v->op[o].TL >> 1)
-#define GET_RV(v,o)	(v->op[o].REV >> 3)
+//#define GET_RV(v,o)	(v->op[o].REV >> 3)
+#define GET_RV(v,o)	(4)
 
 
 COPL::COPL(CPort* pt, int fsamp, UINT8 devtype)

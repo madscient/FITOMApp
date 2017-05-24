@@ -415,6 +415,12 @@ void CFITOMApp::SaveOPMVoice(CFMBank* bank, CProgressDlg* pDlg) {
 				theConfig->BuildOPMVoice(&voice, k+1, param, _countof(param));
 				::WritePrivateProfileString(secname, keyname, param, filename);
 			}
+			for (int k = 0; k < 4; k++) {
+				TCHAR keyname[16];
+				StringCchPrintf(keyname, _countof(keyname), _T("ADD%i"), k + 1);
+				theConfig->BuildOPMVoice(&voice, k + 5, param, _countof(param));
+				::WritePrivateProfileString(secname, keyname, param, filename);
+			}
 			pDlg ? pDlg->SetPos(i + 2) : 0;
 		}
 	}

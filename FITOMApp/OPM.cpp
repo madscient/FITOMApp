@@ -13,7 +13,7 @@ UINT8 COPM::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 #define GET_RR(v,o)	(v->op[o].RR >> 3)
 #define GET_SL(v,o)	(v->op[o].SL >> 3)
 #define GET_TL(v,o)	(v->op[o].TL)
-#define GET_RV(v,o)	(v->op[o].REV >> 3)
+#define GET_RV(v,o)	(v->op[o].REV)
 
 COPM::COPM(CPort* pt, int fsamp) : CSoundDevice(DEVICE_OPM, 8, 0, 0, 0, FnumTableType::none, pt, 0x100), lfos(1)
 {
@@ -132,7 +132,7 @@ void COPM::UpdateSustain(UINT8 ch)
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
 	for (int i=0; i<4; i++) {
-		UINT8 rr = ((parent && parent->GetSustain()) ? GET_RV(voice, map[i]) : GET_RR(voice, map[i])) & 0xf;
+		UINT8 rr = ((parent && parent->GetSustain()) ? 4 : GET_RR(voice, map[i])) & 0xf;
 		UINT8 tmp = (GET_SL(voice, map[i]) << 4) | rr;
 		SetReg(0xe0 + (i * 8) + ch, tmp);
 	}
@@ -336,10 +336,8 @@ void COPZ::UpdateVoice(UINT8 ch)
 		UINT8 ofm = voice->op[map[i]].VIB;
 		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (ofm ? (voice->op[map[i]].DT3 & 0xf) : 0);
 		SetReg(0x40 + i * 8 + ch, tmp);
-		/*
-		tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | (voice->op[map[i]].REV >> 4) | 0x20;
+		tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | GET_RV(voice, map[i]) | 0x20;
 		SetReg(0xc0 + i * 8 + ch, tmp);
-		*/
 	}
 	COPM::UpdateVoice(ch);
 }

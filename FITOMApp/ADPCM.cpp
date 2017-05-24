@@ -337,6 +337,8 @@ void CAdPcm2610A::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	UINT8 evol = 31 - Linear2dB(CalcLinearLevel(CalcEffectiveLevel(attr->velocity, attr->express), 0), RANGE24DB, STEP075DB, 5);
+	rhythmvol = attr->volume;
+	UpdateRhythmVol();
 	SetReg(0x08 + ch, (GetReg(0x8 + ch, 0) & 0xe0) | evol, 1);
 }
 

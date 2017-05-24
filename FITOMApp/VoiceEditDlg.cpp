@@ -140,7 +140,8 @@ BEGIN_MESSAGE_MAP(CVoiceEditDlg, CDialogEx)
 	ON_COMMAND(IDC_VOICE_PASTE, &CVoiceEditDlg::OnVoicePaste)
 	ON_UPDATE_COMMAND_UI(IDC_VOICE_PASTE, &CVoiceEditDlg::OnUpdateVoicePaste)
 	ON_BN_CLICKED(IDC_VOICE_IMPORT, &CVoiceEditDlg::OnBnClickedVoiceText)
-	ON_BN_CLICKED(IDC_BTN_REVERT, &CVoiceEditDlg::OnClickedBtnRevert)
+	ON_COMMAND(IDC_BTN_REVERT, &CVoiceEditDlg::OnClickedBtnRevert)
+	ON_UPDATE_COMMAND_UI(IDC_BTN_REVERT, &CVoiceEditDlg::OnUpdateRevert)
 	ON_BN_CLICKED(IDC_BTN_APPLY, &CVoiceEditDlg::OnClickedBtnApply)
 END_MESSAGE_MAP()
 
@@ -252,6 +253,7 @@ void CVoiceEditDlg::UpdateVoiceView(FMVOICE* voice)
 	CFMBank* pbank = theConfig->GetFMBank(vg, theBank);
 	if (pbank) {
 		voice ? (theVoice = *voice) : pbank->GetVoice(theProg, &theVoice);
+		memcpy(&orgVoice, &theVoice, sizeof(FMVOICE));
 		TCHAR devname[64];
 		theConfig->GetDeviceName(theDevice, devname, _countof(devname));
 		tmp.Format(_T("%02X:%s"), theDevice & 0xff, devname);
@@ -571,10 +573,21 @@ void CVoiceEditDlg::OnBnClickedVoiceText()
 	}
 }
 
+void CVoiceEditDlg::OnUpdateRevert(CCmdUI *pCmdUI)
+{
+	// TODO:ここにコマンド更新 UI ハンドラー コードを追加します。
+	pCmdUI->Enable(bModified);
+}
+
 
 void CVoiceEditDlg::OnClickedBtnRevert()
 {
-	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	// TODO: ここにコマンド ハンドラー コードを追加します。
+	if (AfxMessageBox(IDS_CONFIRM_VOICE_DISCARD, MB_YESNO) == IDYES) {
+		UpdateVoiceView(&orgVoice);
+		bModified = FALSE;
+		OnClickedBtnApply();
+	}
 }
 
 

@@ -12,7 +12,8 @@ UINT8 COPL3::carmsk[] = { 0x2, 0x3, 0x8, 0xc, 0x8, 0x9, 0xa, 0xd, 0xa, 0xe, 0xb,
 #define GET_RR(v,o)	(v->op[o].RR >> 3)
 #define GET_SL(v,o)	(v->op[o].SL >> 3)
 #define GET_TL(v,o)	(v->op[o].TL >> 1)
-#define GET_RV(v,o)	(v->op[o].REV >> 3)
+//#define GET_RV(v,o)	(v->op[o].REV >> 3)
+#define GET_RV(v,o)	(4)
 
 COPL3::COPL3(CPort* pt, int fsamp) :
 CSoundDevice(DEVICE_OPL3, 6, fsamp, 288, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x200)

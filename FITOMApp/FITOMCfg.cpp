@@ -1058,6 +1058,16 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 						boost::split(lstopparam, stropparam, boost::is_space());
 						BOOST_FOREACH(std::tstring s, lstopparam) { if (!s.empty()) opparam.push_back(stoi(s)); }
 						ParseLFOParam(&voice, k + 1, opparam);
+						if (groupcode == VOICE_GROUP_OPM) {
+							stropkey = (boost::format(_T("%1%.ADD%2%")) % strprogkey % (k + 1)).str();
+							lstopparam.clear();
+							opparam.clear();
+							stropparam = bankfile.get<std::tstring>(stropkey, _T("0 0 0 0 0"));
+							boost::trim(stropparam);
+							boost::split(lstopparam, stropparam, boost::is_space());
+							BOOST_FOREACH(std::tstring s, lstopparam) { if (!s.empty()) opparam.push_back(stoi(s)); }
+							ParseLFOParam(&voice, k + 5, opparam);
+						}
 					}
 					voice.ID = (groupcode << 24) | (i << 8) | j;
 					bank->SetVoice(j, &voice);
@@ -1084,7 +1094,14 @@ int CFITOMConfig::ParseOPMVoice(FMVOICE* voice, int index, std::vector<int>& par
 		voice->op[k].DT1 = (param[8] & 7);
 		voice->op[k].DT2 = (param[9] & 3);
 		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 4;
+	}
+	else if (4 <= k && k < 8 && param.size() > 4) {
+		k -= 4;
+		voice->op[k].VIB = (param[0] & 1);
+		voice->op[k].DT3 = (param[1] & 15);
+		voice->op[k].WS = (param[2] & 7);
+		voice->op[k].REV = (param[3] & 15);
+		voice->op[k].EGS = (param[4] & 127);
 	}
 	else if (index == 0 && param.size() > 3) {
 		voice->AL = (param[0] & 7) | ((param[2] & 1) << 3);
@@ -1109,7 +1126,7 @@ int CFITOMConfig::ParseOPNVoice(FMVOICE* voice, int index, std::vector<int>& par
 		voice->op[k].DT1 = (param[8] & 7);
 		voice->op[k].EGT = (param[9] & 15);
 		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 32;
+		voice->op[k].REV = 0;
 	}
 	else if (index == 0 && param.size() > 1) {
 		voice->AL = (param[0] & 7);
@@ -1136,7 +1153,7 @@ int CFITOMConfig::ParseOPL2Voice(FMVOICE* voice, int index, std::vector<int>& pa
 		voice->op[k].WS = (param[9] & 7);
 		voice->op[k].VIB = (param[10] >> 1) & 1;
 		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 32;
+		voice->op[k].REV = 0;
 	}
 	else if (index == 0 && param.size() > 1) {
 		voice->AL = (param[0] & 7);
@@ -1163,7 +1180,7 @@ int CFITOMConfig::ParseOPL3Voice(FMVOICE* voice, int index, std::vector<int>& pa
 		voice->op[k].WS = (param[9] & 7);
 		voice->op[k].VIB = (param[10] >> 1) & 1;
 		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 32;
+		voice->op[k].REV = 0;
 	}
 	else if (index == 0 && param.size() > 2) {
 		voice->AL = (param[0] & 15);
@@ -1190,7 +1207,7 @@ int CFITOMConfig::ParseOPLLVoice(FMVOICE* voice, int index, std::vector<int>& pa
 		voice->op[k].WS = (param[9] & 7);
 		voice->op[k].VIB = (param[10] >> 1) & 1;
 		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 32;
+		voice->op[k].REV = 0;
 	}
 	else if (index == 0) {
 		if (param.size() == 1 && param[0]) {
@@ -1221,7 +1238,7 @@ int CFITOMConfig::ParsePSGVoice(FMVOICE* voice, int index, std::vector<int>& par
 		voice->op[k].DT3 = (param[8] & 15);
 		voice->op[k].WS = (param[9] & 15);
 		voice->op[k].MUL = (param[10] & 127); // Noise Select
-		voice->op[k].REV = 4;
+		voice->op[k].REV = 0;
 	}
 	else if (index == 0 && param.size() > 2) {
 		voice->AL = param[0] & 127;
@@ -1276,9 +1293,17 @@ int CFITOMConfig::BuildOPMVoice(FMVOICE* voice, int index, TCHAR* result, size_t
 		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
-	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
-		% (voice->op[k].AR >> 2) % (voice->op[k].DR >> 2) % (voice->op[k].SR >> 2) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% int(voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].DT2) % int(voice->op[k].AM)).str();
+	if (k < 4) {
+		strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
+			% (voice->op[k].AR >> 2) % (voice->op[k].DR >> 2) % (voice->op[k].SR >> 2) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
+			% int(voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].DT2) % int(voice->op[k].AM)
+			).str();
+	}
+	else if (k < 8) {
+		k -= 4;
+		strres = (boost::format(_T("%3i %3i %3i %3i %3i")) %
+			int(voice->op[k].VIB) % int(voice->op[k].DT3) % int(voice->op[k].WS) % int(voice->op[k].REV) % int(voice->op[k].EGS)).str();
+	}
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 

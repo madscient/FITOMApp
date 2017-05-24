@@ -209,6 +209,7 @@ public:
 	afx_msg void OnVoiceCopy();
 	afx_msg void OnVoicePaste();
 	afx_msg void OnUpdateVoicePaste(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateRevert(CCmdUI *pCmdUI);
 	afx_msg void OnBnClickedVoiceText();
 	afx_msg void OnClickedBtnRevert();
 	afx_msg void OnClickedBtnApply();

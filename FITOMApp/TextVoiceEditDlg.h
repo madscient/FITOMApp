@@ -49,4 +49,6 @@ public:
 	virtual void OnCancel();
 	afx_msg void OnSelendokCmbType();
 	CSpinButtonCtrl spnNote;
+	CStatic capAdd;
+	CEdit edtAdd;
 };

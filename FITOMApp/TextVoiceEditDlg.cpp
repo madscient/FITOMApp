@@ -41,6 +41,8 @@ void CTextVoiceEditDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_LFO, edtLFO);
 	DDX_Control(pDX, IDC_BTN_TEST, btnTest);
 	DDX_Control(pDX, IDC_SPIN_NOTE, spnNote);
+	DDX_Control(pDX, IDC_CAP_ADD, capAdd);
+	DDX_Control(pDX, IDC_EDIT_ADD, edtAdd);
 }
 
 struct voicetypes {
@@ -49,17 +51,18 @@ struct voicetypes {
 	LPCTSTR name;
 	LPCTSTR alfb;
 	LPCTSTR opv;
+	LPCTSTR opa;
 	int(CFITOMConfig::*parseFunc)(FMVOICE*, int, std::vector<int>&);
 	int(CFITOMConfig::*buildFunc)(FMVOICE*, int, TCHAR*, size_t);
 };
 
 voicetypes VoiceTypeTable[] = {
-	{ VOICE_GROUP_OPM, 4, _T("OPM"), _T("AL FB NE NF"), _T("AR DR SR RR SL TL KS ML DT1 DT2 AMS FIX DT3 WF REV"), &CFITOMConfig::ParseOPMVoice, &CFITOMConfig::BuildOPMVoice, },
-	{ VOICE_GROUP_OPNA, 4, _T("OPNA"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML DT1  EG AMS"), &CFITOMConfig::ParseOPNVoice, &CFITOMConfig::BuildOPNVoice, },
-	{ VOICE_GROUP_OPL2, 2, _T("OPL2"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), &CFITOMConfig::ParseOPL2Voice, &CFITOMConfig::BuildOPL2Voice, },
-	{ VOICE_GROUP_OPL3, 4, _T("OPL3"), _T("AL FB1 FB2"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), &CFITOMConfig::ParseOPL3Voice, &CFITOMConfig::BuildOPL3Voice, },
-	{ VOICE_GROUP_OPLL, 2, _T("OPLL"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), &CFITOMConfig::ParseOPLLVoice, &CFITOMConfig::BuildOPLLVoice, },
-	{ VOICE_GROUP_PSG, 1, _T("PSG"), _T("AL FB NF"), _T("AR DR SR RR SL BS EG NAM NOM WF NS"), &CFITOMConfig::ParsePSGVoice, &CFITOMConfig::BuildPSGVoice, },
+	{ VOICE_GROUP_OPM, 4, _T("OPM"), _T("AL FB NE NF"), _T("AR DR SR RR SL TL KS ML DT1 DT2 AMS"), _T("FIX DT3 WS REV EGS"), &CFITOMConfig::ParseOPMVoice, &CFITOMConfig::BuildOPMVoice, },
+	{ VOICE_GROUP_OPNA, 4, _T("OPNA"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML DT1  EG AMS"), 0, &CFITOMConfig::ParseOPNVoice, &CFITOMConfig::BuildOPNVoice, },
+	{ VOICE_GROUP_OPL2, 2, _T("OPL2"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), 0, &CFITOMConfig::ParseOPL2Voice, &CFITOMConfig::BuildOPL2Voice, },
+	{ VOICE_GROUP_OPL3, 4, _T("OPL3"), _T("AL FB1 FB2"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), 0, &CFITOMConfig::ParseOPL3Voice, &CFITOMConfig::BuildOPL3Voice, },
+	{ VOICE_GROUP_OPLL, 2, _T("OPLL"), _T("AL FB"), _T("AR DR SR RR SL TL KS ML PDT WF AM"), 0, &CFITOMConfig::ParseOPLLVoice, &CFITOMConfig::BuildOPLLVoice, },
+	{ VOICE_GROUP_PSG, 1, _T("PSG"), _T("AL FB NF"), _T("AR DR SR RR SL BS EG NAM NOM WF NS"), 0, &CFITOMConfig::ParsePSGVoice, &CFITOMConfig::BuildPSGVoice, },
 	{ VOICE_GROUP_NONE, 0, 0, 0, 0, 0, 0, },
 };
 
@@ -178,6 +181,14 @@ void CTextVoiceEditDlg::Refresh()
 	if (theType && typeidx >= 0) {
 		capALFB.SetWindowText(VoiceTypeTable[typeidx].alfb);
 		capOP.SetWindowText(VoiceTypeTable[typeidx].opv);
+		if (VoiceTypeTable[typeidx].opa) {
+			capAdd.SetWindowText(VoiceTypeTable[typeidx].opa);
+			edtAdd.EnableWindow(TRUE);
+		}
+		else {
+			capAdd.SetWindowText(_T(""));
+			edtAdd.EnableWindow(FALSE);
+		}
 		char vname[17];
 		lstrcpynA(vname, theVoice.name, 16);
 		vname[16] = 0;
@@ -198,6 +209,13 @@ void CTextVoiceEditDlg::Refresh()
 			str = str + param + _T("\r\n");
 		}
 		edtLFO.SetWindowText(str);
+		if (edtAdd.IsWindowEnabled()) {
+			for (int i = 0; i < (VoiceTypeTable[typeidx].ops); i++) {
+				int r = (theConfig->*(VoiceTypeTable[typeidx].buildFunc))(&theVoice, i + VoiceTypeTable[typeidx].ops + 1, param, _countof(param));
+				str = str + param + _T("\r\n");
+			}
+			edtAdd.SetWindowText(str);
+		}
 	}
 }
 
@@ -264,6 +282,31 @@ void CTextVoiceEditDlg::Update()
 				}
 			}
 			theConfig->ParseLFOParam(&theVoice, ++count, param);
+		}
+	}
+	if (edtAdd.IsWindowEnabled()) {
+		edtAdd.GetWindowText(str);
+		for (int count = 0, lineidx = 0, nextidx = 0; nextidx != -1; ) {
+			nextidx = str.Find(_T("\n"), lineidx);
+			CString line;
+			if (nextidx > lineidx) {
+				line = str.Mid(lineidx, nextidx - lineidx);
+				lineidx = nextidx + 1;
+			}
+			else if (str.Mid(lineidx)) {
+				line = str.Mid(lineidx);
+			}
+			if (line.GetLength()) {
+				param.clear();
+				lstparam.clear();
+				boost::split(lstparam, boost::trim_copy(std::tstring(LPCTSTR(line))), boost::is_space());
+				BOOST_FOREACH(std::tstring s, lstparam) {
+					if (!s.empty()) {
+						param.push_back(stoi(s));
+					}
+				}
+				(theConfig->*(VoiceTypeTable[typeidx].parseFunc))(&theVoice, (++count) + VoiceTypeTable[typeidx].ops, param);
+			}
 		}
 	}
 }
