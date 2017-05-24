@@ -206,8 +206,6 @@ Ym2610AEncoder::~Ym2610AEncoder()
 {
 }
 
-
-				   //jedi table is used speed up decoding, run this to init the table before encoding. Mame copy-pasta.
 void Ym2610AEncoder::jedi_table_init()
 {
 	int step, nib;
@@ -301,7 +299,7 @@ int Ym2610AEncoder::encode(short *pSrc, unsigned char *pDis, DWORD iSampleSize)
 	//fix byte order and downscale data to 12 bits
 	for (i = 0; i < iSampleSize; i ++)
 	{
-		inBuffer[i / 2] = pSrc[i] >> 4;
+		inBuffer[i] = pSrc[i] >> 4;
 	}
 
 	//actual encoding

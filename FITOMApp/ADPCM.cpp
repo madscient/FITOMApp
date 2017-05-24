@@ -249,12 +249,11 @@ void CAdPcm2610B::LoadVoice(int prog, UINT8* data, size_t length)
 	adpcmvoice[prog].staddr = st;
 	adpcmvoice[prog].length = blk;
 
+	port->writeRaw(0x200, (st) & 0xff);
+	port->writeRaw(0x201, (st >> 8) & 0xff);
+	port->writeRaw(0x202, (st >> 16) & 0xff);
+	port->writeRaw(0x203, 0);
 	for (size_t i = 0; i < blk; i++) {
-		UINT32 addr = st + i;
-		port->writeRaw(0x200, (addr) & 0xff);
-		port->writeRaw(0x201, (addr >> 8) & 0xff);
-		port->writeRaw(0x202, (addr >> 16) & 0xff);
-		port->writeRaw(0x203, 0);
 		port->writeRaw(0x204, (i < length) ? (data[i] & 0xff) : 0x80);
 	}
 }
@@ -302,12 +301,11 @@ void CAdPcm2610A::LoadVoice(int prog, UINT8* data, size_t length)
 	adpcmvoice[prog].staddr = st;
 	adpcmvoice[prog].length = blk;
 
+	port->writeRaw(0x200, (st) & 0xff);
+	port->writeRaw(0x201, (st >> 8) & 0xff);
+	port->writeRaw(0x202, (st >> 16) & 0xff);
+	port->writeRaw(0x203, 1);
 	for (size_t i = 0; i < blk; i++) {
-		UINT32 addr = st + i;
-		port->writeRaw(0x200, (addr) & 0xff);
-		port->writeRaw(0x201, (addr >> 8) & 0xff);
-		port->writeRaw(0x202, (addr >> 16) & 0xff);
-		port->writeRaw(0x203, 1);
 		port->writeRaw(0x204, (i < length) ? (data[i] & 0xff) : 0x80);
 	}
 }

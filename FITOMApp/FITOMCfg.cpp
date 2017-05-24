@@ -1218,7 +1218,7 @@ int CFITOMConfig::ParsePSGVoice(FMVOICE* voice, int index, std::vector<int>& par
 		voice->op[k].DT1 = (param[7] >> 4);	// Noise AND Mask
 		voice->op[k].DT2 = (param[7] & 15);
 		voice->op[k].DM0 = (param[8] >> 4);	// Noise OR Mask
-		voice->op[k].DM1 = (param[8] & 15);
+		voice->op[k].DT3 = (param[8] & 15);
 		voice->op[k].WS = (param[9] & 15);
 		voice->op[k].MUL = (param[10] & 127); // Noise Select
 		voice->op[k].REV = 4;
@@ -1359,7 +1359,7 @@ int CFITOMConfig::BuildPSGVoice(FMVOICE* voice, int index, TCHAR* result, size_t
 	}
 	int k = index - 1;
 	int NAM = (voice->op[k].DT1 << 4) | (voice->op[k].DT2 & 15);
-	int NOM = (voice->op[k].DM0 << 4) | (voice->op[k].DM1 & 15);
+	int NOM = (voice->op[k].DT3 << 4) | (voice->op[k].DT3 & 15);
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% int(voice->op[k].AR) % int(voice->op[k].DR) % int(voice->op[k].SR) % int(voice->op[k].RR) % int(voice->op[k].SL)
 		% int(voice->op[k].EGS) % int(voice->op[k].EGT) % NAM % NOM % int(voice->op[k].WS) % int(voice->op[k].MUL)).str();

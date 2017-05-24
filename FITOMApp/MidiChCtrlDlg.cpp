@@ -404,11 +404,11 @@ void CMidiChCtrlDlg::OnSelendokComboBank()
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	if (theCh->IsInst()) {
 		theCh->BankSelLSB(cmbBank.GetCurSel());
-		theCh->ProgChange(cmbBank.GetCurSel());
+		theCh->ProgChange(cmbProg.GetCurSel());
 	}
 	if (theCh->IsRhythm()) {
 		theCh->BankSelLSB(0);
-		theCh->ProgChange(cmbBank.GetCurSel());
+		theCh->ProgChange(cmbProg.GetCurSel());
 	}
 	RefreshBank();
 	RefreshProg();
