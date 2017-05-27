@@ -209,9 +209,10 @@ void CTextVoiceEditDlg::Refresh()
 			str = str + param + _T("\r\n");
 		}
 		edtLFO.SetWindowText(str);
-		if (edtAdd.IsWindowEnabled()) {
+		str = _T("");
+		if (VoiceTypeTable[typeidx].opa) {
 			for (int i = 0; i < (VoiceTypeTable[typeidx].ops); i++) {
-				int r = (theConfig->*(VoiceTypeTable[typeidx].buildFunc))(&theVoice, i + VoiceTypeTable[typeidx].ops + 1, param, _countof(param));
+				int r = (theConfig->*(VoiceTypeTable[typeidx].buildFunc))(&theVoice, i + (VoiceTypeTable[typeidx].ops) + 1, param, _countof(param));
 				str = str + param + _T("\r\n");
 			}
 			edtAdd.SetWindowText(str);
