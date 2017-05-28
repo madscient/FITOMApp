@@ -98,7 +98,7 @@ void CSSG::UpdateVolExp(UINT8 ch)
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
 		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP300DB, 4);
-		SetReg(8 + ch, evol & 0xf, 1);
+		SetReg(8 + ch, evol & 0xf, 0);
 	}
 }
 
@@ -107,8 +107,8 @@ void CSSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
 	UINT16 etp = fnum->fnum >> (oct + 3);
-	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
-	SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
+	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 0);
+	SetReg(ch * 2 + 1, UINT8(etp >> 8), 0);
 }
 
 void CSSG::UpdateVoice(UINT8 ch)
@@ -157,7 +157,7 @@ void CSSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 			SINT16 frq = SINT16(lev) - 64 + (((voice->NFQ << 2) | (voice->NFQ >> 3)) & 0x7f);
 			frq = (frq < 0) ? 0 : frq;
 			frq = (frq > 127) ? 127 : frq;
-			SetReg(0x6, lev >> 2, 1);
+			SetReg(0x6, lev >> 2, 0);
 		}
 		break;
 	}
@@ -291,7 +291,7 @@ void CEPSG::UpdateVolExp(UINT8 ch)
 		lev = (lev > 127) ? 127 : lev;
 		evol = 31 - Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP150DB, 5);
 		//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-		SetReg(8 + ch, evol & 0x1f, 1);
+		SetReg(8 + ch, evol & 0x1f, 0);
 	}
 }
 
@@ -301,8 +301,8 @@ void CEPSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	UINT8 oct = fnum->block;
 	UINT16 etp = fnum->fnum >> (oct + 2);
 	//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
-	SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
+	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 0);
+	SetReg(ch * 2 + 1, UINT8(etp >> 8), 0);
 }
 
 void CEPSG::UpdateVoice(UINT8 ch)
@@ -485,6 +485,11 @@ CSCCBase::CSCCBase(CPort* pt, int fsamp, const REGMAP& map)
 	ops = 1;
 	pt->writeRaw(map.config, map.init);
 	pt->writeRaw(map.banksel, map.bank);
+	for (int i = 0; i < chs; i++) {
+		SetReg(regmap.amplitude + i, 0, 1);
+		SetReg(regmap.frequency + i * 2, 0, 1);
+		SetReg(regmap.frequency + i * 2 + 1, 0, 1);
+	}
 	SetReg(map.enable, 0x1f, 1);
 }
 
@@ -497,7 +502,7 @@ void CSCCBase::UpdateVolExp(UINT8 ch)
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
 		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127 - UINT8(lev)), RANGE48DB, STEP300DB, 4);
-		SetReg(regmap.amplitude + ch, evol & 0xf, 1);
+		SetReg(regmap.amplitude + ch, evol & 0xf, 0);
 	}
 }
 
@@ -506,8 +511,8 @@ void CSCCBase::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
 	UINT16 etp = fnum->fnum >> (oct + 3);
-	SetReg(ch * 2 + regmap.frequency + 0, UINT8(etp & 0xff), 1);
-	SetReg(ch * 2 + regmap.frequency + 1, UINT8(etp >> 8), 1);
+	SetReg(ch * 2 + regmap.frequency + 0, UINT8(etp & 0xff), 0);
+	SetReg(ch * 2 + regmap.frequency + 1, UINT8(etp >> 8), 0);
 }
 
 void CSCCBase::UpdateVoice(UINT8 ch)
