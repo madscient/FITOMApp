@@ -505,9 +505,9 @@ void CSCCBase::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> (oct + 2);
-	SetReg(ch * 2 + regmap.frequency, UINT8(etp & 0xff), 1);
-	SetReg(ch * 2 + regmap.frequency, UINT8(etp >> 8), 1);
+	UINT16 etp = fnum->fnum >> (oct + 3);
+	SetReg(ch * 2 + regmap.frequency + 0, UINT8(etp & 0xff), 1);
+	SetReg(ch * 2 + regmap.frequency + 1, UINT8(etp >> 8), 1);
 }
 
 void CSCCBase::UpdateVoice(UINT8 ch)
