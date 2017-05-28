@@ -206,14 +206,11 @@ void CSoundDevice::SetDevice(UINT8 devid)
 
 void CSoundDevice::SetReg(UINT16 reg, UINT8 data, UINT8 v)
 {
-	if (regbak) {
-		regbak[reg] = data;
-	}
-	else {
-		v = 1;
-	}
 	if (!v && regbak) {
 		v = (regbak[reg] != data);
+	}
+	if (regbak) {
+		regbak[reg] = data;
 	}
 	(v && port) ? port->write(reg, data) : 0;
 }
