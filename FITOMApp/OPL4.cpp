@@ -40,7 +40,7 @@ void COPL4ML::UpdateKey(UINT8 ch, UINT8 keyon)
 void COPL4ML::UpdateVolExp(UINT8 ch)
 {
 	UINT8 volume = GetChAttribute(ch)->GetEffectiveLevel();
-	SetReg(0x50 + ch, (volume << 1) | 1);
+	SetReg(0x50 + ch, (volume << 1) | 1, 0);
 }
 
 void COPL4ML::UpdateFreq(UINT8 ch, const FNUM* fnum)
@@ -48,8 +48,8 @@ void COPL4ML::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
 	UINT8 tmp = GetReg(0x38 + ch, 1) & 0x08;
-	SetReg(0x38 + ch, tmp | (fnum->block << 4) | (fnum->fnum >> 7));
-	SetReg(0x20 + ch, (fnum->fnum << 1) & 0xff);
+	SetReg(0x38 + ch, tmp | (fnum->block << 4) | (fnum->fnum >> 7), 0);
+	SetReg(0x20 + ch, (fnum->fnum << 1) & 0xff, 0);
 }
 
 void COPL4ML::UpdatePanpot(UINT8 ch)
@@ -64,8 +64,8 @@ void COPL4ML::UpdateVoice(UINT8 ch)
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL | ((int)voice->FB << 7);
 	UINT8 tmp = GetReg(0x20 + ch, 0) & 0xfe;
-	SetReg(0x20 + ch, (num >> 8) & 1);
-	SetReg(0x08 + ch, (num & 0xff));
+	SetReg(0x20 + ch, (num >> 8) & 1, 0);
+	SetReg(0x08 + ch, (num & 0xff), 0);
 }
 
 COPL4ML2::COPL4ML2(CPort* pt, int fsamp) : COPL4ML(pt, fsamp)

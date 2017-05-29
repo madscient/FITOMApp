@@ -53,7 +53,7 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 	//{ _T("Reverbation"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetRV, &CVoiceEditDlg::GetRV, },
 	{ _T("Total Level"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetTL, &CVoiceEditDlg::GetTL, },
 	{ _T("Total Level"), 0, 0, 63, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetTL6, &CVoiceEditDlg::GetTL6, },
-	{ _T("EG-Bias"), 0, 0, 31, VOICE_GROUP_OPM, &CVoiceEditDlg::SetEGS5, &CVoiceEditDlg::GetEGS5, },
+	{ _T("EG-Bias"), 0, 0, 3, VOICE_GROUP_OPM, &CVoiceEditDlg::SetEGS5, &CVoiceEditDlg::GetEGS5, },
 	{ _T("EG-Bias"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetEGS, &CVoiceEditDlg::GetEGS, },
 	{ _T("KS-Level"), 0, 0, 3, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetKSL, &CVoiceEditDlg::GetKSL, },
 	{ _T("KS-Rate"), 0, 0, 3, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetKSR, &CVoiceEditDlg::GetKSR, },

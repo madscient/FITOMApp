@@ -207,6 +207,10 @@ CDCSG::CDCSG(CPort* pt, int fsamp)
 	port->write(0, 0xe0);
 	port->write(0, 0xff);
 	GetChAttribute(3)->OutOfDVA();	// Noise ch should always be assigned manually
+	for (int i = 0; i < 4; i++) {
+		prevvol[i] = 0;
+		prevfreq[i] = 0;
+	}
 }
 
 void CDCSG::UpdateVolExp(UINT8 ch)
@@ -214,11 +218,14 @@ void CDCSG::UpdateVolExp(UINT8 ch)
 	CHATTR* attr = GetChAttribute(ch);
 	UINT8 evol = attr->GetEffectiveLevel();
 	evol = Linear2dB(CalcLinearLevel(evol, 127 - egattr[ch].GetValue()), RANGE48DB, STEP300DB, 4);
-	if (ch < 3) {
-		port->writeRaw(0, 0x90 | (ch * 32) | (evol & 0xf));
-	}
-	else {
-		port->writeRaw(0, 0xf0 | (evol & 0xf));
+	if (prevvol[ch] != evol) {
+		prevvol[ch] = evol;
+		if (ch < 3) {
+			port->writeRaw(0, 0x90 | (ch * 32) | (evol & 0xf));
+		}
+		else {
+			port->writeRaw(0, 0xf0 | (evol & 0xf));
+		}
 	}
 }
 
@@ -228,8 +235,11 @@ void CDCSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	if (ch < 3) {
 		UINT8 oct = fnum->block;
 		UINT16 etp = fnum->fnum >> (oct + 3);
-		port->writeRaw(0, 0x80 | (ch * 32) | (etp & 0xf));
-		port->writeRaw(0, 0x0 | ((etp >> 4) & 63));
+		if (etp != prevfreq[ch]) {
+			prevfreq[ch] = etp;
+			port->writeRaw(0, 0x80 | (ch * 32) | (etp & 0xf));
+			port->writeRaw(0, 0x0 | ((etp >> 4) & 63));
+		}
 	}
 	else {
 	}
@@ -279,6 +289,10 @@ CEPSG::CEPSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_EPSG, pt, 0x20, 3, fsamp), 
 	SetReg(0x09, 0, 1);
 	SetReg(0x0a, 0, 1);
 	ops = 2;
+	for (int i = 0; i < 3; i++) {
+		prevvol[i] = 0;
+		prevfreq[i] = 0;
+	}
 }
 
 void CEPSG::UpdateVolExp(UINT8 ch)
@@ -290,8 +304,11 @@ void CEPSG::UpdateVolExp(UINT8 ch)
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
 		evol = 31 - Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP150DB, 5);
-		//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-		SetReg(8 + ch, evol & 0x1f, 1);
+		if (evol != prevvol[ch]) {
+			prevvol[ch] = evol;
+			//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+			SetReg(8 + ch, evol & 0x1f, 1);
+		}
 	}
 }
 
@@ -300,9 +317,12 @@ void CEPSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = fnum->block;
 	UINT16 etp = fnum->fnum >> (oct + 2);
-	//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
-	SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
+	if (etp != prevfreq[ch]) {
+		prevfreq[ch] = etp;
+		//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
+		SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
+		SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
+	}
 }
 
 void CEPSG::UpdateVoice(UINT8 ch)
@@ -376,7 +396,7 @@ void CEPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 }
 
 //-------
-CDSG::CDSG(CPort* pt, int fsamp) : CSoundDevice(DEVICE_DSG, 4, fsamp, 2, -576, FnumTableType::TonePeriod, pt, 0x80)
+CDSG::CDSG(CPort* pt, int fsamp) : CSoundDevice(DEVICE_DSG, 4, fsamp, 2, -576, FnumTableType::TonePeriod, pt, 0x20)
 {
 	SetReg(0x07, 0x3f, 1);
 	ops = 1;
@@ -386,9 +406,9 @@ void CDSG::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	UINT8 evol = attr->GetEffectiveLevel();
+	UINT8 evol = Linear2dB(CalcLinearLevel(attr->GetEffectiveLevel(), 0), RANGE12DB, STEP600DB, 2);
 
-	SetReg(0xc + ch, (GetReg(0xc + ch, 0) & 0x30) | ((evol & 0x60) >> 1));
+	SetReg(0xc + ch, (GetReg(0xc + ch, 0) & 0xcf) | (evol << 4), 0);
 }
 
 void CDSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
@@ -396,8 +416,8 @@ void CDSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	UINT8 oct = (fnum->block < 4) ? fnum->block : 3;
 	UINT16 etp = fnum->fnum >> ((fnum->block < 4) ? 0 : (fnum->block - 3));
-	SetReg(0x0 + ch, etp & 0x7f, 1);
-	SetReg(0x4 + ch, ((etp >> 7) | oct << 3 | (GetReg(0x4 + ch, 0) & 0x60)), 1);
+	SetReg(0x0 + ch, etp & 0x7f, 0);
+	SetReg(0x4 + ch, ((etp >> 7) | oct << 3 | (GetReg(0x4 + ch, 0) & 0x60)), 0);
 }
 
 void CDSG::UpdateVoice(UINT8 ch)
@@ -411,7 +431,7 @@ void CDSG::UpdateVoice(UINT8 ch)
 void CDSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 {
 	UINT8 tmp = GetReg(0xc + ch, 0) & 0x4f;
-	SetReg(0xc + ch, tmp | ((lev >> 1) & 0x30), 1);
+	SetReg(0xc + ch, tmp | ((lev >> 1) & 0x30), 0);
 }
 
 void CDSG::UpdatePanpot(UINT8 ch)
@@ -428,7 +448,7 @@ void CDSG::UpdatePanpot(UINT8 ch)
 		chena = 1;
 	}
 	UINT8 tmp = GetReg(0xc + ch, 0) & 0x70;
-	SetReg(0xc + ch, tmp | chena, 1);
+	SetReg(0xc + ch, tmp | chena, 0);
 }
 
 void CDSG::UpdateKey(UINT8 ch, UINT8 keyon)
@@ -466,15 +486,21 @@ void CDSG::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
 void CDSG::RhythmOff(UINT8 num)
 {
 	if (num < rhythmcap) {
-		SetReg(0x10, (~(1 << num) & (GetReg(0x10, 0) & 0x1f)));
+		//SetReg(0x10, (~(1 << num) & (GetReg(0x10, 0) & 0x1f)));
 	}
 }
 
-void CDSG::SetReg(UINT16 addr, UINT8 data, int v)
+void CDSG::SetReg(UINT16 reg, UINT8 data, UINT8 v)
 {
-	if (port) {
-		port->write(0, 0x80 | addr);
-		port->write(0, data);
+	if (!v && regbak) {
+		v = (regbak[reg] != data);
+	}
+	if (regbak) {
+		regbak[reg] = data;
+	}
+	if (v && port) {
+		port->writeRaw(0, reg | 0x80);
+		port->writeRaw(0, data & 0x7f);
 	}
 }
 

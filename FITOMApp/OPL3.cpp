@@ -83,7 +83,7 @@ void COPL3::UpdateVolExp(UINT8 ch)
 			attr->baseTL[i] = tl;
 			tl = Linear2dB(tl, RANGE48DB, STEP075DB, 6);
 			tmp = (UINT8)((voice->op[i].KSL << 6) | tl);
-			SetReg(rop + 0x40 + opmap[i] + dch, tmp);
+			SetReg(rop + 0x40 + opmap[i] + dch, tmp, 0);
 		}
 	}
 }
@@ -106,11 +106,11 @@ void COPL3::UpdatePanpot(UINT8 ch)
 	UINT8 tmp;
 	tmp = GetReg(rop + 0xc0 + dch, 0);
 	if ((tmp & 0xf0) != chena) {
-		SetReg(rop + 0xc0 + dch, (tmp & 0x0f) | chena);
+		SetReg(rop + 0xc0 + dch, (tmp & 0x0f) | chena, 0);
 	}
 	tmp = GetReg(rop + 0xc3 + dch, 0);
 	if ((tmp & 0xf0) != chena) {
-		SetReg(rop + 0xc3 + dch, (tmp & 0x0f) | chena);
+		SetReg(rop + 0xc3 + dch, (tmp & 0x0f) | chena, 0);
 	}
 }
 
@@ -160,10 +160,10 @@ void COPL3::UpdateFreq(UINT8 ch, const FNUM* fnum)
 
 	SetReg(rop + 0xa0 + dch, (UINT8)(efn1 & 0xff), 1);
 	SetReg(rop + 0xb0 + dch, (GetReg(rop + 0xb0 + dch, 0) & 0x20) |
-		(UINT8)((PseudoDT1[ch].block << 2) | (efn1 >> 8)), 1);
+		(UINT8)((PseudoDT1[ch].block << 2) | (efn1 >> 8)), 0);
 	SetReg(rop + 0xa3 + dch, (UINT8)(efn2 & 0xff), 1);
 	SetReg(rop + 0xb3 + dch, (GetReg(rop + 0xb3 + dch, 0) & 0x20) |
-		(UINT8)((PseudoDT2[ch].block << 2) | (efn2 >> 8)), 1);
+		(UINT8)((PseudoDT2[ch].block << 2) | (efn2 >> 8)), 0);
 }
 
 void COPL3::UpdateKey(UINT8 ch, UINT8 keyon)
@@ -199,7 +199,7 @@ void COPL3::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 	UINT16 rop = (ch > 2) ? 0x100 : 0;
 	UINT8 dch = rop ? (ch-3) : ch;
 	lev = (lev >= 64) ? 63 : (lev & 63);
-	SetReg(rop + 0x40 + opmap[op] + dch, lev);
+	SetReg(rop + 0x40 + opmap[op] + dch, lev, 0);
 }
 
 COPL3_2::COPL3_2(CPort* pt1, CPort* pt2, UINT8 mode, int fsamp) : CSpanDevice(NULL, NULL)

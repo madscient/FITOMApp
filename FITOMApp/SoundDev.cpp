@@ -655,9 +655,11 @@ void CSoundDevice::NoteOff(UINT8 ch)
 		CHATTR* attr = GetChAttribute(ch);
 		if (attr) {
 			attr->Release(0);
-			attr->chlfo.Stop();
-			for (int op=0; op<ops; op++) {
-				attr->oplfo[op].Stop();
+			if (0) {	//lfo should be continued in release phase
+				attr->chlfo.Stop();
+				for (int op = 0; op < ops; op++) {
+					attr->oplfo[op].Stop();
+				}
 			}
 			UpdateKey(ch, 0);
 		} else {

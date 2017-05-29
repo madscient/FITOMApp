@@ -304,7 +304,7 @@ public:
 
 	// Physical accesses
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v=1);
-	virtual UINT8 GetReg(UINT16 reg, UINT8 v);
+	virtual UINT8 GetReg(UINT16 reg, UINT8 v=0);
 
 	// Ch Property settings
 	virtual void SetSustain(UINT8 ch, UINT8 sus, int update=1);

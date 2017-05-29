@@ -96,7 +96,7 @@ void COPM::UpdateVolExp(UINT8 ch)
 			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
 			attr->baseTL[i] = tl;
 			tl = Linear2dB(tl, RANGE96DB, STEP075DB, 7);
-			SetReg(0x60 + map[i] * 8 + ch, tl);
+			SetReg(0x60 + map[i] * 8 + ch, tl, 0);
 		}
 	}
 }
@@ -104,8 +104,8 @@ void COPM::UpdateVolExp(UINT8 ch)
 void COPM::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	SetReg(0x28 + ch, fnum->block, 1);	// kc
-	SetReg(0x30 + ch, (UINT8(fnum->fnum) & 0xfc) | (GetReg(0x30 + ch, 0) & 0x3), 1);	// kf
+	SetReg(0x28 + ch, fnum->block, 0);	// kc
+	SetReg(0x30 + ch, (UINT8(fnum->fnum) & 0xfc) | (GetReg(0x30 + ch, 0) & 0x3), 0);	// kf
 }
 
 void COPM::UpdatePanpot(UINT8 ch)
@@ -324,8 +324,8 @@ void COPZ::UpdatePanpot(UINT8 ch)
 		chena = 0xc0;
 		mono = 0x1;
 	}
-	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0x3f) | chena, 1);
-	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xfe) | mono, 1);
+	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0x3f) | chena, 0);
+	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xfe) | mono, 0);
 }
 
 void COPZ::UpdateVoice(UINT8 ch)

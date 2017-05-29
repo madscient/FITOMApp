@@ -75,16 +75,16 @@ void COPLL::UpdateVolExp(UINT8 ch)
 	UINT8 evol = CalcLinearLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
 	attr->baseTL[1] = evol;
 	evol = Linear2dB(evol, RANGE48DB, STEP150DB, 4);
-	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xf0) | evol);
+	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xf0) | evol, 0);
 }
 
 void COPLL::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
-	SetReg(0x10 + ch, UINT8((fnum->fnum>>2) & 0xff));
+	SetReg(0x10 + ch, UINT8((fnum->fnum>>2) & 0xff), 0);
 	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0x30) |
-		(fnum->block << 1) | UINT8(fnum->fnum >> 10));
+		(fnum->block << 1) | UINT8(fnum->fnum >> 10), 0);
 }
 
 void COPLL::UpdateSustain(UINT8 ch)
@@ -98,9 +98,9 @@ void COPLL::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 {
 	lev = (lev > 63) ? 63 : lev & 0x3f;
 	if (op == 0) {
-		SetReg(0x2, (GetReg(2, 0) & 0xc0) | lev);
+		SetReg(0x2, (GetReg(2, 0) & 0xc0) | lev, 0);
 	} else if (op == 1) {
-		SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xf0) | (lev >> 2));
+		SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xf0) | (lev >> 2), 0);
 	}
 }
 
@@ -179,6 +179,6 @@ void COPLL2::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
-	SetReg(0x10 + ch, (fnum->block << 5)|UINT8((fnum->fnum>>6)&0xff));
-	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0xf0) | UINT8((fnum->fnum>>2)&0xf));
+	SetReg(0x10 + ch, (fnum->block << 5)|UINT8((fnum->fnum>>6)&0xff), 0);
+	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0xf0) | UINT8((fnum->fnum>>2)&0xf), 0);
 }

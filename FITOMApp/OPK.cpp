@@ -53,7 +53,7 @@ void COPK::UpdateVolExp(UINT8 ch)
 	UINT8 evol = CalcLinearLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
 	attr->baseTL[1] = evol;
 	evol = Linear2dB(evol, RANGE96DB, STEP075DB, 7);
-	SetReg(0x22 + chofs[ch], evol & 0x7f);
+	SetReg(0x22 + chofs[ch], evol & 0x7f, 0);
 }
 
 void COPK::UpdateFreq(UINT8 ch, const FNUM* fnum)
@@ -66,8 +66,8 @@ void COPK::UpdateFreq(UINT8 ch, const FNUM* fnum)
 		fn >>= 1;
 		blk++;
 	}
-	SetReg(0x52 + chofs[ch], (blk << 5) | UINT8(fn >> 6), 1);
-	SetReg(0x62 + chofs[ch], UINT8(fn << 2) & 0xf0, 1);
+	SetReg(0x52 + chofs[ch], (blk << 5) | UINT8(fn >> 6), 0);
+	SetReg(0x62 + chofs[ch], UINT8(fn << 2) & 0xf0, 0);
 }
 
 void COPK::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
@@ -77,7 +77,7 @@ void COPK::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 	if (op == 0) {
 		SetReg(0x20 + chofs[ch], (lev << 1) | (voice->NFQ ? 1 : 0), 1);
 	} else if (op == 1) {
-		SetReg(0x22 + chofs[ch], (GetReg(0x22 + chofs[ch], 0) & 0x80) | lev, 1);
+		SetReg(0x22 + chofs[ch], (GetReg(0x22 + chofs[ch], 0) & 0x80) | lev, 0);
 	}
 }
 

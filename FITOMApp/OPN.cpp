@@ -58,7 +58,7 @@ void COPN::UpdateVolExp(UINT8 ch)
 			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
 			attr->baseTL[i] = tl;
 			tl = Linear2dB(tl, RANGE96DB, STEP075DB, 7);
-			SetReg(0x40 + map[i] + ch, tl);
+			SetReg(0x40 + map[i] + ch, tl, 0);
 		}
 	}
 }
@@ -66,8 +66,8 @@ void COPN::UpdateVolExp(UINT8 ch)
 void COPN::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	SetReg(0xa4 + ch, (fnum->block << 3) | UINT8(fnum->fnum >> 8), 1);
-	SetReg(0xa0 + ch, UINT8(fnum->fnum & 0xff), 1);
+	SetReg(0xa4 + ch, (fnum->block << 3) | UINT8(fnum->fnum >> 8), 0);
+	SetReg(0xa0 + ch, UINT8(fnum->fnum & 0xff), 0);
 }
 
 void COPN::UpdatePanpot(UINT8 ch)
@@ -102,7 +102,7 @@ void COPN::UpdateSustain(UINT8 ch)
 
 void COPN::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 {
-	SetReg(0x40 + map[op] + ch, lev);
+	SetReg(0x40 + map[op] + ch, lev, 0);
 }
 
 void COPN::UpdateKey(UINT8 ch, UINT8 keyon)

@@ -53,6 +53,8 @@ public:
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 protected:
 	UINT8 prevnoise;
+	UINT8 prevvol[4];
+	UINT16 prevfreq[4];
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 	virtual void UpdateVoice(UINT8 ch);
@@ -114,6 +116,8 @@ public:
 class CEPSG : public CPSGBase
 {
 protected:
+	UINT8 prevvol[3];
+	UINT16 prevfreq[3];
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
@@ -131,7 +135,7 @@ public:
 protected:
 	UINT8 RhythmOnMap;
 	UINT8 RhythmOffMap;
-	virtual void SetReg(UINT16 addr, UINT8 data, int v=1);
+	virtual void SetReg(UINT16 addr, UINT8 data, UINT8 v=1);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
