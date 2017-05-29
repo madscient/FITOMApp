@@ -136,9 +136,9 @@ void CSSG::UpdateVoice(UINT8 ch)
 		SetReg(0x6, voice->NFQ, 1);
 	}
 	if (voice->op[0].EGT & 0x8) {	//HW env
-		SetReg(0x8+ch, (GetReg(0x8+ch, 0) & 0xe0) | 0x10, 1);
-		SetReg(0xb, (((voice->op[0].SR << 4) & 0xf0) | (voice->op[0].SL & 0xf)), 1);
-		SetReg(0xc, (((voice->op[0].DR << 2) & 0xfc) | ((voice->op[0].SR >> 4) & 0x3)), 1);
+		SetReg(0x8+ch, (GetReg(0x8+ch, 0) & 0xe0) | 0x10 | voice->op[0].EGT, 1);
+		SetReg(0xb, (((voice->op[0].SL << 4) & 0xf0) | (voice->op[0].RR & 0xf)), 1);
+		SetReg(0xc, (((voice->op[0].DR << 4) & 0xf0) | (voice->op[0].SR & 0xf)), 1);
 		SetReg(0xd,  (voice->op[0].EGT & 0xf), 1);
 	}
 }
@@ -173,12 +173,14 @@ UINT8 CSSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		} else {
 			return 0xff;
 		}
+	/*
 	} else if (voice && (voice->AL & 0x20) != 0) {//HW Envelop
 		if (mode ? attr1->IsAvailable() : attr1->IsEnable()) {
 			return 1;
 		} else {
 			return 0xff;
 		}
+	*/
 	}
 	return CSoundDevice::QueryCh(parent, voice, mode);
 }
@@ -349,7 +351,7 @@ void CEPSG::UpdateVoice(UINT8 ch)
 	prevmix = (prevmix & ~(0x9 << ch)) | (mix << ch);
 	SetReg(0x7, prevmix, 1);
 	if (mix==1 || mix==0) {
-		SetReg(0x6, (voice->NFQ << 3) | (voice->FB & 0x7), 1);
+		SetReg(0x6, (voice->NFQ) | ((voice->FB & 0x7) << 5), 1);
 	}
 
 	bool hwenv23 = false;
@@ -357,8 +359,8 @@ void CEPSG::UpdateVoice(UINT8 ch)
 		SetReg(0x8+ch, 0x20, 1);
 		if (ch == 0) {
 			SetReg(0xd, 0xa0 | (voice->op[0].EGT & 0xf), 1);
-			SetReg(0xb, (((voice->op[0].SR << 4) & 0xf0) | (voice->op[0].SL & 0xf)), 1);
-			SetReg(0xc, (((voice->op[0].DR << 2) & 0xfc) | ((voice->op[0].SR >> 4) & 0x3)), 1);
+			SetReg(0xb, (((voice->op[0].SL << 4) & 0xf0) | (voice->op[0].RR & 0xf)), 1);
+			SetReg(0xc, (((voice->op[0].DR << 4) & 0xf0) | (voice->op[0].SR & 0xf)), 1);
 		} else {
 			hwenv23 = true;
 		}
@@ -367,8 +369,8 @@ void CEPSG::UpdateVoice(UINT8 ch)
 	SetReg(0xd, 0xb0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select B
 	SetReg(0x6 + ch, voice->op[0].WS & 0xf, 1);
 	if (hwenv23) {
-		SetReg(0x0 + (ch - 1) * 2, (((voice->op[0].SR << 4) & 0xf0) | (voice->op[0].SL & 0xf)), 1);
-		SetReg(0x1 + (ch - 1) * 2, (((voice->op[0].DR << 2) & 0xfc) | ((voice->op[0].SR >> 4) & 0x3)), 1);
+		SetReg(0x0 + (ch - 1) * 2, (((voice->op[0].SL << 4) & 0xf0) | (voice->op[0].RR & 0xf)), 1);
+		SetReg(0x1 + (ch - 1) * 2, (((voice->op[0].DR << 4) & 0xf0) | (voice->op[0].SR & 0xf)), 1);
 		SetReg(0x3 + ch, (voice->op[0].EGT & 0xf), 1);
 	}
 	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
@@ -387,7 +389,7 @@ void CEPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 		if ((voice->AL & 3)==1 || (voice->AL & 3)==2) {
 			SINT16 frq = SINT16(lev) - 64 + (((voice->NFQ << 2) | (voice->FB >> 1)) & 0x7f);
 			frq = (frq < 0) ? 0 : frq;
-			frq = (frq > 127) ? 127 : frq;
+			frq = (frq > 255) ? 255 : frq;
 			//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) | 0xf), 1);	//Bank select A
 			SetReg(0x6, lev, 1);
 		}

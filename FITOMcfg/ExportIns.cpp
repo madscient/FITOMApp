@@ -32,11 +32,12 @@ DEVIDMAP devmap[] = {
 	{ DEVICE_PSG, VOICE_GROUP_PSG, _T("PSG"), _T("AY-3-8910"), },
 	{ DEVICE_SSG, VOICE_GROUP_PSG, _T("SSG"), _T("YM2149"), },
 	{ DEVICE_DCSG, VOICE_GROUP_PSG, _T("DCSG"), _T("SN76489"), },
-	{ DEVICE_APSG, VOICE_GROUP_PSG, _T("APSG"), _T("AY8930"), },
+	{ DEVICE_EPSG, VOICE_GROUP_PSG, _T("EPSG"), _T("AY8930"), },
 	{ DEVICE_DSG, VOICE_GROUP_PSG, _T("DSG"), _T("YM2163"), },
 	{ DEVICE_SCC, VOICE_GROUP_PSG, _T("SCC"), _T("SCC"), },
 	{ DEVICE_SCCP, VOICE_GROUP_PSG, _T("SCC+"), _T("SCC+"), },
 	{ DEVICE_SAA, VOICE_GROUP_PSG, _T("SAA"), _T("SAA1099"), },
+	{ DEVICE_ADPCM, VOICE_GROUP_PCM, _T("PCMD8"), _T("YMZ280"), },
 	{ DEVICE_ADPCM, VOICE_GROUP_PCM, _T("ADPCM"), _T("ADPCM"), },
 	{ DEVICE_ADPCMA, VOICE_GROUP_PCM, _T("ADPCM_A"), _T("ADPCM_A"), },
 	{ DEVICE_ADPCMB, VOICE_GROUP_PCM, _T("ADPCM_B"), _T("ADPCM_B"), },
@@ -108,11 +109,11 @@ void WritePcmPatchNameBank(CStdioFile& dst, TCHAR* rbnkname, LPCTSTR groupname, 
 	str = _T("[") + str + _T("]\n");
 	dst.WriteString(str);
 	for (int i = 0; i < 128; i++) {
-		CString secname;
+		CString keyname;
 		TCHAR param[MAX_PATH];
 		TCHAR wavfile[MAX_PATH];
-		secname.Format(_T("Prog%i"), i);
-		::GetPrivateProfileString(secname, _T("Name"), secname, param, _countof(param), bnkfile);
+		keyname.Format(_T("Prog%i"), i);
+		::GetPrivateProfileString(_T("Bank"), keyname, _T("**NONE**,"), param, _countof(param), bnkfile);
 		sscanf_s(param, _T("%[^,]"), wavfile, _countof(wavfile));
 		if (::PathFileExists(wavfile)) {
 			::PathStripPath(wavfile);

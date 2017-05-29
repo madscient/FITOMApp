@@ -381,7 +381,7 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 			AddDevice(new COPK2(pt, fs));
 			break;
 		case DEVICE_DSG:
-			AddDevice(new CDSG(new COffsetPort(pt, 0x80), fs));
+			AddDevice(new CDSG(pt, fs));
 			break;
 		case DEVICE_SSG:
 			AddDevice(new CSSG(pt, fs));
