@@ -330,13 +330,15 @@ void CAdPcm2610A::RhythmOff(UINT8 num)
 
 void CAdPcm2610A::UpdateKey(UINT8 ch, UINT8 keyon)
 {
-	SetReg(0x00, (GetReg(0x00, 0) & ~(1 << ch)) | (keyon ? (1 << ch) : 0), 1);
+	if (keyon) {
+		SetReg(0x00, (1 << ch), 1);
+	}
 }
 
 void CAdPcm2610A::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	UINT8 evol = 31 - Linear2dB(CalcLinearLevel(CalcEffectiveLevel(attr->velocity, attr->express), 0), RANGE24DB, STEP075DB, 5);
+	UINT8 evol = 31 - Linear2dB(CalcVolExpVel(attr->velocity, attr->express, 127), RANGE24DB, STEP075DB, 5);
 	rhythmvol = attr->volume;
 	UpdateRhythmVol();
 	SetReg(0x08 + ch, (GetReg(0x8 + ch, 0) & 0xe0) | evol, 1);

@@ -305,7 +305,8 @@ COPZ::COPZ(CPort* pt, int fsamp) : COPM(pt, fsamp)
 	SetReg(0x15, 0x01, 1);
 	SetReg(0x1c, 0x0, 1);
 	SetReg(0x1e, 0x0, 1);
-
+	delete[] lfores;
+	lfores = new LFORESOURCE[2];
 }
 
 void COPZ::UpdatePanpot(UINT8 ch)
