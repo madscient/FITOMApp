@@ -113,10 +113,13 @@
     <ClInclude Include="..\scci\SCCIDefines.h" />
     <ClInclude Include="ADPCM.h" />
     <ClInclude Include="codec.h" />
+    <ClInclude Include="DCSG.h" />
     <ClInclude Include="DevMonitor.h" />
     <ClInclude Include="DrumEditDlg.h" />
     <ClInclude Include="DrumMapPicker.h" />
     <ClInclude Include="DrumNoteEditDlg.h" />
+    <ClInclude Include="DSG.h" />
+    <ClInclude Include="EPSG.h" />
     <ClInclude Include="FITOM.h" />
     <ClInclude Include="FITOMCfg.h" />
     <ClInclude Include="FMS.h" />
@@ -133,8 +136,12 @@
     <ClInclude Include="OPLL.h" />
     <ClInclude Include="OPM.h" />
     <ClInclude Include="OPN.h" />
+    <ClInclude Include="PCMD8.h" />
     <ClInclude Include="Port.h" />
     <ClInclude Include="ProgressDlg.h" />
+    <ClInclude Include="PSGBase.h" />
+    <ClInclude Include="SAA.h" />
+    <ClInclude Include="SCC.h" />
     <ClInclude Include="SCCIWrapper.h" />
     <ClInclude Include="SoundDev.h" />
     <ClInclude Include="SplashDlg.h" />
@@ -153,15 +160,19 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="volume_manager.h" />
+    <ClInclude Include="YMDeltaT.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ADPCM.cpp" />
     <ClCompile Include="codec.cpp" />
+    <ClCompile Include="DCSG.cpp" />
     <ClCompile Include="DevMonitor.cpp" />
     <ClCompile Include="DrumEditDlg.cpp" />
     <ClCompile Include="DrumMapPicker.cpp" />
     <ClCompile Include="DrumNoteEditDlg.cpp" />
+    <ClCompile Include="DSG.cpp" />
     <ClCompile Include="EnvLFO.cpp" />
+    <ClCompile Include="EPSG.cpp" />
     <ClCompile Include="FITOM.cpp" />
     <ClCompile Include="FITOMCfg.cpp" />
     <ClCompile Include="FITOMCfgWin.cpp" />
@@ -181,9 +192,13 @@
     <ClCompile Include="OPM.cpp" />
     <ClCompile Include="OPN.cpp" />
     <ClCompile Include="OPN2.cpp" />
+    <ClCompile Include="PCMD8.cpp" />
     <ClCompile Include="Port.cpp" />
     <ClCompile Include="PortWin.cpp" />
     <ClCompile Include="ProgressDlg.cpp" />
+    <ClCompile Include="PSGBase.cpp" />
+    <ClCompile Include="SAA.cpp" />
+    <ClCompile Include="SCC.cpp" />
     <ClCompile Include="SCCIWrapper.cpp" />
     <ClCompile Include="SoundDev.cpp" />
     <ClCompile Include="SpanDev.cpp" />
@@ -205,6 +220,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="volume_manager.cpp" />
+    <ClCompile Include="YMDeltaT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FITOMApp.rc" />

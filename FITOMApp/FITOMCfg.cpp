@@ -12,7 +12,6 @@
 
 #include "FITOM.h"
 #include "SoundDev.h"
-#include "ADPCM.h"
 #include "FITOMCfg.h"
 #include "MIDIDEV.h"
 #include "Port.h"
@@ -23,6 +22,13 @@
 #include "OPLL.h"
 #include "OPK.h"
 #include "SSG.h"
+#include "DCSG.h"
+#include "SCC.h"
+#include "EPSG.h"
+#include "SAA.h"
+#include "DSG.h"
+#include "YMDeltaT.h"
+#include "PCMD8.h"
 #include "codec.h"
 #include "MasterVolumeCtrl.h"
 

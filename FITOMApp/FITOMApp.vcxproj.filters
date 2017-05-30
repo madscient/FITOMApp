@@ -171,6 +171,30 @@
     <ClInclude Include="volume_manager.h">
       <Filter>ヘッダー ファイル\Win32 Device</Filter>
     </ClInclude>
+    <ClInclude Include="DSG.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="SCC.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="PSGBase.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="DCSG.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="SAA.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="EPSG.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="YMDeltaT.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="PCMD8.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -313,6 +337,30 @@
     </ClCompile>
     <ClCompile Include="FITOMCfgWin.cpp">
       <Filter>ソース ファイル\Win32 Device</Filter>
+    </ClCompile>
+    <ClCompile Include="DSG.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="SCC.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="PSGBase.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="DCSG.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="SAA.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="EPSG.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="YMDeltaT.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="PCMD8.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

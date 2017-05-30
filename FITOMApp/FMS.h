@@ -6,6 +6,11 @@
 
 class CFMS : public CSoundDevice
 {
+protected:
+	UINT8 prevvol[16];
+	UINT8 prevpan[16];
+	UINT16 prevfnum[16];
+	UINT16 prevkey;
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
