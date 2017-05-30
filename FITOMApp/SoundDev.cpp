@@ -637,9 +637,15 @@ void CSoundDevice::NoteOn(UINT8 ch, UINT8 vel)
 			if (voice->LFR) {
 				attr->chlfo.Start(voice->LFD, voice->LFR);
 			}
+			else {
+				attr->chlfo.Stop();
+			}
 			for (int op=0; op<ops; op++) {
 				if (voice->op[op].SLR) {
 					attr->oplfo[op].Start(voice->op[op].SLY, voice->op[op].SLR);
+				}
+				else {
+					attr->oplfo[op].Stop();
 				}
 			}
 			UpdateKey(ch, 1);

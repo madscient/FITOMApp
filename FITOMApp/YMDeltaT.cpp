@@ -253,6 +253,7 @@ CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
 {
 	boundary = 0x100000;
 	rhythmcap = 6;
+	SetReg(0, 0xdf);
 	SetReg(0, 0);
 }
 
