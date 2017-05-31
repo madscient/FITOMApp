@@ -53,6 +53,11 @@ void CSoundDevice::CHATTR::Assign(CMidiCh* parch)
 		status = ASSIGNED;
 		parent = parch;
 		noteon = 0;
+		chlfo.Stop();
+		for (int i = 0; i < 4; i++) {
+			oplfo[i].Stop();
+			baseTL[i] = 64;
+		}
 	}
 }
 
