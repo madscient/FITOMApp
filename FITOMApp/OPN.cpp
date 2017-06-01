@@ -66,8 +66,8 @@ void COPN::UpdateVolExp(UINT8 ch)
 void COPN::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	SetReg(0xa4 + ch, (fnum->block << 3) | UINT8(fnum->fnum >> 8), 0);
-	SetReg(0xa0 + ch, UINT8(fnum->fnum & 0xff), 0);
+	SetReg(0xa4 + ch, (fnum->block << 3) | UINT8(fnum->fnum >> 8), 1);
+	SetReg(0xa0 + ch, UINT8(fnum->fnum & 0xff), 1);
 }
 
 void COPN::UpdatePanpot(UINT8 ch)
