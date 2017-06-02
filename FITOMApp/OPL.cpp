@@ -98,9 +98,9 @@ void COPL::UpdateVolExp(UINT8 ch)
 void COPL::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	SetReg(0xa0 + ch, (UINT8)((fnum->fnum>>1) & 0xff), 0);
+	SetReg(0xa0 + ch, (UINT8)((fnum->fnum>>1) & 0xff), 1);
 	SetReg(0xb0 + ch, (GetReg(0xb0 + ch, 0) & 0x20) |
-		(UINT8)((fnum->block << 2) | (fnum->fnum >> 9)), 0);
+		(UINT8)((fnum->block << 2) | (fnum->fnum >> 9)), 1);
 }
 
 void COPL::UpdatePanpot(UINT8 ch)

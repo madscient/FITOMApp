@@ -160,10 +160,10 @@ void COPL3::UpdateFreq(UINT8 ch, const FNUM* fnum)
 
 	SetReg(rop + 0xa0 + dch, (UINT8)(efn1 & 0xff), 1);
 	SetReg(rop + 0xb0 + dch, (GetReg(rop + 0xb0 + dch, 0) & 0x20) |
-		(UINT8)((PseudoDT1[ch].block << 2) | (efn1 >> 8)), 0);
+		(UINT8)((PseudoDT1[ch].block << 2) | (efn1 >> 8)), 1);
 	SetReg(rop + 0xa3 + dch, (UINT8)(efn2 & 0xff), 1);
 	SetReg(rop + 0xb3 + dch, (GetReg(rop + 0xb3 + dch, 0) & 0x20) |
-		(UINT8)((PseudoDT2[ch].block << 2) | (efn2 >> 8)), 0);
+		(UINT8)((PseudoDT2[ch].block << 2) | (efn2 >> 8)), 1);
 }
 
 void COPL3::UpdateKey(UINT8 ch, UINT8 keyon)

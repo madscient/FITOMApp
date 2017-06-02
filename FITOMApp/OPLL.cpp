@@ -82,9 +82,9 @@ void COPLL::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
-	SetReg(0x10 + ch, UINT8((fnum->fnum>>2) & 0xff), 0);
+	SetReg(0x10 + ch, UINT8((fnum->fnum>>2) & 0xff), 1);
 	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0x30) |
-		(fnum->block << 1) | UINT8(fnum->fnum >> 10), 0);
+		(fnum->block << 1) | UINT8(fnum->fnum >> 10), 1);
 }
 
 void COPLL::UpdateSustain(UINT8 ch)

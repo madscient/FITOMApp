@@ -66,8 +66,8 @@ void COPK::UpdateFreq(UINT8 ch, const FNUM* fnum)
 		fn >>= 1;
 		blk++;
 	}
-	SetReg(0x52 + chofs[ch], (blk << 5) | UINT8(fn >> 6), 0);
-	SetReg(0x62 + chofs[ch], UINT8(fn << 2) & 0xf0, 0);
+	SetReg(0x52 + chofs[ch], (blk << 5) | UINT8(fn >> 6), 1);
+	SetReg(0x62 + chofs[ch], UINT8(fn << 2) & 0xf0, 1);
 }
 
 void COPK::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
