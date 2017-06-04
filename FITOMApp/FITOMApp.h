@@ -37,13 +37,21 @@ protected:
 	CSplashDlg* pSplash;
 	void WriteLFOParam(FMVOICE* voice, LPCTSTR secname, LPCTSTR filename);
 	CFITOMConfigWin32* LoadConfig();
-	void SaveOPMVoice(CFMBank* bank, CProgressDlg* pDlg = 0);
-	void SaveOPNVoice(CFMBank* bank, CProgressDlg* pDlg = 0);
-	void SaveOPL2Voice(CFMBank* bank, CProgressDlg* pDlg = 0);
-	void SaveOPL3Voice(CFMBank* bank, CProgressDlg* pDlg = 0);
-	void SaveOPLLVoice(CFMBank* bank, CProgressDlg* pDlg = 0);
-	void SavePSGVoice(CFMBank* bank, CProgressDlg* pDlg = 0);
-	void SaveDrumMap(CDrumBank* bank, CProgressDlg* pDlg = 0);
+	void SaveOPMVoice(CFMBank* bank, int num);
+	void SaveOPNVoice(CFMBank* bank, int num);
+	void SaveOPL2Voice(CFMBank* bank, int num);
+	void SaveOPL3Voice(CFMBank* bank, int num);
+	void SaveOPLLVoice(CFMBank* bank, int num);
+	void SavePSGVoice(CFMBank* bank, int num);
+	void SaveDrumMap(CDrumBank* bank, int num);
+	void SaveVoiceBank(void(CFITOMApp::*saveFunc)(CFMBank*, int), CFMBank* bank, LPCTSTR vtype, CProgressDlg* pDlg=0);
+	void SaveOPMVoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
+	void SaveOPNVoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
+	void SaveOPL2VoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
+	void SaveOPL3VoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
+	void SaveOPLLVoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
+	void SavePSGVoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
+	void SaveDrumMapBank(CDrumBank* bank, CProgressDlg* pDlg = 0);
 public:
 	CFITOMApp();
 	int FITOMStart();
@@ -60,7 +68,7 @@ public:
 	void DoEvents();
 	void SplashMessage(LPCTSTR str);
 	void SplashStatus(LPCTSTR str);
-	void SaveVoice(int group, int bank);
+	void SaveVoice(int group, int bank, int prog=-1);
 	//スタティック
 	static void CALLBACK TimerProc(UINT uTimerID, UINT uMsg, DWORD dwUser, DWORD dummy1, DWORD dummy2);
 	static unsigned int CALLBACK PollingProc(void* params);

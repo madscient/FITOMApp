@@ -95,6 +95,7 @@ protected:
 	int GetPDT(int op) { int pdt = ((GetDT1(op) << 7) | (GetDT2(op))); return (pdt > 8191) ? (pdt - 16384) : pdt; };
 	int GetAME(int op) { return theVoice.op[op].AM; };
 	int GetVIB(int op) { return theVoice.op[op].VIB; };
+	int GetFIX(int op) { return theVoice.op[op].DM0; };
 	int GetEG(int op) { return theVoice.op[op].EGT; };
 	int GetEGS(int op) { return theVoice.op[op].EGS; };
 	int GetEGS5(int op) { return theVoice.op[op].EGS >> 2; };
@@ -152,6 +153,7 @@ protected:
 	void SetPDT(int op, int val) { theVoice.op[op].DT1 = ((val >> 7) & 0x7f); theVoice.op[op].DT2 = (val & 0x7f); };
 	void SetAME(int op, int val) { theVoice.op[op].AM = val; };
 	void SetVIB(int op, int val) { theVoice.op[op].VIB = val; };
+	void SetFIX(int op, int val) { theVoice.op[op].DM0 = val; };
 	void SetEG(int op, int val) { theVoice.op[op].EGT = val; };
 	void SetEGS(int op, int val) { theVoice.op[op].EGS = val; };
 	void SetEGS5(int op, int val) { theVoice.op[op].EGS = (val << 2) | (val >> 3); };

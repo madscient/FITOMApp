@@ -327,7 +327,29 @@ CFITOMConfigWin32* CFITOMApp::LoadConfig()
 }
 
 
-void CFITOMApp::SaveVoice(int group, int bank) {
+void CFITOMApp::SaveVoice(int group, int bank, int prog)
+{
+	struct {
+		int vgroup;
+		LPCTSTR vtype;
+		void(CFITOMApp::*saveFunc)(CFMBank*, int);
+	} functable[] = {
+		{ VOICE_GROUP_OPM, _T("OPM"), &CFITOMApp::SaveOPMVoice, },
+		{ VOICE_GROUP_OPNA, _T("OPN"), &CFITOMApp::SaveOPNVoice, },
+		{ VOICE_GROUP_OPL3, _T("OPL3"), &CFITOMApp::SaveOPL3Voice, },
+		{ VOICE_GROUP_OPL2, _T("OPL2"), &CFITOMApp::SaveOPL2Voice, },
+		{ VOICE_GROUP_OPLL, _T("OPLL"), &CFITOMApp::SaveOPLLVoice, },
+		{ VOICE_GROUP_PSG, _T("PSG"), &CFITOMApp::SavePSGVoice, },
+		{ VOICE_GROUP_NONE, 0, 0, },
+	};
+
+	int func = -1;
+	for (int i = 0; functable[i].vgroup != VOICE_GROUP_NONE; i++) {
+		if (group == functable[i].vgroup) {
+			func = i;
+			break;
+		}
+	}
 
 	CFMBank* pbank = 0;
 	CDrumBank* dbank = 0;
@@ -337,7 +359,7 @@ void CFITOMApp::SaveVoice(int group, int bank) {
 	else {
 		pbank = theConfig->GetFMBank(group, bank);
 	}
-	if (pbank || dbank) {
+	if ((pbank || dbank) && func >= 0) {
 		CProgressDlg* pDlg = new CProgressDlg(m_pMainWnd);
 		pDlg->ShowWindow(SW_SHOW);
 		pDlg->SetRange(0, 129);
@@ -345,28 +367,21 @@ void CFITOMApp::SaveVoice(int group, int bank) {
 		pDlg->SetStatus(filename);
 		pDlg->SetTarget(_T("Header"));
 		pDlg->SetPos(0);
-		switch (group) {
-		case VOICE_GROUP_OPM:
-			SaveOPMVoice(pbank, pDlg);
-			break;
-		case VOICE_GROUP_OPNA:
-			SaveOPNVoice(pbank, pDlg);
-			break;
-		case VOICE_GROUP_OPL2:
-			SaveOPL2Voice(pbank, pDlg);
-			break;
-		case VOICE_GROUP_OPL3:
-			SaveOPL3Voice(pbank, pDlg);
-			break;
-		case VOICE_GROUP_OPLL:
-			SaveOPLLVoice(pbank, pDlg);
-			break;
-		case VOICE_GROUP_PSG:
-			SavePSGVoice(pbank, pDlg);
-			break;
-		case VOICE_GROUP_RHYTHM:
-			SaveDrumMap(dbank, pDlg);
-			break;
+		if (prog >= 0) {
+			if (group == VOICE_GROUP_RHYTHM) {
+				SaveDrumMap(dbank, prog);
+			}
+			else {
+				(this->*functable[func].saveFunc)(pbank, prog);
+			}
+		}
+		else {
+			if (group == VOICE_GROUP_RHYTHM) {
+				SaveDrumMapBank(dbank, pDlg);
+			}
+			else {
+				SaveVoiceBank(functable[func].saveFunc, pbank, functable[func].vtype, pDlg);
+			}
 		}
 		pDlg->EndDialog(0);
 	}
@@ -385,227 +400,266 @@ void CFITOMApp::WriteLFOParam(FMVOICE* voice, LPCTSTR secname, LPCTSTR filename)
 	}
 }
 
-void CFITOMApp::SaveOPMVoice(CFMBank* bank, CProgressDlg* pDlg) {
+void CFITOMApp::SaveVoiceBank(void(CFITOMApp::*saveFunc)(CFMBank*, int), CFMBank* bank, LPCTSTR vtype, CProgressDlg* pDlg)
+{
 	LPCTSTR filename = bank->GetFileName();
 	if (::PathFileExists(filename)) {
-		TCHAR secname[16];
+		::WritePrivateProfileSection(_T("Header"), NULL, filename);
+		::WritePrivateProfileSection(_T("Bank"), NULL, filename);
+		::WritePrivateProfileString(_T("Header"), _T("Type"), vtype, filename);
+		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
+		pDlg ? pDlg->SetPos(1) : 0;
+		for (int i = 0; i < 128; i++) {
+			(this->*saveFunc)(bank, i);
+			pDlg ? pDlg->SetPos(i + 2) : 0;
+		}
+	}
+}
+
+void CFITOMApp::SaveOPMVoiceBank(CFMBank* bank, CProgressDlg* pDlg) {
+	LPCTSTR filename = bank->GetFileName();
+	if (::PathFileExists(filename)) {
 		::WritePrivateProfileSection(_T("Header"), NULL, filename);
 		::WritePrivateProfileSection(_T("Bank"), NULL, filename);
 		::WritePrivateProfileString(_T("Header"), _T("Type"), _T("OPM"), filename);
 		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
 		pDlg ? pDlg->SetPos(1) : 0;
 		for (int i = 0; i < 128; i++) {
-			TCHAR param[80];
-
-			FMVOICE voice;
-			bank->GetVoice(i, &voice);
-			char name[17];
-			memcpy(name, voice.name, 16);
-			name[16] = 0;
-			pDlg ? pDlg->SetTarget(CA2T(name)) : 0;
-			StringCchPrintf(secname, _countof(secname), _T("Prog%i"), i);
-			::WritePrivateProfileSection(secname, NULL, filename);
-			WriteLFOParam(&voice, secname, filename);
-			::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
-			theConfig->BuildOPMVoice(&voice, 0, param, _countof(param));
-			::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
-			for (int k = 0; k < 4; k++) {
-				TCHAR keyname[16];
-				StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
-				theConfig->BuildOPMVoice(&voice, k+1, param, _countof(param));
-				::WritePrivateProfileString(secname, keyname, param, filename);
-			}
-			for (int k = 0; k < 4; k++) {
-				TCHAR keyname[16];
-				StringCchPrintf(keyname, _countof(keyname), _T("ADD%i"), k + 1);
-				theConfig->BuildOPMVoice(&voice, k + 5, param, _countof(param));
-				::WritePrivateProfileString(secname, keyname, param, filename);
-			}
+			SaveOPMVoice(bank, i);
 			pDlg ? pDlg->SetPos(i + 2) : 0;
 		}
 	}
 }
 
-void CFITOMApp::SaveOPNVoice(CFMBank* bank, CProgressDlg* pDlg) {
+void CFITOMApp::SaveOPMVoice(CFMBank* bank, int num)
+{
+	LPCTSTR filename = bank->GetFileName();
+	FMVOICE voice;
+	bank->GetVoice(num, &voice);
+	char name[17];
+	memcpy(name, voice.name, 16);
+	name[16] = 0;
+	TCHAR secname[16];
+	TCHAR param[80];
+	StringCchPrintf(secname, _countof(secname), _T("Prog%i"), num);
+	::WritePrivateProfileSection(secname, NULL, filename);
+	WriteLFOParam(&voice, secname, filename);
+	::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
+	theConfig->BuildOPMVoice(&voice, 0, param, _countof(param));
+	::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
+	for (int k = 0; k < 4; k++) {
+		TCHAR keyname[16];
+		StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
+		theConfig->BuildOPMVoice(&voice, k + 1, param, _countof(param));
+		::WritePrivateProfileString(secname, keyname, param, filename);
+	}
+	for (int k = 0; k < 4; k++) {
+		TCHAR keyname[16];
+		StringCchPrintf(keyname, _countof(keyname), _T("ADD%i"), k + 1);
+		theConfig->BuildOPMVoice(&voice, k + 5, param, _countof(param));
+		::WritePrivateProfileString(secname, keyname, param, filename);
+	}
+
+}
+
+void CFITOMApp::SaveOPNVoiceBank(CFMBank* bank, CProgressDlg* pDlg) {
 	LPCTSTR filename = bank->GetFileName();
 	if (::PathFileExists(filename)) {
-		TCHAR secname[16];
 		::WritePrivateProfileSection(_T("Header"), NULL, filename);
 		::WritePrivateProfileSection(_T("Bank"), NULL, filename);
 		::WritePrivateProfileString(_T("Header"), _T("Type"), _T("OPN"), filename);
 		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
 		pDlg ? pDlg->SetPos(1) : 0;
 		for (int i = 0; i < 128; i++) {
-			TCHAR param[80];
-
-			FMVOICE voice;
-			bank->GetVoice(i, &voice);
-			char name[17];
-			memcpy(name, voice.name, 16);
-			name[16] = 0;
-
-			StringCchPrintf(secname, _countof(secname), _T("Prog%i"), i);
-			::WritePrivateProfileSection(secname, NULL, filename);
-			WriteLFOParam(&voice, secname, filename);
-			::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
-			theConfig->BuildOPNVoice(&voice, 0, param, _countof(param));
-			::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
-			for (int k = 0; k < 4; k++) {
-				TCHAR keyname[16];
-				StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
-				theConfig->BuildOPNVoice(&voice, k+1, param, _countof(param));
-				::WritePrivateProfileString(secname, keyname, param, filename);
-			}
+			SaveOPNVoice(bank, i);
 			pDlg ? pDlg->SetPos(i + 2) : 0;
 		}
 	}
 }
 
-void CFITOMApp::SaveOPL3Voice(CFMBank* bank, CProgressDlg* pDlg) {
+void CFITOMApp::SaveOPNVoice(CFMBank* bank, int num)
+{
+	LPCTSTR filename = bank->GetFileName();
+	TCHAR secname[16];
+	TCHAR param[80];
+	FMVOICE voice;
+	bank->GetVoice(num, &voice);
+	char name[17];
+	memcpy(name, voice.name, 16);
+	name[16] = 0;
+
+	StringCchPrintf(secname, _countof(secname), _T("Prog%i"), num);
+	::WritePrivateProfileSection(secname, NULL, filename);
+	WriteLFOParam(&voice, secname, filename);
+	::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
+	theConfig->BuildOPNVoice(&voice, 0, param, _countof(param));
+	::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
+	for (int k = 0; k < 4; k++) {
+		TCHAR keyname[16];
+		StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
+		theConfig->BuildOPNVoice(&voice, k + 1, param, _countof(param));
+		::WritePrivateProfileString(secname, keyname, param, filename);
+	}
+}
+
+void CFITOMApp::SaveOPL3VoiceBank(CFMBank* bank, CProgressDlg* pDlg) {
 	LPCTSTR filename = bank->GetFileName();
 	if (::PathFileExists(filename)) {
-		TCHAR secname[16];
 		::WritePrivateProfileSection(_T("Header"), NULL, filename);
 		::WritePrivateProfileSection(_T("Bank"), NULL, filename);
 		::WritePrivateProfileString(_T("Header"), _T("Type"), _T("OPL3"), filename);
 		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
 		pDlg ? pDlg->SetPos(1) : 0;
 		for (int i = 0; i < 128; i++) {
-			TCHAR param[80];
-
-			FMVOICE voice;
-			bank->GetVoice(i, &voice);
-			char name[17];
-			memcpy(name, voice.name, 16);
-			name[16] = 0;
-			pDlg ? pDlg->SetTarget(CA2T(name)) : 0;
-
-			StringCchPrintf(secname, _countof(secname), _T("Prog%i"), i);
-			::WritePrivateProfileSection(secname, NULL, filename);
-			WriteLFOParam(&voice, secname, filename);
-			::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
-			theConfig->BuildOPL3Voice(&voice, 0, param, _countof(param));
-			::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
-			for (int k = 0; k < 4; k++) {
-				TCHAR keyname[16];
-				StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
-				theConfig->BuildOPL3Voice(&voice, k + 1, param, _countof(param));
-				::WritePrivateProfileString(secname, keyname, param, filename);
-			}
+			SaveOPL3Voice(bank, i);
 			pDlg ? pDlg->SetPos(i + 2) : 0;
 		}
 	}
 }
 
-void CFITOMApp::SaveOPL2Voice(CFMBank* bank, CProgressDlg* pDlg) {
+void CFITOMApp::SaveOPL3Voice(CFMBank* bank, int num)
+{
+	LPCTSTR filename = bank->GetFileName();
+	TCHAR secname[16];
+	TCHAR param[80];
+	FMVOICE voice;
+	bank->GetVoice(num, &voice);
+	char name[17];
+	memcpy(name, voice.name, 16);
+	name[16] = 0;
+
+	StringCchPrintf(secname, _countof(secname), _T("Prog%i"), num);
+	::WritePrivateProfileSection(secname, NULL, filename);
+	WriteLFOParam(&voice, secname, filename);
+	::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
+	theConfig->BuildOPL3Voice(&voice, 0, param, _countof(param));
+	::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
+	for (int k = 0; k < 4; k++) {
+		TCHAR keyname[16];
+		StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
+		theConfig->BuildOPL3Voice(&voice, k + 1, param, _countof(param));
+		::WritePrivateProfileString(secname, keyname, param, filename);
+	}
+}
+
+void CFITOMApp::SaveOPL2VoiceBank(CFMBank* bank, CProgressDlg* pDlg) {
 	LPCTSTR filename = bank->GetFileName();
 	if (::PathFileExists(filename)) {
-		TCHAR secname[16];
 		::WritePrivateProfileSection(_T("Header"), NULL, filename);
 		::WritePrivateProfileSection(_T("Bank"), NULL, filename);
 		::WritePrivateProfileString(_T("Header"), _T("Type"), _T("OPL2"), filename);
 		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
 		pDlg ? pDlg->SetPos(1) : 0;
 		for (int i = 0; i < 128; i++) {
-			TCHAR param[80];
-
-			FMVOICE voice;
-			bank->GetVoice(i, &voice);
-			char name[17];
-			memcpy(name, voice.name, 16);
-			name[16] = 0;
-			pDlg ? pDlg->SetTarget(CA2T(name)) : 0;
-
-			StringCchPrintf(secname, _countof(secname), _T("Prog%i"), i);
-			::WritePrivateProfileSection(secname, NULL, filename);
-			WriteLFOParam(&voice, secname, filename);
-			::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
-			theConfig->BuildOPL2Voice(&voice, 0, param, _countof(param));
-			::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
-			for (int k = 0; k < 2; k++) {
-				TCHAR keyname[16];
-				StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
-				theConfig->BuildOPL2Voice(&voice, k + 1, param, _countof(param));
-				::WritePrivateProfileString(secname, keyname, param, filename);
-			}
+			SaveOPL2Voice(bank, i);
 			pDlg ? pDlg->SetPos(i + 2) : 0;
 		}
 	}
 }
 
-void CFITOMApp::SaveOPLLVoice(CFMBank* bank, CProgressDlg* pDlg) {
+void CFITOMApp::SaveOPL2Voice(CFMBank* bank, int num)
+{
+	LPCTSTR filename = bank->GetFileName();
+	TCHAR secname[16];
+	TCHAR param[80];
+	FMVOICE voice;
+	bank->GetVoice(num, &voice);
+	char name[17];
+	memcpy(name, voice.name, 16);
+	name[16] = 0;
+	StringCchPrintf(secname, _countof(secname), _T("Prog%i"), num);
+	::WritePrivateProfileSection(secname, NULL, filename);
+	WriteLFOParam(&voice, secname, filename);
+	::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
+	theConfig->BuildOPL2Voice(&voice, 0, param, _countof(param));
+	::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
+	for (int k = 0; k < 2; k++) {
+		TCHAR keyname[16];
+		StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
+		theConfig->BuildOPL2Voice(&voice, k + 1, param, _countof(param));
+		::WritePrivateProfileString(secname, keyname, param, filename);
+	}
+}
+
+void CFITOMApp::SaveOPLLVoiceBank(CFMBank* bank, CProgressDlg* pDlg) {
 	LPCTSTR filename = bank->GetFileName();
 	if (::PathFileExists(filename)) {
-		TCHAR secname[16];
 		::WritePrivateProfileSection(_T("Header"), NULL, filename);
 		::WritePrivateProfileSection(_T("Bank"), NULL, filename);
 		::WritePrivateProfileString(_T("Header"), _T("Type"), _T("OPLL"), filename);
 		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
 		pDlg ? pDlg->SetPos(1) : 0;
 		for (int i = 0; i < 128; i++) {
-			TCHAR param[80];
-
-			FMVOICE voice;
-			bank->GetVoice(i, &voice);
-			char name[17];
-			memcpy(name, voice.name, 16);
-			name[16] = 0;
-			pDlg ? pDlg->SetTarget(CA2T(name)) : 0;
-
-			StringCchPrintf(secname, _countof(secname), _T("Prog%i"), i);
-			::WritePrivateProfileSection(secname, NULL, filename);
-			WriteLFOParam(&voice, secname, filename);
-			::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
-			theConfig->BuildOPLLVoice(&voice, 0, param, _countof(param));
-			::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
-			for (int k = 0; k < 2 && !(voice.AL & 0x40); k++) {
-				TCHAR keyname[16];
-				StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
-				theConfig->BuildOPLLVoice(&voice, k + 1, param, _countof(param));
-				::WritePrivateProfileString(secname, keyname, param, filename);
-			}
+			SaveOPLLVoice(bank, i);
 			pDlg ? pDlg->SetPos(i + 2) : 0;
 		}
 	}
 }
 
-void CFITOMApp::SavePSGVoice(CFMBank* bank, CProgressDlg* pDlg) {
+void CFITOMApp::SaveOPLLVoice(CFMBank* bank, int num)
+{
+	LPCTSTR filename = bank->GetFileName();
+	TCHAR secname[16];
+	TCHAR param[80];
+	FMVOICE voice;
+	bank->GetVoice(num, &voice);
+	char name[17];
+	memcpy(name, voice.name, 16);
+	name[16] = 0;
+	StringCchPrintf(secname, _countof(secname), _T("Prog%i"), num);
+	::WritePrivateProfileSection(secname, NULL, filename);
+	WriteLFOParam(&voice, secname, filename);
+	::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
+	theConfig->BuildOPLLVoice(&voice, 0, param, _countof(param));
+	::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
+	for (int k = 0; k < 2 && !(voice.AL & 0x40); k++) {
+		TCHAR keyname[16];
+		StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
+		theConfig->BuildOPLLVoice(&voice, k + 1, param, _countof(param));
+		::WritePrivateProfileString(secname, keyname, param, filename);
+	}
+}
+
+void CFITOMApp::SavePSGVoiceBank(CFMBank* bank, CProgressDlg* pDlg) {
 	LPCTSTR filename = bank->GetFileName();
 	if (::PathFileExists(filename)) {
-		TCHAR secname[16];
 		::WritePrivateProfileSection(_T("Header"), NULL, filename);
 		::WritePrivateProfileSection(_T("Bank"), NULL, filename);
 		::WritePrivateProfileString(_T("Header"), _T("Type"), _T("PSG"), filename);
 		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
 		pDlg ? pDlg->SetPos(1) : 0;
 		for (int i = 0; i < 128; i++) {
-			TCHAR param[80];
-
-			FMVOICE voice;
-			bank->GetVoice(i, &voice);
-			char name[17];
-			memcpy(name, voice.name, 16);
-			name[16] = 0;
-			pDlg ? pDlg->SetTarget(CA2T(name)) : 0;
-
-			StringCchPrintf(secname, _countof(secname), _T("Prog%i"), i);
-			::WritePrivateProfileSection(secname, NULL, filename);
-			WriteLFOParam(&voice, secname, filename);
-			::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
-			theConfig->BuildPSGVoice(&voice, 0, param, _countof(param));
-			::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
-			for (int k = 0; k < 1; k++) {
-				TCHAR keyname[16];
-				StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
-				theConfig->BuildPSGVoice(&voice, k + 1, param, _countof(param));
-				::WritePrivateProfileString(secname, keyname, param, filename);
-			}
+			SavePSGVoice(bank, i);
 			pDlg ? pDlg->SetPos(i + 2) : 0;
 		}
 	}
 }
 
-void CFITOMApp::SaveDrumMap(CDrumBank* bank, CProgressDlg* pDlg)
+void CFITOMApp::SavePSGVoice(CFMBank* bank, int num)
+{
+	LPCTSTR filename = bank->GetFileName();
+	TCHAR param[80];
+	TCHAR secname[16];
+	FMVOICE voice;
+	bank->GetVoice(num, &voice);
+	char name[17];
+	memcpy(name, voice.name, 16);
+	name[16] = 0;
+	StringCchPrintf(secname, _countof(secname), _T("Prog%i"), num);
+	::WritePrivateProfileSection(secname, NULL, filename);
+	WriteLFOParam(&voice, secname, filename);
+	::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
+	theConfig->BuildPSGVoice(&voice, 0, param, _countof(param));
+	::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
+	for (int k = 0; k < 1; k++) {
+		TCHAR keyname[16];
+		StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
+		theConfig->BuildPSGVoice(&voice, k + 1, param, _countof(param));
+		::WritePrivateProfileString(secname, keyname, param, filename);
+	}
+}
+
+void CFITOMApp::SaveDrumMapBank(CDrumBank* bank, CProgressDlg* pDlg)
 {
 	LPCTSTR filename = bank->GetFileName();
 	if (::PathFileExists(filename)) {
@@ -615,50 +669,56 @@ void CFITOMApp::SaveDrumMap(CDrumBank* bank, CProgressDlg* pDlg)
 		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
 		pDlg ? pDlg->SetPos(1) : 0;
 		for (int i = 0; i < 128; i++) {
-			TCHAR param[128];
-			DRUMMAP drumnote;
-			bank->GetVoice(i, &drumnote);
-			pDlg ? pDlg->SetTarget(drumnote.name) : 0;
-			if (drumnote.device != 0){
-				TCHAR note[20];
-				if (drumnote.num & 0x80) {
-					if (drumnote.fnum) {
-						StringCchPrintf(note, _countof(note), _T("#%i:%04X"), drumnote.num & 0x7f, drumnote.fnum);
-					}
-					else {
-						StringCchPrintf(note, _countof(note), _T("#%i"), drumnote.num & 0x7f);
-					}
-				}
-				else {
-					if (drumnote.fnum) {
-						StringCchPrintf(note, _countof(note), _T("%i"), drumnote.num);
-					}
-					else {
-						StringCchPrintf(note, _countof(note), _T("%i:%i"), drumnote.num, drumnote.fnum);
-					}
-				}
-				TCHAR devparam[80];
-				UINT32 phyid;
-				phyid = drumnote.device->GetDevPort()->GetPhysicalId();
-				if (drumnote.devID & 0x80000000) {	//logical device
-					StringCchPrintf(devparam, _countof(devparam), _T("%s"), CFITOM::GetDeviceNameFromID(drumnote.devID & 0xff));
-				}
-				else if (theConfig->isPcmDevice(drumnote.devID)) {
-					StringCchPrintf(devparam, _countof(devparam), _T("%s:%i"), CFITOM::GetDeviceNameFromID(drumnote.devID & 0xff),
-						theConfig->GetPcmDeviceIndex((CAdPcmBase*)drumnote.device));
-				} else
-				{ //physical device
-					StringCchPrintf(devparam, _countof(devparam), _T("%s:%i:%i"), CFITOM::GetDeviceNameFromID(drumnote.devID & 0xff),
-						(phyid >> 16) & 0xff, (phyid >> 8) & 0xff);
-				}
-				StringCchPrintf(param, _countof(param), _T("%s,%s,%i,%i,%s,%i,%i"),
-					drumnote.name, devparam, drumnote.bank, drumnote.prog, note, drumnote.pan, drumnote.gate);
-				TCHAR keyname[20];
-				StringCchPrintf(keyname, _countof(keyname), _T("Note%i"), i);
-				::WritePrivateProfileString(_T("Bank"), keyname, param, filename);
-			}
+			SaveDrumMap(bank, i);
 			pDlg ? pDlg->SetPos(i + 2) : 0;
 		}
+	}
+}
+
+void CFITOMApp::SaveDrumMap(CDrumBank* bank, int num)
+{
+	LPCTSTR filename = bank->GetFileName();
+	TCHAR param[128];
+	DRUMMAP drumnote;
+	bank->GetVoice(num, &drumnote);
+	if (drumnote.device != 0) {
+		TCHAR note[20];
+		if (drumnote.num & 0x80) {
+			if (drumnote.fnum) {
+				StringCchPrintf(note, _countof(note), _T("#%i:%04X"), drumnote.num & 0x7f, drumnote.fnum);
+			}
+			else {
+				StringCchPrintf(note, _countof(note), _T("#%i"), drumnote.num & 0x7f);
+			}
+		}
+		else {
+			if (drumnote.fnum) {
+				StringCchPrintf(note, _countof(note), _T("%i"), drumnote.num);
+			}
+			else {
+				StringCchPrintf(note, _countof(note), _T("%i:%i"), drumnote.num, drumnote.fnum);
+			}
+		}
+		TCHAR devparam[80];
+		UINT32 phyid;
+		phyid = drumnote.device->GetDevPort()->GetPhysicalId();
+		if (drumnote.devID & 0x80000000) {	//logical device
+			StringCchPrintf(devparam, _countof(devparam), _T("%s"), CFITOM::GetDeviceNameFromID(drumnote.devID & 0xff));
+		}
+		else if (theConfig->isPcmDevice(drumnote.devID)) {
+			StringCchPrintf(devparam, _countof(devparam), _T("%s:%i"), CFITOM::GetDeviceNameFromID(drumnote.devID & 0xff),
+				theConfig->GetPcmDeviceIndex((CAdPcmBase*)drumnote.device));
+		}
+		else
+		{ //physical device
+			StringCchPrintf(devparam, _countof(devparam), _T("%s:%i:%i"), CFITOM::GetDeviceNameFromID(drumnote.devID & 0xff),
+				(phyid >> 16) & 0xff, (phyid >> 8) & 0xff);
+		}
+		StringCchPrintf(param, _countof(param), _T("%s,%s,%i,%i,%s,%i,%i"),
+			drumnote.name, devparam, drumnote.bank, drumnote.prog, note, drumnote.pan, drumnote.gate);
+		TCHAR keyname[20];
+		StringCchPrintf(keyname, _countof(keyname), _T("Note%i"), num);
+		::WritePrivateProfileString(_T("Bank"), keyname, param, filename);
 	}
 }
 

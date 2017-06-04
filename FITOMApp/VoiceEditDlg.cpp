@@ -60,7 +60,7 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 	{ _T("SSG-EG"), 0, 0, 31, VOICE_GROUP_OPNA | VOICE_GROUP_PSG, &CVoiceEditDlg::SetEG, &CVoiceEditDlg::GetEG, },
 	{ _T("AM Enable"), 0, 0, 1, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetAME, &CVoiceEditDlg::GetAME, },
 	{ _T("VIB Enable"), 0, 0, 1, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetVIB, &CVoiceEditDlg::GetVIB, },
-	{ _T("Osc Fix"), 0, 0, 1, VOICE_GROUP_OPM, &CVoiceEditDlg::SetVIB, &CVoiceEditDlg::GetVIB, },
+	{ _T("Osc Fix"), 0, 0, 1, VOICE_GROUP_OPM, &CVoiceEditDlg::SetFIX, &CVoiceEditDlg::GetFIX, },
 	{ _T("Wave Select"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_PSG, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, },
 	{ _T("Multiple"), 0, 0, 15, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetML, &CVoiceEditDlg::GetML, },
 	{ _T("Detune1"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetDT1, &CVoiceEditDlg::GetDT1, },
@@ -280,7 +280,7 @@ void CVoiceEditDlg::OnOK()
 		CFMBank* pbank = theConfig->GetFMBank(vg, theBank);
 		if (pbank) {
 			pbank->SetVoice(theProg, &theVoice);
-			((CFITOMApp*)AfxGetApp())->SaveVoice(vg, theBank);
+			((CFITOMApp*)AfxGetApp())->SaveVoice(vg, theBank, theProg);
 			CFITOM::GetInstance()->ReloadVoice(&theVoice, theDevice, theBank, theProg);
 		}
 		bModified = FALSE;

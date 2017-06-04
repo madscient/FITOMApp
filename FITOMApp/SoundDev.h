@@ -24,14 +24,14 @@ struct FMOP {
 	UINT8	WS;  // 11:Wave Select: 1bit OPLL / 2bit OPL2 / 3bit OPL3 / none OPN/OPM / 3bit OPZ
 	//LFO parameter
 	UINT8	AM;  // 12:AM enable: 1bit OPL/OPNA/OPM
-	UINT8	VIB; // 13:Vibrato: 1bit OPL/OPNA / OFIX for OPZ
+	UINT8	VIB; // 13:Vibrato: 1bit OPL/OPNA
 	UINT8	SLF; // 14:Soft LFO frequency 0-15
 	UINT8	SLW; // 15:Soft LFO waveform 0:up saw/1:square/2:delta/3:s&h/4:down saw1/5:delta1/6:sin
 	UINT8	SLD; // 16:Soft LFO depth: 0 to 63, 64-127 for -64 to -1
 	UINT8	SLY; // 17:Soft LFO delay: 0-127 in 20ms unit
 	UINT8	SLR; // 18:Soft LFO rate: 0-127
 	//Osc frequency
-	UINT8	DM0; // 19:
+	UINT8	DM0; // 19:Oscilator fixed freq (OPZ)
 	UINT8	MUL; // 20:Multiple: 4bit OPL/OPN/OPM
 	UINT8	DT1; // 21:Detune1: none OPL / 4bit OPN/OPM
 	UINT8	DT2; // 22:Detune2: none OPL/OPN / 3bit OPM
