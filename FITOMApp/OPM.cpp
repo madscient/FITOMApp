@@ -62,7 +62,7 @@ void COPM::UpdateVoice(UINT8 ch)
 
 	for (i=0; i<4; i++)
 	{
-		UINT8 ofm = voice->op[map[i]].VIB;
+		UINT8 ofm = voice->op[map[i]].DM0;
 		tmp = ((voice->op[map[i]].DT1 & 0x7) << 4) | (voice->op[map[i]].MUL & 0xf);
 		SetReg(0x40 + i * 8 + ch, tmp);
 		SetReg(0x60 + i * 8 + ch, GET_TL(voice, map[i]));
@@ -334,8 +334,8 @@ void COPZ::UpdateVoice(UINT8 ch)
 	FMVOICE* voice = attr->GetVoice();
 	for (int i = 0; i < 4; i++) {
 		UINT8 tmp;
-		UINT8 ofm = voice->op[map[i]].VIB;
-		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (ofm ? (voice->op[map[i]].DT3 & 0xf) : 0);
+		UINT8 ofm = voice->op[map[i]].DM0;
+		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (voice->op[map[i]].DT3 & 0xf);
 		SetReg(0x40 + i * 8 + ch, tmp);
 		tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | GET_RV(voice, map[i]) | 0x20;
 		SetReg(0xc0 + i * 8 + ch, tmp);

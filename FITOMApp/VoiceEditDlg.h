@@ -102,7 +102,7 @@ protected:
 	int GetKSL(int op) { return theVoice.op[op].KSL; };
 	int GetKSR(int op) { return theVoice.op[op].KSR; };
 	int GetWS(int op) { return theVoice.op[op].WS; };
-	int GetFix(int op) { return (1 << theVoice.op[op].DT1) * ((theVoice.op[op].MUL << 4) | theVoice.op[op].DT2); };
+	int GetFix(int op) { return (1 << theVoice.op[op].DT1) * ((theVoice.op[op].MUL << 4) | theVoice.op[op].DT3); };
 	int GetOPLFOFreq(int op) { return theVoice.op[op].SLF; };
 	int GetOPLFODepth(int op) { return (theVoice.op[op].SLD > 63) ? (theVoice.op[op].SLD - 128) : theVoice.op[op].SLD; };
 	int GetOPLFOWave(int op) { return theVoice.op[op].SLW; };
