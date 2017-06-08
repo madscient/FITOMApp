@@ -13,7 +13,10 @@ protected:
 	virtual void UpdateSustain(UINT8 ch);
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-
+	virtual void UpdateFnumber(UINT8 ch, int update);
+	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	bool fxena;
+	FNUM PseudoDT[4];
 	static UINT8 map[4];
 	static UINT8 carmsk[8];
 public:

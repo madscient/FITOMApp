@@ -15,12 +15,26 @@ UINT8 COPN::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 #define GET_RV(v,o)	(v->op[o].REV >> 3)
 
 COPN::COPN(CPort* pt, int fsamp, UINT8 devtype) :
-CSoundDevice(devtype, 3, fsamp, 144, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100)
+CSoundDevice(devtype, 3, fsamp, 144, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100), fxena(true)
 {
 	// 1/6, 1/4
 	SetReg(0x2f, 0, 1);
 	SetReg(0x2d, 0, 1);
 	SetReg(0x27, 0x0, 1);
+}
+
+UINT8 COPN::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+{
+	CHATTR* attr = GetChAttribute(2);
+	if (fxena && voice && (voice->AL & 8) != 0) {//FX mode enabled
+		if (mode ? attr->IsAvailable() : attr->IsEnable()) {
+			return 2;
+		}
+		else {
+			return 0xff;
+		}
+	}
+	return CSoundDevice::QueryCh(parent, voice, mode);
 }
 
 void COPN::UpdateVoice(UINT8 ch)
@@ -30,6 +44,9 @@ void COPN::UpdateVoice(UINT8 ch)
 	UINT8 ex = 0;
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 
+	if (fxena && ch == 2) {
+		SetReg(0x27, ((voice->AL & 8) << 4) | (GetReg(0x27) & 0x3f), 0);
+	}
 	tmp = (voice->FB << 3) | (voice->AL & 7);
 	SetReg(0xb0 + ch, tmp);
 	for (i=0; i<4; i++)
@@ -63,11 +80,39 @@ void COPN::UpdateVolExp(UINT8 ch)
 	}
 }
 
+void COPN::UpdateFnumber(UINT8 ch, int update)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	FMVOICE* voice = attr->GetVoice();
+	if (fxena && ch == 2 && (voice->AL & 8)) {
+		for (int i = 0; i < 4; i++) {
+			SINT32 off = (voice->op[i].DT2 | (voice->op[i].DT3 << 7));
+			off = (off < 8192) ? off : (off - 16384);
+			PseudoDT[i] = GetFnumber(ch, SINT16(off));
+		}
+	}
+	CSoundDevice::UpdateFnumber(ch, update);
+}
+
 void COPN::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
-	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	SetReg(0xa4 + ch, (fnum->block << 3) | UINT8(fnum->fnum >> 8), 1);
-	SetReg(0xa0 + ch, UINT8(fnum->fnum & 0xff), 1);
+	CHATTR* attr = GetChAttribute(ch);
+	FMVOICE* voice = attr->GetVoice();
+	if (fxena && ch == 2 && (voice->AL & 8)) {
+		SetReg(0xad, (PseudoDT[0].block << 3) | UINT8(PseudoDT[0].fnum >> 8), 1);
+		SetReg(0xa9, UINT8(PseudoDT[0].fnum & 0xff), 1);
+		SetReg(0xae, (PseudoDT[1].block << 3) | UINT8(PseudoDT[1].fnum >> 8), 1);
+		SetReg(0xaa, UINT8(PseudoDT[1].fnum & 0xff), 1);
+		SetReg(0xac, (PseudoDT[2].block << 3) | UINT8(PseudoDT[2].fnum >> 8), 1);
+		SetReg(0xa8, UINT8(PseudoDT[2].fnum & 0xff), 1);
+		SetReg(0xa6, (PseudoDT[3].block << 3) | UINT8(PseudoDT[3].fnum >> 8), 1);
+		SetReg(0xa2, UINT8(PseudoDT[3].fnum & 0xff), 1);
+	}
+	else {
+		fnum = fnum ? fnum : attr->GetLastFnumber();
+		SetReg(0xa4 + ch, (fnum->block << 3) | UINT8(fnum->fnum >> 8), 1);
+		SetReg(0xa0 + ch, UINT8(fnum->fnum & 0xff), 1);
+	}
 }
 
 void COPN::UpdatePanpot(UINT8 ch)

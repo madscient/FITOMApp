@@ -93,6 +93,7 @@ protected:
 	int GetDT2(int op) { return theVoice.op[op].DT2; };
 	int GetDT3(int op) { return theVoice.op[op].DT3; };
 	int GetPDT(int op) { int pdt = ((GetDT1(op) << 7) | (GetDT2(op))); return (pdt > 8191) ? (pdt - 16384) : pdt; };
+	int GetPDT2(int op) { int pdt = ((GetDT3(op) << 7) | (GetDT2(op))); return (pdt > 8191) ? (pdt - 16384) : pdt; };
 	int GetAME(int op) { return theVoice.op[op].AM; };
 	int GetVIB(int op) { return theVoice.op[op].VIB; };
 	int GetFIX(int op) { return theVoice.op[op].DM0; };
@@ -151,6 +152,7 @@ protected:
 	void SetDT2(int op, int val) { theVoice.op[op].DT2 = val; };
 	void SetDT3(int op, int val) { theVoice.op[op].DT3 = val; };
 	void SetPDT(int op, int val) { theVoice.op[op].DT1 = ((val >> 7) & 0x7f); theVoice.op[op].DT2 = (val & 0x7f); };
+	void SetPDT2(int op, int val) { theVoice.op[op].DT3 = ((val >> 7) & 0x7f); theVoice.op[op].DT2 = (val & 0x7f); };
 	void SetAME(int op, int val) { theVoice.op[op].AM = val; };
 	void SetVIB(int op, int val) { theVoice.op[op].VIB = val; };
 	void SetFIX(int op, int val) { theVoice.op[op].DM0 = val; };
