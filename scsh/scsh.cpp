@@ -183,7 +183,7 @@ SC_CHIP_TYPE getChipTypeFromName(string& name)
 	if (name.compare("SCC") == 0 || name.compare("2212P003") == 0) {
 		ret = SC_TYPE_SCC;
 	}
-	if (name.compare("SCCI") == 0 || name.compare("SCC-I") == 0 || name.compare("2312P001") == 0) {
+	if (name.compare("SCCS") == 0 || name.compare("SCC-I") == 0 || name.compare("SCC+") == 0 || name.compare("2312P001") == 0) {
 		ret = SC_TYPE_SCCS;
 	}
 	if (name.compare("Y8950") == 0 || name.compare("YM3801") == 0 || name.compare("MSX-AUDIO") == 0) {
@@ -195,7 +195,7 @@ SC_CHIP_TYPE getChipTypeFromName(string& name)
 	if (name.compare("OPZ") == 0 || name.compare("YM2414") == 0) {
 		ret = SC_TYPE_YM2414;
 	}
-	if (name.compare("APSG") == 0 || name.compare("AY8930") == 0) {
+	if (name.compare("EPSG") == 0 || name.compare("AY8930") == 0) {
 		ret = SC_TYPE_AY8930;
 	}
 	if (name.compare("SSG") == 0 || name.compare("YM2149") == 0) {
@@ -212,6 +212,9 @@ SC_CHIP_TYPE getChipTypeFromName(string& name)
 	}
 	if (name.compare("OPLLP") == 0 || name.compare("YMF281") == 0) {
 		ret = SC_TYPE_YMF281;
+	}
+	if (name.compare("OPLLX") == 0 || name.compare("YM2423") == 0 || name.compare("MS1823") == 0) {
+		ret = SC_TYPE_YM2423;
 	}
 	if (name.compare("OPN2L") == 0 || name.compare("YMF276") == 0) {
 		ret = SC_TYPE_YMF276;

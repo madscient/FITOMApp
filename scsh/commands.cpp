@@ -58,7 +58,7 @@ int regcmd(vector<string>& param)
 		if (psc) {
 			int reg = parseAsHex(shift(param));
 			int data = parseAsHex(shift(param));
-			if (reg < 0 || reg > 0x3ff || data < 0 || data > 255) {
+			if (reg < 0 || reg > 0xffff || data < 0 || data > 255) {
 				cout << "Out of range" << endl << endl;
 			} else {
 				psc->setRegister(DWORD(reg), DWORD(data));
