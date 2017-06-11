@@ -42,6 +42,7 @@ public:
 	virtual void LoadVoice(int prog, UINT8* data, size_t length);
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
 	virtual void RhythmOff(UINT8 num);
+	virtual void TimerCallBack(UINT32 tick) {};
 };
 
 class CAdPcm3801 : public CYmDelta	//Y8950

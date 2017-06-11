@@ -196,6 +196,7 @@ BEGIN_MESSAGE_MAP(CMidiChCtrlDlg, CDialogEx)
 	ON_CONTROL_RANGE(EN_CHANGE, IDC_EDIT_VOLUME, IDC_EDIT_PHYCH, &CMidiChCtrlDlg::OnEnChangeEdit)
 	ON_NOTIFY_RANGE(UDN_DELTAPOS, IDC_SPIN_VOLUME, IDC_SPIN_PHYCH, &CMidiChCtrlDlg::OnDeltaposSpin)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHECK_LEGATO, IDC_CHECK_SOST, &CMidiChCtrlDlg::OnBnClickedCheck)
+	ON_BN_CLICKED(IDC_BTN_RESET, &CMidiChCtrlDlg::OnBnClickedBtnReset)
 END_MESSAGE_MAP()
 
 
@@ -549,4 +550,13 @@ BOOL CMidiChCtrlDlg::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+
+void CMidiChCtrlDlg::OnBnClickedBtnReset()
+{
+	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	if (theCh) {
+		theCh->ResetAllCtrl();
+	}
 }

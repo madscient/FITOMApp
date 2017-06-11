@@ -352,4 +352,3 @@ void CAdPcm2610A::UpdateVoice(UINT8 ch)
 	SetReg(0x20 + ch, (ed >> 8) & 0xff, 1);
 	SetReg(0x28 + ch, (ed >> 16) & 0xff, 1);
 }
-

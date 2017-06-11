@@ -113,6 +113,8 @@ BOOL CDevMonitor::OnInitDialog()
 	lstDevice.InsertColumn(1, _T("F-Num"), LVCFMT_LEFT, 60);
 	lstDevice.InsertColumn(2, _T("Voice"), LVCFMT_LEFT, 160);
 	lstDevice.InsertColumn(3, _T("Volume"), LVCFMT_LEFT, 32);
+	lstDevice.InsertColumn(4, _T("Status"), LVCFMT_LEFT, 60);
+	lstDevice.InsertColumn(5, _T("Count"), LVCFMT_LEFT, 32);
 	cmbDevice.SetCurSel(0);
 	hTimer = SetTimer(0, 10, 0);
 	UpdateList(TRUE);
@@ -138,6 +140,10 @@ BOOL CDevMonitor::PreTranslateMessage(MSG* pMsg)
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
+
+static LPCTSTR statstr[] = {
+	_T("DISABLED"), _T("EMPTY"), _T("ASSIGNED"), _T("RUNNING"), 0,
+};
 
 void CDevMonitor::UpdateList(BOOL binit)
 {
@@ -170,6 +176,15 @@ void CDevMonitor::UpdateList(BOOL binit)
 			StringCchPrintf(tmp, 80, _T("%i"), evol);
 			if (lstrcmp(tmp, lstDevice.GetItemText(i, 3))) {
 				lstDevice.SetItemText(i, 3, tmp);
+			}
+			int status = pdev->GetChAttribute(i)->GetStatus() + 1;
+			if (lstrcmp(statstr[status], lstDevice.GetItemText(i, 4))) {
+				lstDevice.SetItemText(i, 4, statstr[status]);
+			}
+			int count = pdev->GetChAttribute(i)->GetCount();
+			StringCchPrintf(tmp, 80, _T("%i"), count);
+			if (lstrcmp(tmp, lstDevice.GetItemText(i, 5))) {
+				lstDevice.SetItemText(i, 5, tmp);
 			}
 		}
 	}

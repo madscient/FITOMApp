@@ -157,6 +157,8 @@ protected:
 		int IsAvailable() const { return (status==EMPTY); };
 		int IsRunning() const { return (status==RUNNING); };
 		int IsAssigned() const { return (status==ASSIGNED); };
+		int GetStatus() const { return status; };
+		int GetCount() const { return count; };
 		bool IsAutoAssignable() const { return dva; };
 		CMidiCh* GetParent() const { return parent; }
 		FMVOICE* GetVoice() const { return (FMVOICE* const)&voice; };

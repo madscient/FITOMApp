@@ -131,4 +131,5 @@ public:
 	afx_msg void OnDeltaposSpin(UINT id, NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedCheck(UINT id);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnBnClickedBtnReset();
 };

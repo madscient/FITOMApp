@@ -37,7 +37,7 @@ void COPK::UpdateVoice(UINT8 ch)
 		SetReg(0x10 + chofs[ch] + (i * 2), tmp | (voice->op[i].VIB ? 0x40 : 0) | (voice->op[i].WS ? 0x20 : 0), 1);
 		tmp = GET_TL(voice, i);
 		if (!i) {
-			tmp = (tmp << 1) | (voice->NFQ ? 1: 0);
+			//tmp = (tmp << 1) | (voice->NFQ ? 1: 0);
 		}
 		SetReg(0x20 + chofs[ch] + (i * 2), tmp);
 		SetReg(0x30 + chofs[ch] + (i * 2), (GET_AR(voice, i) << 4) | GET_DR(voice, i));

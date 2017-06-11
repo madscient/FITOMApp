@@ -21,7 +21,7 @@ ISoundDevice::FNUM::FNUM(UINT8 bl, UINT16 fn) : block(bl), fnum(fn)
 
 ISoundDevice::CHATTR::CHATTR() : 
 	status(CHATTR::EMPTY), express(255), volume(255), velocity(255), panpot(127), dva(true),
-	lastfnum(FNUM(0, 0)), lastvel(0), lastnote(255), finefreq(0), count(0), parent(0)
+	lastfnum(FNUM(0, 0)), lastvel(0), lastnote(255), finefreq(0), count(0), parent(0), device(0)
 {
 	memset(&voice, 0, sizeof(FMVOICE));
 	voice.ID = 0xffffffff;
@@ -42,6 +42,7 @@ void CSoundDevice::CHATTR::Init()
 	volume = 255;
 	velocity = 255;
 	count = 0;
+	device = 0;
 	memset(&voice, 0, sizeof(FMVOICE));
 	voice.ID = 0xffffffff;
 	dva = dva ? true : false;
@@ -338,13 +339,16 @@ UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 		for (int i = 0; i < chs; i++) {
 			CHATTR* attr = GetChAttribute(i);
 			if (attr->IsAutoAssignable() && attr->IsEnable()) {
-				if (count <= attr->noteon) {
+				if (count < attr->noteon) {
 					cand = i;
 					count = attr->noteon;
 				}
 			}
 		}
 		ret = cand;
+		if (ret == 0xff) {
+			ret = QueryCh(NULL, NULL, 0);
+		}
 #if defined(_DEBUG) || defined(_CONSOLE)
 		fprintf(stderr, _T("AllocCh:%i:partial out!!(%i)\n"), ret, count);
 #endif

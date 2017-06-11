@@ -33,7 +33,6 @@ public:
 	CAdPcmBase(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev);
 	virtual UINT8 GetParentDev() { return parentdev; };
 	virtual void LoadVoice(int prog, UINT8* data, size_t length) = 0;
-	virtual void TimerCallBack(UINT32 tick) {};
 	void Debug();
 };
 

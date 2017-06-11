@@ -5,6 +5,7 @@
 #include "OPL.h"
 #include "OPLL.h"
 #include "SSG.h"
+#include "ADPCM.h"
 #include "MIDIDEV.h"
 #include "MIDI.h"
 #include "SCCIWrapper.h"
@@ -297,6 +298,12 @@ void CFITOM::TimerCallBack(UINT32 tick)
 		}
 		for (int i = 0; i<theConfig->GetLogDevs(); i++) {
 			CSoundDevice* pdev = theConfig->GetLogDeviceFromIndex(i);
+			if (pdev) {
+				pdev->TimerCallBack(tick);
+			}
+		}
+		for (int i = 0; i < theConfig->GetPcmDevs(); i++) {
+			CAdPcmBase* pdev = theConfig->GetPCMDeviceFromIndex(i);
 			if (pdev) {
 				pdev->TimerCallBack(tick);
 			}

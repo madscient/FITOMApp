@@ -41,7 +41,7 @@ void CPSGBase::UpdateKey(UINT8 ch, UINT8 keyon)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	if (keyon) {
-		UpdateVoice(ch);
+		//UpdateVoice(ch);
 		if (!(voice->AL & 0x4)) {
 			egattr[ch].Start(&voice->op[0]);
 		}
