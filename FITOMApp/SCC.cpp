@@ -6,6 +6,16 @@ CSCCBase::CSCCBase(CPort* pt, int fsamp, const REGMAP& map)
 	: CPSGBase(map.device, pt, 0x100, 5, fsamp), regmap(map)
 {
 	ops = 1;
+	pt->reset();
+	pt->writeRaw(regmap.config, regmap.init);
+	pt->writeRaw(regmap.banksel, regmap.bank);
+	for (int i = 0; i < chs; i++) {
+		SetReg(regmap.amplitude + i, 0, 1);
+		SetReg(regmap.frequency + i * 2, 0, 1);
+		SetReg(regmap.frequency + i * 2 + 1, 0, 1);
+	}
+	SetReg(regmap.enable, 0x1f, 1);
+	SetReg(regmap.mode, 0x00, 1);
 }
 
 void CSCCBase::UpdateVolExp(UINT8 ch)
@@ -57,15 +67,6 @@ void CSCCBase::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 CSCC::CSCC(CPort* pt, int fsamp) : CSCCBase(pt, fsamp,
 { DEVICE_SCC, 0x00, 0x80, 0x8a, 0x8f, 0xc0, 0x00, 0x3f, 0x9800, 0xbffe, 0x9000 })
 {
-	pt->reset();
-	pt->writeRaw(regmap.banksel, regmap.bank);
-	GetChAttribute(4)->OutOfDVA();	// 5th ch should always be assigned manually
-	for (int i = 0; i < chs; i++) {
-		SetReg(regmap.amplitude + i, 0, 1);
-		SetReg(regmap.frequency + i * 2, 0, 1);
-		SetReg(regmap.frequency + i * 2 + 1, 0, 1);
-	}
-	SetReg(regmap.enable, 0x1f, 1);
 	SetReg(0xc0, 0x00, 1);
 	SetReg(0xe0, 0x00, 1);
 }
@@ -86,14 +87,5 @@ void CSCC::UpdateVoice(UINT8 ch)
 CSCCP::CSCCP(CPort* pt, int fsamp) : CSCCBase(pt, fsamp,
 { DEVICE_SCCP, 0x00, 0xa0, 0xaa, 0xaf, 0xe0, 0x20, 0x80, 0xb800, 0xbffe, 0xb000 })
 {
-	pt->writeRaw(regmap.config, regmap.init);
-	pt->writeRaw(regmap.banksel, regmap.bank);
-	for (int i = 0; i < chs; i++) {
-		SetReg(regmap.amplitude + i, 0, 1);
-		SetReg(regmap.frequency + i * 2, 0, 1);
-		SetReg(regmap.frequency + i * 2 + 1, 0, 1);
-	}
-	SetReg(regmap.enable, 0x1f, 1);
-	SetReg(regmap.mode, 0x00, 1);
 }
 
