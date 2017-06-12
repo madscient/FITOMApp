@@ -15,6 +15,7 @@ protected:
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 	virtual void UpdateVoice(UINT8 ch);
+	virtual void EGOff(UINT8 ch);
 };
 
 class CPSG : public CSSG

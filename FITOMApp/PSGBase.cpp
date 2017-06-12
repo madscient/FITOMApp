@@ -42,9 +42,7 @@ void CPSGBase::UpdateKey(UINT8 ch, UINT8 keyon)
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	if (keyon) {
 		//UpdateVoice(ch);
-		if (!(voice->AL & 0x4)) {
-			egattr[ch].Start(&voice->op[0]);
-		}
+		egattr[ch].Start(&voice->op[0]);
 	}
 	else {
 		egattr[ch].Release();
@@ -62,7 +60,7 @@ void CPSGBase::UpdateLevelEG()
 			egattr[i].Update();
 		}
 		else if (GetChAttribute(i)->IsRunning()) {
-			NoteOff(i);
+			EGOff(i);
 		}
 	}
 }

@@ -32,11 +32,27 @@ void CSSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 
 void CSSG::UpdateKey(UINT8 ch, UINT8 keyon)
 {
-	CPSGBase::UpdateKey(ch, keyon);
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	if (!keyon && (voice->op[0].EGT & 0x8)) {
-		SetReg(0x8 + ch, (GetReg(0x8 + ch, 0) & 0xe0), 1);
+	if (voice->op[0].EGT & 0x8) {
+		if (keyon) {
+			UpdateVoice(ch);
+		}
+		else {
+			SetReg(0x8 + ch, (GetReg(0x8 + ch, 0) & 0xe0), 1);
+		}
+	}
+	else {
+		CPSGBase::UpdateKey(ch, keyon);
+	}
+}
+
+void CSSG::EGOff(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	FMVOICE* voice = attr->GetVoice();
+	if (!(voice->op[0].EGT & 0x8)) {
+		NoteOff(ch);
 	}
 }
 

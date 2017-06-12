@@ -21,6 +21,7 @@ protected:
 	virtual void UpdateSustain(UINT8 ch) {};
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
+	virtual void EGOff(UINT8 ch) { NoteOff(ch); };
 public:
 	CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp);
 	CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp, int div, int off, FnumTableType type);

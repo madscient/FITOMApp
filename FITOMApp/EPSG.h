@@ -14,6 +14,7 @@ protected:
 	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
+	virtual void EGOff(UINT8 ch);
 	UINT8 prevmix;
 public:
 	CEPSG(CPort* pt, int fsamp = 0);
