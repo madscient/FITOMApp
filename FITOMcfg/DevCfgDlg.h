@@ -48,4 +48,5 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedButtonAddAll();
 	afx_msg void OnBnClickedButtonDelAll();
+	afx_msg void OnDblclkListUsing();
 };

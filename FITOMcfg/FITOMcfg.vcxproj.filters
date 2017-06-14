@@ -63,6 +63,9 @@
     <ClInclude Include="LineInputDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DevModeDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FITOMcfg.cpp">
@@ -93,6 +96,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LineInputDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DevModeDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

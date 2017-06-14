@@ -109,6 +109,7 @@
     <ClInclude Include="..\scci\SCCIDefines.h" />
     <ClInclude Include="AdPcmDevDlg.h" />
     <ClInclude Include="DevCfgDlg.h" />
+    <ClInclude Include="DevModeDlg.h" />
     <ClInclude Include="ExportIns.h" />
     <ClInclude Include="FITOMcfg.h" />
     <ClInclude Include="FITOMcfgDlg.h" />
@@ -123,6 +124,7 @@
   <ItemGroup>
     <ClCompile Include="AdPcmDevDlg.cpp" />
     <ClCompile Include="DevCfgDlg.cpp" />
+    <ClCompile Include="DevModeDlg.cpp" />
     <ClCompile Include="ExportIns.cpp" />
     <ClCompile Include="FITOMcfg.cpp" />
     <ClCompile Include="FITOMcfgDlg.cpp" />

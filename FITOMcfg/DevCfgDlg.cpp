@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "FITOMcfg.h"
 #include "DevCfgDlg.h"
+#include "DevModeDlg.h"
 #include "afxdialogex.h"
 #include <algorithm>
 
@@ -37,6 +38,7 @@ BEGIN_MESSAGE_MAP(CDevCfgDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BUTTON_ADD_ALL, &CDevCfgDlg::OnBnClickedButtonAddAll)
 	ON_BN_CLICKED(IDC_BUTTON_DEL_ALL, &CDevCfgDlg::OnBnClickedButtonDelAll)
+	ON_LBN_DBLCLK(IDC_LIST_USING, &CDevCfgDlg::OnDblclkListUsing)
 END_MESSAGE_MAP()
 
 CString CDevCfgDlg::BuildConfigString(scciDeviceProperty* sdp)
@@ -240,4 +242,14 @@ void CDevCfgDlg::OnBnClickedButtonDelAll()
 	// TODO: Add your control notification handler code here
 	devuse.clear();
 	RefreshUseList();
+}
+
+
+void CDevCfgDlg::OnDblclkListUsing()
+{
+	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	CDevModeDlg dlg(this);
+	if (dlg.DoModal() == IDOK) {
+
+	}
 }
