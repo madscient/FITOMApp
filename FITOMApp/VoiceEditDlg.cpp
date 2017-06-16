@@ -79,7 +79,62 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 	{ 0, 0, 0, 0, VOICE_GROUP_NONE, 0, 0, },
 };
 
+DWORD opnal[] = {
+	IDB_BMP_OPNAL0, IDB_BMP_OPNAL1, IDB_BMP_OPNAL2, IDB_BMP_OPNAL3, IDB_BMP_OPNAL4, IDB_BMP_OPNAL5, IDB_BMP_OPNAL6, IDB_BMP_OPNAL7,
+	IDB_BMP_OPNAL8,
+	0,
+};
 
+DWORD opmal[] = {
+	IDB_BMP_OPNAL0, IDB_BMP_OPNAL1, IDB_BMP_OPNAL2, IDB_BMP_OPNAL3, IDB_BMP_OPNAL4, IDB_BMP_OPNAL5, IDB_BMP_OPNAL6, IDB_BMP_OPNAL7,
+	IDB_BMP_OPMAL8, IDB_BMP_OPMAL9, IDB_BMP_OPMALA, IDB_BMP_OPMALB, IDB_BMP_OPMALC, IDB_BMP_OPMALD, IDB_BMP_OPMALE, IDB_BMP_OPMALF,
+	0,
+};
+
+DWORD oplal[] = {
+	IDB_BMP_OPLAL0, IDB_BMP_OPLAL1, IDB_BMP_OPLAL2, IDB_BMP_OPLAL3, IDB_BMP_OPLAL4, IDB_BMP_OPLAL5, IDB_BMP_OPLAL6, IDB_BMP_OPLAL7,
+	IDB_BMP_OPLAL8, IDB_BMP_OPLAL9, IDB_BMP_OPLALA, IDB_BMP_OPLALB,
+	0,
+};
+
+DWORD psgal[] = {
+	IDB_BMP_PSG_AL0,
+	0,
+};
+
+DWORD oplws[] = {
+	IDB_BMP_OPLWS0, IDB_BMP_OPLWS1, IDB_BMP_OPLWS2, IDB_BMP_OPLWS3, IDB_BMP_OPLWS4, IDB_BMP_OPLWS5, IDB_BMP_OPLWS6, IDB_BMP_OPLWS7,
+	0,
+};
+
+DWORD opzws[] = {
+	IDB_BMP_OPZWS0, IDB_BMP_OPZWS1, IDB_BMP_OPZWS2, IDB_BMP_OPZWS3, IDB_BMP_OPZWS4, IDB_BMP_OPZWS5, IDB_BMP_OPZWS6, IDB_BMP_OPZWS7,
+	0,
+};
+
+DWORD sinws[]{
+	IDB_BMP_OPLWS0, 0,
+};
+
+CVoiceEditDlg::ImgView CVoiceEditDlg::algoimg[] = {
+	{ VOICE_GROUP_PSG, 0, 0, },
+	{ VOICE_GROUP_OPM, 15, opmal, },
+	{ VOICE_GROUP_OPNA, 8, opnal, },
+	{ VOICE_GROUP_OPL2, 7, oplal, },
+	{ VOICE_GROUP_OPL3, 11, oplal, },
+	{ VOICE_GROUP_OPLL, 1, oplal, },
+	{ VOICE_GROUP_NONE, 0, 0, },
+};
+
+CVoiceEditDlg::ImgView CVoiceEditDlg::waveimg[] = {
+	{ VOICE_GROUP_PSG, 0, 0, },
+	{ VOICE_GROUP_OPM, 7, opzws, },
+	{ VOICE_GROUP_OPNA, 0, sinws, },
+	{ VOICE_GROUP_OPL2, 7, oplws, },
+	{ VOICE_GROUP_OPL3, 7, oplws, },
+	{ VOICE_GROUP_OPLL, 1, oplws, },
+	{ VOICE_GROUP_NONE, 0, 0, },
+};
 
 // CVoiceEditDlg ダイアログ
 
@@ -120,6 +175,11 @@ void CVoiceEditDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SPIN_NOTE, spnNote);
 	DDX_Control(pDX, IDC_EDIT_INPLACE, edtInplace);
 	DDX_Control(pDX, IDC_SPIN_INPLACE, spnInplace);
+	DDX_Control(pDX, IDC_PIC_AL, picAL);
+	DDX_Control(pDX, IDC_PIC_WS0, picWS0);
+	DDX_Control(pDX, IDC_PIC_WS1, picWS1);
+	DDX_Control(pDX, IDC_PIC_WS2, picWS2);
+	DDX_Control(pDX, IDC_PIC_WS3, picWS3);
 }
 
 
@@ -269,6 +329,43 @@ void CVoiceEditDlg::UpdateVoiceView(FMVOICE* voice)
 		edtName.SetWindowText(CA2T(tmpname));
 		for (int op = 0; op < 5; op++) {
 			UpdateListCtrl(op, TRUE);
+			if (op) {
+				UpdateWaveView(vg, op - 1, theVoice.op[op - 1].WS);
+			}
+		}
+		UpdateAlgoView(vg, theVoice.AL);
+	}
+}
+
+void CVoiceEditDlg::UpdateAlgoView(int vg, int al)
+{
+	for (int i = 0; algoimg[i].vg != VOICE_GROUP_NONE; i++) {
+		if (algoimg[i].vg == vg) {
+			al = min(al, algoimg[i].bound);
+			if (algoimg[i].imglst) {
+				picAL.ShowWindow(SW_SHOW);
+				picAL.SetBitmap(LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(algoimg[i].imglst[al])));
+			}
+			else {
+				picAL.ShowWindow(SW_HIDE);
+			}
+		}
+	}
+}
+
+void CVoiceEditDlg::UpdateWaveView(int vg, int op, int ws)
+{
+	CStatic* picwave[] = { &picWS0, &picWS1, &picWS2, &picWS3, 0, };
+	for (int i = 0; waveimg[i].vg != VOICE_GROUP_NONE; i++) {
+		if (waveimg[i].vg == vg) {
+			ws = min(ws, waveimg[i].bound);
+			if (waveimg[i].imglst) {
+				picwave[op & 3]->ShowWindow(SW_SHOW);
+				picwave[op & 3]->SetBitmap(LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(waveimg[i].imglst[ws])));
+			}
+			else {
+				picwave[op & 3]->ShowWindow(SW_HIDE);
+			}
 		}
 	}
 }
@@ -445,12 +542,19 @@ void CVoiceEditDlg::OnKillfocusEditInplace()
 					(this->*(editting_item->pSetter))(editting_op - 1, val);
 					pICh->SetVoiceData(&theVoice);
 					UpdateListCtrl(editting_op, FALSE);
+					int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
+					if (editting_op) {
+						UpdateWaveView(vg, editting_op - 1, val);
+					}
+					else {
+						UpdateAlgoView(vg, val);
+					}
 				}
 			}
 		}
 	}
-	edtInplace.ShowWindow(FALSE);
-	spnInplace.ShowWindow(FALSE);
+	edtInplace.ShowWindow(SW_HIDE);
+	spnInplace.ShowWindow(SW_HIDE);
 	editting_item = 0;
 	editting_op = -1;
 }

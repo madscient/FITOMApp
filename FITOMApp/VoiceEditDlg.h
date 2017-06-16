@@ -41,14 +41,23 @@ protected:
 		void (CVoiceEditDlg::*pSetter)(int op, int val);
 		int (CVoiceEditDlg::*pGetter)(int op);
 	};
+	struct ImgView {
+		int vg;
+		int bound;
+		DWORD* imglst;
+	};
 	int editting_op;
 	VoiceItem* editting_item;
 	static VoiceItem commonItem[];
 	static VoiceItem operatorItem[];
+	static ImgView algoimg[];
+	static ImgView waveimg[];
 	CListCtrl* lstctls[5];
 
 	void UpdateListCtrl(int op, BOOL bInit=FALSE);
 	void UpdateVoiceView(FMVOICE* voice);
+	void UpdateAlgoView(int vg, int al);
+	void UpdateWaveView(int vg, int op, int ws);
 	LRESULT OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op);
 
 	//Getter
@@ -217,4 +226,9 @@ public:
 	afx_msg void OnBnClickedVoiceText();
 	afx_msg void OnClickedBtnRevert();
 	afx_msg void OnClickedBtnApply();
+	CStatic picAL;
+	CStatic picWS0;
+	CStatic picWS1;
+	CStatic picWS2;
+	CStatic picWS3;
 };
