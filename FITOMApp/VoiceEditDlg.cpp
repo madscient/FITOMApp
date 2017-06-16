@@ -122,7 +122,7 @@ CVoiceEditDlg::ImgView CVoiceEditDlg::algoimg[] = {
 	{ VOICE_GROUP_OPNA, 8, opnal, },
 	{ VOICE_GROUP_OPL2, 7, oplal, },
 	{ VOICE_GROUP_OPL3, 11, oplal, },
-	{ VOICE_GROUP_OPLL, 1, oplal, },
+	{ VOICE_GROUP_OPLL, 0, 0, },
 	{ VOICE_GROUP_NONE, 0, 0, },
 };
 
