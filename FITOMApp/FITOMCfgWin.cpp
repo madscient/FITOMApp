@@ -76,7 +76,14 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 
 CMidiIn* CFITOMConfigWin32::CreateMidiInPort(LPCTSTR param)
 {
-	CMidiIn* ret = new CW32MidiIn(param);
+
+	CMidiIn* ret = 0;
+	try {
+		ret = new CW32MidiIn(param);
+	}
+	catch (...) {
+
+	}
 	return ret;
 }
 
