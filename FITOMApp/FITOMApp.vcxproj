@@ -119,6 +119,7 @@
     <ClInclude Include="DrumMapPicker.h" />
     <ClInclude Include="DrumNoteEditDlg.h" />
     <ClInclude Include="DSG.h" />
+    <ClInclude Include="EnvView.h" />
     <ClInclude Include="EPSG.h" />
     <ClInclude Include="FITOM.h" />
     <ClInclude Include="FITOMCfg.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="DrumNoteEditDlg.cpp" />
     <ClCompile Include="DSG.cpp" />
     <ClCompile Include="EnvLFO.cpp" />
+    <ClCompile Include="EnvView.cpp" />
     <ClCompile Include="EPSG.cpp" />
     <ClCompile Include="FITOM.cpp" />
     <ClCompile Include="FITOMCfg.cpp" />

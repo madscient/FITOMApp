@@ -180,6 +180,10 @@ void CVoiceEditDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PIC_WS1, picWS1);
 	DDX_Control(pDX, IDC_PIC_WS2, picWS2);
 	DDX_Control(pDX, IDC_PIC_WS3, picWS3);
+	DDX_Control(pDX, IDC_PIC_ENV0, picEnv0);
+	DDX_Control(pDX, IDC_PIC_ENV1, picEnv1);
+	DDX_Control(pDX, IDC_PIC_ENV2, picEnv2);
+	DDX_Control(pDX, IDC_PIC_ENV3, picEnv3);
 }
 
 
@@ -253,7 +257,8 @@ void CVoiceEditDlg::UpdateListCtrl(int op, BOOL bInit)
 			lstctls[op]->DeleteAllItems();
 		}
 		for (VoiceItem* items = (op == 0) ? commonItem : operatorItem; items->caption; items++) {
-			if (items->mask & CFITOM::GetDeviceVoiceGroupMask(theDevice)) {
+			int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
+			if (items->mask & vg) {
 				if (bInit) {
 					lstctls[op]->InsertItem(i, items->caption);
 					lstctls[op]->SetItemData(i, DWORD_PTR(items));
@@ -261,7 +266,7 @@ void CVoiceEditDlg::UpdateListCtrl(int op, BOOL bInit)
 				lstctls[op]->SetItemData(i, DWORD_PTR(items));
 				CString tmp;
 				if (items->pGetter) {
-					tmp.Format(_T("%i"), (this->*(items->pGetter))(op-1));
+					tmp.Format(_T("%i"), (this->*(items->pGetter))(vg, op-1));
 				}
 				else {
 					tmp = _T("-");
@@ -331,6 +336,7 @@ void CVoiceEditDlg::UpdateVoiceView(FMVOICE* voice)
 			UpdateListCtrl(op, TRUE);
 			if (op) {
 				UpdateWaveView(vg, op - 1, theVoice.op[op - 1].WS);
+				UpdateEnvView(vg, op - 1, &theVoice.op[op - 1]);
 			}
 		}
 		UpdateAlgoView(vg, theVoice.AL);
@@ -367,6 +373,15 @@ void CVoiceEditDlg::UpdateWaveView(int vg, int op, int ws)
 				picwave[op & 3]->ShowWindow(SW_HIDE);
 			}
 		}
+	}
+}
+
+void CVoiceEditDlg::UpdateEnvView(int vg, int op, FMOP* env)
+{
+	CEnvView* picenv[] = { &picEnv0, &picEnv1, &picEnv2, &picEnv3, 0, };
+	if (0 <= op && op < 4) {
+		picenv[op]->SetEnv(env->TL, env->EGS, env->AR, env->DR, env->SL, env->SR, env->RR);
+		picenv[op]->Invalidate();
 	}
 }
 
@@ -487,6 +502,7 @@ LRESULT CVoiceEditDlg::OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op)
 	VoiceItem* pvi = (VoiceItem*)(plst->GetItemData(pNMLV->iItem));
 	if (pvi->pSetter) {
 		CRect ColumnRect;
+		int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
 		plst->GetSubItemRect(pNMLV->iItem, 1, LVIR_BOUNDS, ColumnRect);
 		plst->ClientToScreen(ColumnRect);
 		this->ScreenToClient(ColumnRect);
@@ -499,7 +515,7 @@ LRESULT CVoiceEditDlg::OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op)
 		spnInplace.SetWindowPos(plst, ColumnRect.left, ColumnRect.top, 0, ColumnRect.Height(), SWP_SHOWWINDOW | SWP_DRAWFRAME);
 		spnInplace.ShowWindow(TRUE);
 		spnInplace.SetRange32(pvi->min, pvi->max);
-		spnInplace.SetPos32((this->*(pvi->pGetter))(op - 1));
+		spnInplace.SetPos32((this->*(pvi->pGetter))(vg, op - 1));
 		//	spnInplace.SetBuddy(&edtInplace);
 
 		edtInplace.SetFocus();
@@ -539,16 +555,10 @@ void CVoiceEditDlg::OnKillfocusEditInplace()
 			if (lstrcmp(tmp1, tmp2) == 0) { // is valid
 				if (editting_item->min <= val && editting_item->max >= val && editting_item->pSetter) {
 					spnInplace.SetPos32(val);
-					(this->*(editting_item->pSetter))(editting_op - 1, val);
+					int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
+					(this->*(editting_item->pSetter))(vg, editting_op - 1, val);
 					pICh->SetVoiceData(&theVoice);
 					UpdateListCtrl(editting_op, FALSE);
-					int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
-					if (editting_op) {
-						UpdateWaveView(vg, editting_op - 1, val);
-					}
-					else {
-						UpdateAlgoView(vg, val);
-					}
 				}
 			}
 		}
@@ -567,8 +577,9 @@ void CVoiceEditDlg::OnDeltaposSpinInplace(NMHDR *pNMHDR, LRESULT *pResult)
 		edtInplace.SetSel(0, -1);
 		if (editting_item->pSetter) {
 			int val = spnInplace.GetPos32();
+			int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
 			if (editting_item->min <= val && editting_item->max >= val && editting_item->pSetter) {
-				(this->*(editting_item->pSetter))(editting_op - 1, val);
+				(this->*(editting_item->pSetter))(vg, editting_op - 1, val);
 				pICh->SetVoiceData(&theVoice);
 			}
 		}

@@ -195,6 +195,9 @@
     <ClInclude Include="PCMD8.h">
       <Filter>ヘッダー ファイル\FITOM core</Filter>
     </ClInclude>
+    <ClInclude Include="EnvView.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -361,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="PCMD8.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvView.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
