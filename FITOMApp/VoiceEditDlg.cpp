@@ -16,7 +16,7 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::commonItem[] = {
 	{ _T("Feedback1"), 0, 0, 7, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetFB1, &CVoiceEditDlg::GetFB1, },
 	{ _T("Feedback2"), 0, 0, 7, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetFB2, &CVoiceEditDlg::GetFB2, },
 	{ _T("Algorithm"), 0, 0, 7, VOICE_GROUP_OPM, &CVoiceEditDlg::SetAL3, &CVoiceEditDlg::GetAL3, },
-	{ _T("Algorithm"), 0, 0, 8, VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, },
+	{ _T("Algorithm"), 0, 0, 15, VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, },
 	{ _T("Algorithm"), 0, 0, 1, VOICE_GROUP_OPL2, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL1, },
 	{ _T("Algorithm"), 0, 0, 11, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, },
 	{ _T("ROM Tone"), 0, 0, 15, VOICE_GROUP_OPLL, &CVoiceEditDlg::SetROMTN, &CVoiceEditDlg::GetAL4, },
@@ -81,7 +81,7 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 
 DWORD opnal[] = {
 	IDB_BMP_OPNAL0, IDB_BMP_OPNAL1, IDB_BMP_OPNAL2, IDB_BMP_OPNAL3, IDB_BMP_OPNAL4, IDB_BMP_OPNAL5, IDB_BMP_OPNAL6, IDB_BMP_OPNAL7,
-	IDB_BMP_OPNAL8,
+	IDB_BMP_OPNAL8, IDB_BMP_OPNAL9, IDB_BMP_OPNALA, IDB_BMP_OPNALB, IDB_BMP_OPNALC, IDB_BMP_OPNALD, IDB_BMP_OPNALE, IDB_BMP_OPNALF,
 	0,
 };
 
@@ -119,7 +119,7 @@ DWORD sinws[]{
 CVoiceEditDlg::ImgView CVoiceEditDlg::algoimg[] = {
 	{ VOICE_GROUP_PSG, 0, 0, },
 	{ VOICE_GROUP_OPM, 15, opmal, },
-	{ VOICE_GROUP_OPNA, 8, opnal, },
+	{ VOICE_GROUP_OPNA, 15, opnal, },
 	{ VOICE_GROUP_OPL2, 7, oplal, },
 	{ VOICE_GROUP_OPL3, 11, oplal, },
 	{ VOICE_GROUP_OPLL, 0, 0, },

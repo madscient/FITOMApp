@@ -561,5 +561,26 @@
     <Image Include="res\bmp00043.bmp">
       <Filter>リソース ファイル</Filter>
     </Image>
+    <Image Include="res\bmp00044.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00045.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00046.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00047.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00048.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00049.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00050.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

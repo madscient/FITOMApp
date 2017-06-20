@@ -278,6 +278,13 @@
     <Image Include="res\bmp00041.bmp" />
     <Image Include="res\bmp00042.bmp" />
     <Image Include="res\bmp00043.bmp" />
+    <Image Include="res\bmp00044.bmp" />
+    <Image Include="res\bmp00045.bmp" />
+    <Image Include="res\bmp00046.bmp" />
+    <Image Include="res\bmp00047.bmp" />
+    <Image Include="res\bmp00048.bmp" />
+    <Image Include="res\bmp00049.bmp" />
+    <Image Include="res\bmp00050.bmp" />
     <Image Include="res\bmp_opna.bmp" />
     <Image Include="res\FITOMApp.ico" />
     <Image Include="res\fitom_logo.bmp" />

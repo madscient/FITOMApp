@@ -101,7 +101,7 @@ void CEnvView::Update()
 	else {
 	}
 	//Sustain
-	memDC.LineTo(OS_CX - theRR, y);
+	memDC.LineTo(OS_CX - (OS_UNIT - theRR), y);
 	//Release
 	memDC.LineTo(OS_CX, OS_CY);
 
