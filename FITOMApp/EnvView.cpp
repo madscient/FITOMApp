@@ -85,20 +85,8 @@ void CEnvView::Update()
 	if (theDR && theSL) {
 		double dx;
 		double dy;
-		if (theDR > (OS_UNIT / 2)) {
-			dx = ((OS_UNIT - double(theDR)) / OS_UNIT) * theSL;
-			dy = double(theSL);
-		}
-		else {
-			if (theDR > theSL) {
-				dx = (double(theDR) / OS_UNIT) * theSL;
-				dy = double(theSL);
-			}
-			else {
-				dx = (double(theDR) / double(theSL)) * OS_UNIT;
-				dy = double(theSL);
-			}
-		}
+		dx = ((OS_UNIT - double(theDR)) / OS_UNIT) * theSL;
+		dy = double(theSL);
 		x += round(dx);
 		y += round(dy);
 		memDC.LineTo(x, y);
@@ -113,8 +101,10 @@ void CEnvView::Update()
 	}
 	else {
 	}
-	//Sustain
-	memDC.LineTo(OS_CX - (OS_UNIT - theRR), y);
+	if (x < (OS_CX - (OS_UNIT - theRR))) {
+		//Sustain
+		memDC.LineTo(OS_CX - (OS_UNIT - theRR), y);
+	}
 	//Release
 	memDC.LineTo(OS_CX, OS_CY);
 
