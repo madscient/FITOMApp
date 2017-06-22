@@ -87,7 +87,7 @@ void COPN::UpdateFnumber(UINT8 ch, int update)
 	if (fxena && ch == 2 && (voice->AL & 8)) {
 		for (int i = 0; i < 4; i++) {
 			SINT32 off = (voice->op[i].DT2 | (voice->op[i].DT3 << 7));
-			off = (off < 8192) ? off : (off - 16384);
+			off = off - 8192;
 			PseudoDT[i] = GetFnumber(ch, SINT16(off));
 		}
 	}

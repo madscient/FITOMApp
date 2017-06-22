@@ -142,8 +142,8 @@ void COPL3::UpdateFnumber(UINT8 ch, int update)
 		FMVOICE* voice = attr->GetVoice();
 		SINT32 off1 = (voice->op[0].DT2 | (voice->op[0].DT1 << 7));
 		SINT32 off2 = (voice->op[2].DT2 | (voice->op[2].DT1 << 7));
-		off1 = (off1 < 8192) ? off1 : (off1 - 16384);
-		off2 = (off2 < 8192) ? off2 : (off2 - 16384);
+		off1 = off1 - 8192;
+		off2 = off2 - 8192;
 		PseudoDT1[ch] = GetFnumber(ch, SINT16(off1));
 		PseudoDT2[ch] = GetFnumber(ch, SINT16(off2));
 	}

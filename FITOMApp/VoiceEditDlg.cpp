@@ -516,7 +516,7 @@ LRESULT CVoiceEditDlg::OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op)
 		spnInplace.ShowWindow(TRUE);
 		spnInplace.SetRange32(pvi->min, pvi->max);
 		spnInplace.SetPos32((this->*(pvi->pGetter))(vg, op - 1));
-		//	spnInplace.SetBuddy(&edtInplace);
+		spnInplace.SetBuddy(&edtInplace);
 
 		edtInplace.SetFocus();
 	}
