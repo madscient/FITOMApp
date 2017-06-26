@@ -61,6 +61,7 @@ void COPN::UpdateVoice(UINT8 ch)
 		SetReg(0x70 + map[i] + ch, GET_SR(voice, i));
 		tmp = (GET_SL(voice, i) << 4) | GET_RR(voice, i);
 		SetReg(0x80 + map[i] + ch, tmp);
+		SetReg(0x90 + map[i] + ch, voice->op[i].EGT);
 	}
 	UpdateVolExp(ch);
 }

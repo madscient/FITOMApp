@@ -53,3 +53,17 @@ void CSAA::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 	break;
 	}
 }
+
+void CSAA::SetReg(UINT16 reg, UINT8 data, UINT8 v)
+{
+	if (!v && regbak) {
+		v = (regbak[reg] != data);
+	}
+	if (regbak) {
+		regbak[reg] = data;
+	}
+	if (v && port) {
+		port->writeRaw(0x1, reg);
+		port->writeRaw(0x0, data);
+	}
+}
