@@ -359,7 +359,7 @@ void CFITOMApp::SaveVoice(int group, int bank, int prog)
 	else {
 		pbank = theConfig->GetFMBank(group, bank);
 	}
-	if ((pbank || dbank) && func >= 0) {
+	if ((pbank && func >= 0) || dbank) {
 		CProgressDlg* pDlg = new CProgressDlg(m_pMainWnd);
 		pDlg->ShowWindow(SW_SHOW);
 		pDlg->SetRange(0, 129);
