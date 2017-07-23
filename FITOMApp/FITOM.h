@@ -59,6 +59,10 @@
 
 #define DEVICE_RHYTHM	120	// Virtual device for rhythm channel
 
+#define DEVICE_MULTI	1024	//Multiple module
+#define DEVICE_NBV		1025	//NBV3/NBV4
+#define	DEVICE_AYB		1026	//AYB01/AYB02
+
 #define VOICE_TYPE_OPM  0x10
 #define VOICE_TYPE_OPN  0x11
 #define VOICE_TYPE_OPNA	 0x12
