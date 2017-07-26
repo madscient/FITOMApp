@@ -61,7 +61,7 @@ struct FMVOICE {
 
 class CMidiCh;
 extern SINT8 GetLFOWave(UINT8 waveform, UINT8 speed, UINT16 phase);
-extern UINT8 CalcVolExpVel(UINT8 vol, UINT8 exp, UINT8 vel);
+extern UINT8 CalcVolExpVel(int vol, int exp, int vel);
 extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl);
 extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl);
 extern UINT8 Linear2dB(UINT8 evol, int range, int step, int bw);
