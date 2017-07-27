@@ -283,7 +283,7 @@ extern UINT8 Linear2dB(UINT8 evol, int range, int step, int bw)
 		ret = lim;
 	}
 	else {
-		ret = ROM::VolCurveLin[UINT8(evol)];
+		ret = round(ROM::GM2dB[UINT8(evol)] / -0.75);
 		ret = min(ret, lim - 1);
 	}
 	ret >>= 7 - range - bw;
