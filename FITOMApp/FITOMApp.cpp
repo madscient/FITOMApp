@@ -340,6 +340,7 @@ void CFITOMApp::SaveVoice(int group, int bank, int prog)
 		{ VOICE_GROUP_OPL2, _T("OPL2"), &CFITOMApp::SaveOPL2Voice, },
 		{ VOICE_GROUP_OPLL, _T("OPLL"), &CFITOMApp::SaveOPLLVoice, },
 		{ VOICE_GROUP_PSG, _T("PSG"), &CFITOMApp::SavePSGVoice, },
+		{ VOICE_GROUP_MA3, _T("MA3"), &CFITOMApp::SaveMA3Voice, },
 		{ VOICE_GROUP_NONE, 0, 0, },
 	};
 
@@ -517,6 +518,21 @@ void CFITOMApp::SaveOPL3VoiceBank(CFMBank* bank, CProgressDlg* pDlg) {
 	}
 }
 
+void CFITOMApp::SaveMA3VoiceBank(CFMBank* bank, CProgressDlg* pDlg) {
+	LPCTSTR filename = bank->GetFileName();
+	if (::PathFileExists(filename)) {
+		::WritePrivateProfileSection(_T("Header"), NULL, filename);
+		::WritePrivateProfileSection(_T("Bank"), NULL, filename);
+		::WritePrivateProfileString(_T("Header"), _T("Type"), _T("MA3"), filename);
+		::WritePrivateProfileString(_T("Header"), _T("BankName"), bank->GetBankName(), filename);
+		pDlg ? pDlg->SetPos(1) : 0;
+		for (int i = 0; i < 128; i++) {
+			SaveMA3Voice(bank, i);
+			pDlg ? pDlg->SetPos(i + 2) : 0;
+		}
+	}
+}
+
 void CFITOMApp::SaveOPL3Voice(CFMBank* bank, int num)
 {
 	LPCTSTR filename = bank->GetFileName();
@@ -538,6 +554,31 @@ void CFITOMApp::SaveOPL3Voice(CFMBank* bank, int num)
 		TCHAR keyname[16];
 		StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
 		theConfig->BuildOPL3Voice(&voice, k + 1, param, _countof(param));
+		::WritePrivateProfileString(secname, keyname, param, filename);
+	}
+}
+
+void CFITOMApp::SaveMA3Voice(CFMBank* bank, int num)
+{
+	LPCTSTR filename = bank->GetFileName();
+	TCHAR secname[16];
+	TCHAR param[80];
+	FMVOICE voice;
+	bank->GetVoice(num, &voice);
+	char name[17];
+	memcpy(name, voice.name, 16);
+	name[16] = 0;
+
+	StringCchPrintf(secname, _countof(secname), _T("Prog%i"), num);
+	::WritePrivateProfileSection(secname, NULL, filename);
+	WriteLFOParam(&voice, secname, filename);
+	::WritePrivateProfileString(secname, _T("Name"), CA2T(name), filename);
+	theConfig->BuildMA3Voice(&voice, 0, param, _countof(param));
+	::WritePrivateProfileString(secname, _T("ALFB"), param, filename);
+	for (int k = 0; k < 4; k++) {
+		TCHAR keyname[16];
+		StringCchPrintf(keyname, _countof(keyname), _T("OP%i"), k + 1);
+		theConfig->BuildMA3Voice(&voice, k + 1, param, _countof(param));
 		::WritePrivateProfileString(secname, keyname, param, filename);
 	}
 }

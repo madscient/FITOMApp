@@ -94,11 +94,12 @@ protected:
 	CSoundDevice* vPhyDev[MAX_DEVS];
 	CSoundDevice* vLogDev[MAX_DEVS];
 	CAdPcmBase* vPcmDev[MAX_DEVS];
-	CFMBank* vOpmBank[MAX_BANK];
-	CFMBank* vOpnBank[MAX_BANK];
-	CFMBank* vOpl2Bank[MAX_BANK];
-	CFMBank* vOpl3Bank[MAX_BANK];
-	CFMBank* vOpllBank[MAX_BANK];
+	CFMBank* vOpmBank[MAX_BANK];	//OPM/OPP/OPZ
+	CFMBank* vOpnBank[MAX_BANK];	//OPN/OPNA/OPN2/etc...
+	CFMBank* vOpl2Bank[MAX_BANK];	//OPL/OPL2/MA-2(2OP)/etc...
+	CFMBank* vOpl3Bank[MAX_BANK];	//OPL3/MA-2(4OP)
+	CFMBank* vOpllBank[MAX_BANK];	//OPLL family
+	CFMBank* vMAFMBank[MAX_BANK];	//MA-3/MA-5/SD-1
 	CFMBank* vPsgBank[MAX_BANK];
 	CPcmBank* vPcmBank[MAX_BANK];
 	CDrumBank* vDrumBank[MAX_BANK];

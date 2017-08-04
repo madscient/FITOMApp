@@ -70,7 +70,7 @@
 #define VOICE_TYPE_OPK	0x23
 
 #define VOICE_TYPE_OPL3 0x30
-#define VOICE_TYPE_MA_3	0x31
+#define VOICE_TYPE_MA3	0x31
 
 #define VOICE_TYPE_SSG  0x40
 #define VOICE_TYPE_EPSG 0x41
@@ -92,6 +92,7 @@
 #define VOICE_GROUP_PSG  0x20
 #define VOICE_GROUP_OPL4 0x40
 #define VOICE_GROUP_PCM	 0x80
+#define VOICE_GROUP_MA3  0x100
 #define VOICE_GROUP_RHYTHM 0x8000
 #define VOICE_GROUP_ALL  0xffff
 

@@ -50,6 +50,7 @@ CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : phydevs(0), logdevs(0), pcmdevs
 		vOpl2Bank[i] = 0;
 		vOpl3Bank[i] = 0;
 		vOpllBank[i] = 0;
+		vMAFMBank[i] = 0;
 		vPsgBank[i] = 0;
 		vDrumBank[i] = 0;
 	}
@@ -94,6 +95,9 @@ CFMBank* CFITOMConfig::AllocFMBank(int voicegroup, int bank)
 		case VOICE_GROUP_OPLL:
 			ret = vOpllBank[bank] = new CFMBank();
 			break;
+		case VOICE_GROUP_MA3:
+			ret = vMAFMBank[bank] = new CFMBank();
+			break;
 		case VOICE_GROUP_PSG:
 			ret = vPsgBank[bank] = new CFMBank();
 			break;
@@ -121,6 +125,9 @@ CFMBank* CFITOMConfig::GetFMBank(int voicegroup, int bank)
 			break;
 		case VOICE_GROUP_OPLL:
 			ret = vOpllBank[bank];
+			break;
+		case VOICE_GROUP_MA3:
+			ret = vMAFMBank[bank];
 			break;
 		case VOICE_GROUP_PSG:
 			ret = vPsgBank[bank];
@@ -703,6 +710,7 @@ int CFITOMConfig::LoadVoiceConfig()
 	std::terr << ParseVoiceBank(VOICE_GROUP_OPL2) << _T(" OPL2 Banks configured.") << std::endl;
 	std::terr << ParseVoiceBank(VOICE_GROUP_OPL3) << _T(" OPL3 Banks configured.") << std::endl;
 	std::terr << ParseVoiceBank(VOICE_GROUP_OPLL) << _T(" OPLL Banks configured.") << std::endl;
+	std::terr << ParseVoiceBank(VOICE_GROUP_MA3) << _T(" MA3 Banks configured.") << std::endl;
 	std::terr << ParseVoiceBank(VOICE_GROUP_PSG) << _T(" PSG Banks configured.") << std::endl;
 	std::terr << ParseRhythmBank() << _T(" Rhythm Banks configured.") << std::endl;
 	return 0;
@@ -993,6 +1001,10 @@ int CFITOMConfig::ParseVoiceBank(int groupcode)
 		parseFunc = &CFITOMConfig::ParseOPL3Voice;
 		groupname = _T("OPL3");
 		break;
+	case VOICE_GROUP_MA3:
+		parseFunc = &CFITOMConfig::ParseMA3Voice;
+		groupname = _T("MA3");
+		break;
 	case VOICE_GROUP_OPLL:
 		parseFunc = &CFITOMConfig::ParseOPLLVoice;
 		groupname = _T("OPLL");
@@ -1195,6 +1207,33 @@ int CFITOMConfig::ParseOPL3Voice(FMVOICE* voice, int index, std::vector<int>& pa
 	return 0;
 }
 
+int CFITOMConfig::ParseMA3Voice(FMVOICE* voice, int index, std::vector<int>& param)
+{
+	int k = index - 1;
+	if (0 <= k && k < 4 && param.size() > 10) {
+		voice->op[k].AR = (param[0] & 15) << 3;
+		voice->op[k].DR = (param[1] & 15) << 3;
+		voice->op[k].SR = (param[2] & 15) << 3;
+		voice->op[k].RR = (param[3] & 15) << 3;
+		voice->op[k].SL = (param[4] & 15) << 3;
+		voice->op[k].TL = (param[5] & 63);
+		voice->op[k].KSL = (param[6] & 7) >> 1;
+		voice->op[k].KSR = (param[6] & 1);
+		voice->op[k].MUL = (param[7] & 15);
+		voice->op[k].DT1 = (param[8] & 7);
+		voice->op[k].DT2 = 0;
+		voice->op[k].WS = (param[9] & 31);
+		voice->op[k].VIB = (param[10] >> 1) & 1;
+		voice->op[k].AM = (param[10] & 1);
+		voice->op[k].REV = 0;
+	}
+	else if (index == 0 && param.size() > 2) {
+		voice->AL = (param[0] & 7);
+		voice->FB = (param[1] & 7) | ((param[2] & 7) << 3);
+	}
+	return 0;
+}
+
 int CFITOMConfig::ParseOPLLVoice(FMVOICE* voice, int index, std::vector<int>& param)
 {
 	int k = index - 1;
@@ -1354,6 +1393,20 @@ int CFITOMConfig::BuildOPL3Voice(FMVOICE* voice, int index, TCHAR* result, size_
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
 		% min(63, voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
+	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
+}
+
+int CFITOMConfig::BuildMA3Voice(FMVOICE* voice, int index, TCHAR* result, size_t length)
+{
+	std::tstring strres;
+	if (index == 0) {
+		strres = (boost::format(_T("%3i %3i %3i")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7)).str();
+		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
+	}
+	int k = index - 1;
+	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
+		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
+		% min(63, voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].WS) % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 

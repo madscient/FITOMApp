@@ -275,7 +275,7 @@ extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl)
 	return (127-evol);
 }
 
-// evol 0(min)-127(max)
+// evol 0(min)-127(max), ret=tl(att)
 extern UINT8 Linear2dB(UINT8 evol, int range, int step, int bw)
 {
 	evol = evol & step;
