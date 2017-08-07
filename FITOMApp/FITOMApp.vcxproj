@@ -128,6 +128,7 @@
     <ClInclude Include="LCDView.h" />
     <ClInclude Include="MasterVolumeCtrl.h" />
     <ClInclude Include="MasVolWin.h" />
+    <ClInclude Include="MAx.h" />
     <ClInclude Include="MIDI.h" />
     <ClInclude Include="MIDIDEV.h" />
     <ClInclude Include="MultiDev.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="LCDView.cpp" />
     <ClCompile Include="MasterVolumeCtrl.cpp" />
     <ClCompile Include="MasVolWin.cpp" />
+    <ClCompile Include="MAx.cpp" />
     <ClCompile Include="MIDI.cpp" />
     <ClCompile Include="MIDIWin.cpp" />
     <ClCompile Include="MultiDev.cpp" />

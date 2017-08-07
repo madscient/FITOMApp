@@ -203,10 +203,13 @@ public:
 	virtual void SetDevPMRate(UINT8 ch, UINT8 rate) = 0;
 	virtual void SetDevAMRate(UINT8 ch, UINT8 rate) = 0;
 	virtual UINT8 GetRhythmCaps() = 0;
+	virtual void SetPresetTone(UINT8 tn, FMVOICE* voice) = 0;
+	virtual void UpdatePresetTone() = 0;
 
 	// Physical accesses
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v=1) = 0;
 	virtual UINT8 GetReg(UINT16 reg, UINT8 v) = 0;
+	virtual void Flush() = 0;
 
 	// Note control interfaces (polymorph)
 	virtual void NoteOn(UINT8 ch, UINT8 vel=127) = 0;
@@ -303,10 +306,13 @@ public:
 	virtual CPort* GetDevPort() { return port; };
 	virtual void Reset();
 	virtual UINT8 GetRhythmCaps() { return rhythmcap; };
+	virtual void SetPresetTone(UINT8 tn, FMVOICE* voice) {};
+	virtual void UpdatePresetTone() {};
 
 	// Physical accesses
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v=1);
 	virtual UINT8 GetReg(UINT16 reg, UINT8 v=0);
+	virtual void Flush() {};
 
 	// Ch Property settings
 	virtual void SetSustain(UINT8 ch, UINT8 sus, int update=1);

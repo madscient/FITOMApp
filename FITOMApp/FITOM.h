@@ -51,6 +51,12 @@
 #define DEVICE_OPL4	48	//YMF278 with YRW801
 #define DEVICE_OPL4ML	49	//YMF704
 #define DEVICE_OPL4ML2	50	//YMF721
+#define DEVICE_MA1		51	//YMU757
+#define DEVICE_MA2		52	//YMU759
+#define DEVICE_MA3		53	//YMU762
+#define DEVICE_MA5		54	//YMU765
+#define DEVICE_MA7		55	//YMU768
+#define DEVICE_SD1		56	//YMF825
 #define DEVICE_PCMD8	65	//YMZ280
 
 #define	DEVICE_ADPCM	119	//virtual device for ADPCM channel
