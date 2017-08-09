@@ -101,6 +101,11 @@ public:
 	virtual int GetClock();
 	virtual int GetDesc(TCHAR* str, int len);
 };
+
+class CFTSPIPort : public CPort
+{
+};
+
 #endif
 
 #ifdef _LINUX
