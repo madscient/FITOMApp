@@ -66,3 +66,32 @@ BOOL CFTSPI::Init()
 	}
 	return TRUE;
 }
+
+FT_STATUS CFTSPI::SPI_OpenChannel(UINT32 index, FT_HANDLE* handle)
+{
+	FT_STATUS ret = FT_OTHER_ERROR;
+	if (p_SPI_OpenChannel) {
+		ret = p_SPI_OpenChannel(index, handle);
+	}
+	return ret;
+}
+
+FT_STATUS CFTSPI::SPI_InitChannel(FT_HANDLE handle, ChannelConfig* config)
+{
+	FT_STATUS ret = FT_OTHER_ERROR;
+	if (p_SPI_InitChannel) {
+		ret = p_SPI_InitChannel(handle, config);
+	}
+	return ret;
+}
+
+FT_STATUS CFTSPI::SPI_CloseChannel(FT_HANDLE handle)
+{
+	FT_STATUS ret = FT_OTHER_ERROR;
+	if (p_SPI_CloseChannel) {
+		ret = p_SPI_CloseChannel(handle);
+	}
+	return ret;
+}
+
+

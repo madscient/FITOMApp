@@ -2,7 +2,6 @@
 #include "../FTDI/ftd2xx.h"
 #include "../FTDI/libMPSSE_spi.h"
 
-class CFTSPIPort;
 class CFTSPI {
 protected:
 	HMODULE h_libMPSSE;
@@ -31,5 +30,10 @@ public:
 	~CFTSPI();
 	BOOL Init();
 	UINT32 GetChannels() { return m_numChannels; };
-	CFTSPIPort* CreateFTSPIPort(uint32 index);
+
+	FT_STATUS SPI_OpenChannel(UINT32 index, FT_HANDLE* handle);
+	FT_STATUS SPI_InitChannel(FT_HANDLE handle, ChannelConfig* config);
+	FT_STATUS SPI_CloseChannel(FT_HANDLE handle);
+	FT_STATUS SPI_Read(FT_HANDLE handle, UINT8* buffer, UINT32 sizeToTransfer, UINT32* sizeTransfered, UINT32 options);
+	FT_STATUS SPI_Write(FT_HANDLE handle, UINT8* buffer, UINT32 sizeToTransfer, UINT32* sizeTransfered, UINT32 options);
 };
