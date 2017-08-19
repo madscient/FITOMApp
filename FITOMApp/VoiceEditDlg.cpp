@@ -13,9 +13,9 @@
 // データテーブル
 CVoiceEditDlg::VoiceItem CVoiceEditDlg::commonItem[] = {
 	{ _T("Feedback"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetFB, &CVoiceEditDlg::GetFB, },
-	{ _T("Feedback1"), 0, 0, 7, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetFB1, &CVoiceEditDlg::GetFB1, },
-	{ _T("Feedback2"), 0, 0, 7, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetFB2, &CVoiceEditDlg::GetFB2, },
-	{ _T("Algorithm"), 0, 0, 7, VOICE_GROUP_OPM, &CVoiceEditDlg::SetAL3, &CVoiceEditDlg::GetAL3, },
+	{ _T("Feedback1"), 0, 0, 7, VOICE_GROUP_OPL3 | VOICE_GROUP_MA3, &CVoiceEditDlg::SetFB1, &CVoiceEditDlg::GetFB1, },
+	{ _T("Feedback2"), 0, 0, 7, VOICE_GROUP_OPL3 | VOICE_GROUP_MA3, &CVoiceEditDlg::SetFB2, &CVoiceEditDlg::GetFB2, },
+	{ _T("Algorithm"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_MA3, &CVoiceEditDlg::SetAL3, &CVoiceEditDlg::GetAL3, },
 	{ _T("Algorithm"), 0, 0, 15, VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, },
 	{ _T("Algorithm"), 0, 0, 1, VOICE_GROUP_OPL2, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL1, },
 	{ _T("Algorithm"), 0, 0, 11, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, },
@@ -38,32 +38,32 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::commonItem[] = {
 CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 	{ _T("Attack Rate"), 0, 0, 31, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAR5, &CVoiceEditDlg::GetAR5, },
 	{ _T("Decay Rate"), 0, 0, 31, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetDR5, &CVoiceEditDlg::GetDR5, },
-	{ _T("Attack Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetAR4, &CVoiceEditDlg::GetAR4, },
-	{ _T("Decay Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetDR4, &CVoiceEditDlg::GetDR4, },
+	{ _T("Attack Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetAR4, &CVoiceEditDlg::GetAR4, },
+	{ _T("Decay Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetDR4, &CVoiceEditDlg::GetDR4, },
 	{ _T("Attack Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetAR, &CVoiceEditDlg::GetAR, },
 	{ _T("Decay Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetDR, &CVoiceEditDlg::GetDR, },
 	{ _T("Sustain Level"), 0, 0, 15, VOICE_GROUP_ALL & (~VOICE_GROUP_PSG), &CVoiceEditDlg::SetSL4, &CVoiceEditDlg::GetSL4, },
 	{ _T("Sustain Level"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetSL, &CVoiceEditDlg::GetSL, },
 	{ _T("Sustain Rate"), 0, 0, 31, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetSR5, &CVoiceEditDlg::GetSR5, },
-	{ _T("Sustain Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetSR4, &CVoiceEditDlg::GetSR4, },
+	{ _T("Sustain Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetSR4, &CVoiceEditDlg::GetSR4, },
 	{ _T("Sustain Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetSR, &CVoiceEditDlg::GetSR, },
 	{ _T("Release Rate"), 0, 0, 15, VOICE_GROUP_ALL & (~VOICE_GROUP_PSG), &CVoiceEditDlg::SetRR4, &CVoiceEditDlg::GetRR4, },
 	{ _T("Release Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetRR, &CVoiceEditDlg::GetRR, },
 	{ _T("Reverbation"), 0, 0, 7, VOICE_GROUP_OPM, &CVoiceEditDlg::SetRV4, &CVoiceEditDlg::GetRV4, },
 	//{ _T("Reverbation"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetRV, &CVoiceEditDlg::GetRV, },
 	{ _T("Total Level"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetTL, &CVoiceEditDlg::GetTL, },
-	{ _T("Total Level"), 0, 0, 63, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetTL6, &CVoiceEditDlg::GetTL6, },
+	{ _T("Total Level"), 0, 0, 63, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetTL6, &CVoiceEditDlg::GetTL6, },
 	{ _T("EG-Bias"), 0, 0, 3, VOICE_GROUP_OPM, &CVoiceEditDlg::SetEGS5, &CVoiceEditDlg::GetEGS5, },
 	{ _T("EG-Bias"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetEGS, &CVoiceEditDlg::GetEGS, },
-	{ _T("KS-Level"), 0, 0, 3, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetKSL, &CVoiceEditDlg::GetKSL, },
-	{ _T("KS-Rate"), 0, 0, 3, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetKSR, &CVoiceEditDlg::GetKSR, },
+	{ _T("KS-Level"), 0, 0, 3, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetKSL, &CVoiceEditDlg::GetKSL, },
+	{ _T("KS-Rate"), 0, 0, 3, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetKSR, &CVoiceEditDlg::GetKSR, },
 	{ _T("SSG-EG"), 0, 0, 31, VOICE_GROUP_OPNA | VOICE_GROUP_PSG, &CVoiceEditDlg::SetEG, &CVoiceEditDlg::GetEG, },
-	{ _T("AM Enable"), 0, 0, 1, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetAME, &CVoiceEditDlg::GetAME, },
-	{ _T("VIB Enable"), 0, 0, 1, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetVIB, &CVoiceEditDlg::GetVIB, },
+	{ _T("AM Enable"), 0, 0, 1, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetAME, &CVoiceEditDlg::GetAME, },
+	{ _T("VIB Enable"), 0, 0, 1, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetVIB, &CVoiceEditDlg::GetVIB, },
 	{ _T("Osc Fix"), 0, 0, 1, VOICE_GROUP_OPM, &CVoiceEditDlg::SetFIX, &CVoiceEditDlg::GetFIX, },
-	{ _T("Wave Select"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_PSG, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, },
+	{ _T("Wave Select"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_PSG | VOICE_GROUP_MA3, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, },
 	{ _T("Multiple"), 0, 0, 15, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetML, &CVoiceEditDlg::GetML, },
-	{ _T("Detune1"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetDT1, &CVoiceEditDlg::GetDT1, },
+	{ _T("Detune1"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_MA3, &CVoiceEditDlg::SetDT1, &CVoiceEditDlg::GetDT1, },
 	{ _T("Detune2"), 0, 0, 3, VOICE_GROUP_OPM, &CVoiceEditDlg::SetDT2, &CVoiceEditDlg::GetDT2, },
 	{ _T("Fine freq"), 0, 0, 15, VOICE_GROUP_OPM, &CVoiceEditDlg::SetDT3, &CVoiceEditDlg::GetDT3, },
 	{ _T("Pseudo Detune"), 0, -8192, 8191, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetPDT, &CVoiceEditDlg::GetPDT, },
@@ -97,6 +97,10 @@ DWORD oplal[] = {
 	0,
 };
 
+DWORD ma3al[] = {
+	IDB_BMP_OPLAL0, IDB_BMP_OPLAL1, IDB_BMP_OPLALB, IDB_BMP_OPNAL2, IDB_BMP_OPLAL4, IDB_BMP_OPLAL8, IDB_BMP_OPLAL6, IDB_BMP_OPLAL7,
+};
+
 DWORD psgal[] = {
 	IDB_BMP_PSG_AL0,
 	0,
@@ -112,6 +116,14 @@ DWORD opzws[] = {
 	0,
 };
 
+DWORD ma3ws[] = {
+	IDB_BMP_OPLWS0, IDB_BMP_OPLWS1, IDB_BMP_OPLWS2, IDB_BMP_OPLWS3, IDB_BMP_OPLWS4, IDB_BMP_OPLWS5, IDB_BMP_OPLWS6, IDB_BMP_OPLWS7,
+	IDB_BMP_MA3WS8, IDB_BMP_MA3WS9, IDB_BMP_MA3WSA, IDB_BMP_MA3WSB, IDB_BMP_MA3WSC, IDB_BMP_MA3WSD, IDB_BMP_MA3WSE, IDB_BMP_NONE_WS,
+	IDB_BMP_OPZWS1, IDB_BMP_OPZWS5, IDB_BMP_MA3WSI, IDB_BMP_MA3WSJ, IDB_BMP_OPZWS3, IDB_BMP_OPZWS7, IDB_BMP_MA3WSM, IDB_BMP_NONE_WS,
+	IDB_BMP_MA3WSO, IDB_BMP_MA3WSP, IDB_BMP_MA3WSQ, IDB_BMP_MA3WSR, IDB_BMP_MA3WSS, IDB_BMP_MA3WST, IDB_BMP_MA3WSU, IDB_BMP_NONE_WS,
+	0,
+};
+
 DWORD sinws[]{
 	IDB_BMP_OPLWS0, 0,
 };
@@ -123,6 +135,7 @@ CVoiceEditDlg::ImgView CVoiceEditDlg::algoimg[] = {
 	{ VOICE_GROUP_OPL2, 7, oplal, },
 	{ VOICE_GROUP_OPL3, 11, oplal, },
 	{ VOICE_GROUP_OPLL, 0, 0, },
+	{ VOICE_GROUP_MA3, 7, ma3al, },
 	{ VOICE_GROUP_NONE, 0, 0, },
 };
 
@@ -133,6 +146,7 @@ CVoiceEditDlg::ImgView CVoiceEditDlg::waveimg[] = {
 	{ VOICE_GROUP_OPL2, 7, oplws, },
 	{ VOICE_GROUP_OPL3, 7, oplws, },
 	{ VOICE_GROUP_OPLL, 1, oplws, },
+	{ VOICE_GROUP_MA3, 31, ma3ws, },
 	{ VOICE_GROUP_NONE, 0, 0, },
 };
 

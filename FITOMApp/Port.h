@@ -101,6 +101,27 @@ public:
 	virtual int GetClock();
 	virtual int GetDesc(TCHAR* str, int len);
 };
+
+class CFTSPI;
+class CFTSPIPort : public CPort
+{
+protected:
+	UINT32 channel;	//SPI channel index
+	CFTSPI* pInterface;
+	size_t regsize;
+public:
+	CFTSPIPort();
+	CFTSPIPort(CFTSPI* pif, UINT32 index, size_t maxreg);
+	~CFTSPIPort(void) {};
+	virtual void write(UINT16 addr, UINT16 data);
+	virtual void writeRaw(UINT16 addr, UINT16 data) { write(addr, data); };
+	virtual UINT8 read(UINT16 addr);
+	virtual UINT8 status();
+	virtual void reset();
+	virtual int GetClock();
+	virtual int GetDesc(TCHAR* str, int len);
+};
+
 #endif
 
 #ifdef _LINUX

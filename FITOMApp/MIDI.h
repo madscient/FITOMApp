@@ -15,6 +15,7 @@
 #define NRPN_AMRATE		4
 #define NRPN_AMWAVE		5
 
+#define NRPN_PRESET		0x1800
 #define NRPN_PHYCH		0x2001
 #define NRPN_DIRDEV		0x3001
 #define NRPN_DIRADR		0x3002
@@ -228,6 +229,7 @@ protected:
 	UINT16	RegAddr;
 	UINT8	VoiceAddr;
 	void UpdateFineTune();
+	void SetPresetTone(UINT16 tn, UINT16 data);
 public:
 	CInstCh(UINT8 ch, CFITOM* parent);
 	~CInstCh() {};

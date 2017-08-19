@@ -51,6 +51,12 @@
 #define DEVICE_OPL4	48	//YMF278 with YRW801
 #define DEVICE_OPL4ML	49	//YMF704
 #define DEVICE_OPL4ML2	50	//YMF721
+#define DEVICE_MA1		51	//YMU757
+#define DEVICE_MA2		52	//YMU759
+#define DEVICE_MA3		53	//YMU762
+#define DEVICE_MA5		54	//YMU765
+#define DEVICE_MA7		55	//YMU768
+#define DEVICE_SD1		56	//YMF825
 #define DEVICE_PCMD8	65	//YMZ280
 
 #define	DEVICE_ADPCM	119	//virtual device for ADPCM channel
@@ -74,7 +80,7 @@
 #define VOICE_TYPE_OPK	0x23
 
 #define VOICE_TYPE_OPL3 0x30
-#define VOICE_TYPE_MA_3	0x31
+#define VOICE_TYPE_MA3	0x31
 
 #define VOICE_TYPE_SSG  0x40
 #define VOICE_TYPE_EPSG 0x41
@@ -96,6 +102,7 @@
 #define VOICE_GROUP_PSG  0x20
 #define VOICE_GROUP_OPL4 0x40
 #define VOICE_GROUP_PCM	 0x80
+#define VOICE_GROUP_MA3  0x100
 #define VOICE_GROUP_RHYTHM 0x8000
 #define VOICE_GROUP_ALL  0xffff
 

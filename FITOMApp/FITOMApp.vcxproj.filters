@@ -34,6 +34,9 @@
     <Filter Include="ヘッダー ファイル\Win32 Device">
       <UniqueIdentifier>{8927643e-732b-4c12-9f29-b387d9f5676d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\FTDI">
+      <UniqueIdentifier>{92b9963d-55fd-430f-a9bf-743d5d034085}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -197,6 +200,18 @@
     </ClInclude>
     <ClInclude Include="EnvView.h">
       <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MAx.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
+    <ClInclude Include="FTSPI.h">
+      <Filter>ヘッダー ファイル\Win32 Device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FTDI\ftd2xx.h">
+      <Filter>ヘッダー ファイル\FTDI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FTDI\libMPSSE_spi.h">
+      <Filter>ヘッダー ファイル\FTDI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -367,6 +382,12 @@
     </ClCompile>
     <ClCompile Include="EnvView.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MAx.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
+    <ClCompile Include="FTSPI.cpp">
+      <Filter>ソース ファイル\Win32 Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -580,6 +601,60 @@
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="res\bmp00050.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00051.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00052.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bitmap5.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00053.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00054.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00055.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00056.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00057.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00058.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00059.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00060.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00061.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00062.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00063.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00064.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00065.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00066.bmp">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="res\bmp00067.bmp">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>

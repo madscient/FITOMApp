@@ -64,7 +64,9 @@
 #define VOICE_GROUP_OPL3 0x08
 #define VOICE_GROUP_OPLL 0x10
 #define VOICE_GROUP_PSG  0x20
-#define VOICE_GROUP_PCM	 0x70
+#define VOICE_GROUP_OPL4 0x40
+#define VOICE_GROUP_PCM	 0x80
+#define VOICE_GROUP_MA3  0x100
 #define VOICE_GROUP_RHYTHM 0x8000
 #define VOICE_GROUP_ALL  0xffff
 
@@ -74,8 +76,8 @@ struct BankNames{
 	TCHAR name[64];
 };
 struct DEVIDMAP {
-	const UINT8 devid;
-	const UINT8 voicegroup;
+	const UINT32 devid;
+	const UINT32 voicegroup;
 	const TCHAR* chipname;
 	const TCHAR* chipcode;
 };

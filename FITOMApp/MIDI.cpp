@@ -935,6 +935,23 @@ void CInstCh::SetAMRate(UINT8 rate)
 	}
 }
 
+void CInstCh::SetPresetTone(UINT16 tn, UINT16 data)
+{
+	if (Device) {
+		UINT32 devid = Device->GetDevice();
+		if (devid == DEVICE_SD1 || devid == DEVICE_MA3 || devid == DEVICE_MA5) {
+			if (data == 0x7f7f) {
+				Device->UpdatePresetTone();
+			}
+			else {
+				FMVOICE voice;
+				Parent->GetVoice(&voice, devid, data >> 7, data & 0x7f);
+				Device->SetPresetTone(tn, &voice);
+			}
+		}
+	}
+}
+
 void CInstCh::SetNRPNRegister(UINT16 reg, UINT16 data)
 {
 	if (!Device) { return; }
@@ -954,6 +971,10 @@ void CInstCh::SetNRPNRegister(UINT16 reg, UINT16 data)
 	case NRPN_DIRDAT:
 		SetRegData(data >> 7);
 		break;
+	default:
+		if ((NRPNReg & 0xff00) == NRPN_PRESET) {
+			SetPresetTone(data);
+		}
 	}
 }
 

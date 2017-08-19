@@ -41,6 +41,7 @@ protected:
 	void SaveOPNVoice(CFMBank* bank, int num);
 	void SaveOPL2Voice(CFMBank* bank, int num);
 	void SaveOPL3Voice(CFMBank* bank, int num);
+	void SaveMA3Voice(CFMBank* bank, int num);
 	void SaveOPLLVoice(CFMBank* bank, int num);
 	void SavePSGVoice(CFMBank* bank, int num);
 	void SaveDrumMap(CDrumBank* bank, int num);
@@ -49,6 +50,7 @@ protected:
 	void SaveOPNVoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
 	void SaveOPL2VoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
 	void SaveOPL3VoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
+	void SaveMA3VoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
 	void SaveOPLLVoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
 	void SavePSGVoiceBank(CFMBank* bank, CProgressDlg* pDlg = 0);
 	void SaveDrumMapBank(CDrumBank* bank, CProgressDlg* pDlg = 0);
