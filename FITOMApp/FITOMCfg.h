@@ -189,6 +189,7 @@ public:
 	int ParseOPL2Voice(FMVOICE* voice, int index, std::vector<int>& param);
 	int ParseOPL3Voice(FMVOICE* voice, int index, std::vector<int>& param);
 	int ParseOPLLVoice(FMVOICE* voice, int index, std::vector<int>& param);
+	int ParseMA3Voice(FMVOICE* voice, int index, std::vector<int>& param);
 	int ParsePSGVoice(FMVOICE* voice, int index, std::vector<int>& param);
 	int ParseLFOParam(FMVOICE* voice, int index, std::vector<int>& param);
 
@@ -197,6 +198,7 @@ public:
 	int BuildOPL2Voice(FMVOICE* voice, int index, TCHAR* result, size_t length);
 	int BuildOPL3Voice(FMVOICE* voice, int index, TCHAR* result, size_t length);
 	int BuildOPLLVoice(FMVOICE* voice, int index, TCHAR* result, size_t length);
+	int BuildMA3Voice(FMVOICE* voice, int index, TCHAR* result, size_t length);
 	int BuildPSGVoice(FMVOICE* voice, int index, TCHAR* result, size_t length);
 	int BuildLFOParam(FMVOICE* voice, int index, TCHAR* result, size_t length);
 };

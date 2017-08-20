@@ -27,11 +27,9 @@ void CSD1::SetVoice(UINT8 ch, FMVOICE* voice, int update)
 		}
 	}
 	if (inst == -1) {
+		memcpy(&PresetTone[PresetIndex++], voice, sizeof(FMVOICE));
+		UpdatePresetTone();
 	}
-}
-
-void CSD1::UpdatePresetTone()
-{
 }
 
 void CSD1::UpdatePresetTone()
@@ -40,7 +38,9 @@ void CSD1::UpdatePresetTone()
 	int idx = 0;
 	tonebuf[idx++] = 0x07;	//Register address
 	tonebuf[idx++] = 0x90;	//Tone table size (always 16)
-	tonebuf[idx++] = 0x07;	//Register address
+	for (int i = 0; i < 16; i++) {
+
+	}
 
 }
 
@@ -92,5 +92,5 @@ void CSD1::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 void CSD1::UpdateKey(UINT8 ch, UINT8 keyon)
 {
 	SetReg(0x0b, ch);
-	SetReg(0x0f, (GetReg(0xf) & 0x3f) | (keyon ? 0x40 : 0));
+	SetReg(0x0f, (GetReg(0xf, 0) & 0x3f) | (keyon ? 0x40 : 0));
 }
