@@ -290,9 +290,6 @@
     <ClCompile Include="VoiceBank.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
-    <ClCompile Include="PortWin.cpp">
-      <Filter>ソース ファイル\FITOM core</Filter>
-    </ClCompile>
     <ClCompile Include="MasterVolumeCtrl.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
@@ -387,6 +384,9 @@
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
     <ClCompile Include="FTSPI.cpp">
+      <Filter>ソース ファイル\Win32 Device</Filter>
+    </ClCompile>
+    <ClCompile Include="PortWin.cpp">
       <Filter>ソース ファイル\Win32 Device</Filter>
     </ClCompile>
   </ItemGroup>

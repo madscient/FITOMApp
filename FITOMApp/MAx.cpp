@@ -11,16 +11,27 @@
 #define GET_RV(v,o)	(4)
 
 CSD1::CSD1(CPort* pt, int fsamp)
-	: CSoundDevice(DEVICE_SD1, 16, fsamp, 128, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x80)
+	: CSoundDevice(DEVICE_SD1, 16, fsamp, 128, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x80), PresetIndex(0)
 {
 
 }
 
-void CSD1::SetPresetTone(UINT8 tn, FMVOICE* voice)
+void CSD1::SetVoice(UINT8 ch, FMVOICE* voice, int update)
 {
-	if (tn < 16) {
-		PresetTone[tn] = *voice;
+	CSoundDevice::SetVoice(ch, voice, update);
+	int inst = -1;
+	for (int i = 0; i < 16; i++) {
+		if (memcmp(voice, &PresetTone[i], sizeof(FMVOICE)) == 0) {
+			inst = i;
+			break;
+		}
 	}
+	if (inst == -1) {
+	}
+}
+
+void CSD1::UpdatePresetTone()
+{
 }
 
 void CSD1::UpdatePresetTone()

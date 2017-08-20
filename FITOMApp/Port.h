@@ -4,6 +4,7 @@
 #ifdef _WIN32
 #include "scci.h"
 #include "SCCIDefines.h"
+#include "FTSPI.h"
 #endif
 
 #include <vector>
@@ -106,13 +107,16 @@ class CFTSPI;
 class CFTSPIPort : public CPort
 {
 protected:
-	UINT32 channel;	//SPI channel index
 	CFTSPI* pInterface;
 	size_t regsize;
+	UINT32 chidx;
+	UINT32 csidx;
+	FT_HANDLE ftHandle;
 public:
 	CFTSPIPort();
-	CFTSPIPort(CFTSPI* pif, UINT32 index, size_t maxreg);
-	~CFTSPIPort(void) {};
+	CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg);
+	~CFTSPIPort(void);
+	void write_burst(UINT16 addr, BYTE* buf, size_t length);
 	virtual void write(UINT16 addr, UINT16 data);
 	virtual void writeRaw(UINT16 addr, UINT16 data) { write(addr, data); };
 	virtual UINT8 read(UINT16 addr);

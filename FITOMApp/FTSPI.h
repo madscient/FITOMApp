@@ -2,10 +2,17 @@
 #include "../FTDI/ftd2xx.h"
 #include "../FTDI/libMPSSE_spi.h"
 
+struct SPIINFO {
+	UINT32 index;
+	FT_HANDLE ftHandle;
+};
+
 class CFTSPI {
 protected:
 	HMODULE h_libMPSSE;
-	uint32 m_numChannels;
+	uint32 m_SPIChannels;
+	BOOL bValid;
+	SPIINFO* SPIChannel;
 
 	typedef FT_STATUS(*pfunc_SPI_GetNumChannels)(uint32 *numChannels);
 	pfunc_SPI_GetNumChannels p_SPI_GetNumChannels;
@@ -25,15 +32,20 @@ protected:
 	pfunc_SPI_IsBusy p_SPI_IsBusy;
 	typedef FT_STATUS(*pfunc_SPI_ReadWrite)(FT_HANDLE handle, uint8 *inBuffer, uint8 *outBuffer, uint32 sizeToTransfer, uint32 *sizeTransferred, uint32 transferOptions);
 	pfunc_SPI_ReadWrite p_SPI_ReadWrite;
+	typedef FT_STATUS(*pFunc_FT_WriteGPIO)(FT_HANDLE handle, uint8 dir, uint8 value);
+	pFunc_FT_WriteGPIO p_FT_WriteGPIO;
 public:
 	CFTSPI();
 	~CFTSPI();
 	BOOL Init();
-	UINT32 GetChannels() { return m_numChannels; };
-
+	BOOL IsValid() { return bValid; };
+	UINT32 GetChannels() { return m_SPIChannels; };
+	UINT32 GetChannelIndex(UINT32 index);
+	FT_HANDLE GetChannelHandle(UINT32 index);
 	FT_STATUS SPI_OpenChannel(UINT32 index, FT_HANDLE* handle);
 	FT_STATUS SPI_InitChannel(FT_HANDLE handle, ChannelConfig* config);
 	FT_STATUS SPI_CloseChannel(FT_HANDLE handle);
 	FT_STATUS SPI_Read(FT_HANDLE handle, UINT8* buffer, UINT32 sizeToTransfer, UINT32* sizeTransfered, UINT32 options);
 	FT_STATUS SPI_Write(FT_HANDLE handle, UINT8* buffer, UINT32 sizeToTransfer, UINT32* sizeTransfered, UINT32 options);
+	FT_STATUS FT_WriteGPIO(FT_HANDLE handle, uint8 dir, uint8 value);
 };

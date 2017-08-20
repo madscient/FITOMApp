@@ -201,9 +201,11 @@ public:
 	int BuildLFOParam(FMVOICE* voice, int index, TCHAR* result, size_t length);
 };
 
+class CFTSPI;
 class CFITOMConfigWin32 : public CFITOMConfig {
 protected:
 	CSCCIWrapper* pScci;
+	CFTSPI* pFtspi;
 	int g_devno;
 public:
 	CFITOMConfigWin32(LPCTSTR strinifile);
@@ -212,4 +214,5 @@ public:
 	virtual CMidiIn* CreateMidiInPort(LPCTSTR params);
 	virtual CMasterVolumeCtrl* CreateMasVol(LPCTSTR param);
 	CSCCIWrapper* GetScci() { return pScci; };
+	CFTSPI* GetFTspi() { return pFtspi; };
 };

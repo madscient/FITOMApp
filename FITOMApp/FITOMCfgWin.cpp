@@ -12,11 +12,11 @@
 #include "Port.h"
 #include "MIDI.h"
 #include "MasVolWin.h"
-
+#include "FTSPI.h"
 
 // CFITOMConfigWin32
 
-CFITOMConfigWin32::CFITOMConfigWin32(LPCTSTR strinifile) : CFITOMConfig(strinifile), g_devno(0), pScci(new CSCCIWrapper())
+CFITOMConfigWin32::CFITOMConfigWin32(LPCTSTR strinifile) : CFITOMConfig(strinifile), g_devno(0), pScci(new CSCCIWrapper()), pFtspi(new CFTSPI())
 {
 }
 
@@ -64,6 +64,15 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 				ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
 			}
 		}
+	}
+	if (striftype.compare(_T("FTSPI")) == 0 && pFtspi->IsValid()) {
+		strportdef = boost::trim_copy<std::tstring>(lstparams.front());
+		if (lstparams.size() < 2) { return 0; }
+		ifid = std::stoi(lstparams.front());	//MPSSE_SPI CH No.
+		lstparams.erase(lstparams.begin());
+		slid = std::stoi(lstparams.front());	//MPSSE_SPI CS No.
+		lstparams.erase(lstparams.begin());
+		ret = new CFTSPIPort(pFtspi, ifid, slid, size_t(CFITOM::GetDeviceRegSize(devtype)));
 	}
 	if (!ret) {
 		fprintf(stderr, _T("Failed to init port: %s\n"), params);
