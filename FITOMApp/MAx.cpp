@@ -36,9 +36,9 @@ void CSD1::UpdatePresetTone()
 {
 	BYTE tonebuf[1 + 1 + 480 + 3];
 	int idx = 0;
-	tonebuf[idx++] = 0x07;	//Register address
 	tonebuf[idx++] = 0x90;	//Tone table size (always 16)
 	for (int i = 0; i < 16; i++) {
+		tonebuf[idx++] = 0x01;	//Basic Octave
 
 	}
 
