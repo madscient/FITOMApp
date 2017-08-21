@@ -107,12 +107,10 @@ void CFTSPIPort::write(UINT16 addr, UINT16 data)
 		SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
 }
 
-void CFTSPIPort::write_burst(UINT16 addr, BYTE* buf, size_t length)
+void CFTSPIPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
 {
-	uint32 sizeToTransfer = 1;
-	uint32 sizeTransfered = 0;
-	uint8 writeComplete = 0;
-	uint32 retry = 0;
+	UINT32 sizeToTransfer = 1;
+	UINT32 sizeTransfered = 0;
 	uint8 baddr = (uint8)addr;
 	FT_STATUS status;
 
@@ -123,7 +121,7 @@ void CFTSPIPort::write_burst(UINT16 addr, BYTE* buf, size_t length)
 		SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
 		SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE);
 	for (uint32 i = 0; i < (length - 1); i++) {
-		status = SPI_Write(ftHandle, &buf[i], sizeToTransfer, &sizeTransfered,
+		status = pInterface->SPI_Write(ftHandle, &buf[i], sizeToTransfer, &sizeTransfered,
 			SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES);
 	}
 	status = pInterface->SPI_Write(ftHandle, &buf[length - 1], sizeToTransfer, &sizeTransfered,

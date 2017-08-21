@@ -1,6 +1,13 @@
 #include "STDAFX.H"
 #include "Port.h"
 
+void CPort::writeBurst(UINT16 addr, BYTE* data, size_t length)
+{
+	for (size_t i = 0; i < length; i++) {
+		writeRaw(addr, data[i]);
+	}
+}
+
 //-----------------------------------------------------------
 CMappedPort::CMappedPort(CPort* pt, UINT32 addr, UINT32 range) : CMappedPort()
 {
