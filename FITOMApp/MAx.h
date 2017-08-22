@@ -7,6 +7,7 @@
 class CSD1 : public CSoundDevice {
 protected:
 	FMVOICE PresetTone[16];
+	UINT8 Instrument[16];
 	int PresetIndex;
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateVoice(UINT8 ch);
@@ -16,7 +17,6 @@ protected:
 public:
 	CSD1(CPort* pt, int fsamp);
 	virtual void SetVoice(UINT8 ch, FMVOICE* voice, int update = 1);
-	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v = 1);
 	virtual void UpdatePresetTone();
 };
 

@@ -217,12 +217,12 @@ public:
 	void ResetAllCtrl();
 
 	//Static utils
-	static const UINT8 GetDeviceVoiceType(UINT8 device);
-	static const UINT8 GetDeviceVoiceGroupMask(UINT8 device);
-	static const UINT8 GetDeviceIDFromName(LPCTSTR name);
-	static const TCHAR* GetDeviceNameFromID(UINT8 devid);
-	static const DWORD GetDeviceRegSize(UINT8 devid);
-	static UINT8* GetCompatiList(UINT8 devid);
+	static const DWORD GetDeviceVoiceType(DWORD device);
+	static const DWORD GetDeviceVoiceGroupMask(DWORD device);
+	static const DWORD GetDeviceIDFromName(LPCTSTR name);
+	static const TCHAR* GetDeviceNameFromID(DWORD devid);
+	static const DWORD GetDeviceRegSize(DWORD devid);
+	static DWORD* GetCompatiList(DWORD devid);
 	static int GetClockCode(UINT32 clock);
 private:
 	CFITOM();

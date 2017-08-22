@@ -67,7 +67,7 @@ CPcmBank* CFITOM::GetPcmBank(UINT8 bank)
 	return theConfig ? theConfig->GetPcmBank(bank) : 0;
 }
 
-const UINT8 CFITOM::GetDeviceVoiceType(UINT8 devid)
+const DWORD CFITOM::GetDeviceVoiceType(DWORD devid)
 {
 	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {
@@ -77,7 +77,7 @@ const UINT8 CFITOM::GetDeviceVoiceType(UINT8 devid)
 	return 0;
 }
 
-const UINT8 CFITOM::GetDeviceVoiceGroupMask(UINT8 devid)
+const DWORD CFITOM::GetDeviceVoiceGroupMask(DWORD devid)
 {
 	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {
@@ -87,7 +87,7 @@ const UINT8 CFITOM::GetDeviceVoiceGroupMask(UINT8 devid)
 	return 0;
 }
 
-const DWORD CFITOM::GetDeviceRegSize(UINT8 devid)
+const DWORD CFITOM::GetDeviceRegSize(DWORD devid)
 {
 	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {
@@ -97,16 +97,16 @@ const DWORD CFITOM::GetDeviceRegSize(UINT8 devid)
 	return 0;
 }
 
-UINT8* CFITOM::GetCompatiList(UINT8 devid)
+DWORD* CFITOM::GetCompatiList(DWORD devid)
 {
-	UINT8* retlist = 0;
-	if (devid < (sizeof(ROM::compatilist) / sizeof(UINT8))) {
+	DWORD* retlist = 0;
+	if (devid < (sizeof(ROM::compatilist) / sizeof(DWORD))) {
 		retlist = ROM::compatilist[devid];
 	}
 	return retlist;
 }
 
-const UINT8 CFITOM::GetDeviceIDFromName(LPCTSTR name)
+const DWORD CFITOM::GetDeviceIDFromName(LPCTSTR name)
 {
 	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (strcmp(ROM::devmap[i].chipname, name) == 0 || strcmp(ROM::devmap[i].chipcode, name) == 0) {
@@ -116,7 +116,7 @@ const UINT8 CFITOM::GetDeviceIDFromName(LPCTSTR name)
 	return DEVICE_NONE;
 }
 
-const TCHAR* CFITOM::GetDeviceNameFromID(UINT8 devid)
+const TCHAR* CFITOM::GetDeviceNameFromID(DWORD devid)
 {
 	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {

@@ -1219,9 +1219,10 @@ int CFITOMConfig::ParseMA3Voice(FMVOICE* voice, int index, std::vector<int>& par
 		voice->op[k].AM = (param[10] & 15);
 		voice->op[k].REV = 0;
 	}
-	else if (index == 0 && param.size() > 2) {
+	else if (index == 0 && param.size() > 3) {
 		voice->AL = (param[0] & 7);
 		voice->FB = (param[1] & 7) | ((param[2] & 7) << 3);
+		voice->AMS = (param[3]) & 3;
 	}
 	return 0;
 }
@@ -1392,13 +1393,13 @@ int CFITOMConfig::BuildMA3Voice(FMVOICE* voice, int index, TCHAR* result, size_t
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%3i %3i %3i")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7)).str();
+		strres = (boost::format(_T("%3i %3i %3i %3i")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7) % (voice->AMS & 3)).str();
 		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% min(63, voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].WS) % ((voice->op[k].VIB << 4) | voice->op[k].AM)).str();
+		% min(63, voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].WS) % ((voice->op[k].AM << 4) | voice->op[k].VIB)).str();
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 

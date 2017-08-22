@@ -1,34 +1,34 @@
 namespace ROM {
-UINT8 nonecompati[] = {
+DWORD nonecompati[] = {
 	{ DEVICE_NONE, },
 };
 
-UINT8 ssgcompati[] = {
+DWORD ssgcompati[] = {
 	DEVICE_SSG, DEVICE_PSG, DEVICE_SSGL, DEVICE_SSGLP, DEVICE_SSGS, DEVICE_EPSG, DEVICE_NONE,
 };
-UINT8 opncompati[] = {
+DWORD opncompati[] = {
 	DEVICE_OPN, DEVICE_OPN2, DEVICE_OPNA, DEVICE_OPN3L, DEVICE_OPNB, DEVICE_OPNC, DEVICE_OPN2C, DEVICE_OPN2L, DEVICE_2610B, DEVICE_F286, DEVICE_OPN3_N3, DEVICE_NONE,
 };
-UINT8 opmcompati[] = {
+DWORD opmcompati[] = {
 	DEVICE_OPM, DEVICE_OPP, DEVICE_OPZ, DEVICE_OPZ2, DEVICE_NONE,
 };
-UINT8 oplcompati[] = {
+DWORD oplcompati[] = {
 	DEVICE_OPL, DEVICE_OPL2, DEVICE_OPL3_2, DEVICE_Y8950, DEVICE_OPL3, DEVICE_NONE,
 };
-UINT8 opllcompati[] = {
+DWORD opllcompati[] = {
 	DEVICE_OPLL, DEVICE_OPLL2, DEVICE_OPLLP, DEVICE_OPLLX, DEVICE_NONE,
 };
-UINT8 opl3compati[] = {
+DWORD opl3compati[] = {
 	DEVICE_OPL3, DEVICE_OPN3_L3, DEVICE_NONE,
 };
-UINT8 opkcompati[] = {
+DWORD opkcompati[] = {
 	DEVICE_OPK, DEVICE_OPK2, DEVICE_NONE,
 };
-UINT8 opzcompati[] = {
+DWORD opzcompati[] = {
 	DEVICE_OPZ, DEVICE_OPZ2, DEVICE_NONE,
 };
 
-UINT8* compatilist[] = {
+DWORD* compatilist[] = {
 	nonecompati,	//00:DEVICE_NONE
 	ssgcompati,		//01:DEVICE_SSG
 	opncompati,		//02:DEVICE_OPN

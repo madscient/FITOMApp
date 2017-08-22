@@ -43,7 +43,7 @@ struct FMVOICE {
 	UINT32	ID;  //00:ID
 	char	name[16];//04:name
 	UINT8	FB;  // 20:Feedback: 3bit OPL/OPN/OPM
-	UINT8	AL;  // 21:Algorythm: 1bit OPL / 2bit OPL3 / 3bit OPN/OPM
+	UINT8	AL;  // 21:Algorythm: 1bit OPL / 4bit OPL3 / 3bit OPN/OPM/MA3
 	UINT8	AMS; // 22:AM Sensitivity: none OPL / 2bit OPM
 	UINT8	PMS; // 23:PM Sensitivity: none OPL / 3bit OPM
 	UINT8	LDM; // 24:LFO Depth MSB: 0 to 8191, 8192-16383 for -8192 to -1
@@ -53,7 +53,7 @@ struct FMVOICE {
 	UINT8	LFS; // 28:LFO sync: HW LFO sync flag
 	UINT8	LFD; // 29:LFO delay: 0-127 in 20ms unit
 	UINT8	LFR; // 30:LFO rate: 0-127
-	UINT8	NFQ; // 31:Noise frequency: 5bit OPM/OPP/OPZ/SSG
+	UINT8	NFQ; // 31:Noise frequency: 5bit OPM/OPP/OPZ/SSG | H-LFO freq: 2bit MA3
 	FMOP	op[4];
 };
 
