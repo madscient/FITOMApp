@@ -461,7 +461,7 @@ CSoundDevice* CFITOMConfig::GetLogDeviceFromID(UINT8 devid) const
 			}
 		}
 		if (ret == 0) {
-			UINT8* cmplst = CFITOM::GetCompatiList(devid);
+			DWORD* cmplst = CFITOM::GetCompatiList(devid);
 			if (cmplst) {
 				for (int k = 0; (cmplst[k] != DEVICE_NONE) && (ret == 0); k++) {
 					for (int i = 0; i < logdevs; i++) {

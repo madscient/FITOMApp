@@ -256,12 +256,14 @@ extern UINT8 CalcVolExpVel(int vol, int exp, int vel)
 	return (UINT8)evol;
 }
 
+/*
 extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl)
 {
 	tl = 127 - tl;
 	UINT16 evol = (UINT16(vev) + UINT16(tl)) >> 1;
 	return UINT8(127-evol);
 }
+*/
 
 //vev:0(min)-127(max), tl(att), ret=tl(att)
 extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl)

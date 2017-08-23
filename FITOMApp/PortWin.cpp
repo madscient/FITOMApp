@@ -89,15 +89,13 @@ CFTSPIPort::~CFTSPIPort(void)
 
 void CFTSPIPort::write(UINT16 addr, UINT16 data)
 {
-	uint32 sizeToTransfer = 0;
-	uint32 sizeTransfered = 0;
-	uint8 writeComplete = 0;
-	uint32 retry = 0;
+	UINT32 sizeToTransfer = 0;
+	UINT32 sizeTransfered = 0;
 	FT_STATUS status;
-	byte buf[2];
+	BYTE buf[2];
 
-	buf[0] = addr;
-	buf[1] = data;
+	buf[0] = BYTE(addr);
+	buf[1] = BYTE(data);
 	/* Write command EWEN(with CS_High -> CS_Low) */
 	sizeToTransfer = 16;
 	sizeTransfered = 0;
@@ -149,7 +147,7 @@ UINT8 CFTSPIPort::read(UINT16 addr)
 
 UINT8 CFTSPIPort::status()
 {
-
+	return 0;
 }
 
 void CFTSPIPort::reset()

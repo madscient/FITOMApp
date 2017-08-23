@@ -55,14 +55,16 @@ void CSD1::SetVoice(UINT8 ch, FMVOICE* voice, int update)
 					break;
 				}
 			}
-			if (inst == -1) {	//Penalty
+			if (inst == -1 && update) {	//Penalty
 				inst = PresetIndex;
 				memcpy(&PresetTone[PresetIndex], voice, sizeof(FMVOICE));
 				PresetIndex = (PresetIndex + 1) & 0xf;
 				UpdatePresetTone();
 			}
-			Instrument[ch] = inst;
-			UpdateVoice(ch);
+			if (inst >= 0) {
+				Instrument[ch] = inst;
+				UpdateVoice(ch);
+			}
 		}
 	}
 }

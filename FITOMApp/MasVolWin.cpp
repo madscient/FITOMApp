@@ -7,7 +7,6 @@
 
 CMasVolWin32::CMasVolWin32(const TCHAR* param) : CMasterVolumeCtrl(), pVol(0)
 {
-	TCHAR lineindev[256];
 	IMMDeviceEnumerator* pmmenum = 0;
 	HRESULT hres = ::CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pmmenum));
 	if (SUCCEEDED(hres)) {
