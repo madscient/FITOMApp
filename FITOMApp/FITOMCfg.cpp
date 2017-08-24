@@ -1219,10 +1219,11 @@ int CFITOMConfig::ParseMA3Voice(FMVOICE* voice, int index, std::vector<int>& par
 		voice->op[k].AM = (param[10] & 15);
 		voice->op[k].REV = 0;
 	}
-	else if (index == 0 && param.size() > 3) {
+	else if (index == 0 && param.size() > 4) {
 		voice->AL = (param[0] & 7);
 		voice->FB = (param[1] & 7) | ((param[2] & 7) << 3);
-		voice->AMS = (param[3]) & 3;
+		voice->AMS = (param[3]) & 3;	//LFO
+		voice->PMS = (param[4]) & 3;	//BO
 	}
 	return 0;
 }
@@ -1393,7 +1394,7 @@ int CFITOMConfig::BuildMA3Voice(FMVOICE* voice, int index, TCHAR* result, size_t
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%3i %3i %3i %3i")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7) % (voice->AMS & 3)).str();
+		strres = (boost::format(_T("%3i %3i %3i %3i %3i")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7) % (voice->AMS & 3) % (voice->PMS & 3)).str();
 		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;

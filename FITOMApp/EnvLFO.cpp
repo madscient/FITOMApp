@@ -265,7 +265,7 @@ extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl)
 }
 */
 
-//vev:0(min)-127(max), tl(att), ret=tl(att)
+//vev:0(min)-127(max), tl(att), ret=0(min)-127(max)
 extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl)
 {
 	double dvev = ROM::GM2dB[vev];
@@ -274,7 +274,7 @@ extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl)
 	int evol = round(deff);
 	evol = max(0, evol);
 	evol = min(127, evol);
-	return (127-evol);
+	return evol;
 }
 
 // evol 0(min)-127(max), ret=tl(att)

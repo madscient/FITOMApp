@@ -26,6 +26,7 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::commonItem[] = {
 	{ _T("Noise Freq(L)"), 0, 0, 31, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNFreq, &CVoiceEditDlg::GetNFreq, },
 	{ _T("Noise Freq(H)"), 0, 0, 7, VOICE_GROUP_PSG, &CVoiceEditDlg::SetFB, &CVoiceEditDlg::GetFB, },
 	{ _T("H-LFO Freq"), 0, 0, 3, VOICE_GROUP_MA3, &CVoiceEditDlg::SetAMS, &CVoiceEditDlg::GetAMS, },
+	{ _T("Basic Octave"), 0, 0, 3, VOICE_GROUP_MA3, &CVoiceEditDlg::SetPMS, &CVoiceEditDlg::GetPMS, },
 	{ _T("AM Sense"), 0, 0, 3, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAMS, &CVoiceEditDlg::GetAMS, },
 	{ _T("PM Sense"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetPMS, &CVoiceEditDlg::GetPMS, },
 	{ _T("P-LFO Wave"), 0, 0, 14, VOICE_GROUP_ALL, &CVoiceEditDlg::SetLFOWave, &CVoiceEditDlg::GetLFOWave, },
