@@ -30,4 +30,9 @@ public:
 	virtual void TimerCallBack(UINT32 tick);
 };
 
+namespace ROM {
+	extern const UINT8 VolCurveLin[];
+};
+
+
 #endif

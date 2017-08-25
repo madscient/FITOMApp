@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DCSG.h"
 
-
 //-------------------------------
 CDCSG::CDCSG(CPort* pt, int fsamp)
 	: CPSGBase(DEVICE_DCSG, pt, 0x10, 4, fsamp, 2, -576, FnumTableType::TonePeriod)
@@ -29,7 +28,10 @@ void CDCSG::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	UINT8 evol = attr->GetEffectiveLevel();
-	evol = Linear2dB(CalcLinearLevel(evol, 127 - egattr[ch].GetValue()), RANGE48DB, STEP300DB, 4);
+	SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+	lev = (lev < 0) ? 0 : lev;
+	lev = (lev > 127) ? 127 : lev;
+	evol = Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[UINT8(lev)]), RANGE48DB, STEP300DB, 4);
 	if (prevvol[ch] != evol) {
 		prevvol[ch] = evol;
 		if (ch < 3) {

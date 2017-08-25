@@ -29,7 +29,7 @@ void CEPSG::UpdateVolExp(UINT8 ch)
 		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
-		evol = 31 - Linear2dB(CalcLinearLevel(evol, 127 - UINT8(lev)), RANGE48DB, STEP150DB, 5);
+		evol = 31 - Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[UINT8(lev)]), RANGE48DB, STEP150DB, 5);
 		if (evol != prevvol[ch]) {
 			prevvol[ch] = evol;
 			//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A

@@ -16,7 +16,7 @@ void CSSG::UpdateVolExp(UINT8 ch)
 		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
-		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127-UINT8(lev)), RANGE48DB, STEP300DB, 4);
+		evol = 15 - Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[UINT8(lev)]), RANGE48DB, STEP300DB, 4);
 		SetReg(8 + ch, evol & 0xf, 0);
 	}
 }
