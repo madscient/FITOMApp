@@ -114,6 +114,7 @@ protected:
 		UINT32 uniqID;
 		CSoundDevice* pDevice;
 	};
+	UINT32 UsingVoiceGroup;
 	void(*pProgressMessage)(LPCTSTR str);
 	void(*pProgressFilename)(LPCTSTR str);
 	int LoadMidiConfig();
@@ -139,8 +140,8 @@ public:
 	virtual CMasterVolumeCtrl* CreateMasVol(LPCTSTR param) = 0;
 	int CreateSingleDevice(int devtype, LPCTSTR param);
 	int CreateADPCMDevice(int devtype, LPCTSTR param);
-	CFMBank* AllocFMBank(int voicegroup, int bank);
-	CFMBank* GetFMBank(int voicegroup, int bank);
+	CFMBank* AllocFMBank(UINT32 voicegroup, UINT32 bank);
+	CFMBank* GetFMBank(UINT32 voicegroup, UINT32 bank);
 	CDrumBank* AllocDrumBank(int prog);
 	CDrumBank* GetDrumBank(int prog);
 	CPcmBank* AllocPcmBank(int prog);

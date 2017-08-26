@@ -1261,9 +1261,9 @@ void CRhythmCh::NoteOn(UINT8 note, UINT8 vel)
 
 void CRhythmCh::NoteOn(UINT8 note, UINT8 vel, DRUMMAP* dm)
 {
-	LastNote = note;
 	FMVOICE dv;
-	if (dm && dm->device) {
+	if (note < 128 && dm && dm->device) {
+		LastNote = note;
 		if (Note[note].device) {
 			NoteOff(note);
 		}
@@ -1300,7 +1300,7 @@ void CRhythmCh::NoteOn(UINT8 note, UINT8 vel, DRUMMAP* dm)
 void CRhythmCh::NoteOff(UINT8 note)
 {
 	LastNote = 0xff;
-	if (Note[note].device) {
+	if (note < 128 && Note[note].device) {
 		if (Note[note].ch == 255) { //Internal Rhythm
 			Note[note].device->RhythmOff(Note[note].note);
 		} else { //Inst Rhythm

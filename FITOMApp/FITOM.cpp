@@ -52,7 +52,7 @@ void CFITOM::ExitInstance(int save)
 }
 
 
-CFMBank* CFITOM::GetFMBank(UINT8 voiceid, UINT8 bank)
+CFMBank* CFITOM::GetFMBank(UINT32 voiceid, UINT32 bank)
 {
 	return theConfig ? theConfig->GetFMBank(voiceid, bank) : 0;
 }
@@ -169,7 +169,7 @@ int CFITOM::GetClockCode(UINT32 clock)
 int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 {
 	CFMBank* xmem = NULL;
-	UINT8 vtype = GetDeviceVoiceGroupMask(dev);
+	UINT32 vtype = GetDeviceVoiceGroupMask(dev);
 	if (vtype == VOICE_GROUP_PCM) {
 		memset(voice, 0, sizeof(FMVOICE));
 		voice->ID = (0xff000000L) | (UINT16(bank) << 8) | prog;
@@ -209,7 +209,7 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 int CFITOM::SetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 {
 	CFMBank* xmem = NULL;
-	UINT8 vtype = GetDeviceVoiceGroupMask(dev);
+	UINT32 vtype = GetDeviceVoiceGroupMask(dev);
 	if (bank < MAX_BANK && prog < 128 && (xmem = GetFMBank(vtype, bank))) {
 		xmem->SetVoice(prog, voice);
 	} else {
@@ -221,7 +221,7 @@ int CFITOM::SetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 int CFITOM::GetDrum(DRUMMAP* drum, UINT8 bank, UINT8 prog, UINT8 note)
 {
 	int ret = -1;
-	if (drum) {
+	if (note < 128 && drum) {
 		prog &= 0x7f;
 		note &= 0x7f;
 		CDrumBank* drummap = theConfig->GetDrumBank(prog);

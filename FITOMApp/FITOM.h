@@ -174,7 +174,7 @@ public:
 	int GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 num);
 	int GetDrum(DRUMMAP* drum, UINT8 bank, UINT8 prog, UINT8 note);
 	CMidiInst* GetMidiInst(UINT8 i) const { return (i<theConfig->GetMidiInputs()) ? midi[i] : NULL; };
-	CFMBank* GetFMBank(UINT8 voiceid, UINT8 bank);
+	CFMBank* GetFMBank(UINT32 voiceid, UINT32 bank);
 	CDrumBank* GetDrumBank(UINT8 prog);
 	CPcmBank* GetPcmBank(UINT8 bank);
 

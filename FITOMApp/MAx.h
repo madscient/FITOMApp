@@ -14,6 +14,8 @@ protected:
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
+	virtual void UpdateSustain(UINT8 ch) {};
+	virtual void UpdatePanpot(UINT8 ch) {};
 public:
 	CSD1(CPort* pt, int fsamp);
 	virtual void SetVoice(UINT8 ch, FMVOICE* voice, int update = 1);

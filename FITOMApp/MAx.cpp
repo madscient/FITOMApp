@@ -11,9 +11,9 @@
 #define GET_RV(v,o)	(4)
 
 CSD1::CSD1(CPort* pt, int fsamp)
-	: CSoundDevice(DEVICE_SD1, 16, fsamp, 128, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x80), PresetIndex(0)
+	: CSoundDevice(DEVICE_SD1, 16, fsamp, 256, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x80), PresetIndex(0)
 {
-	for (int i = 0; i < 16; i++) { Instrument[i] = 0; }
+	for (int i = 0; i < 16; i++) { Instrument[i] = 0xff; }
 	port->reset();
 	::Sleep(1);
 	port->write(0x1D, 1);	//OUTPUT Power(3V3)
@@ -27,7 +27,7 @@ CSD1::CSD1(CPort* pt, int fsamp)
 	::Sleep(30);
 	port->write(0x02, 0x00);	//Analog Power ON
 	//add
-	port->write(0x19, 0x20);	//MASTER VOL
+	port->write(0x19, 0x33 << 2);	//MASTER VOL
 	port->write(0x1B, 0x3F);	//interpolation
 	port->write(0x14, 0x00);	//interpolation
 	port->write(0x03, 0x01);	//Analog Gain
@@ -47,7 +47,7 @@ void CSD1::SetVoice(UINT8 ch, FMVOICE* voice, int update)
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
 		BOOL changed = attr->SetVoice(voice);
-		if (changed) {
+		if (1 || changed) {
 			int inst = -1;
 			for (int i = 0; i < 16; i++) {
 				if (memcmp(voice, &PresetTone[i], sizeof(FMVOICE)) == 0) {
@@ -76,7 +76,7 @@ void CSD1::UpdatePresetTone()
 	int idx = 0;
 	tonebuf[idx++] = 0x90;	//Header: Tone table size (always 16)
 	for (int i = 0; i < 16; i++) {
-		tonebuf[idx++] = 0x01;	//1-0:Basic Octave
+		tonebuf[idx++] = PresetTone[i].PMS;	//1-0:Basic Octave
 		tonebuf[idx++] = (PresetTone[i].AMS << 6) | (PresetTone[i].AL & 0x7);	//7-6:LFO|2-0:AL
 		for (int j = 0; j < 4; j++) {
 			BYTE tmp;
@@ -100,14 +100,30 @@ void CSD1::UpdatePresetTone()
 	tonebuf[idx++] = 0x03;	//Footer
 	tonebuf[idx++] = 0x81;	//Footer
 	tonebuf[idx++] = 0x80;	//Footer
+#ifdef _DEBUG
+	fprintf(stderr, _T("New Preset Table\n"));
+	int ti = 0;
+	for (int di = 0; di < 16; di++) {
+		fprintf(stderr, _T("Tone No.%i\n"), di);
+		fprintf(stderr, _T("%02X %02X\n"), tonebuf[1 + di * 30], tonebuf[2 + di * 30]);
+		for (int op = 0; op < 4; op++) {
+			fprintf(stderr, _T("OP%i: %02X %02X %02X %02X %02X %02X %02X\n"), op + 1,
+				tonebuf[3 + di * 30 + op * 7], tonebuf[4 + di * 30 + op * 7], tonebuf[5 + di * 30 + op * 7], tonebuf[6 + di * 30 + op * 7],
+				tonebuf[7 + di * 30 + op * 7], tonebuf[8 + di * 30 + op * 7], tonebuf[9 + di * 30 + op * 7]);
+		}
+	}
+#endif
 	port->write(0x08, 0x00);	//Sequencer Start
 	port->writeBurst(0x07, tonebuf, idx);
 }
 
 void CSD1::UpdateVoice(UINT8 ch)
 {
-	SetReg(0x0b, ch);
-	SetReg(0x0f, Instrument[ch] & 0xf);
+	if (Instrument[ch] > 15) {
+		SetVoice(ch, GetChAttribute(ch)->GetVoice(), 1);
+	}
+	SetReg(0x0b, ch, 1);
+	SetReg(0x0f, (GetReg(0x0f, 0) & 0xf0) | Instrument[ch] & 0xf);
 }
 
 void CSD1::UpdateVolExp(UINT8 ch)
@@ -115,20 +131,23 @@ void CSD1::UpdateVolExp(UINT8 ch)
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	UINT8 evol = CalcVolExpVel(127, attr->express, attr->velocity);
-	evol = Linear2dB(evol, RANGE48DB, STEP075DB, 5);
-	UINT8 cvol = Linear2dB(attr->volume, RANGE48DB, STEP075DB, 5);
-	SetReg(0x0b, ch);
-	SetReg(0x0d, evol << 2);
-	SetReg(0x10, (cvol << 2) | 1);
+	evol = 31 - Linear2dB(evol, RANGE48DB, STEP075DB, 5);
+	UINT8 cvol = 31 - Linear2dB(attr->volume, RANGE48DB, STEP075DB, 5);
+	SetReg(0x0b, ch, 1);
+	SetReg(0x0c, evol << 2, 0);
+	SetReg(0x10, (cvol << 2) | 1, 0);
 }
 
 void CSD1::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
-	SetReg(0x0b, ch);
-	SetReg(0x0d, ((fnum->fnum >> 5) & 0x78) | fnum->block);
-	SetReg(0x0e, (fnum->fnum >> 1) & 0x7f);
+	SetReg(0x0b, ch, 1);
+	SetReg(0x0d, ((fnum->fnum >> 5) & 0x78) | fnum->block, 1);
+	SetReg(0x0e, (fnum->fnum >> 1) & 0x7f, 1);
+	SetReg(0x11, 0x00, 0);// XVB
+	SetReg(0x12, 0x08, 0);// FRAC
+	SetReg(0x13, 0x00, 0);// FRAC  
 }
 
 void CSD1::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
@@ -137,6 +156,6 @@ void CSD1::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 
 void CSD1::UpdateKey(UINT8 ch, UINT8 keyon)
 {
-	SetReg(0x0b, ch);
-	SetReg(0x0f, (GetReg(0xf, 0) & 0x3f) | (keyon ? 0x40 : 0));
+	SetReg(0x0b, ch, 1);
+	SetReg(0x0f, (Instrument[ch] & 0xf) | (keyon ? 0x40 : 0), 1);
 }

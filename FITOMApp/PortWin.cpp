@@ -61,9 +61,9 @@ CFTSPIPort::CFTSPIPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHand
 {
 }
 
-CFTSPIPort::CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg) : CFTSPIPort()
+CFTSPIPort::CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg)	: CFTSPIPort()
 {
-	if (pif && index < pInterface->GetChannels() && cs < 5) {
+	if (pif && index < pif->GetChannels() && cs < 5) {
 		pInterface = pif;
 		csidx = cs;
 		regsize = maxreg;
@@ -76,7 +76,7 @@ CFTSPIPort::CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg) : CF
 		channelConf.Pin = 0x00000000;/*FinalVal-FinalDir-InitVal-InitDir (for dir 0=in, 1=out)*/
 
 		FT_STATUS status = pInterface->SPI_InitChannel(ftHandle, &channelConf);
-		ASSERT(status != FT_OK);
+		ASSERT(status == FT_OK);
 	}
 }
 
@@ -103,6 +103,11 @@ void CFTSPIPort::write(UINT16 addr, UINT16 data)
 		SPI_TRANSFER_OPTIONS_SIZE_IN_BITS |
 		SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE |
 		SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
+#ifdef DEBUG
+	TCHAR str[80];
+	StringCchPrintf(str, _countof(str), _T("reg %08x %03x %02x\n"), physical_id, addr, data);
+	OutputDebugString(str);
+#endif
 }
 
 void CFTSPIPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
@@ -118,13 +123,34 @@ void CFTSPIPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
 	status = pInterface->SPI_Write(ftHandle, &baddr, sizeToTransfer, &sizeTransfered,
 		SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
 		SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE);
+#ifdef DEBUG
+	{
+		TCHAR str[80];
+		StringCchPrintf(str, _countof(str), _T("reg %08x %03x burst:%04x\n["), physical_id, addr, length);
+		OutputDebugString(str);
+	}
+#endif
 	for (uint32 i = 0; i < (length - 1); i++) {
 		status = pInterface->SPI_Write(ftHandle, &buf[i], sizeToTransfer, &sizeTransfered,
 			SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES);
+#ifdef DEBUG
+		{
+			TCHAR str[8];
+			StringCchPrintf(str, _countof(str), _T("%02x"), buf[i]);
+			OutputDebugString(str);
+		}
+#endif
 	}
 	status = pInterface->SPI_Write(ftHandle, &buf[length - 1], sizeToTransfer, &sizeTransfered,
 		SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
 		SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
+#ifdef DEBUG
+	{
+		TCHAR str[8];
+		StringCchPrintf(str, _countof(str), _T("%02x]\n"), buf[length - 1]);
+		OutputDebugString(str);
+	}
+#endif
 }
 
 UINT8 CFTSPIPort::read(UINT16 addr)

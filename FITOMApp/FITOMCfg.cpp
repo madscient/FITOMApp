@@ -29,11 +29,12 @@
 #include "DSG.h"
 #include "YMDeltaT.h"
 #include "PCMD8.h"
+#include "MAx.h"
 #include "codec.h"
 #include "MasterVolumeCtrl.h"
 
 CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : phydevs(0), logdevs(0), pcmdevs(0), mpus(0)
-, pProgressMessage(0), pProgressFilename(0), pMasVol(0)
+, pProgressMessage(0), pProgressFilename(0), pMasVol(0), UsingVoiceGroup(0)
 {
 	boost::property_tree::read_ini(_T(".\\FITOM.ini"), fitom_ini);
 	for (int i = 0; i < MAX_MPUS; i++) {
@@ -75,7 +76,7 @@ CFITOMConfig::~CFITOMConfig()
 	*/
 }
 
-CFMBank* CFITOMConfig::AllocFMBank(int voicegroup, int bank)
+CFMBank* CFITOMConfig::AllocFMBank(UINT32 voicegroup, UINT32 bank)
 {
 	CFMBank* ret = 0;
 	if (bank < MAX_BANK) {
@@ -106,7 +107,7 @@ CFMBank* CFITOMConfig::AllocFMBank(int voicegroup, int bank)
 	return ret;
 }
 
-CFMBank* CFITOMConfig::GetFMBank(int voicegroup, int bank)
+CFMBank* CFITOMConfig::GetFMBank(UINT32 voicegroup, UINT32 bank)
 {
 	CFMBank* ret = 0;
 	if (bank < MAX_BANK) {
@@ -210,6 +211,7 @@ CSoundDevice* CFITOMConfig::AddDevice(CSoundDevice* pdev)
 	}
 	fprintf(stderr, _T("Dev.%i: %s port=%s\n"), logdevs, tmp1, tmp2);
 	vLogDev[logdevs++] = pdev;
+	UsingVoiceGroup |= CFITOM::GetDeviceVoiceGroupMask(pdev->GetDevice());
 	return pdev;
 }
 
@@ -405,6 +407,9 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 			break;
 		case DEVICE_SCCP:
 			AddDevice(new CSCCP(new COffsetPort(pt, 0xb800), fs / 2));
+			break;
+		case DEVICE_SD1:
+			AddDevice(new CSD1(pt,12288000));
 			break;
 		default:
 			res = -1;
@@ -697,13 +702,27 @@ int CFITOMConfig::LoadDeviceConfig()
 
 int CFITOMConfig::LoadVoiceConfig()
 {
-	std::terr << ParseVoiceBank(VOICE_GROUP_OPM) << _T(" OPM Banks configured.") << std::endl;
-	std::terr << ParseVoiceBank(VOICE_GROUP_OPNA) << _T(" OPN Banks configured.") << std::endl;
-	std::terr << ParseVoiceBank(VOICE_GROUP_OPL2) << _T(" OPL2 Banks configured.") << std::endl;
-	std::terr << ParseVoiceBank(VOICE_GROUP_OPL3) << _T(" OPL3 Banks configured.") << std::endl;
-	std::terr << ParseVoiceBank(VOICE_GROUP_OPLL) << _T(" OPLL Banks configured.") << std::endl;
-	std::terr << ParseVoiceBank(VOICE_GROUP_MA3) << _T(" MA3 Banks configured.") << std::endl;
-	std::terr << ParseVoiceBank(VOICE_GROUP_PSG) << _T(" PSG Banks configured.") << std::endl;
+	if (UsingVoiceGroup & VOICE_GROUP_OPM) {
+		std::terr << ParseVoiceBank(VOICE_GROUP_OPM) << _T(" OPM Banks configured.") << std::endl;
+	}
+	if (UsingVoiceGroup & VOICE_GROUP_OPNA) {
+		std::terr << ParseVoiceBank(VOICE_GROUP_OPNA) << _T(" OPN Banks configured.") << std::endl;
+	}
+	if (UsingVoiceGroup & VOICE_GROUP_OPL2) {
+		std::terr << ParseVoiceBank(VOICE_GROUP_OPL2) << _T(" OPL2 Banks configured.") << std::endl;
+	}
+	if (UsingVoiceGroup & VOICE_GROUP_OPL3) {
+		std::terr << ParseVoiceBank(VOICE_GROUP_OPL3) << _T(" OPL3 Banks configured.") << std::endl;
+	}
+	if (UsingVoiceGroup & VOICE_GROUP_OPLL) {
+		std::terr << ParseVoiceBank(VOICE_GROUP_OPLL) << _T(" OPLL Banks configured.") << std::endl;
+	}
+	if (UsingVoiceGroup & VOICE_GROUP_MA3) {
+		std::terr << ParseVoiceBank(VOICE_GROUP_MA3) << _T(" MA3 Banks configured.") << std::endl;
+	}
+	if (UsingVoiceGroup & VOICE_GROUP_PSG) {
+		std::terr << ParseVoiceBank(VOICE_GROUP_PSG) << _T(" PSG Banks configured.") << std::endl;
+	}
 	std::terr << ParseRhythmBank() << _T(" Rhythm Banks configured.") << std::endl;
 	return 0;
 }
