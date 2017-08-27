@@ -374,6 +374,8 @@ protected:
 	UINT16 SysMsg();
 	UINT16 ChannelMap();
 	BOOL clockenable;
+	volatile BOOL bMidiProc;
+	volatile BOOL bTimerProc;
 public:
 	CMidiInst(CMidiIn* port, CFITOM* parent, BOOL clkena);
 	~CMidiInst();

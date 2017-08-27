@@ -16,6 +16,8 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 	virtual void UpdateSustain(UINT8 ch) {};
 	virtual void UpdatePanpot(UINT8 ch) {};
+	virtual void ResetChannel(UINT8 ch);
+	void register_dump();
 public:
 	CSD1(CPort* pt, int fsamp);
 	virtual void SetVoice(UINT8 ch, FMVOICE* voice, int update = 1);

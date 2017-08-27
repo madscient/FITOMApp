@@ -38,6 +38,11 @@ void CSCCIPort::reset()
 {
 	if (pChip) {
 		pChip->init();
+#ifdef DEBUG
+		TCHAR str[80];
+		StringCchPrintf(str, _countof(str), _T("reset %08x\n"), physical_id);
+		OutputDebugString(str);
+#endif
 	}
 }
 
@@ -76,6 +81,8 @@ CFTSPIPort::CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg)	: CF
 		channelConf.Pin = 0x00000000;/*FinalVal-FinalDir-InitVal-InitDir (for dir 0=in, 1=out)*/
 
 		FT_STATUS status = pInterface->SPI_InitChannel(ftHandle, &channelConf);
+		ASSERT(status == FT_OK);
+		status = FT_SetBaudRate(ftHandle, 1000000);
 		ASSERT(status == FT_OK);
 	}
 }
@@ -168,6 +175,11 @@ UINT8 CFTSPIPort::read(UINT16 addr)
 	status = pInterface->SPI_Read(ftHandle, &ret, sizeToTransfer, &sizeTransfered,
 		SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
 		SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
+#ifdef DEBUG
+	TCHAR str[80];
+	StringCchPrintf(str, _countof(str), _T("read %08x %03x=%02x\n"), physical_id, addr, ret);
+	OutputDebugString(str);
+#endif
 	return ret;
 }
 
@@ -182,6 +194,11 @@ void CFTSPIPort::reset()
 	pInterface->FT_WriteGPIO(ftHandle, 0xff, 0x00);
 	::Sleep(1);
 	pInterface->FT_WriteGPIO(ftHandle, 0xff, 0xff);
+#ifdef DEBUG
+	TCHAR str[80];
+	StringCchPrintf(str, _countof(str), _T("reset %08x\n"), physical_id);
+	OutputDebugString(str);
+#endif
 }
 
 int CFTSPIPort::GetClock()

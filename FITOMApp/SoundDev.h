@@ -203,8 +203,6 @@ public:
 	virtual void SetDevPMRate(UINT8 ch, UINT8 rate) = 0;
 	virtual void SetDevAMRate(UINT8 ch, UINT8 rate) = 0;
 	virtual UINT8 GetRhythmCaps() = 0;
-	virtual void SetPresetTone(UINT8 tn, FMVOICE* voice) = 0;
-	virtual void UpdatePresetTone() = 0;
 
 	// Physical accesses
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v=1) = 0;
@@ -278,7 +276,7 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon) = 0;
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) = 0;
 	virtual void UpdateFnumber(UINT8 ch, int update=1);
-
+	virtual void ResetChannel(UINT8 ch) { NoteOff(ch); };
 	//Internal utility
 	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0);
 public:

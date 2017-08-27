@@ -98,7 +98,7 @@ void CInstCh::CPortaCtrl::Update()
 
 //-----
 CMidiInst::CMidiInst(CMidiIn* port, CFITOM* parent, BOOL clkena)
-	: currentstatus(0), clockenable(clkena)
+	: currentstatus(0), clockenable(clkena), bMidiProc(FALSE), bTimerProc(FALSE)
 {
 	Parent = parent;
 	Port = port;
@@ -129,30 +129,39 @@ void CMidiInst::SetParent(CFITOM* parent)
 
 void CMidiInst::TimerCallBack(UINT32 tick)
 {
-	for (int i=0; i<16; i++) {
-		if (ch[i]) {
-			ch[i]->TimerCallBack(tick);
+	if (!bMidiProc && !bTimerProc) {
+		bTimerProc = TRUE;
+		for (int i = 0; i < 16; i++) {
+			if (ch[i]) {
+				ch[i]->TimerCallBack(tick);
+			}
 		}
+		bTimerProc = FALSE;
 	}
 }
 
 int CMidiInst::PollingCallBack()
 {
 	UINT16 ret = 0;
+	bMidiProc = TRUE;
 	while (Port->IsReceived()) {
 		UINT8 msg = Port->Read();
 		ret = ProcMsg(msg);
 	}
 	currentstatus = ret;
+	bMidiProc = FALSE;
 	return ret;
 }
 
 int CMidiInst::InterruptCallBack(BYTE* buf, size_t length)
 {
 	UINT16 ret = 0;
+	while (bTimerProc || bMidiProc);
+	bMidiProc = TRUE;
 	while (length--) {
 		ret = ProcMsg(*(buf++));
 	}
+	bMidiProc = FALSE;
 	return ret;
 }
 

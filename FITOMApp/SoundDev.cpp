@@ -195,14 +195,14 @@ ISoundDevice::CHATTR* CSoundDevice::GetChAttribute(UINT8 ch) const
 
 void CSoundDevice::Reset()
 {
+	//if (port) port->reset();
 	for (int i=0; i<chs; i++) {
-		NoteOff(i);
+		ResetChannel(i);
 		CHATTR* attr = GetChAttribute(i);
 		if (attr) {
 			attr->Init();
 		}
 	}
-	if (port) port->reset();
 }
 
 void CSoundDevice::SetDevice(UINT8 devid)
