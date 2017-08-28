@@ -19,6 +19,7 @@ public:
 	virtual void write(UINT16 addr, UINT16 data) = 0;
 	virtual void writeRaw(UINT16 addr, UINT16 data) = 0;
 	virtual void writeBurst(UINT16 addr, BYTE* data, size_t length);
+	virtual void writeBurst(BYTE* data, size_t length) {};
 	virtual UINT8 read(UINT16 addr) = 0;
 	virtual UINT8 status() = 0;
 	virtual void reset() = 0;
@@ -118,6 +119,7 @@ public:
 	CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg);
 	~CFTSPIPort(void);
 	virtual void writeBurst(UINT16 addr, BYTE* buf, size_t length);
+	virtual void writeBurst(BYTE* buf, size_t length);
 	virtual void write(UINT16 addr, UINT16 data);
 	virtual void writeRaw(UINT16 addr, UINT16 data) { write(addr, data); };
 	virtual UINT8 read(UINT16 addr);

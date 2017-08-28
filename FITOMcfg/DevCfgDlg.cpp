@@ -41,12 +41,28 @@ BEGIN_MESSAGE_MAP(CDevCfgDlg, CDialogEx)
 	ON_LBN_DBLCLK(IDC_LIST_USING, &CDevCfgDlg::OnDblclkListUsing)
 END_MESSAGE_MAP()
 
+
+CDevCfgDlg::DevString::DevString(CString& str)
+{
+	TCHAR devparam[80];
+	TCHAR ifparam[80];
+	sscanf_s(LPCTSTR(str), _T("^[,\s],%s"), devparam, _countof(devparam), ifparam, _countof(ifparam));
+	TCHAR tmp[80];
+	sscanf_s(devparam, _T("^[:]:%i"), tmp, _countof(tmp), &mode);
+	devname = CString(tmp);
+	sscanf_s(ifparam, _T("^[:]:%i:%i"), tmp, _countof(tmp), &ifid, &slid);
+	ifname = CString(tmp);
+}
+
+void CDevCfgDlg::DevString::ToString(CString& str)
+{
+	str.Format(_T("%s:%i, %s:%i:%i"), devname, mode, ifname, ifid, slid);
+}
+
 CString CDevCfgDlg::BuildConfigString(scciDeviceProperty* sdp)
 {
 	CString ret = _T("");
-	if (sdp && sdp->pssci->iSoundChip != SC_TYPE_NONE &&
-		sdp->pssci->iSoundChip != SC_TYPE_OTHER &&
-		sdp->pssci->iSoundChip != SC_TYPE_UNKNOWN &&
+	if (sdp && sdp->pssci->iSoundChip != 
 		sdp->pssci->iSoundChip != SC_TYPE_MAX) {
 		ret.Format(_T("%s:0, SCCI:%i:%i"), symbols[sdp->pssci->iSoundChip].chipname, sdp->ifid, sdp->slid);
 	}
@@ -61,7 +77,9 @@ void CDevCfgDlg::RefreshUseList()
 	devuse.erase(std::unique(devuse.begin(), devuse.end()), devuse.end());
 	m_lstDevice.ResetContent();
 	for (auto it = devuse.begin(); it != devuse.end(); ++it) {
-		m_lstDevice.AddString(*it);
+		CString str;
+		it->ToString(str);
+		m_lstDevice.AddString(str);
 	}
 }
 

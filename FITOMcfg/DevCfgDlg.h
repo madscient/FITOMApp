@@ -34,7 +34,16 @@ protected:
 		std::vector<scciDeviceProperty*> sdps;
 	};
 	std::vector<scciInterface*> sis;
-	std::vector<CString> devuse;
+	struct DevString {
+		DevString(CString& str);
+		void ToString(CString& str);
+		CString devname;
+		int mode;
+		CString ifname;
+		int ifid;
+		int slid;
+	};
+	std::vector<DevString> devuse;
 	CString BuildConfigString(scciDeviceProperty* sdp);
 	void RefreshUseList();
 	DECLARE_MESSAGE_MAP()

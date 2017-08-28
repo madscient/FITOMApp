@@ -10,6 +10,8 @@
 //#define GET_RV(v,o)	(v->op[o].REV >> 3)
 #define GET_RV(v,o)	(4)
 
+//#define ALWAYS_BURST
+
 CSD1::CSD1(CPort* pt, int fsamp)
 	: CSoundDevice(DEVICE_SD1, 16, fsamp, 256, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x80), PresetIndex(0)
 {
@@ -73,8 +75,9 @@ void CSD1::SetVoice(UINT8 ch, FMVOICE* voice, int update)
 void CSD1::UpdatePresetTone()
 {
 	port->write(0x08, 0xF6);	//Sequencer Reset
-	BYTE tonebuf[1 + 480 + 4];
+	BYTE tonebuf[1 + 1 + 480 + 4];
 	int idx = 0;
+	tonebuf[idx++] = 0x07;	//Register Address
 	tonebuf[idx++] = 0x90;	//Header: Tone table size (always 16)
 	for (int i = 0; i < 16; i++) {
 		tonebuf[idx++] = PresetTone[i].PMS;	//1-0:Basic Octave
@@ -102,7 +105,7 @@ void CSD1::UpdatePresetTone()
 	tonebuf[idx++] = 0x81;	//Footer
 	tonebuf[idx++] = 0x80;	//Footer
 	port->write(0x08, 0x00);	//Sequencer reset clear
-	port->writeBurst(0x07, tonebuf, idx);
+	port->writeBurst(tonebuf, idx);
 }
 
 void CSD1::UpdateVoice(UINT8 ch)
@@ -110,8 +113,18 @@ void CSD1::UpdateVoice(UINT8 ch)
 	if (Instrument[ch] > 15) {
 		SetVoice(ch, GetChAttribute(ch)->GetVoice(), 1);
 	}
+#ifdef ALWAYS_BURST
+	BYTE buf[5];
+	UINT32 idx = 0;
+	buf[idx++] = 0x0b;	//register address;
+	buf[idx++] = ch;
+	buf[idx++] = 0x0f;
+	buf[idx++] = (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf;
+	port->writeBurst(buf, idx);
+#else
 	port->write(0x0b, ch);
 	port->write(0x0f, (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf);
+#endif
 }
 
 void CSD1::UpdateVolExp(UINT8 ch)
@@ -121,21 +134,51 @@ void CSD1::UpdateVolExp(UINT8 ch)
 	UINT8 evol = CalcVolExpVel(127, attr->express, attr->velocity);
 	evol = 31 - Linear2dB(evol, RANGE48DB, STEP075DB, 5);
 	UINT8 cvol = 31 - Linear2dB(attr->volume, RANGE48DB, STEP075DB, 5);
+#ifdef ALWAYS_BURST
+	BYTE buf[7];
+	UINT32 idx = 0;
+	buf[idx++] = 0x0b;	//register address;
+	buf[idx++] = ch;
+	buf[idx++] = 0x0c;
+	buf[idx++] = evol << 2;
+	buf[idx++] = 0x10;
+	buf[idx++] = (cvol << 2) | 1;
+	port->writeBurst(buf, idx);
+#else
 	port->write(0x0b, ch);
 	port->write(0x0c, evol << 2);
 	port->write(0x10, (cvol << 2) | 1);
+#endif
 }
 
 void CSD1::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
+#ifdef ALWAYS_BURST
+	BYTE buf[13];
+	UINT32 idx = 0;
+	buf[idx++] = 0x0b;	//register address;
+	buf[idx++] = ch;
+	buf[idx++] = 0x0d;
+	buf[idx++] = ((fnum->fnum >> 5) & 0x78) | fnum->block;
+	buf[idx++] = 0x0e;
+	buf[idx++] = (fnum->fnum >> 1) & 0x7f;
+	buf[idx++] = 0x11;
+	buf[idx++] = 0x00;
+	buf[idx++] = 0x12;
+	buf[idx++] = 0x08;
+	buf[idx++] = 0x13;
+	buf[idx++] = 0x00;
+	port->writeBurst(buf, idx);
+#else
 	port->write(0x0b, ch);
 	port->write(0x0d, ((fnum->fnum >> 5) & 0x78) | fnum->block);
 	port->write(0x0e, (fnum->fnum >> 1) & 0x7f);
 	port->write(0x11, 0x00);// XVB
 	port->write(0x12, 0x08);// FRAC
-	port->write(0x13, 0x00);// FRAC  
+	port->write(0x13, 0x00);// FRAC 
+#endif
 }
 
 void CSD1::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
@@ -144,14 +187,34 @@ void CSD1::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 
 void CSD1::UpdateKey(UINT8 ch, UINT8 keyon)
 {
+#ifdef ALWAYS_BURST
+	BYTE buf[5];
+	UINT32 idx = 0;
+	buf[idx++] = 0x0b;	//register address;
+	buf[idx++] = ch;
+	buf[idx++] = 0x0f;
+	buf[idx++] = (keyon ? 0x40 : 0) | Instrument[ch] & 0xf;
+	port->writeBurst(buf, idx);
+#else
 	port->write(0x0b, ch);
 	port->write(0x0f, (Instrument[ch] & 0xf) | (keyon ? 0x40 : 0));
+#endif
 }
 
 void CSD1::ResetChannel(UINT8 ch)
 {
+#ifdef ALWAYS_BURST
+	BYTE buf[5];
+	UINT32 idx = 0;
+	buf[idx++] = 0x0b;	//register address;
+	buf[idx++] = ch;
+	buf[idx++] = 0x0f;
+	buf[idx++] = 0x30;
+	port->writeBurst(buf, idx);
+#else
 	port->write(0x0b, ch);
 	port->write(0x0f, 0x30);
+#endif
 }
 
 void CSD1::register_dump()

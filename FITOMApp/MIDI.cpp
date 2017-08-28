@@ -129,15 +129,14 @@ void CMidiInst::SetParent(CFITOM* parent)
 
 void CMidiInst::TimerCallBack(UINT32 tick)
 {
-	if (!bMidiProc && !bTimerProc) {
-		bTimerProc = TRUE;
-		for (int i = 0; i < 16; i++) {
-			if (ch[i]) {
-				ch[i]->TimerCallBack(tick);
-			}
+	while (bMidiProc || bTimerProc);
+	bTimerProc = TRUE;
+	for (int i = 0; i < 16; i++) {
+		if (ch[i]) {
+			ch[i]->TimerCallBack(tick);
 		}
-		bTimerProc = FALSE;
 	}
+	bTimerProc = FALSE;
 }
 
 int CMidiInst::PollingCallBack()
