@@ -180,7 +180,7 @@ BOOL CDevCfgDlg::OnInitDialog()
 			keyname.Format(_T("device%i"), i);
 			TCHAR devstr[256];
 			::GetPrivateProfileString(_T("Device"), LPCTSTR(keyname), _T(""), devstr, 256, LPCTSTR(profile));
-			devuse.push_back(CString(devstr));
+			devuse.push_back(DevString(CString(devstr)));
 		}
 		RefreshUseList();
 	}
