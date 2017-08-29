@@ -18,7 +18,7 @@ CSD1::CSD1(CPort* pt, int fsamp)
 	for (int i = 0; i < 16; i++) { Instrument[i] = 0xff; }
 	port->reset();
 	::Sleep(10);
-	port->read(0x04);
+	//port->read(0x04);
 	port->write(0x1D, 1);	//OUTPUT Power(3V3)
 	port->write(0x02, 0x0E);	//VREF Power ON
 	::Sleep(1);
@@ -122,8 +122,8 @@ void CSD1::UpdateVoice(UINT8 ch)
 	buf[idx++] = (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf;
 	port->writeBurst(buf, idx);
 #else
-	port->write(0x0b, ch);
-	port->write(0x0f, (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf);
+//	port->write(0x0b, ch);
+//	port->write(0x0f, (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf);
 #endif
 }
 
