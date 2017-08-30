@@ -147,7 +147,7 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 		}
 		return 0;
 	}
-	else if (vtype == VOICE_GROUP_OPL4) {
+	else if (vtype == VOICE_GROUP_OPL4 || vtype == VOICE_GROUP_RHYTHM) {
 		memset(voice, 0, sizeof(FMVOICE));
 		voice->ID = (0xff000000L) | (UINT16(bank) << 8) | prog;
 		voice->AL = prog;

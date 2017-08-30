@@ -81,6 +81,7 @@ public:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdatePanpot(UINT8 ch);
+	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) { return CSoundDevice::QueryCh(parent, voice, 0); };
 };
 
 #endif
