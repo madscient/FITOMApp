@@ -57,12 +57,12 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions);_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)scci;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)scci;$(SolutionDir)pthread;$(SolutionDir)ftdi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;avrt.lib;../FTDI/ftd2xx.lib</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;avrt.lib;../FTDI/ftd2xx.lib;../FTDI/libMPSSE_SPI.lib;../pthread/pthreadVCE2.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -85,14 +85,14 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(SolutionDir)scci</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)scci;$(SolutionDir)pthread;$(SolutionDir)ftdi</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>winmm.lib;avrt.lib;../FTDI/ftd2xx.lib</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;avrt.lib;../FTDI/ftd2xx.lib;../FTDI/libMPSSE_SPI.lib;../pthread/pthreadVCE2.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -111,6 +111,8 @@
   <ItemGroup>
     <ClInclude Include="..\FTDI\ftd2xx.h" />
     <ClInclude Include="..\FTDI\libMPSSE_spi.h" />
+    <ClInclude Include="..\pthread\sched.h" />
+    <ClInclude Include="..\pthread\semaphore.h" />
     <ClInclude Include="..\scci\scci.h" />
     <ClInclude Include="..\scci\SCCIDefines.h" />
     <ClInclude Include="ADPCM.h" />

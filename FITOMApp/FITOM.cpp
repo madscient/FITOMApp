@@ -11,6 +11,8 @@
 #include "SCCIWrapper.h"
 #include "FITOMCfg.h"
 #include "tables.h"
+#include "../pthread/semaphore.h"
+#include "../pthread/pthread.h"
 
 const char* FITOMTITLE = "FITOM Windows";
 
@@ -80,7 +82,7 @@ const DWORD CFITOM::GetDeviceVoiceType(DWORD devid)
 const DWORD CFITOM::GetDeviceVoiceGroupMask(DWORD devid)
 {
 	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
-		if (ROM::devmap[i].devid == devid) {
+		if (ROM::devmap[i].devid == (devid & 0xff)) {
 			return ROM::devmap[i].voicegroup;
 		}
 	}
@@ -124,46 +126,6 @@ const TCHAR* CFITOM::GetDeviceNameFromID(DWORD devid)
 		}
 	}
 	return _T("-----");
-}
-
-int CFITOM::GetClockCode(UINT32 clock)
-{
-	int clockcode = 0;
-	switch (clock) {
-	case 1789772:
-	case 3579545:
-	case 7159090:
-	case 14318180:
-		clockcode = CLKCODE358;
-		break;
-	case 1996800:
-	case 3993600:
-	case 7987200:
-	case 15974400:
-		clockcode = CLKCODE399;
-		break;
-	case 2000000:
-	case 4000000:
-	case 8000000:
-	case 16000000:
-		clockcode = CLKCODE400;
-		break;
-	case 2048000:
-	case 4096000:
-	case 8192000:
-	case 16384000:
-		clockcode = CLKCODE409;
-		break;
-	case 1917610:
-	case 3835221:
-	case 7670442:
-	case 15340885:
-		clockcode = CLKCODE383;
-		break;
-	default:
-		break;
-	}
-	return clockcode;
 }
 
 int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)

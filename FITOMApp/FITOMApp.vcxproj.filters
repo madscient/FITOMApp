@@ -37,6 +37,9 @@
     <Filter Include="ヘッダー ファイル\FTDI">
       <UniqueIdentifier>{92b9963d-55fd-430f-a9bf-743d5d034085}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\pthread">
+      <UniqueIdentifier>{d08eddee-193a-4cf9-9b53-1d6b5dc0288b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -212,6 +215,12 @@
     </ClInclude>
     <ClInclude Include="..\FTDI\libMPSSE_spi.h">
       <Filter>ヘッダー ファイル\FTDI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthread\sched.h">
+      <Filter>ヘッダー ファイル\pthread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthread\semaphore.h">
+      <Filter>ヘッダー ファイル\pthread</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
