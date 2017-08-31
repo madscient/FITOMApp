@@ -82,5 +82,9 @@ public:
 	COPN3L(CPort* pt1, CPort* pt2, int fsamp);
 };
 
+class COPNARhythm : public CRhythmDevice {
+
+};
+
 #endif
 

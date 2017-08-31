@@ -249,6 +249,8 @@ class CSoundDevice : public ISoundDevice {
 	friend class CLinearPan;
 	friend class CUnison;
 	friend class CPSGBase;
+	friend class CAdPcmBase;
+	friend class CRhythmDevice;
 protected:
 	UINT8	device;
 	UINT8	chs;	//
@@ -348,5 +350,36 @@ public:
 	virtual void TimerCallBack(UINT32 tick);
 };
 typedef CSoundDevice* CSoundDevicePtr;
+
+class CRhythmDevice : public CSoundDevice
+{
+public:
+	CRhythmDevice(CSoundDevice* parent, UINT8 devid, UINT8 maxch);
+protected:
+	CSoundDevice* pParent;
+	//Updater
+	virtual void UpdateSustain(UINT8 ch) {};
+	virtual void UpdateVolExp(UINT8 ch) = 0;
+	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum = 0) = 0;
+	virtual void UpdateVoice(UINT8 ch) = 0;
+	virtual void UpdatePanpot(UINT8 ch) = 0;
+	virtual void UpdateOpLFO(UINT8 ch, UINT8 op) {};
+	virtual void UpdateKey(UINT8 ch, UINT8 keyon) = 0;
+	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
+	virtual void UpdateFnumber(UINT8 ch, int update = 1);
+	//Internal utility
+	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0);
+public:
+	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) = 0;
+	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v = 1) {
+		if (pParent) { pParent->SetReg(reg, data, v); }
+	};
+	virtual UINT8 GetReg(UINT16 reg, UINT8 v = 0) {
+		return pParent ? pParent->GetReg(reg, v) : 0;
+	};
+	virtual void Flush() {
+		if (pParent) { pParent->Flush(); }
+	};
+};
 
 #endif

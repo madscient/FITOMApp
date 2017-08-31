@@ -706,3 +706,14 @@ ISoundDevice::CHATTR::CHSTAT CSoundDevice::GetChStatus(UINT8 ch) const
 	return CHATTR::EMPTY;
 }
 #endif
+
+CRhythmDevice::CRhythmDevice(CSoundDevice* parent, UINT8 devid, UINT8 maxch) :
+	CSoundDevice(devid, maxch, 0, 0, 0, FnumTableType::none, 0, 0), pParent(parent)
+{
+	if (parent) {
+		Fnum = parent->Fnum;
+		port = parent->port;
+		NoteOffset = parent->NoteOffset;
+		MasterTune = parent->MasterTune;
+	}
+}

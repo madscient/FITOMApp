@@ -171,3 +171,6 @@ void COPN::UpdateKey(UINT8 ch, UINT8 keyon)
 COPNC::COPNC(CPort* pt, int fsamp) : COPN(pt, fsamp, DEVICE_OPNC)
 {
 }
+
+
+//-----
