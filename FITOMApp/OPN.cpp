@@ -1,7 +1,5 @@
 #include "STDAFX.h"
-#include "FITOM.h"
 #include "OPN.h"
-#include "MIDI.h"
 
 UINT8 COPN::map[] = {0, 8, 4, 12};
 UINT8 COPN::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };

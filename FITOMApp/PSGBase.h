@@ -2,6 +2,7 @@
 #ifndef __PSGBASE_H__
 #define __PSGBASE_H__
 
+#include "FITOMdefine.h"
 #include "SoundDev.h"
 
 class CPSGBase : public CSoundDevice

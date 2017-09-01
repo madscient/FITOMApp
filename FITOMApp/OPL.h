@@ -1,6 +1,8 @@
 #ifndef __OPL_H__
 #define __OPL_H__
 
+#include "FITOMdefine.h"
+#include "MIDI.h"
 #include "MultiDev.h"
 
 class COPL : public CSoundDevice {

@@ -6,7 +6,6 @@
 #include "FITOMApp.h"
 #include "FITOMAppDlg.h"
 #include "afxdialogex.h"
-#include "FITOM.h"
 #include "MidiMonitor.h"
 #include "DevMonitor.h"
 #include "VoiceEditDlg.h"

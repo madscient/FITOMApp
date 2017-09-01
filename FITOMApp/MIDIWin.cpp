@@ -109,7 +109,7 @@ void CALLBACK CW32MidiIn::MidiInProc(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstanc
 	case MIM_LONGDATA:	// 入力バッファのコールバック
 		{
 			CW32MidiIn* mpu = (CW32MidiIn*)dwInstance;
-			if (mpu->pMidiInst) {
+			if (0 /*mpu->pMidiInst*/) {
 				mpu->InstProc(*(LPMIDIHDR(dwParam1)));
 			}
 			else {

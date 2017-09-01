@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#include "SoundDev.h"
 #include "OPL4.h"
-#include "MIDI.h"
 
 //COPL4ML YMF704 aka OPL4-ML
 COPL4ML::COPL4ML(CPort* pt, int fsamp) :

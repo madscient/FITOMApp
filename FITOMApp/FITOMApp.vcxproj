@@ -127,6 +127,7 @@
     <ClInclude Include="EPSG.h" />
     <ClInclude Include="FITOM.h" />
     <ClInclude Include="FITOMCfg.h" />
+    <ClInclude Include="FITOMdefine.h" />
     <ClInclude Include="FMS.h" />
     <ClInclude Include="Fnum.h" />
     <ClInclude Include="FTSPI.h" />

@@ -11,6 +11,7 @@
 #include <gdiplus.h>
 
 #include "FITOM.h"
+#include "FITOMdefine.h"
 #include "SoundDev.h"
 #include "FITOMApp.h"
 #include "FITOMAppDlg.h"
@@ -210,7 +211,7 @@ int CFITOMApp::FITOMStart()
 		if (res) { return res; }
 		::timeBeginPeriod(1);
 		hTimer = timeSetEvent(10 - 1, 0, TimerProc, (DWORD)this, TIME_PERIODIC | TIME_CALLBACK_FUNCTION);
-		//hPolling = (HANDLE)_beginthreadex(0, 0, PollingProc, (void*)this, 0, 0);
+		hPolling = (HANDLE)_beginthreadex(0, 0, PollingProc, (void*)this, 0, 0);
 		bRunning = TRUE;
 	}
 	return res;
@@ -222,7 +223,7 @@ int CFITOMApp::FITOMStop()
 	timeKillEvent(hTimer);
 	timeEndPeriod(1);
 	::Sleep(100);
-	//::TerminateThread(hPolling, 0);
+	::TerminateThread(hPolling, 0);
 	::Sleep(100);
 	theFitom->ExitInstance();
 	delete theConfig;

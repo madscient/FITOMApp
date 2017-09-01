@@ -2,6 +2,7 @@
 #ifndef __DSG_H__
 #define __DSG_H__
 
+#include "FITOMdefine.h"
 #include "SoundDev.h"
 
 class CDSG : public CSoundDevice

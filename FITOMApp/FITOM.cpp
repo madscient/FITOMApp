@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "FITOMdefine.h"
 #include "FITOM.h"
 #include "OPN.h"
 #include "OPM.h"
@@ -294,7 +295,7 @@ int CFITOM::ImportConfig(CFITOMConfig* cfg)
 		CMidiIn* pMidiIn = cfg->GetMidiIn(i);
 		midi[i] = new CMidiInst(pMidiIn, this, (i == clockch));
 		if (midi[i]) {
-			pMidiIn->RegistInterrupt(midi[i]);
+			//pMidiIn->RegistInterrupt(midi[i]);
 			for (int j = 0; j < 16; j++) {
 				int devid = cfg->GetChannelMapDevice(j);
 				if (devid > 0) {

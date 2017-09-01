@@ -2,6 +2,7 @@
 #ifndef __MAx_H__
 #define __MAx_H__
 
+#include "FITOMdefine.h"
 #include "SoundDev.h"
 
 class CSD1 : public CSoundDevice {

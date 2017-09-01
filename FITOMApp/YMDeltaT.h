@@ -2,6 +2,7 @@
 #ifndef __YMDELTAT_H__
 #define __YMDELTAT_H__
 
+#include "FITOMdefine.h"
 #include "ADPCM.h"
 
 class CYmDelta : public CAdPcmBase	//YAMAHA DeltaT ADPCM

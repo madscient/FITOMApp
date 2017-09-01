@@ -1,6 +1,10 @@
 #ifndef __OPL4_H__
 #define __OPL4_H__
 
+#include "FITOMdefine.h"
+#include "SoundDev.h"
+#include "MIDI.h"
+
 class COPL4ML : public CSoundDevice
 {
 protected:

@@ -1,8 +1,9 @@
-#include "SoundDev.h"
-
 #pragma once
 #ifndef __FMS_H__
 #define __FMS_H__
+
+#include "FITOMdefine.h"
+#include "SoundDev.h"
 
 class CFMS : public CSoundDevice
 {

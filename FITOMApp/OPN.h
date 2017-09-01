@@ -1,7 +1,9 @@
 #ifndef __OPN_H__
 #define __OPN_H__
 
+#include "FITOMdefine.h"
 #include "MultiDev.h"
+#include "MIDI.h"
 
 class COPN : public CSoundDevice {
 	friend class COPN2;

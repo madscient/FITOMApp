@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "FITOM.h"
+#include "FITOMdefine.h"
 #include "FITOMApp.h"
 #include "VoiceEditDlg.h"
 #include "VoicePicker.h"

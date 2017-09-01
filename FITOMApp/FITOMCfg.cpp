@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "FITOM.h"
+#include "FITOMdefine.h"
 #include "SoundDev.h"
 #include "FITOMCfg.h"
 #include "MIDIDEV.h"

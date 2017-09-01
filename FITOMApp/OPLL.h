@@ -1,7 +1,9 @@
 #ifndef __OPLL_H__
 #define __OPLL_H__
 
+#include "FITOMdefine.h"
 #include "SoundDev.h"
+#include "MIDI.h"
 
 class COPLL : public CSoundDevice {
 protected:

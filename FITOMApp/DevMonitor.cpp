@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "FITOM.h"
 #include "SoundDev.h"
 #include "ADPCM.h"
 #include "FITOMApp.h"

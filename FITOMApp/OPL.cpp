@@ -1,7 +1,5 @@
 #include "STDAFX.h"
-#include "FITOM.h"
 #include "OPL.h"
-#include "MIDI.h"
 
 UINT8 COPL::map[] = { 0, 1, 2, 8, 9, 10, 16, 17, 18, };
 UINT8 COPL::RhythmReg[] = { 0x51, 0x55, 0x52, 0x54, 0x53, };

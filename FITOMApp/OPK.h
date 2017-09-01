@@ -1,6 +1,7 @@
 #ifndef __OPK_H__
 #define __OPK_H__
 
+#include "FITOMdefine.h"
 #include "SoundDev.h"
 
 class COPK : public CSoundDevice {

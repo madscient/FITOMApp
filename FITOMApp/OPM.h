@@ -1,7 +1,9 @@
 #ifndef __OPM_H__
 #define __OPM_H__
 
+#include "FITOMdefine.h"
 #include "SoundDev.H"
+#include "MIDI.h"
 
 class COPM : public CSoundDevice {
 protected:

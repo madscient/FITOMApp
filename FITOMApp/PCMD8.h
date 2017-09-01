@@ -2,6 +2,7 @@
 #ifndef __PCMD8_H__
 #define __PCMD8_H__
 
+#include "FITOMdefine.h"
 #include "ADPCM.h"
 
 class CAdPcmZ280 : public CAdPcmBase	//YAMAHA PCM8 ADPCM

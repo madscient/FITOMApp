@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "FITOM.h"
+#include "FITOMdefine.h"
 #include "SoundDev.h"
 #include "ADPCM.h"
 #include "MIDIDEV.h"

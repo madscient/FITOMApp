@@ -1,5 +1,4 @@
 #include "STDAFX.H"
-#include "FITOM.h"
 #include "OPK.h"
 
 const UINT8 COPK::chofs[] = {0, 1, 4, 5, 8, 9, 12, 13, };

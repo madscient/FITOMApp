@@ -1,7 +1,5 @@
 #include "STDAFX.h"
-#include "FITOM.h"
 #include "OPN.h"
-#include "MIDI.h"
 
 COPN2::COPN2(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype)
 	: CSpanDevice(new COPN(pt1, fsamp, devtype), new COPN(pt2, fsamp, devtype))

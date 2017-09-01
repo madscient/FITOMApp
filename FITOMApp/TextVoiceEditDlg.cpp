@@ -5,7 +5,7 @@
 #include "FITOMApp.h"
 #include "FITOMCfg.h"
 #include "afxdialogex.h"
-#include "FITOM.h"
+#include "FITOMdefine.h"
 #include "TestButton.h"
 #include "TextVoiceEditDlg.h"
 #include "MIDI.h"

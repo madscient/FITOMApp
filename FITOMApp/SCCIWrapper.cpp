@@ -3,6 +3,7 @@
 #include "SCCIDefines.h"
 #include <iostream>
 #include "SCCIWrapper.h"
+#include "FITOMdefine.h"
 
 namespace ROM {
 	struct DEVIDMAP {

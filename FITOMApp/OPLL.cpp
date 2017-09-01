@@ -1,7 +1,5 @@
 #include "STDAFX.H"
-#include "FITOM.h"
 #include "OPLL.h"
-#include "MIDI.h"
 
 ISoundDevice::FNUM COPLL::RhythmFnum[3] = {	
 	ISoundDevice::FNUM(2, 0x480), ISoundDevice::FNUM(2, 0x540), ISoundDevice::FNUM(0, 0x700)

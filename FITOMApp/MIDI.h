@@ -38,6 +38,9 @@
 #define MID_UNRT	0x7e
 #define MID_URT		0x7f
 
+#include "FITOMdefine.h"
+#include "SoundDev.h"
+
 class CFITOM;
 
 class CMidiCh {
