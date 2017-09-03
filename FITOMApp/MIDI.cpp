@@ -803,7 +803,12 @@ void CInstCh::NoteOn(UINT8 note, UINT8 vel)
 			Device->SetPanpot(ch, Panpot);
 
 			Enter(ch, note, id);
-			UpdateFineTune();
+			if (Portamento.IsEnable()) {
+				Portamento.Start(note);
+			}
+			else {
+				UpdateFineTune();
+			}
 
 			if (noteon) {
 				Device->NoteOn(ch, vel);
