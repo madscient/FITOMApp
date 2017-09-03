@@ -15,6 +15,7 @@ UINT8 COPM::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 
 COPM::COPM(CPort* pt, int fsamp) : CSoundDevice(DEVICE_OPM, 8, 0, 0, 0, FnumTableType::none, pt, 0x100), lfos(1)
 {
+	if (pt) { pt->reset(); }
 	lfores = new LFORESOURCE[1];
 	MasterTune = 768.0 * log2(3579545.0/(double)fsamp);
 	NoteOffset = -61;	// origin note: O4C+
@@ -111,10 +112,10 @@ void COPM::UpdatePanpot(UINT8 ch)
 	int pan = (GetChAttribute(ch)->panpot) / 8;
 	UINT8 chena = 0;
 	if (pan >= 4) { //R
-		chena = 0x40;
+		chena = 0x80;
 	}
 	else if (pan <= -4) { //L
-		chena = 0x80;
+		chena = 0x40;
 	}
 	else {	//C
 		chena = 0xc0;
@@ -312,10 +313,10 @@ void COPZ::UpdatePanpot(UINT8 ch)
 	int pan = (GetChAttribute(ch)->panpot) / 8;
 	UINT8 chena = 0;
 	UINT8 mono = 0;
-	if (pan > 4) { //R
+	if (pan >= 4) { //R
 		chena = 0x80;
 	}
-	else if (pan < -4) { //L
+	else if (pan <= -4) { //L
 		chena = 0x40;
 	}
 	else { //C

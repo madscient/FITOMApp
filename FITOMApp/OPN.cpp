@@ -15,6 +15,7 @@ UINT8 COPN::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 COPN::COPN(CPort* pt, int fsamp, UINT8 devtype) :
 CSoundDevice(devtype, 3, fsamp, 144, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100), fxena(true)
 {
+	if (pt) { pt->reset(); }
 	// 1/6, 1/4
 	SetReg(0x2f, 0, 1);
 	SetReg(0x2d, 0, 1);
