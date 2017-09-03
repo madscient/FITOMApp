@@ -140,6 +140,8 @@ COPNA::COPNA(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype) : COPN2(pt1, pt2,
 	COPN::COPN(pt1, fsamp, devtype);
 	SetReg(0x29, 0x80, 1);
 	rhythmcap = 6;
+	SetReg(0x10, 0xbf);
+	SetReg(0x10, 0);
 }
 
 void COPNA::UpdateRhythmVol()

@@ -69,6 +69,7 @@ CSCC::CSCC(CPort* pt, int fsamp) : CSCCBase(pt, fsamp,
 {
 	SetReg(0xc0, 0x00, 1);
 	SetReg(0xe0, 0x00, 1);
+	GetChAttribute(4)->OutOfDVA();
 }
 
 void CSCC::UpdateVoice(UINT8 ch)
