@@ -138,6 +138,7 @@ public:
 	virtual CMidiIn* CreateMidiInPort(LPCTSTR params) = 0;
 	virtual int CreateDevice(LPCTSTR param);
 	virtual CMasterVolumeCtrl* CreateMasVol(LPCTSTR param) = 0;
+	virtual void TimerCallBack() = 0;
 	int CreateSingleDevice(int devtype, LPCTSTR param);
 	int CreateADPCMDevice(int devtype, LPCTSTR param);
 	CFMBank* AllocFMBank(UINT32 voicegroup, UINT32 bank);
@@ -213,6 +214,7 @@ protected:
 public:
 	CFITOMConfigWin32(LPCTSTR strinifile);
 	~CFITOMConfigWin32();
+	virtual void TimerCallBack();
 	virtual CPort* CreatePort(int devtype, LPCTSTR params);
 	virtual CMidiIn* CreateMidiInPort(LPCTSTR params);
 	virtual CMasterVolumeCtrl* CreateMasVol(LPCTSTR param);

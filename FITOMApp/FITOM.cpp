@@ -271,6 +271,7 @@ void CFITOM::TimerCallBack(UINT32 tick)
 				pdev->TimerCallBack(tick);
 			}
 		}
+		theConfig->TimerCallBack();
 		timerprocessing = 0;
 	}
 	else {

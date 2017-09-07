@@ -23,6 +23,7 @@ public:
 	virtual UINT8 read(UINT16 addr) = 0;
 	virtual UINT8 status() = 0;
 	virtual void reset() = 0;
+	virtual void flush() {};
 	virtual int GetDesc(TCHAR* str, int len) = 0;
 	virtual int GetClock() = 0;
 	virtual UINT32 GetPhysicalId() { return physical_id; };
@@ -125,6 +126,7 @@ public:
 	virtual UINT8 read(UINT16 addr);
 	virtual UINT8 status();
 	virtual void reset();
+	virtual void flush();
 	virtual int GetClock();
 	virtual int GetDesc(TCHAR* str, int len);
 };

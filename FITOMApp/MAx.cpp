@@ -21,12 +21,15 @@ CSD1::CSD1(CPort* pt, int fsamp)
 	//port->read(0x04);
 	port->write(0x1D, 1);	//OUTPUT Power(3V3)
 	port->write(0x02, 0x0E);	//VREF Power ON
+	port->flush();
 	::Sleep(1);
 	port->write(0x00, 0x01);	//CLKEN
 	port->write(0x01, 0x00);	//AKRST
 	port->write(0x1A, 0xA3);
+	port->flush();
 	::Sleep(1);
 	port->write(0x1A, 0x00);
+	port->flush();
 	::Sleep(30);
 	port->write(0x02, 0x00);	//Analog Power ON
 	//add
@@ -36,6 +39,7 @@ CSD1::CSD1(CPort* pt, int fsamp)
 	port->write(0x03, 0x01);	//Analog Gain
 
 	port->write(0x08, 0xF6);
+	port->flush();
 	::Sleep(21);
 	port->write(0x08, 0x00);
 	port->write(0x09, 0xF8);
@@ -43,6 +47,7 @@ CSD1::CSD1(CPort* pt, int fsamp)
 
 	port->write(0x17, 0x40);//MS_S
 	port->write(0x18, 0x00);
+	port->flush();
 }
 
 void CSD1::SetVoice(UINT8 ch, FMVOICE* voice, int update)

@@ -106,3 +106,10 @@ CMasterVolumeCtrl* CFITOMConfigWin32::CreateMasVol(LPCTSTR param)
 	pctrl = new CMasVolDummy();
 	return pctrl;
 }
+
+void CFITOMConfigWin32::TimerCallBack()
+{
+	if (pFtspi->IsValid()) {
+		pFtspi->Flush();
+	}
+}

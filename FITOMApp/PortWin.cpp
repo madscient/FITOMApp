@@ -66,32 +66,14 @@ CFTSPIPort::CFTSPIPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHand
 {
 }
 
-CFTSPIPort::CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg)	: CFTSPIPort()
+CFTSPIPort::CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
 {
 	if (pif && index < pif->GetChannels() && cs < 5) {
-		pInterface = pif;
-		csidx = cs;
-		regsize = maxreg;
-		chidx = pInterface->GetChannelIndex(index);
-		ftHandle = pInterface->GetChannelHandle(index);
-		ChannelConfig channelConf = { 0 };
-		channelConf.ClockRate = 10000000;
-		channelConf.LatencyTimer = 1;
-		channelConf.configOptions = SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_ACTIVELOW | csidx;
-		channelConf.Pin = 0x00000000;/*FinalVal-FinalDir-InitVal-InitDir (for dir 0=in, 1=out)*/
-
-		FT_STATUS status = pInterface->SPI_InitChannel(ftHandle, &channelConf);
-		ASSERT(status == FT_OK);
-		status = FT_SetBaudRate(ftHandle, 1000000);
-		ASSERT(status == FT_OK);
 	}
 }
 
 CFTSPIPort::~CFTSPIPort(void)
 {
-	if (pInterface) {
-		pInterface->SPI_CloseChannel(ftHandle);
-	}
 }
 
 void CFTSPIPort::write(UINT16 addr, UINT16 data)
@@ -104,12 +86,9 @@ void CFTSPIPort::write(UINT16 addr, UINT16 data)
 	buf[0] = BYTE(addr);
 	buf[1] = BYTE(data);
 	/* Write command EWEN(with CS_High -> CS_Low) */
-	sizeToTransfer = 16;
+	sizeToTransfer = 2;
 	sizeTransfered = 0;
-	status = pInterface->SPI_Write(ftHandle, buf, sizeToTransfer, &sizeTransfered,
-		SPI_TRANSFER_OPTIONS_SIZE_IN_BITS |
-		SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE |
-		SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
+	status = pInterface->SPI_Write(chidx, buf, sizeToTransfer, csidx);
 #ifdef DEBUG
 	TCHAR str[80];
 	StringCchPrintf(str, _countof(str), _T("reg %08x %03x %02x\n"), physical_id, addr, data);
@@ -119,75 +98,24 @@ void CFTSPIPort::write(UINT16 addr, UINT16 data)
 
 void CFTSPIPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
 {
-	UINT32 sizeToTransfer = 1;
-	UINT32 sizeTransfered = 0;
-	uint8 baddr = (uint8)addr;
-	FT_STATUS status;
-
-	/* Write command EWEN(with CS_High -> CS_Low) */
-	sizeTransfered = 0;
-
-	status = pInterface->SPI_Write(ftHandle, &baddr, sizeToTransfer, &sizeTransfered,
-		SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
-		SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE);
-	for (uint32 i = 0; i < (length - 1); i++) {
-		status = pInterface->SPI_Write(ftHandle, &buf[i], sizeToTransfer, &sizeTransfered,
-			SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES);
-	}
-	status = pInterface->SPI_Write(ftHandle, &buf[length - 1], sizeToTransfer, &sizeTransfered,
-		SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
-		SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
+	BYTE* newbuf = new BYTE[length + 1];
+	newbuf[0] = BYTE(addr);
+	memcpy(&newbuf[1], buf, length);
+	writeBurst(newbuf, length + 1);
+	delete[] newbuf;
 }
 
 void CFTSPIPort::writeBurst(BYTE* buf, size_t length)
 {
 	UINT32 sizeToTransfer = 1;
-	UINT32 sizeTransfered = 0;
 	FT_STATUS status;
 
-	/* Write command EWEN(with CS_High -> CS_Low) */
-	sizeTransfered = 0;
-	if (length < 256) {
-		status = pInterface->SPI_Write(ftHandle, buf, (UINT32)length, &sizeTransfered,
-			SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES | SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE |
-			SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE);
-	}
-	else {
-		sizeToTransfer = 256;
-		status = pInterface->SPI_Write(ftHandle, buf, sizeToTransfer, &sizeTransfered,
-			SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
-			SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE);
-		length -= sizeTransfered;
-		buf += sizeTransfered;
-		while (length >= 256) {
-			sizeToTransfer = 256;
-			status = pInterface->SPI_Write(ftHandle, buf, sizeToTransfer, &sizeTransfered,
-				SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES);
-			length -= sizeTransfered;
-			buf += sizeTransfered;
-		}
-		status = pInterface->SPI_Write(ftHandle, buf, UINT32(length), &sizeTransfered,
-			SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
-			SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
-
-	}
+	pInterface->SPI_Write(chidx, buf, length, csidx);
 }
 
 UINT8 CFTSPIPort::read(UINT16 addr)
 {
-	uint8 ret = 0xff;
-	UINT32 sizeToTransfer = 1;
-	UINT32 sizeTransfered = 0;
-	uint8 writeComplete = 0;
-	uint32 retry = 0;
-	uint8 buf = 0x80 | addr;
-	FT_STATUS status;
-	status = pInterface->SPI_Write(ftHandle, &buf, sizeToTransfer, &sizeTransfered,
-		SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
-		SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE);
-	status = pInterface->SPI_Read(ftHandle, &ret, sizeToTransfer, &sizeTransfered,
-		SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES |
-		SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
+	UINT8 ret = 0;
 #ifdef DEBUG
 	TCHAR str[80];
 	StringCchPrintf(str, _countof(str), _T("read %08x %03x=%02x\n"), physical_id, addr, ret);
@@ -201,12 +129,21 @@ UINT8 CFTSPIPort::status()
 	return 0;
 }
 
+void CFTSPIPort::flush()
+{
+	if (pInterface) {
+		pInterface->Flush(chidx);
+	}
+}
+
 void CFTSPIPort::reset()
 {
-	pInterface->FT_WriteGPIO(ftHandle, 0xff, 0xff);
-	pInterface->FT_WriteGPIO(ftHandle, 0xff, 0x00);
-	::Sleep(1);
-	pInterface->FT_WriteGPIO(ftHandle, 0xff, 0xff);
+	if (pInterface) {
+		pInterface->FT_WriteGPIO(chidx, 0xff, 0xff);
+		pInterface->FT_WriteGPIO(chidx, 0xff, 0x00);
+		::Sleep(1);
+		pInterface->FT_WriteGPIO(chidx, 0xff, 0xff);
+	}
 #ifdef DEBUG
 	TCHAR str[80];
 	StringCchPrintf(str, _countof(str), _T("reset %08x\n"), physical_id);
