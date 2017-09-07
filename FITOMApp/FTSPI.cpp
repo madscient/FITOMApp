@@ -1,6 +1,8 @@
 #include "stdafx.h"
+#include <vector>
 #include "FTSPI.h"
 
+#ifdef LIBMPSSE
 CFTSPI::CFTSPI() : bValid(FALSE), h_libMPSSE(0), m_SPIChannels(0), SPIChannel(NULL), p_SPI_GetNumChannels(0), p_SPI_GetChannelInfo(0)
 , p_SPI_OpenChannel(0), p_SPI_InitChannel(0), p_SPI_CloseChannel(0), p_SPI_Read(0), p_SPI_Write(0), p_SPI_IsBusy(0), p_SPI_ReadWrite(0)
 {
@@ -142,3 +144,113 @@ FT_STATUS CFTSPI::FT_WriteGPIO(FT_HANDLE handle, uint8 dir, uint8 value)
 	}
 	return ret;
 }
+#else
+CFTSPI::CFTSPI() : bValid(FALSE)
+{
+	bValid = Init();
+}
+
+CFTSPI::~CFTSPI()
+{
+	for (int i = 0; i < SPIChannel.size(); i++) {
+		FT_STATUS status = FT_Close(SPIChannel[i].ftHandle);
+	}
+}
+
+BOOL CFTSPI::Init()
+{
+	FT_STATUS status = FT_OK;
+
+	DWORD numDevices = 0;
+	status = FT_ListDevices(&numDevices, 0, FT_LIST_NUMBER_ONLY);
+	assert(status == FT_OK);
+	//printf("Number of available SPI channels = %d\n", (int)channels);
+	status = FT_CreateDeviceInfoList(&numDevices);
+	assert(status == FT_OK);
+	FT_DEVICE_LIST_INFO_NODE* devList = new FT_DEVICE_LIST_INFO_NODE[numDevices];
+	status = FT_GetDeviceInfoList(devList, &numDevices);
+	assert(status == FT_OK);
+
+	for (DWORD i = 0; i < numDevices; i++) {
+		if (lstrcmp(devList[i].Description, _T("FTSPI")) == 0) {
+			SPIINFO spiinfo;
+			spiinfo.index = i;
+			spiinfo.rptr = spiinfo.wptr = 0;
+			status = FT_Open(i, &spiinfo.ftHandle);
+			assert(status == FT_OK);
+			SPIChannel.push_back(spiinfo);
+			status = SPI_InitChannel(i);
+			assert(status == FT_OK);
+		}
+	}
+	delete[] devList;
+	return (numDevices != 0);
+}
+
+FT_STATUS CFTSPI::SPI_InitChannel(UINT32 index)
+{
+	FT_STATUS ret = FT_OTHER_ERROR;
+	if (index < SPIChannel.size()) {
+		ret = FT_SetBaudRate(SPIChannel[index].ftHandle, 1000000L);	//1Mbps
+		if (ret != FT_OK) return ret;
+		ret = FT_SetLatencyTimer(SPIChannel[index].ftHandle, 1);	//1ms
+		if (ret != FT_OK) return ret;
+		ret = FT_SetBitMode(SPIChannel[index].ftHandle, 0xfe, 0x02);	//MPSSE mode
+		SPI_Push(index, 0x80);	//Set initial value of ADBUS
+		SPI_Push(index, 0xfc);	//
+		SPI_Push(index, 0xff);	//
+		SPI_Push(index, 0x8b);	//enable initial devisor
+		SPI_Push(index, 0x86);	//TCK devisor
+		SPI_Push(index, 0x05);
+		SPI_Push(index, 0x00);
+		ret = Flush(index);
+		if (ret != FT_OK) return ret;
+	}
+	return ret;
+}
+
+void CFTSPI::SPI_Push(UINT32 index, BYTE data)
+{
+	SPIChannel[index].cmdbuf[SPIChannel[index].wptr++] = data;
+	if (SPIChannel[index].wptr == 65534) { Flush(index); }
+}
+
+FT_STATUS CFTSPI::SPI_Read(UINT32 index, UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs)
+{
+}
+
+FT_STATUS CFTSPI::SPI_Write(UINT32 index, UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs)
+{
+	FT_STATUS ret = FT_OTHER_ERROR;
+	if (index < SPIChannel.size()) {
+		SPI_Push(index, )
+	}
+	return ret;
+}
+
+UINT32 CFTSPI::GetChannelIndex(UINT32 index)
+{
+	if (index < m_SPIChannels && SPIChannel != NULL) {
+		return SPIChannel[index].index;
+	}
+	return UINT32(-1);
+}
+
+FT_HANDLE CFTSPI::GetChannelHandle(UINT32 index)
+{
+	if (index < m_SPIChannels && SPIChannel != NULL) {
+		return SPIChannel[index].ftHandle;
+	}
+	return FT_HANDLE(0);
+}
+
+FT_STATUS CFTSPI::FT_WriteGPIO(FT_HANDLE handle, uint8 dir, uint8 value)
+{
+	FT_STATUS ret = FT_OTHER_ERROR;
+	if (p_FT_WriteGPIO) {
+		ret = p_FT_WriteGPIO(handle, dir, value);
+	}
+	return ret;
+}
+
+#endif
