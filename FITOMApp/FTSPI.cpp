@@ -35,7 +35,7 @@ BOOL CFTSPI::Init()
 			status = FT_Open(i, &spiinfo.ftHandle);
 			assert(status == FT_OK);
 			SPIChannel.push_back(spiinfo);
-			status = SPI_InitChannel(i);
+			status = SPI_InitChannel(SPIChannel.size() - 1);
 			assert(status == FT_OK);
 		}
 	}
@@ -49,6 +49,8 @@ FT_STATUS CFTSPI::SPI_InitChannel(UINT32 index)
 	if (index < SPIChannel.size()) {
 		ret = FT_SetBaudRate(SPIChannel[index].ftHandle, 1000000L);	//1Mbps
 		if (ret != FT_OK) return ret;
+		ret = FT_Purge(SPIChannel[index].ftHandle, FT_PURGE_RX | FT_PURGE_TX);
+		if (ret != FT_OK) return ret;
 		ret = FT_SetLatencyTimer(SPIChannel[index].ftHandle, 1);	//1ms
 		if (ret != FT_OK) return ret;
 		ret = FT_SetBitMode(SPIChannel[index].ftHandle, 0x0, 0x00);	//reset mode
@@ -56,7 +58,8 @@ FT_STATUS CFTSPI::SPI_InitChannel(UINT32 index)
 		::Sleep(10);
 		ret = FT_SetBitMode(SPIChannel[index].ftHandle, 0xfb, 0x02);	//MPSSE mode
 		if (ret != FT_OK) return ret;
-		ret = FT_Purge(SPIChannel[index].ftHandle, FT_PURGE_RX | FT_PURGE_TX);
+		ret = FT_Purge(SPIChannel[index].ftHandle, FT_PURGE_RX);
+		if (ret != FT_OK) return ret;
 		::Sleep(20);
 		SPI_Push(index, 0x80);	//Set initial value of ADBUS
 		SPI_Push(index, 0xf8);	//

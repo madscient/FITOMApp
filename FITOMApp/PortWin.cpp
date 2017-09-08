@@ -68,8 +68,7 @@ CFTSPIPort::CFTSPIPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHand
 
 CFTSPIPort::CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
 {
-	if (pif && index < pif->GetChannels() && cs < 5) {
-	}
+	assert(pif && pif->IsValid() && index < pif->GetChannels() && cs < 5);
 }
 
 CFTSPIPort::~CFTSPIPort(void)
@@ -107,10 +106,8 @@ void CFTSPIPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
 
 void CFTSPIPort::writeBurst(BYTE* buf, size_t length)
 {
-	UINT32 sizeToTransfer = 1;
-	FT_STATUS status;
-
-	pInterface->SPI_Write(chidx, buf, length, csidx);
+	FT_STATUS status = pInterface->SPI_Write(chidx, buf, length, csidx);
+	assert(status == FT_OK);
 }
 
 UINT8 CFTSPIPort::read(UINT16 addr)
@@ -140,8 +137,9 @@ void CFTSPIPort::reset()
 {
 	if (pInterface) {
 		pInterface->FT_WriteGPIO(chidx, 0xff, 0xff);
+		::Sleep(2);
 		pInterface->FT_WriteGPIO(chidx, 0xff, 0x00);
-		::Sleep(1);
+		::Sleep(2);
 		pInterface->FT_WriteGPIO(chidx, 0xff, 0xff);
 	}
 #ifdef DEBUG
