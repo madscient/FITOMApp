@@ -20,11 +20,14 @@ CSD1::CSD1(CPort* pt, int fsamp)
 	::Sleep(10);
 	//port->read(0x04);
 	port->write(0x1D, 1);	//OUTPUT Power(3V3)
+	port->flush();
 	port->write(0x02, 0x0E);	//VREF Power ON
 	port->flush();
 	::Sleep(1);
 	port->write(0x00, 0x01);	//CLKEN
+	port->flush();
 	port->write(0x01, 0x00);	//AKRST
+	port->flush();
 	port->write(0x1A, 0xA3);
 	port->flush();
 	::Sleep(1);
@@ -32,20 +35,29 @@ CSD1::CSD1(CPort* pt, int fsamp)
 	port->flush();
 	::Sleep(30);
 	port->write(0x02, 0x00);	//Analog Power ON
+	port->flush();
 	//add
 	port->write(0x19, 0x33 << 2);	//MASTER VOL
+	port->flush();
 	port->write(0x1B, 0x3F);	//interpolation
+	port->flush();
 	port->write(0x14, 0x00);	//interpolation
+	port->flush();
 	port->write(0x03, 0x01);	//Analog Gain
+	port->flush();
 
 	port->write(0x08, 0xF6);
 	port->flush();
 	::Sleep(21);
 	port->write(0x08, 0x00);
+	port->flush();
 	port->write(0x09, 0xF8);
+	port->flush();
 	port->write(0x0A, 0x00);
+	port->flush();
 
 	port->write(0x17, 0x40);//MS_S
+	port->flush();
 	port->write(0x18, 0x00);
 	port->flush();
 }
@@ -79,6 +91,9 @@ void CSD1::SetVoice(UINT8 ch, FMVOICE* voice, int update)
 
 void CSD1::UpdatePresetTone()
 {
+	for (int i = 0; i < 16; i++) {
+		NoteOff(i);
+	}
 	port->write(0x08, 0xF6);	//Sequencer Reset
 	BYTE tonebuf[1 + 1 + 480 + 4];
 	int idx = 0;
@@ -111,6 +126,7 @@ void CSD1::UpdatePresetTone()
 	tonebuf[idx++] = 0x80;	//Footer
 	port->write(0x08, 0x00);	//Sequencer reset clear
 	port->writeBurst(tonebuf, idx);
+	port->flush();
 }
 
 void CSD1::UpdateVoice(UINT8 ch)
@@ -127,8 +143,8 @@ void CSD1::UpdateVoice(UINT8 ch)
 	buf[idx++] = (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf;
 	port->writeBurst(buf, idx);
 #else
-//	port->write(0x0b, ch);
-//	port->write(0x0f, (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf);
+	port->write(0x0b, ch);
+	port->write(0x0f, (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf);
 #endif
 }
 

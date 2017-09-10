@@ -33,8 +33,8 @@ public:
 	FT_STATUS SPI_Read(UINT32 index, UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs);
 	FT_STATUS SPI_Write(UINT32 index, UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs);
 	FT_STATUS FT_WriteGPIO(UINT32 index, UINT8 dir, UINT8 value);
-	FT_STATUS Flush(UINT32 index);
-	void Flush();
+	FT_STATUS SPI_Flush(UINT32 index);
+	void SPI_Flush();
 };
 
 

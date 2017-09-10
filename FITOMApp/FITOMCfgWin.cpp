@@ -110,6 +110,6 @@ CMasterVolumeCtrl* CFITOMConfigWin32::CreateMasVol(LPCTSTR param)
 void CFITOMConfigWin32::TimerCallBack()
 {
 	if (pFtspi->IsValid()) {
-		pFtspi->Flush();
+		//pFtspi->SPI_Flush();
 	}
 }

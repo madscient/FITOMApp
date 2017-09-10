@@ -88,6 +88,7 @@ void CFTSPIPort::write(UINT16 addr, UINT16 data)
 	sizeToTransfer = 2;
 	sizeTransfered = 0;
 	status = pInterface->SPI_Write(chidx, buf, sizeToTransfer, csidx);
+	//pInterface->SPI_Flush(chidx);
 #ifdef DEBUG
 	TCHAR str[80];
 	StringCchPrintf(str, _countof(str), _T("reg %08x %03x %02x\n"), physical_id, addr, data);
@@ -107,7 +108,18 @@ void CFTSPIPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
 void CFTSPIPort::writeBurst(BYTE* buf, size_t length)
 {
 	FT_STATUS status = pInterface->SPI_Write(chidx, buf, length, csidx);
+	//pInterface->SPI_Flush(chidx);
 	assert(status == FT_OK);
+#ifdef DEBUG
+	TCHAR str[80];
+	StringCchPrintf(str, _countof(str), _T("reg %08x %03x burst %04x\n"), physical_id, length);
+	OutputDebugString(str);
+	for (size_t i = 0; i < length; i++) {
+		StringCchPrintf(str, _countof(str), _T("%02x "), buf[i]);
+		OutputDebugString(str);
+	}
+	OutputDebugString(_T("\n"));
+#endif
 }
 
 UINT8 CFTSPIPort::read(UINT16 addr)
@@ -129,7 +141,12 @@ UINT8 CFTSPIPort::status()
 void CFTSPIPort::flush()
 {
 	if (pInterface) {
-		pInterface->Flush(chidx);
+		pInterface->SPI_Flush(chidx);
+#ifdef DEBUG
+		TCHAR str[80];
+		StringCchPrintf(str, _countof(str), _T("flush %08x\n"), physical_id);
+		OutputDebugString(str);
+#endif
 	}
 }
 
