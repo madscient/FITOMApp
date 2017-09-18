@@ -350,6 +350,9 @@ void CMidiChCtrlDlg::RefreshProg()
 				}
 			}
 		}
+		else {
+			cmbProg.SetCurSel(curprg);
+		}
 	}
 }
 
@@ -387,7 +390,8 @@ void CMidiChCtrlDlg::OnSelendokComboDevice()
 		theCh->BankSelMSB(theConfig->isPcmDevice(seldev) ? ADPCM_BANK : (seldev & 0xff));
 		int bk = cmbBank.GetCurSel();
 		if (theConfig->isPcmDevice(seldev)) {
-			bk = theConfig->GetPcmDeviceIndex(seldev);
+			cmbBank.SetCurSel(bk);
+			//bk = theConfig->GetPcmDeviceIndex(seldev);
 		}
 		else if ((seldev & 0xff) != RHYTHM_BANK) {
 			while (bk && !theConfig->GetFMBank(CFITOM::GetDeviceVoiceGroupMask(seldev & 0xff), bk)) {
@@ -472,7 +476,7 @@ void CMidiChCtrlDlg::OnBnClickedButtonPick()
 	dlg.SetProg(cmbProg.GetCurSel());
 	if (dlg.DoModal() == IDOK) {
 		UINT32 devid = dlg.GetDevice();
-		theCh->BankSelMSB(theConfig->isPcmDevice(devid) ? ADPCM_BANK : devid & 0xff);
+		theCh->BankSelMSB(theConfig->isPcmDevice(devid) ? ADPCM_BANK : (devid & 0xff));
 		theCh->BankSelLSB(dlg.GetBank());
 		theCh->ProgChange(dlg.Getprog());
 		RefreshDevice();

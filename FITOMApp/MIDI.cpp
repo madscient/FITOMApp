@@ -793,10 +793,22 @@ void CInstCh::NoteOn(UINT8 note, UINT8 vel)
 			}
 		}
 		if (ch != 0xff) {
-			Device->SetDevAMDepth(ch, AMDepth);
-			Device->SetDevPMDepth(ch, PMDepth);
-			Device->SetDevAMRate(ch, AMRate);
-			Device->SetDevPMRate(ch, PMRate);
+			if (PMDepth > 0) {
+				Device->SetDevAMDepth(ch, 0);
+				Device->SetDevPMDepth(ch, PMDepth);
+				Device->SetDevPMRate(ch, PMRate);
+			}
+			else if (AMDepth > 0) {
+				Device->SetDevPMDepth(ch, 0);
+				Device->SetDevAMDepth(ch, AMDepth);
+				Device->SetDevAMRate(ch, AMRate);
+			}
+			else {
+				Device->SetDevAMDepth(ch, 0);
+				Device->SetDevPMDepth(ch, 0);
+				Device->SetDevPMRate(ch, 0);
+				Device->SetDevAMRate(ch, 0);
+			}
 			Device->SetVolume(ch, Volume, 0);
 			Device->SetExpress(ch, Expression, 0);
 			Device->SetSustain(ch, Sustain, 0);
@@ -807,7 +819,8 @@ void CInstCh::NoteOn(UINT8 note, UINT8 vel)
 				Portamento.Start(note);
 			}
 			else {
-				UpdateFineTune();
+				int fine = SINT16(BendRange) * (SINT16(PitchBend >> 7) - 64) + (SINT16(Tuning >> 7) - 64);
+				Device->SetNoteFine(ch, note, fine, 1);
 			}
 
 			if (noteon) {

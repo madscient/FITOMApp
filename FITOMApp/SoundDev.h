@@ -278,7 +278,7 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon) = 0;
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) = 0;
 	virtual void UpdateFnumber(UINT8 ch, int update=1);
-	virtual void ResetChannel(UINT8 ch) { NoteOff(ch); };
+	virtual void Damp(UINT8 ch) { NoteOff(ch); };
 	//Internal utility
 	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0);
 public:

@@ -174,14 +174,19 @@ void CYmDelta::UpdateVoice(UINT8 ch)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
-	UINT32 st = adpcmvoice[num].staddr;
-	UINT32 ed = st + adpcmvoice[num].length - 1;
-	SetReg(regmap.startLSB, (st >> 5) & 0xff);
-	SetReg(regmap.startMSB, (st >> 13) & 0xff);
-	SetReg(regmap.endLSB, (ed >> 5) & 0xff);
-	SetReg(regmap.endMSB, (ed >> 13) & 0xff);
-	(regmap.limitLSB != 0xff) ? SetReg(regmap.limitLSB, (ed >> 5) & 0xff) : void(0);
-	(regmap.limitMSB != 0xff) ? SetReg(regmap.limitMSB, (ed >> 13) & 0xff) : void(0);
+	if (adpcmvoice[num].length) {
+		UINT32 st = adpcmvoice[num].staddr;
+		UINT32 ed = st + adpcmvoice[num].length - 1;
+		SetReg(regmap.startLSB, (st >> 5) & 0xff);
+		SetReg(regmap.startMSB, (st >> 13) & 0xff);
+		SetReg(regmap.endLSB, (ed >> 5) & 0xff);
+		SetReg(regmap.endMSB, (ed >> 13) & 0xff);
+		(regmap.limitLSB != 0xff) ? SetReg(regmap.limitLSB, (ed >> 5) & 0xff) : void(0);
+		(regmap.limitMSB != 0xff) ? SetReg(regmap.limitMSB, (ed >> 13) & 0xff) : void(0);
+	}
+	else {
+		int oh_my_god = 1;
+	}
 }
 
 //CAdPcm3801 YM3801 aka Y8950
@@ -345,10 +350,15 @@ void CAdPcm2610A::UpdateVoice(UINT8 ch)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
-	UINT32 st = adpcmvoice[num].staddr;
-	UINT32 ed = st + adpcmvoice[num].length - 1;
-	SetReg(0x10 + ch, (st >> 8) & 0xff, 1);
-	SetReg(0x18 + ch, (st >> 16) & 0xff, 1);
-	SetReg(0x20 + ch, (ed >> 8) & 0xff, 1);
-	SetReg(0x28 + ch, (ed >> 16) & 0xff, 1);
+	if (adpcmvoice[num].length) {
+		UINT32 st = adpcmvoice[num].staddr;
+		UINT32 ed = st + adpcmvoice[num].length - 1;
+		SetReg(0x10 + ch, (st >> 8) & 0xff, 1);
+		SetReg(0x18 + ch, (st >> 16) & 0xff, 1);
+		SetReg(0x20 + ch, (ed >> 8) & 0xff, 1);
+		SetReg(0x28 + ch, (ed >> 16) & 0xff, 1);
+	}
+	else {
+		int oh_my_god = 1;
+	}
 }

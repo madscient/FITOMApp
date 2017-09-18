@@ -36,6 +36,7 @@ BEGIN_MESSAGE_MAP(CDevMonitor, CDialogEx)
 	ON_CBN_SELENDOK(IDC_COMBO_DEVICE, &CDevMonitor::OnSelendokComboDevice)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON_RESET, &CDevMonitor::OnBnClickedButtonReset)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -195,5 +196,21 @@ void CDevMonitor::OnBnClickedButtonReset()
 	CSoundDevice* pdev = theConfig->GetDeviceFromUniqID(cmbDevice.GetItemData(cmbDevice.GetCurSel()));
 	if (pdev) {
 		pdev->Reset();
+	}
+}
+
+
+void CDevMonitor::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	// TODO: ここにメッセージ ハンドラー コードを追加します。
+	RECT curlst;
+	CRect curcli;
+	if (lstDevice.GetSafeHwnd() != NULL) {
+		lstDevice.GetWindowRect(&curlst);
+		ScreenToClient(&curlst);
+		GetClientRect(curcli);
+		lstDevice.MoveWindow((cx - curcli.Width())/2 , curlst.top, curcli.Width(), curcli.Height(), TRUE);
 	}
 }

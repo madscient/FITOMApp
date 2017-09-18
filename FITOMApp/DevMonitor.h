@@ -35,4 +35,5 @@ public:
 	CListCtrl lstDevice;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedButtonReset();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

@@ -164,6 +164,19 @@ void COPN::UpdateKey(UINT8 ch, UINT8 keyon)
 		UpdateSustain(ch);
 	}
 	SetReg(0x28, (keyon ? 0xf0 : 0) | ch, 1);
+#ifdef _DEBUG
+	const FNUM* fnum = attr->GetLastFnumber();
+	if (fnum) {
+		UINT8 acth = GetReg(0xa4 + ch, 0);
+		UINT8 actl = GetReg(0xa0 + ch, 0);
+		UINT8 actblk = (acth >> 3) & 0x7;
+		UINT16 actfnum = ((acth & 7) << 8) | actl;
+		if (fnum->block != actblk || fnum->fnum != actfnum) {
+			int oh_my_god = 1;
+			fprintf(stderr, _T("Fnum not match: attr=%02X%04X, act=%02X%04X\n"), fnum->block, fnum->fnum, actblk, actfnum);
+		}
+	}
+#endif
 }
 
 //-----

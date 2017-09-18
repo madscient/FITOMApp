@@ -197,7 +197,7 @@ void CSoundDevice::Reset()
 {
 	//if (port) port->reset();
 	for (int i=0; i<chs; i++) {
-		ResetChannel(i);
+		Damp(i);
 		CHATTR* attr = GetChAttribute(i);
 		if (attr) {
 			attr->Init();
