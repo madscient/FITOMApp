@@ -530,7 +530,7 @@ LRESULT CVoiceEditDlg::OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op)
 		edtInplace.ShowWindow(TRUE);
 		edtInplace.SetWindowText(plst->GetItemText(pNMLV->iItem, 1));
 		edtInplace.SetSel(0, -1);
-		spnInplace.SetWindowPos(plst, ColumnRect.left, ColumnRect.top, 0, ColumnRect.Height(), SWP_SHOWWINDOW | SWP_DRAWFRAME);
+		//spnInplace.SetWindowPos(plst, ColumnRect.left, ColumnRect.top, 0, ColumnRect.Height(), SWP_SHOWWINDOW | SWP_DRAWFRAME);
 		spnInplace.ShowWindow(TRUE);
 		spnInplace.SetRange32(pvi->min, pvi->max);
 		spnInplace.SetPos32((this->*(pvi->pGetter))(vg, op - 1));
