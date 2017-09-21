@@ -41,6 +41,7 @@ protected:
 		DWORD mask;
 		void (CVoiceEditDlg::*pSetter)(int vg, int op, int val);
 		int (CVoiceEditDlg::*pGetter)(int vg, int op);
+		void (CVoiceEditDlg::*pViewer)(int vg, int op, TCHAR* buf, size_t bufsize);
 	};
 	struct ImgView {
 		int vg;
@@ -180,6 +181,8 @@ protected:
 	void SetOPLFORate(int vg, int op, int val) { theVoice.op[op].SLR = val; };
 	void SetNAM(int vg, int op, int val) { theVoice.op[op].DT1 = val >> 4; theVoice.op[op].DT2 = val & 15; };
 	void SetNOM(int vg, int op, int val) { theVoice.op[op].DT3 = val >> 4; theVoice.op[op].DT3 = val & 15; };
+	void GetFixedFreq(int vg, int op, TCHAR* buf, size_t bufsize);
+	void GetRatioFreq(int vg, int op, TCHAR* buf, size_t bufsize);
 
 	DECLARE_MESSAGE_MAP()
 public:
