@@ -58,9 +58,10 @@ protected:
 
 	void UpdateListCtrl(int op, BOOL bInit=FALSE);
 	void UpdateVoiceView(FMVOICE* voice);
-	void UpdateAlgoView(int vg, int al);
-	void UpdateWaveView(int vg, int op, int ws);
-	void UpdateEnvView(int vg, int op, FMOP* env);
+	void UpdateAlgoView(int vg, int op);
+	void UpdateWaveView(int vg, int op);
+	void UpdateEnvView(int vg, int op);
+	void UpdateFreqView(int vg, int op);
 	LRESULT OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op);
 
 	//Getter
@@ -140,29 +141,29 @@ protected:
 	void SetLFOWave(int vg, int op, int val) { theVoice.LWF = val; };
 	void SetLFORate(int vg, int op, int val) { theVoice.LFR = val; };
 	void SetLFODelay(int vg, int op, int val) { theVoice.LFD = val; };
-	void SetAR(int vg, int op, int val) { theVoice.op[op].AR = val; UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetDR(int vg, int op, int val) { theVoice.op[op].DR = val; UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetSR(int vg, int op, int val) { theVoice.op[op].SR = val; UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetRR(int vg, int op, int val) { theVoice.op[op].RR = val; UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetSL(int vg, int op, int val) { theVoice.op[op].SL = val; UpdateEnvView(vg, op, &theVoice.op[op]); };
+	void SetAR(int vg, int op, int val) { theVoice.op[op].AR = val; UpdateEnvView(vg, op); };
+	void SetDR(int vg, int op, int val) { theVoice.op[op].DR = val; UpdateEnvView(vg, op); };
+	void SetSR(int vg, int op, int val) { theVoice.op[op].SR = val; UpdateEnvView(vg, op); };
+	void SetRR(int vg, int op, int val) { theVoice.op[op].RR = val; UpdateEnvView(vg, op); };
+	void SetSL(int vg, int op, int val) { theVoice.op[op].SL = val; UpdateEnvView(vg, op); };
 	void SetRV(int vg, int op, int val) { theVoice.op[op].REV = val; };
-	void SetAR5(int vg, int op, int val) { theVoice.op[op].AR = (val << 2) | (val >> 3); UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetDR5(int vg, int op, int val) { theVoice.op[op].DR = (val << 2) | (val >> 3); UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetSR5(int vg, int op, int val) { theVoice.op[op].SR = (val << 2) | (val >> 3); UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetRR4(int vg, int op, int val) { theVoice.op[op].RR = (val << 3) | (val >> 1); UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetSL4(int vg, int op, int val) { theVoice.op[op].SL = (val << 3) | (val >> 1); UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetAR4(int vg, int op, int val) { theVoice.op[op].AR = (val << 3) | (val >> 1); UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetDR4(int vg, int op, int val) { theVoice.op[op].DR = (val << 3) | (val >> 1); UpdateEnvView(vg, op, &theVoice.op[op]); };
-	void SetSR4(int vg, int op, int val) { theVoice.op[op].SR = (val << 3) | (val >> 1); UpdateEnvView(vg, op, &theVoice.op[op]); };
+	void SetAR5(int vg, int op, int val) { theVoice.op[op].AR = (val << 2) | (val >> 3); UpdateEnvView(vg, op); };
+	void SetDR5(int vg, int op, int val) { theVoice.op[op].DR = (val << 2) | (val >> 3); UpdateEnvView(vg, op); };
+	void SetSR5(int vg, int op, int val) { theVoice.op[op].SR = (val << 2) | (val >> 3); UpdateEnvView(vg, op); };
+	void SetRR4(int vg, int op, int val) { theVoice.op[op].RR = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
+	void SetSL4(int vg, int op, int val) { theVoice.op[op].SL = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
+	void SetAR4(int vg, int op, int val) { theVoice.op[op].AR = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
+	void SetDR4(int vg, int op, int val) { theVoice.op[op].DR = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
+	void SetSR4(int vg, int op, int val) { theVoice.op[op].SR = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
 	void SetRV4(int vg, int op, int val) { theVoice.op[op].REV = (val << 3) | (val >> 1); };
 	void SetTL(int vg, int op, int val) { theVoice.op[op].TL = val; };
 	void SetTL6(int vg, int op, int val) { theVoice.op[op].TL = (val > 63) ? 63 : val; };
 	void SetTL5(int vg, int op, int val) { theVoice.op[op].TL = (val << 2) | (val >> 3); };
 	void SetTL4(int vg, int op, int val) { theVoice.op[op].TL = (val > 15) ? 63 : (val << 2); };
-	void SetML(int vg, int op, int val) { theVoice.op[op].MUL = val; };
-	void SetDT1(int vg, int op, int val) { theVoice.op[op].DT1 = val; };
-	void SetDT2(int vg, int op, int val) { theVoice.op[op].DT2 = val; };
-	void SetDT3(int vg, int op, int val) { theVoice.op[op].DT3 = val; };
+	void SetML(int vg, int op, int val) { theVoice.op[op].MUL = val; UpdateFreqView(vg, op); };
+	void SetDT1(int vg, int op, int val) { theVoice.op[op].DT1 = val; UpdateFreqView(vg, op); };
+	void SetDT2(int vg, int op, int val) { theVoice.op[op].DT2 = val; UpdateFreqView(vg, op); };
+	void SetDT3(int vg, int op, int val) { theVoice.op[op].DT3 = val; UpdateFreqView(vg, op); };
 	void SetPDT(int vg, int op, int val) { val += 8192;  theVoice.op[op].DT1 = ((val >> 7) & 0x7f); theVoice.op[op].DT2 = (val & 0x7f); };
 	void SetPDT2(int vg, int op, int val) { val += 8192;  theVoice.op[op].DT3 = ((val >> 7) & 0x7f); theVoice.op[op].DT2 = (val & 0x7f); };
 	void SetAME(int vg, int op, int val) { theVoice.op[op].AM = val; };
@@ -173,7 +174,7 @@ protected:
 	void SetEGS5(int vg, int op, int val) { theVoice.op[op].EGS = (val << 2) | (val >> 3); };
 	void SetKSL(int vg, int op, int val) { theVoice.op[op].KSL = val; };
 	void SetKSR(int vg, int op, int val) { theVoice.op[op].KSR = val; };
-	void SetWS(int vg, int op, int val) { theVoice.op[op].WS = val; UpdateWaveView(vg, op, theVoice.op[op].WS); };
+	void SetWS(int vg, int op, int val) { theVoice.op[op].WS = val; UpdateWaveView(vg, op); };
 	void SetOPLFOFreq(int vg, int op, int val) { theVoice.op[op].SLF = val; };
 	void SetOPLFODepth(int vg, int op, int val) { theVoice.op[op].SLD = (val & 0x7f); };
 	void SetOPLFOWave(int vg, int op, int val) { theVoice.op[op].SLW = val; };
@@ -181,8 +182,6 @@ protected:
 	void SetOPLFORate(int vg, int op, int val) { theVoice.op[op].SLR = val; };
 	void SetNAM(int vg, int op, int val) { theVoice.op[op].DT1 = val >> 4; theVoice.op[op].DT2 = val & 15; };
 	void SetNOM(int vg, int op, int val) { theVoice.op[op].DT3 = val >> 4; theVoice.op[op].DT3 = val & 15; };
-	void GetFixedFreq(int vg, int op, TCHAR* buf, size_t bufsize);
-	void GetRatioFreq(int vg, int op, TCHAR* buf, size_t bufsize);
 
 	DECLARE_MESSAGE_MAP()
 public:

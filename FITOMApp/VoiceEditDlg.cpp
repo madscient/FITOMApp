@@ -74,8 +74,6 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 	{ _T("Pseudo Detune"), 0, -8192, 8191, VOICE_GROUP_OPNA, &CVoiceEditDlg::SetPDT2, &CVoiceEditDlg::GetPDT2, 0, },
 	{ _T("Noise AND mask"), 0, 0, 255, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNAM, &CVoiceEditDlg::GetNAM, 0, },
 	{ _T("Noise OR mask"), 0, 0, 255, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNOM, &CVoiceEditDlg::GetNOM, 0, },
-	{ _T("Fixed Freq"), 0, 0, 0, VOICE_GROUP_OPM, 0, 0, &CVoiceEditDlg::GetFixedFreq, },
-	{ _T("Ratio Freq"), 0, 0, 0, VOICE_GROUP_ALL & (~VOICE_GROUP_PSG), 0, 0, &CVoiceEditDlg::GetRatioFreq, },
 	{ _T("TL-LFO Wave"), 0, 0, 6, VOICE_GROUP_ALL, &CVoiceEditDlg::SetOPLFOWave, &CVoiceEditDlg::GetOPLFOWave, 0, },
 	{ _T("TL-LFO Depth"), 0, -64, 63, VOICE_GROUP_ALL, &CVoiceEditDlg::SetOPLFODepth, &CVoiceEditDlg::GetOPLFODepth, 0, },
 	{ _T("TL-LFO Freq"), 0, 0, 15, VOICE_GROUP_ALL, &CVoiceEditDlg::SetOPLFOFreq, &CVoiceEditDlg::GetOPLFOFreq, 0, },
@@ -129,8 +127,12 @@ DWORD ma3ws[] = {
 	0,
 };
 
-DWORD sinws[]{
+DWORD sinws[] = {
 	IDB_BMP_OPLWS0, 0,
+};
+
+DWORD freqind[] = {
+	IDC_OP_FREQ1, IDC_OP_FREQ2, IDC_OP_FREQ3, IDC_OP_FREQ4, 0,
 };
 
 CVoiceEditDlg::ImgView CVoiceEditDlg::algoimg[] = {
@@ -228,18 +230,6 @@ BEGIN_MESSAGE_MAP(CVoiceEditDlg, CDialogEx)
 	ON_UPDATE_COMMAND_UI(IDC_BTN_REVERT, &CVoiceEditDlg::OnUpdateRevert)
 	ON_BN_CLICKED(IDC_BTN_APPLY, &CVoiceEditDlg::OnClickedBtnApply)
 END_MESSAGE_MAP()
-
-void CVoiceEditDlg::GetFixedFreq(int vg, int op, TCHAR* buf, size_t bufsize)
-{
-	sprintf_s(buf, bufsize, _T("%iHz"), (1 << GetDT1(vg, op)) * (GetML(vg, op) * 16 + GetDT3(vg, op)));
-}
-
-void CVoiceEditDlg::GetRatioFreq(int vg, int op, TCHAR* buf, size_t bufsize)
-{
-	double DT2[] = { 1.0, 1.4142135623730950488016887242097, 1.5703015887805285931588871794778, 1.731073122012286053390184437556, };
-	double ML = GetML(vg, op) ? double(GetML(vg, op)) : 0.5;
-	sprintf_s(buf, bufsize, _T("x%2.2f"), GetML(vg, op) * DT2[GetDT2(vg, op) & 3]);
-}
 
 void CVoiceEditDlg::SetDevice(UINT32 dev)
 {
@@ -370,16 +360,18 @@ void CVoiceEditDlg::UpdateVoiceView(FMVOICE* voice)
 		for (int op = 0; op < 5; op++) {
 			UpdateListCtrl(op, TRUE);
 			if (op) {
-				UpdateWaveView(vg, op - 1, theVoice.op[op - 1].WS);
-				UpdateEnvView(vg, op - 1, &theVoice.op[op - 1]);
+				UpdateWaveView(vg, op - 1);
+				UpdateEnvView(vg, op - 1);
+				UpdateFreqView(vg, op - 1);
 			}
 		}
 		UpdateAlgoView(vg, theVoice.AL);
 	}
 }
 
-void CVoiceEditDlg::UpdateAlgoView(int vg, int al)
+void CVoiceEditDlg::UpdateAlgoView(int vg, int op)
 {
+	int al = GetAL(vg, op);
 	for (int i = 0; algoimg[i].vg != VOICE_GROUP_NONE; i++) {
 		if (algoimg[i].vg == vg) {
 			al = min(al, algoimg[i].bound);
@@ -394,9 +386,10 @@ void CVoiceEditDlg::UpdateAlgoView(int vg, int al)
 	}
 }
 
-void CVoiceEditDlg::UpdateWaveView(int vg, int op, int ws)
+void CVoiceEditDlg::UpdateWaveView(int vg, int op)
 {
 	CStatic* picwave[] = { &picWS0, &picWS1, &picWS2, &picWS3, 0, };
+	int ws = GetWS(vg, op);
 	for (int i = 0; waveimg[i].vg != VOICE_GROUP_NONE; i++) {
 		if (waveimg[i].vg == vg) {
 			ws = min(ws, waveimg[i].bound);
@@ -411,9 +404,27 @@ void CVoiceEditDlg::UpdateWaveView(int vg, int op, int ws)
 	}
 }
 
-void CVoiceEditDlg::UpdateEnvView(int vg, int op, FMOP* env)
+void CVoiceEditDlg::UpdateFreqView(int vg, int op)
+{
+	CString str;
+	if (GetFIX(vg, op)) {
+		str.Format(_T("Fixed\t%iHz"), (1 << GetDT1(vg, op)) * (GetML(vg, op) * 16 + GetDT3(vg, op)));
+	}
+	else {
+		double oplml[] = { 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 10.0, 12.0, 12.0, 15.0, 15.0, };
+		double opmml[] = { 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, };
+		double opmdt2[] = { 1.0, 1.4142135623730950488016887242097, 1.5703015887805285931588871794778, 1.731073122012286053390184437556, };
+		double ML = ((vg & (VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3)) ? oplml : opmml)[GetML(vg, op)];
+		double DT2 = (vg & VOICE_GROUP_OPM) ? opmdt2[GetDT2(vg, op) & 3] : double(1.0);
+		str.Format(_T("Ratio\tx%2.2f"), ML * DT2);
+	}
+	SetDlgItemText(freqind[op], str);
+}
+
+void CVoiceEditDlg::UpdateEnvView(int vg, int op)
 {
 	CEnvView* picenv[] = { &picEnv0, &picEnv1, &picEnv2, &picEnv3, 0, };
+	FMOP* env = &(theVoice.op[op]);
 	if (0 <= op && op < 4) {
 		picenv[op]->SetEnv(env->TL, env->EGS, env->AR, env->DR, env->SL, env->SR, env->RR);
 		picenv[op]->Invalidate();
@@ -566,7 +577,7 @@ void CVoiceEditDlg::OnEnChangeEditInplace()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加してください。
 	if (editting_item != 0) {
-		edtInplace.SetSel(0, -1);
+		//edtInplace.SetSel(0, -1);
 		if (editting_item->pSetter) {
 			int val = spnInplace.GetPos32();
 			int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
