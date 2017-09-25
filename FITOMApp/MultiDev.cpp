@@ -11,6 +11,13 @@ CMultiDevice::CMultiDevice(CSoundDevice* chip1, CSoundDevice* chip2)
 	}
 }
 
+void CMultiDevice::Init()
+{
+	for (int i = 0; i<numchips; i++) {
+		chips[i]->Init();
+	}
+}
+
 void CMultiDevice::AddDevice(CSoundDevice* chip)
 {
 	CSoundDevicePtr* newchips = new CSoundDevicePtr[numchips+1];

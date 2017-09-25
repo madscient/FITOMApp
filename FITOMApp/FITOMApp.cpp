@@ -23,6 +23,7 @@
 #include "ADPCM.h"
 #include "SplashDlg.h"
 #include "ProgressDlg.h"
+#include "FTSPI.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -228,6 +229,23 @@ int CFITOMApp::FITOMStop()
 	theFitom->ExitInstance();
 	delete theConfig;
 	return 0;
+}
+
+void CFITOMApp::ResetInterface()
+{
+	if (theConfig) {
+		theConfig->GetScci()->InitialClear();
+		theConfig->GetFTspi()->InitialClear();
+	}
+}
+
+void CFITOMApp::InitDevice()
+{
+	if (theConfig) {
+		for (int i = 0; i < theConfig->GetPhyDevs(); i++) {
+			theConfig->GetPhysDeviceFromIndex(UINT8(i))->Init();
+		}
+	}
 }
 
 void CALLBACK CFITOMApp::TimerProc(UINT uTimerID, UINT uMsg, DWORD dwUser, DWORD dummy1, DWORD dummy2)

@@ -27,6 +27,7 @@ protected:
 	virtual void UpdateVoice(UINT8 ch);
 public:
 	CSCCBase(CPort* pt, int fsamp, const REGMAP& regset);
+	virtual void Init();
 };
 
 class CSCC : public CSCCBase

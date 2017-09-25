@@ -7,6 +7,10 @@ CSAA::CSAA(CPort* pt, int fsamp) : CPSGBase(DEVICE_SAA, pt, 0x20, 6, fsamp, 1024
 	ops = 1;
 }
 
+void CSAA::Init()
+{
+}
+
 void CSAA::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);

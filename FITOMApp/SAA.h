@@ -8,6 +8,7 @@ class CSAA : public CPSGBase
 {
 public:
 	CSAA(CPort* pt, int fsamp);
+	virtual void Init();
 	//virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v = 1);
 protected:

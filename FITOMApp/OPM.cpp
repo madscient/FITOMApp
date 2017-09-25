@@ -15,10 +15,14 @@ UINT8 COPM::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 
 COPM::COPM(CPort* pt, int fsamp) : CSoundDevice(DEVICE_OPM, 8, 0, 0, 0, FnumTableType::none, pt, 0x100), lfos(1)
 {
-	if (pt) { pt->reset(); }
+	//if (pt) { pt->reset(); }
 	lfores = new LFORESOURCE[1];
 	MasterTune = 768.0 * log2(3579545.0/(double)fsamp);
 	NoteOffset = -61;	// origin note: O4C+
+}
+
+void COPM::Init()
+{
 	SetReg(0x01, 0x00, 1);
 	SetReg(0x14, 0x00, 1);
 }
@@ -275,6 +279,10 @@ void COPM::SetDevPMRate(UINT8 ch, UINT8 rate)
 COPP::COPP(CPort* pt, int fsamp) : COPM(pt, fsamp)
 {
 	SetDevice(DEVICE_OPP);
+}
+
+void COPP::Init()
+{
 	SetReg(0x00, 0x10, 1);
 	SetReg(0x01, 0x0, 1);
 	SetReg(0x02, 0x10, 1);
@@ -289,6 +297,12 @@ COPP::COPP(CPort* pt, int fsamp) : COPM(pt, fsamp)
 COPZ::COPZ(CPort* pt, int fsamp) : COPM(pt, fsamp)
 {
 	SetDevice(DEVICE_OPZ);
+	delete[] lfores;
+	lfores = new LFORESOURCE[2];
+}
+
+void COPZ::Init()
+{
 	SetReg(0x00, 0x10, 1);
 	SetReg(0x01, 0x10, 1);
 	SetReg(0x02, 0x10, 1);
@@ -304,8 +318,6 @@ COPZ::COPZ(CPort* pt, int fsamp) : COPM(pt, fsamp)
 	SetReg(0x15, 0x01, 1);
 	SetReg(0x1c, 0x0, 1);
 	SetReg(0x1e, 0x0, 1);
-	delete[] lfores;
-	lfores = new LFORESOURCE[2];
 }
 
 void COPZ::UpdatePanpot(UINT8 ch)

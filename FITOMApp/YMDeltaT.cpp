@@ -195,6 +195,10 @@ CAdPcm3801::CAdPcm3801(CPort* pt, int fsamp, size_t memsize)
 	{ 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0xff, 0xff, 0x0f, 0x10, 0x11, 0x12, 0x04, 0x01, 0x00, 0x00 })
 {
 	boundary = 32;
+}
+
+void CAdPcm3801::Init()
+{
 	SetReg(0x06, 0);
 	SetReg(0x07, 0);
 }
@@ -205,6 +209,10 @@ CAdPcm2608::CAdPcm2608(CPort* pt, int fsamp, size_t memsize)
 	{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x0c, 0x0d, 0x08, 0x09, 0x0a, 0x0b, 0x10, 0x01, 0x00, 0xc0 })
 {
 	boundary = 32;
+}
+
+void CAdPcm2608::Init()
+{
 	SetReg(0x00, 0);
 	SetReg(0x01, 2);
 }
@@ -215,6 +223,10 @@ CAdPcm2610B::CAdPcm2610B(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
 	{ 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0xff, 0xff, 0xff, 0x19, 0x1a, 0x1b, 0x1c, 0x01, 0x00, 0xc0 })
 {
 	boundary = 256;
+}
+
+void CAdPcm2610B::Init()
+{
 }
 
 void CAdPcm2610B::LoadVoice(int prog, UINT8* data, size_t length)
@@ -258,6 +270,10 @@ CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
 {
 	boundary = 0x100000;
 	rhythmcap = 6;
+}
+
+void CAdPcm2610A::Init()
+{
 	SetReg(0, 0xbf);
 	SetReg(0, 0);
 }

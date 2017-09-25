@@ -66,6 +66,8 @@ public:
 	BOOL IsDrumInClipBoard();
 	BOOL GetVoiceFromClipBoard(FMVOICE* voice);
 	BOOL GetDrumFromClipBoard(DRUMMAP* voice);
+	void ResetInterface();
+	void InitDevice();
 
 	void DoEvents();
 	void SplashMessage(LPCTSTR str);

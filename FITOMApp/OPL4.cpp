@@ -7,6 +7,10 @@ CSoundDevice(DEVICE_OPL4ML, 24, fsamp, 684, 0, FnumTableType::none, pt, 0x100)
 {
 	Fnum = theFnum.GetOPL4Table(fsamp, 684, 0);
 	NoteOffset = 0;	//Origin = O3A
+}
+
+void COPL4ML::Init()
+{
 	SetReg(0x02, 0x40);
 	SetReg(0xf8, 0x3f);
 	SetReg(0xf9, 0x3f);

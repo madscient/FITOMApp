@@ -8,6 +8,7 @@ class CDCSG : public CPSGBase
 {
 public:
 	CDCSG(CPort* pt, int fsamp);
+	virtual void Init();
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 protected:
 	UINT8 prevnoise;

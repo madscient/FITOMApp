@@ -24,10 +24,12 @@ COPL::COPL(CPort* pt, int fsamp, UINT8 devtype)
 	,RhythmOnMap(0), RhythmOffMap(0)
 {
 	ops = 2;
-	if (devtype != DEVICE_OPL3_2) {
-		SetReg(0x04, 0, 1);
-		SetReg(0x08, 0, 1);
-	}
+}
+
+void COPL::Init()
+{
+	SetReg(0x04, 0, 1);
+	SetReg(0x08, 0, 1);
 }
 
 void COPL::UpdateVoice(UINT8 ch)

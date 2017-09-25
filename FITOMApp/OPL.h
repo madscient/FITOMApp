@@ -8,6 +8,7 @@
 class COPL : public CSoundDevice {
 	friend class COPL3;
 protected:
+	virtual void Init();
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
@@ -30,8 +31,10 @@ public:
 };
 
 class C3801 : public COPL {
+protected:
 public:
 	C3801(CPort* pt, int fsamp);
+	virtual void Init() {};
 };
 
 class COPL2 : public COPL {
@@ -55,11 +58,14 @@ protected:
 	static UINT8 opmap[];
 public:
 	COPL3(CPort* pt, int fsamp);
+	virtual void Init();
 };
 
 class COPL3_2 : public CSpanDevice {
+protected:
 public:
 	COPL3_2(CPort* pt1, CPort* pt2, UINT8 mode, int fsamp);
+	virtual void Init() {};
 };
 
 #endif

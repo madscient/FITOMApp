@@ -11,6 +11,7 @@
 #include "VoiceEditDlg.h"
 #include "DrumMapPicker.h"
 #include "DrumEditDlg.h"
+#include "SysCtlDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -74,9 +75,9 @@ BEGIN_MESSAGE_MAP(CFITOMAppDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_COMMAND(IDC_CHECK_MIDIMON, OnMidiMon)
 	ON_COMMAND(IDC_BUTTON_DEVMON, OnDevMon)
-	ON_COMMAND(IDC_BUTTON_CONFIG, OnConfig)
+	ON_COMMAND(IDC_BUTTON_SYSCTL, OnBnClickedButtonSysctl)
 	ON_COMMAND(IDC_BUTTON_VEDIT, OnVEdit)
-	ON_BN_CLICKED(IDC_BUTTON_DEDIT, &CFITOMAppDlg::OnBnClickedButtonDedit)
+	ON_COMMAND(IDC_BUTTON_DEDIT, OnBnClickedButtonDedit)
 	ON_WM_DRAWITEM()
 	ON_WM_HSCROLL()
 END_MESSAGE_MAP()
@@ -186,8 +187,6 @@ void CFITOMAppDlg::OnOK()
 	CDialogEx::OnOK();
 }
 
-
-
 void CFITOMAppDlg::OnDevMon()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
@@ -252,4 +251,12 @@ void CFITOMAppDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	else {
 		CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
 	}
+}
+
+
+void CFITOMAppDlg::OnBnClickedButtonSysctl()
+{
+	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	CSysCtlDlg dlg(this);
+	dlg.DoModal();
 }

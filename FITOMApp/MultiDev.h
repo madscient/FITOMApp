@@ -10,6 +10,7 @@ protected:
 	//virtual void UpdateKey(UINT8 ch, UINT8 keyon) {};
 public:
 	//CMultiDevice();
+	virtual void Init();
 	virtual void AddDevice(CSoundDevice* chip);
 	CMultiDevice(CSoundDevice* chip1, CSoundDevice* chip2);
 	virtual void SetMasterVolume(UINT8 vol, int update=1);

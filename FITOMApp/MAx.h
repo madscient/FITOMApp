@@ -21,6 +21,7 @@ protected:
 	void register_dump();
 public:
 	CSD1(CPort* pt, int fsamp);
+	virtual void Init();
 	virtual void SetVoice(UINT8 ch, FMVOICE* voice, int update = 1);
 	virtual void UpdatePresetTone();
 };

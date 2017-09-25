@@ -26,6 +26,7 @@ public:
 	BOOL IsValid() { return bValid; };
 	UINT32 GetChannels() { return SPIChannel.size(); };
 	UINT32 GetChannelIndex(UINT32 index);
+	void InitialClear();
 	FT_HANDLE GetChannelHandle(UINT32 index);
 	FT_STATUS SPI_OpenChannel(UINT32 index, FT_HANDLE* handle);
 	FT_STATUS SPI_InitChannel(UINT32 index);

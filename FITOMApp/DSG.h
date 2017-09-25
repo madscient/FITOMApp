@@ -9,8 +9,9 @@ class CDSG : public CSoundDevice
 {
 public:
 	CDSG(CPort* pt, int fsamp);
-	UINT8 regbak[0x20];
+	virtual void Init();
 protected:
+	UINT8 regbak[0x20];
 	UINT8 RhythmOnMap;
 	UINT8 RhythmOffMap;
 	virtual void SetReg(UINT16 addr, UINT8 data, UINT8 v = 1);

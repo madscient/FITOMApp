@@ -17,6 +17,7 @@ protected:
 	virtual UINT16 GetDeltaN(int off);
 public:
 	CAdPcmZ280(CPort* pt, int fsamp, size_t memsize);
+	virtual void Init();
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) { return 0; };
 	virtual void LoadVoice(int prog, UINT8* data, size_t length);
 };

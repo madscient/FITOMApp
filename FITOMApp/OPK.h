@@ -19,6 +19,7 @@ protected:
 	static const UINT8 chofs[8];
 public:
 	COPK(CPort* pt, int fsamp);
+	virtual void Init();
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
 	virtual void RhythmOff(UINT8 num);
 };

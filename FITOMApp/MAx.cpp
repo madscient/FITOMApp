@@ -14,6 +14,10 @@ CSD1::CSD1(CPort* pt, int fsamp)
 	: CSoundDevice(DEVICE_SD1, 16, fsamp, 256, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x80), PresetIndex(0)
 {
 	for (int i = 0; i < 16; i++) { Instrument[i] = 0xff; }
+}
+
+void CSD1::Init()
+{
 	port->reset();
 	::Sleep(10);
 	//port->read(0x04);

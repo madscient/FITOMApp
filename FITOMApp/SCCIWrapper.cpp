@@ -51,8 +51,8 @@ int CSCCIWrapper::Init()
 	pManager->initializeInstance();
 
 	// リセットを行う
-	pManager->init();
 	pManager->reset();
+	pManager->init();
 	pManager->setLevelDisp(TRUE);
 	//pManager->setDelay(0);
 
@@ -178,4 +178,9 @@ const SC_CHIP_TYPE CSCCIWrapper::getScChipType(UINT8 devid)
 	return SC_CHIP_TYPE::SC_TYPE_NONE;
 }
 
-
+void CSCCIWrapper::InitialClear()
+{
+	if (pManager) {
+		pManager->reset();
+	}
+}

@@ -16,6 +16,7 @@ protected:
 	virtual void UpdatePanpot(UINT8 ch);
 public:
 	COPL4ML(CPort* pt, int fsamp);
+	virtual void Init();
 };
 
 class COPL4ML2 : public COPL4ML

@@ -6,9 +6,13 @@ CSCCBase::CSCCBase(CPort* pt, int fsamp, const REGMAP& map)
 	: CPSGBase(map.device, pt, 0x100, 5, fsamp), regmap(map)
 {
 	ops = 1;
-	pt->reset();
-	pt->writeRaw(regmap.config, regmap.init);
-	pt->writeRaw(regmap.banksel, regmap.bank);
+//	pt->reset();
+}
+
+void CSCCBase::Init()
+{
+	port->writeRaw(regmap.config, regmap.init);
+	port->writeRaw(regmap.banksel, regmap.bank);
 	for (int i = 0; i < chs; i++) {
 		SetReg(regmap.amplitude + i, 0, 1);
 		SetReg(regmap.frequency + i * 2, 0, 1);
