@@ -21,15 +21,12 @@ void CSD1::Init()
 	port->reset();
 	::Sleep(10);
 	//port->read(0x04);
-	port->write(0x1D, 1);	//OUTPUT Power(3V3)
-	port->flush();
+	port->write(0x1D, 0);	//OUTPUT Power(5V)
 	port->write(0x02, 0x0E);	//VREF Power ON
 	port->flush();
 	::Sleep(1);
 	port->write(0x00, 0x01);	//CLKEN
-	port->flush();
 	port->write(0x01, 0x00);	//AKRST
-	port->flush();
 	port->write(0x1A, 0xA3);
 	port->flush();
 	::Sleep(1);
@@ -39,12 +36,9 @@ void CSD1::Init()
 	port->write(0x02, 0x00);	//Analog Power ON
 	port->flush();
 	//add
-	port->write(0x19, 0x33 << 2);	//MASTER VOL
-	port->flush();
+	port->write(0x19, 0x81);	//MASTER VOL (-18dB)
 	port->write(0x1B, 0x3F);	//interpolation
-	port->flush();
 	port->write(0x14, 0x00);	//interpolation
-	port->flush();
 	port->write(0x03, 0x01);	//Analog Gain
 	port->flush();
 
@@ -52,14 +46,11 @@ void CSD1::Init()
 	port->flush();
 	::Sleep(21);
 	port->write(0x08, 0x00);
-	port->flush();
-	port->write(0x09, 0xF8);
-	port->flush();
+	port->write(0x09, 0xcc);	//sequencer volume (0dB)
 	port->write(0x0A, 0x00);
 	port->flush();
 
 	port->write(0x17, 0x40);//MS_S
-	port->flush();
 	port->write(0x18, 0x00);
 	port->flush();
 }
