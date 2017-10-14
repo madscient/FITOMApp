@@ -15,11 +15,11 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::commonItem[] = {
 	{ _T("Feedback"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetFB, &CVoiceEditDlg::GetFB, 0, },
 	{ _T("Feedback1"), 0, 0, 7, VOICE_GROUP_OPL3 | VOICE_GROUP_MA3, &CVoiceEditDlg::SetFB1, &CVoiceEditDlg::GetFB1, 0, },
 	{ _T("Feedback2"), 0, 0, 7, VOICE_GROUP_OPL3 | VOICE_GROUP_MA3, &CVoiceEditDlg::SetFB2, &CVoiceEditDlg::GetFB2, 0, },
-	{ _T("Algorithm"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_MA3, &CVoiceEditDlg::SetAL3, &CVoiceEditDlg::GetAL3, 0, },
-	{ _T("Algorithm"), 0, 0, 15, VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, 0, },
-	{ _T("Algorithm"), 0, 0, 1, VOICE_GROUP_OPL2, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL1, 0, },
-	{ _T("Algorithm"), 0, 0, 11, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, 0, },
-	{ _T("ROM Tone"), 0, 0, 15, VOICE_GROUP_OPLL, &CVoiceEditDlg::SetROMTN, &CVoiceEditDlg::GetAL4, 0, },
+	{ _T("Algorithm"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_MA3, &CVoiceEditDlg::SetAL3, &CVoiceEditDlg::GetAL3, &CVoiceEditDlg::UpdateAlgoView, },
+	{ _T("Algorithm"), 0, 0, 15, VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, &CVoiceEditDlg::UpdateAlgoView, },
+	{ _T("Algorithm"), 0, 0, 1, VOICE_GROUP_OPL2, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL1, &CVoiceEditDlg::UpdateAlgoView, },
+	{ _T("Algorithm"), 0, 0, 11, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL4, &CVoiceEditDlg::UpdateAlgoView, },
+	{ _T("ROM Tone"), 0, 0, 15, VOICE_GROUP_OPLL, &CVoiceEditDlg::SetROMTN, &CVoiceEditDlg::GetAL4, &CVoiceEditDlg::UpdateAlgoView, },
 	{ _T("Tone/Noise"), 0, 0, 7, VOICE_GROUP_PSG, &CVoiceEditDlg::SetAL, &CVoiceEditDlg::GetAL, 0, },
 	{ _T("Noise Enable"), 0, 0, 3, VOICE_GROUP_OPM, &CVoiceEditDlg::SetNE, &CVoiceEditDlg::GetNE, 0, },
 	{ _T("Noise Freq"), 0, 0, 31, VOICE_GROUP_OPM, &CVoiceEditDlg::SetNFreq, &CVoiceEditDlg::GetNFreq, 0, },
@@ -38,19 +38,19 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::commonItem[] = {
 };
 
 CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
-	{ _T("Attack Rate"), 0, 0, 31, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAR5, &CVoiceEditDlg::GetAR5, 0, },
+	{ _T("Attack Rate"), 0, 0, 31, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetAR5, &CVoiceEditDlg::GetAR5, &CVoiceEditDlg::UpdateEnvView, },
 	{ _T("Decay Rate"), 0, 0, 31, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetDR5, &CVoiceEditDlg::GetDR5, 0, },
-	{ _T("Attack Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetAR4, &CVoiceEditDlg::GetAR4, 0, },
-	{ _T("Decay Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetDR4, &CVoiceEditDlg::GetDR4, 0, },
-	{ _T("Attack Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetAR, &CVoiceEditDlg::GetAR, 0, },
-	{ _T("Decay Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetDR, &CVoiceEditDlg::GetDR, 0, },
-	{ _T("Sustain Level"), 0, 0, 15, VOICE_GROUP_ALL & (~VOICE_GROUP_PSG), &CVoiceEditDlg::SetSL4, &CVoiceEditDlg::GetSL4, 0, },
-	{ _T("Sustain Level"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetSL, &CVoiceEditDlg::GetSL, 0, },
-	{ _T("Sustain Rate"), 0, 0, 31, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetSR5, &CVoiceEditDlg::GetSR5, 0, },
-	{ _T("Sustain Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetSR4, &CVoiceEditDlg::GetSR4, 0, },
-	{ _T("Sustain Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetSR, &CVoiceEditDlg::GetSR, 0, },
-	{ _T("Release Rate"), 0, 0, 15, VOICE_GROUP_ALL & (~VOICE_GROUP_PSG), &CVoiceEditDlg::SetRR4, &CVoiceEditDlg::GetRR4, 0, },
-	{ _T("Release Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetRR, &CVoiceEditDlg::GetRR, 0, },
+	{ _T("Attack Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetAR4, &CVoiceEditDlg::GetAR4, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Decay Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetDR4, &CVoiceEditDlg::GetDR4, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Attack Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetAR, &CVoiceEditDlg::GetAR, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Decay Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetDR, &CVoiceEditDlg::GetDR, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Sustain Level"), 0, 0, 15, VOICE_GROUP_ALL & (~VOICE_GROUP_PSG), &CVoiceEditDlg::SetSL4, &CVoiceEditDlg::GetSL4, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Sustain Level"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetSL, &CVoiceEditDlg::GetSL, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Sustain Rate"), 0, 0, 31, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetSR5, &CVoiceEditDlg::GetSR5, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Sustain Rate"), 0, 0, 15, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetSR4, &CVoiceEditDlg::GetSR4, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Sustain Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetSR, &CVoiceEditDlg::GetSR, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Release Rate"), 0, 0, 15, VOICE_GROUP_ALL & (~VOICE_GROUP_PSG), &CVoiceEditDlg::SetRR4, &CVoiceEditDlg::GetRR4, &CVoiceEditDlg::UpdateEnvView, },
+	{ _T("Release Rate"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetRR, &CVoiceEditDlg::GetRR, &CVoiceEditDlg::UpdateEnvView, },
 	{ _T("Reverbation"), 0, 0, 7, VOICE_GROUP_OPM, &CVoiceEditDlg::SetRV4, &CVoiceEditDlg::GetRV4, 0, },
 	//{ _T("Reverbation"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetRV, &CVoiceEditDlg::GetRV, 0, },
 	{ _T("Total Level"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPNA, &CVoiceEditDlg::SetTL, &CVoiceEditDlg::GetTL, 0, },
@@ -65,12 +65,12 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 	{ _T("VIB Enable"), 0, 0, 1, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetVIB, &CVoiceEditDlg::GetVIB, 0, },
 	{ _T("VIB Depth"), 0, 0, 7, VOICE_GROUP_MA3, &CVoiceEditDlg::SetVIB, &CVoiceEditDlg::GetVIB, 0, },
 	{ _T("Osc Fix"), 0, 0, 1, VOICE_GROUP_OPM, &CVoiceEditDlg::SetFIX, &CVoiceEditDlg::GetFIX, 0, },
-	{ _T("Wave Select"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_PSG | VOICE_GROUP_MA3, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, 0, },
-	{ _T("Multiple"), 0, 0, 15, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetML, &CVoiceEditDlg::GetML, 0, },
-	{ _T("Detune1"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_MA3, &CVoiceEditDlg::SetDT1, &CVoiceEditDlg::GetDT1, 0, },
-	{ _T("Detune2"), 0, 0, 3, VOICE_GROUP_OPM, &CVoiceEditDlg::SetDT2, &CVoiceEditDlg::GetDT2, 0, },
-	{ _T("Fine freq"), 0, 0, 15, VOICE_GROUP_OPM, &CVoiceEditDlg::SetDT3, &CVoiceEditDlg::GetDT3, 0, },
-	{ _T("Pseudo Detune"), 0, -8192, 8191, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetPDT, &CVoiceEditDlg::GetPDT, 0, },
+	{ _T("Wave Select"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_PSG | VOICE_GROUP_MA3, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, &CVoiceEditDlg::UpdateWaveView, },
+	{ _T("Multiple"), 0, 0, 15, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetML, &CVoiceEditDlg::GetML, &CVoiceEditDlg::UpdateFreqView, },
+	{ _T("Detune1"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_MA3, &CVoiceEditDlg::SetDT1, &CVoiceEditDlg::GetDT1, &CVoiceEditDlg::UpdateFreqView, },
+	{ _T("Detune2"), 0, 0, 3, VOICE_GROUP_OPM, &CVoiceEditDlg::SetDT2, &CVoiceEditDlg::GetDT2, &CVoiceEditDlg::UpdateFreqView, },
+	{ _T("Fine freq"), 0, 0, 15, VOICE_GROUP_OPM, &CVoiceEditDlg::SetDT3, &CVoiceEditDlg::GetDT3, &CVoiceEditDlg::UpdateFreqView, },
+	{ _T("Pseudo Detune"), 0, -8192, 8191, VOICE_GROUP_OPL3, &CVoiceEditDlg::SetPDT, &CVoiceEditDlg::GetPDT, &CVoiceEditDlg::UpdateFreqView, },
 	{ _T("Pseudo Detune"), 0, -8192, 8191, VOICE_GROUP_OPNA, &CVoiceEditDlg::SetPDT2, &CVoiceEditDlg::GetPDT2, 0, },
 	{ _T("Noise AND mask"), 0, 0, 255, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNAM, &CVoiceEditDlg::GetNAM, 0, },
 	{ _T("Noise OR mask"), 0, 0, 255, VOICE_GROUP_PSG, &CVoiceEditDlg::SetNOM, &CVoiceEditDlg::GetNOM, 0, },
@@ -205,6 +205,11 @@ void CVoiceEditDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PIC_ENV1, picEnv1);
 	DDX_Control(pDX, IDC_PIC_ENV2, picEnv2);
 	DDX_Control(pDX, IDC_PIC_ENV3, picEnv3);
+	DDX_Control(pDX, IDC_SLIDER1, sldCommon);
+	DDX_Control(pDX, IDC_SLIDER2, sldOp1);
+	DDX_Control(pDX, IDC_SLIDER3, sldOp2);
+	DDX_Control(pDX, IDC_SLIDER4, sldOp3);
+	DDX_Control(pDX, IDC_SLIDER5, sldOp4);
 }
 
 
@@ -229,6 +234,7 @@ BEGIN_MESSAGE_MAP(CVoiceEditDlg, CDialogEx)
 	ON_COMMAND(IDC_BTN_REVERT, &CVoiceEditDlg::OnClickedBtnRevert)
 	ON_UPDATE_COMMAND_UI(IDC_BTN_REVERT, &CVoiceEditDlg::OnUpdateRevert)
 	ON_BN_CLICKED(IDC_BTN_APPLY, &CVoiceEditDlg::OnClickedBtnApply)
+	ON_WM_VSCROLL()
 END_MESSAGE_MAP()
 
 void CVoiceEditDlg::SetDevice(UINT32 dev)
@@ -289,9 +295,7 @@ void CVoiceEditDlg::UpdateListCtrl(int op, BOOL bInit)
 					tmp.Format(_T("%i"), (this->*(items->pGetter))(vg, op-1));
 				}
 				else if (items->pViewer) {
-					TCHAR tmp2[40];
-					(this->*(items->pViewer))(vg, op-1, tmp2, _countof(tmp2));
-					tmp = tmp2;
+					//(this->*(items->pViewer))(vg, op-1);
 				}
 				else {
 					tmp = _T("-");
@@ -299,6 +303,9 @@ void CVoiceEditDlg::UpdateListCtrl(int op, BOOL bInit)
 				lstctls[op]->SetItemText(i, 1, tmp);
 				i++;
 			}
+		}
+		if (lstctls[op]->GetSelectionMark() < 0) {
+			lstctls[op]->SetSelectionMark(0);
 		}
 	}
 }
@@ -584,6 +591,9 @@ void CVoiceEditDlg::OnEnChangeEditInplace()
 			if (editting_item->min <= val && editting_item->max >= val && editting_item->pSetter) {
 				(this->*(editting_item->pSetter))(vg, editting_op - 1, val);
 				pICh->SetVoiceData(&theVoice);
+				if (editting_item->pViewer) {
+					(this->*(editting_item->pViewer))(vg, editting_op);
+				}
 			}
 		}
 		bModified = TRUE;
@@ -762,4 +772,12 @@ void CVoiceEditDlg::OnClickedBtnApply()
 		pbank->SetVoice(theProg, &theVoice);
 		CFITOM::GetInstance()->ReloadVoice(&theVoice, theDevice, theBank, theProg);
 	}
+}
+
+
+void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
+	UINT32 sender = pScrollBar->GetDlgCtrlID();
+	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }

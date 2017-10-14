@@ -6,6 +6,11 @@
 #include "MIDI.h"
 #include "EnvView.h"
 
+#define VOICE_PARAM_ENV		1
+#define VOICE_PARAM_SLFO	2
+#define VOICE_PARAM_WAVE	4
+#define VOICE_PARAM_FREQ	8
+
 // CVoiceEditDlg ダイアログ
 
 class CFITOMConfig;
@@ -41,7 +46,7 @@ protected:
 		DWORD mask;
 		void (CVoiceEditDlg::*pSetter)(int vg, int op, int val);
 		int (CVoiceEditDlg::*pGetter)(int vg, int op);
-		void (CVoiceEditDlg::*pViewer)(int vg, int op, TCHAR* buf, size_t bufsize);
+		void (CVoiceEditDlg::*pViewer)(int vg, int op);
 	};
 	struct ImgView {
 		int vg;
@@ -141,20 +146,20 @@ protected:
 	void SetLFOWave(int vg, int op, int val) { theVoice.LWF = val; };
 	void SetLFORate(int vg, int op, int val) { theVoice.LFR = val; };
 	void SetLFODelay(int vg, int op, int val) { theVoice.LFD = val; };
-	void SetAR(int vg, int op, int val) { theVoice.op[op].AR = val; UpdateEnvView(vg, op); };
-	void SetDR(int vg, int op, int val) { theVoice.op[op].DR = val; UpdateEnvView(vg, op); };
-	void SetSR(int vg, int op, int val) { theVoice.op[op].SR = val; UpdateEnvView(vg, op); };
-	void SetRR(int vg, int op, int val) { theVoice.op[op].RR = val; UpdateEnvView(vg, op); };
-	void SetSL(int vg, int op, int val) { theVoice.op[op].SL = val; UpdateEnvView(vg, op); };
+	void SetAR(int vg, int op, int val) { theVoice.op[op].AR = val; };
+	void SetDR(int vg, int op, int val) { theVoice.op[op].DR = val; };
+	void SetSR(int vg, int op, int val) { theVoice.op[op].SR = val; };
+	void SetRR(int vg, int op, int val) { theVoice.op[op].RR = val; };
+	void SetSL(int vg, int op, int val) { theVoice.op[op].SL = val; };
 	void SetRV(int vg, int op, int val) { theVoice.op[op].REV = val; };
-	void SetAR5(int vg, int op, int val) { theVoice.op[op].AR = (val << 2) | (val >> 3); UpdateEnvView(vg, op); };
-	void SetDR5(int vg, int op, int val) { theVoice.op[op].DR = (val << 2) | (val >> 3); UpdateEnvView(vg, op); };
-	void SetSR5(int vg, int op, int val) { theVoice.op[op].SR = (val << 2) | (val >> 3); UpdateEnvView(vg, op); };
-	void SetRR4(int vg, int op, int val) { theVoice.op[op].RR = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
-	void SetSL4(int vg, int op, int val) { theVoice.op[op].SL = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
-	void SetAR4(int vg, int op, int val) { theVoice.op[op].AR = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
-	void SetDR4(int vg, int op, int val) { theVoice.op[op].DR = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
-	void SetSR4(int vg, int op, int val) { theVoice.op[op].SR = (val << 3) | (val >> 1); UpdateEnvView(vg, op); };
+	void SetAR5(int vg, int op, int val) { theVoice.op[op].AR = (val << 2) | (val >> 3); };
+	void SetDR5(int vg, int op, int val) { theVoice.op[op].DR = (val << 2) | (val >> 3); };
+	void SetSR5(int vg, int op, int val) { theVoice.op[op].SR = (val << 2) | (val >> 3); };
+	void SetRR4(int vg, int op, int val) { theVoice.op[op].RR = (val << 3) | (val >> 1); };
+	void SetSL4(int vg, int op, int val) { theVoice.op[op].SL = (val << 3) | (val >> 1); };
+	void SetAR4(int vg, int op, int val) { theVoice.op[op].AR = (val << 3) | (val >> 1); };
+	void SetDR4(int vg, int op, int val) { theVoice.op[op].DR = (val << 3) | (val >> 1); };
+	void SetSR4(int vg, int op, int val) { theVoice.op[op].SR = (val << 3) | (val >> 1); };
 	void SetRV4(int vg, int op, int val) { theVoice.op[op].REV = (val << 3) | (val >> 1); };
 	void SetTL(int vg, int op, int val) { theVoice.op[op].TL = val; };
 	void SetTL6(int vg, int op, int val) { theVoice.op[op].TL = (val > 63) ? 63 : val; };
@@ -174,7 +179,7 @@ protected:
 	void SetEGS5(int vg, int op, int val) { theVoice.op[op].EGS = (val << 2) | (val >> 3); };
 	void SetKSL(int vg, int op, int val) { theVoice.op[op].KSL = val; };
 	void SetKSR(int vg, int op, int val) { theVoice.op[op].KSR = val; };
-	void SetWS(int vg, int op, int val) { theVoice.op[op].WS = val; UpdateWaveView(vg, op); };
+	void SetWS(int vg, int op, int val) { theVoice.op[op].WS = val; };
 	void SetOPLFOFreq(int vg, int op, int val) { theVoice.op[op].SLF = val; };
 	void SetOPLFODepth(int vg, int op, int val) { theVoice.op[op].SLD = (val & 0x7f); };
 	void SetOPLFOWave(int vg, int op, int val) { theVoice.op[op].SLW = val; };
@@ -239,4 +244,10 @@ public:
 	CEnvView picEnv1;
 	CEnvView picEnv2;
 	CEnvView picEnv3;
+	CSliderCtrl sldCommon;
+	CSliderCtrl sldOp1;
+	CSliderCtrl sldOp2;
+	CSliderCtrl sldOp3;
+	CSliderCtrl sldOp4;
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 };
