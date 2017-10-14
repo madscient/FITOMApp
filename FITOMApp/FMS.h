@@ -21,6 +21,7 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 public:
 	CFMS(CPort* pt, int fsamp);
+	virtual void Init();
 };
 
 #endif

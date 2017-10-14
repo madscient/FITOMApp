@@ -4,8 +4,12 @@
 //-------------------------------
 CSSG::CSSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_SSG, pt, 0x20, 3, fsamp)
 {
-	SetReg(0x07, 0x3f, 1);
 	ops = 2;
+}
+
+void CSSG::Init()
+{
+	SetReg(0x07, 0x3f, 1);
 }
 
 void CSSG::UpdateVolExp(UINT8 ch)

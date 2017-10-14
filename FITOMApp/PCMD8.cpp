@@ -7,6 +7,10 @@
 CAdPcmZ280::CAdPcmZ280(CPort* pt, int fsamp, size_t memsize)
 	: CAdPcmBase(DEVICE_ADPCM, pt, 0x100, fsamp, 384, YMZ280_OFFSET, memsize, 8, DEVICE_PCMD8)
 {
+}
+
+void CAdPcmZ280::Init()
+{
 	SetReg(0xff, 0xc0);	// KON enable/Memory enable
 	SetReg(0x81, 0);	// DSP disable
 	for (int i = 0; i < 8; i++) {

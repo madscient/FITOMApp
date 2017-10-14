@@ -31,6 +31,7 @@ protected:
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
 public:
 	CAdPcmBase(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev);
+	virtual void Init() = 0;
 	virtual UINT8 GetParentDev() { return parentdev; };
 	virtual void LoadVoice(int prog, UINT8* data, size_t length) = 0;
 	void Debug();

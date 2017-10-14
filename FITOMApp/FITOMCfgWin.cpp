@@ -23,6 +23,7 @@ CFITOMConfigWin32::CFITOMConfigWin32(LPCTSTR strinifile) : CFITOMConfig(strinifi
 CFITOMConfigWin32::~CFITOMConfigWin32()
 {
 	delete pScci;
+	delete pFtspi;
 }
 
 CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)

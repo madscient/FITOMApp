@@ -208,6 +208,7 @@ public:
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v=1) = 0;
 	virtual UINT8 GetReg(UINT16 reg, UINT8 v) = 0;
 	virtual void Flush() = 0;
+	virtual void Init() = 0;
 
 	// Note control interfaces (polymorph)
 	virtual void NoteOn(UINT8 ch, UINT8 vel=127) = 0;
@@ -278,7 +279,6 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon) = 0;
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) = 0;
 	virtual void UpdateFnumber(UINT8 ch, int update=1);
-	virtual void Damp(UINT8 ch) { NoteOff(ch); };
 	//Internal utility
 	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0);
 public:
@@ -290,6 +290,7 @@ public:
 	virtual void NoteOff(UINT8 ch);
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum) {};
 	virtual void RhythmOff(UINT8 num) {};
+	virtual void Damp(UINT8 ch) { NoteOff(ch); };
 
 	// Device status
 	virtual void SetDevice(UINT8 devid);
@@ -305,6 +306,7 @@ public:
 	virtual UINT8 GetAssignable();
 	virtual CPort* GetDevPort() { return port; };
 	virtual void Reset();
+	virtual void Init() = 0;
 	virtual UINT8 GetRhythmCaps() { return rhythmcap; };
 	virtual void SetPresetTone(UINT8 tn, FMVOICE* voice) {};
 	virtual void UpdatePresetTone() {};

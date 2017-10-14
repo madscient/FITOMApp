@@ -6,6 +6,14 @@ CDCSG::CDCSG(CPort* pt, int fsamp)
 	: CPSGBase(DEVICE_DCSG, pt, 0x10, 4, fsamp, 2, -576, FnumTableType::TonePeriod)
 	, prevnoise(0)
 {
+	for (int i = 0; i < 4; i++) {
+		prevvol[i] = 0;
+		prevfreq[i] = 0;
+	}
+}
+
+void CDCSG::Init()
+{
 	port->write(0, 0x80);
 	port->write(0, 0x00);
 	port->write(0, 0x9f);
@@ -18,10 +26,6 @@ CDCSG::CDCSG(CPort* pt, int fsamp)
 	port->write(0, 0xe0);
 	port->write(0, 0xff);
 	GetChAttribute(3)->OutOfDVA();	// Noise ch should always be assigned manually
-	for (int i = 0; i < 4; i++) {
-		prevvol[i] = 0;
-		prevfreq[i] = 0;
-	}
 }
 
 void CDCSG::UpdateVolExp(UINT8 ch)

@@ -18,6 +18,7 @@ protected:
 	UINT8 prevmix;
 public:
 	CEPSG(CPort* pt, int fsamp = 0);
+	virtual void Init();
 };
 
 #endif

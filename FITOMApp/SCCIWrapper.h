@@ -21,6 +21,7 @@ public:
 	SoundChip* getSoundChipFromId(int ifid, int devid);
 	SoundChip* getSoundChipFromType(SC_CHIP_TYPE type);
 	SoundInterface* getSoundInterface(int ifid);
+	void InitialClear();
 	int getInterfaceIDFromChip(SoundChip* pchip);
 	int getSlotIDFromChip(int ifid, SoundChip* pchip);
 	static const SC_CHIP_TYPE getScChipType(UINT8 devid);

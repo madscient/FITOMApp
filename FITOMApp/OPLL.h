@@ -22,6 +22,7 @@ protected:
 	static UINT8 RhythmMapCh[];
 public:
 	COPLL(CPort* pt, UINT8 mode, int fsamp, UINT8 devtype=DEVICE_OPLL);
+	virtual void Init();
 	virtual void SetVoice(UINT8 ch, FMVOICE* voice, int update);
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
 	virtual void RhythmOff(UINT8 num);

@@ -12,7 +12,6 @@ protected:
 	UINT8* lfoTL;
 
 	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0);
-
 	virtual void UpdateVolExp(UINT8 ch) = 0;
 	virtual void UpdateVoice(UINT8 ch) {};
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum) = 0;
@@ -26,6 +25,7 @@ protected:
 public:
 	CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp);
 	CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp, int div, int off, FnumTableType type);
+	virtual void Init() {};
 	virtual void RhythmOn(UINT8 num, UINT8 vel) {};
 	virtual void PollingCallBack();
 	virtual void TimerCallBack(UINT32 tick);

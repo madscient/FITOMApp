@@ -177,6 +177,7 @@ CPcmBank* CFITOMConfig::GetPcmBank(int prog)
 
 CAdPcmBase* CFITOMConfig::AddDevice(CAdPcmBase* pdev)
 {
+	pdev->Init();
 	//vPhyDev[phydevs++] = pdev;
 	vPcmDev[pcmdevs++] = pdev;
 	return pdev;
@@ -185,6 +186,7 @@ CAdPcmBase* CFITOMConfig::AddDevice(CAdPcmBase* pdev)
 CSoundDevice* CFITOMConfig::AddDevice(CSoundDevice* pdev)
 {
 	TCHAR tmp1[80], tmp2[80], tmp3[80], tmp4[80];
+	pdev->Init();
 	if (logdevs >= MAX_DEVS || !pdev) return 0;
 	pdev->GetDescriptor(tmp1, 80);
 	if (pdev->GetDevPort()) {

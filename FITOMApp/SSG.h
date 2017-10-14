@@ -8,6 +8,7 @@ class CSSG : public CPSGBase
 {
 public:
 	CSSG(CPort* pt, int fsamp);
+	virtual void Init();
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);

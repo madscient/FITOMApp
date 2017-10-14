@@ -4,6 +4,15 @@
 //-------------------------------
 CEPSG::CEPSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_EPSG, pt, 0x20, 3, fsamp), prevmix(0x3f)
 {
+	ops = 2;
+	for (int i = 0; i < 3; i++) {
+		prevvol[i] = 0;
+		prevfreq[i] = 0;
+	}
+}
+
+void CEPSG::Init()
+{
 	SetReg(0xd, 0xb0, 1);	//Enable expand mode
 	SetReg(0x9, 0xff, 1);	//Noise "AND" mask
 	SetReg(0xa, 0x00, 1);	//Noise "OR" mask
@@ -14,11 +23,6 @@ CEPSG::CEPSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_EPSG, pt, 0x20, 3, fsamp), 
 	SetReg(0x08, 0, 1);
 	SetReg(0x09, 0, 1);
 	SetReg(0x0a, 0, 1);
-	ops = 2;
-	for (int i = 0; i < 3; i++) {
-		prevvol[i] = 0;
-		prevfreq[i] = 0;
-	}
 }
 
 void CEPSG::UpdateVolExp(UINT8 ch)

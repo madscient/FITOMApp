@@ -16,6 +16,10 @@ UINT8 COPL3::carmsk[] = { 0x2, 0x3, 0x8, 0xc, 0x8, 0x9, 0xa, 0xd, 0xa, 0xe, 0xb,
 COPL3::COPL3(CPort* pt, int fsamp) :
 CSoundDevice(DEVICE_OPL3, 6, fsamp, 288, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x200)
 {
+}
+
+void COPL3::Init()
+{
 	SetReg(0x01, 0x20);	//Enable WS
 	SetReg(0x105, 0x01);	//Enable OPL3
 }

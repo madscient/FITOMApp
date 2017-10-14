@@ -5,8 +5,12 @@
 //-------
 CDSG::CDSG(CPort* pt, int fsamp) : CSoundDevice(DEVICE_DSG, 4, fsamp, 2, -576, FnumTableType::TonePeriod, pt, 0x20)
 {
-	SetReg(0x07, 0x3f, 1);
 	ops = 1;
+}
+
+void CDSG::Init()
+{
+	SetReg(0x07, 0x3f, 1);
 }
 
 void CDSG::UpdateVolExp(UINT8 ch)

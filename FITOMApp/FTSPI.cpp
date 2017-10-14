@@ -174,3 +174,18 @@ void CFTSPI::SPI_Flush()
 		assert(status == FT_OK);
 	}
 }
+
+void CFTSPI::InitialClear()
+{
+	for (int index = 0; index < SPIChannel.size(); index++) {
+		SPI_Push(index, 0x82);	//Set high byte
+		SPI_Push(index, 0x00);	//assert IC
+		SPI_Push(index, 0xff);	//dir
+		SPI_Flush(index);
+		::Sleep(10);
+		SPI_Push(index, 0x82);	//Set high byte
+		SPI_Push(index, 0xff);	//dessert IC
+		SPI_Push(index, 0xff);	//dir
+		SPI_Flush(index);
+	}
+}

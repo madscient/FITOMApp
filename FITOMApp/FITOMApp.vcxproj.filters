@@ -225,6 +225,9 @@
     <ClInclude Include="FITOMdefine.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="SysCtlDlg.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -400,6 +403,9 @@
     </ClCompile>
     <ClCompile Include="PortWin.cpp">
       <Filter>ソース ファイル\Win32 Device</Filter>
+    </ClCompile>
+    <ClCompile Include="SysCtlDlg.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

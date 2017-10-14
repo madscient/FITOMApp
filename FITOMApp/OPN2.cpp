@@ -12,6 +12,14 @@ COPN2::~COPN2()
 	delete[] lfores;
 }
 
+void COPN2::Init()
+{
+	// 1/6, 1/4
+	SetReg(0x2f, 0, 1);
+	SetReg(0x2d, 0, 1);
+	SetReg(0x27, 0x0, 1);
+}
+
 void COPN2::UpdateVoice(UINT8 ch)
 {
 	UINT8 tmp;
@@ -137,9 +145,18 @@ COPN2L::COPN2L(CPort* pt1, CPort* pt2, int fsamp) : COPN2(pt1, pt2, fsamp, DEVIC
 
 COPNA::COPNA(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype) : COPN2(pt1, pt2, fsamp, devtype)
 {
-	COPN::COPN(pt1, fsamp, devtype);
-	SetReg(0x29, 0x80, 1);
+//	COPN::COPN(pt1, fsamp, devtype);
 	rhythmcap = 6;
+}
+
+void COPNA::Init()
+{
+	// 1/6, 1/4
+	SetReg(0x2f, 0, 1);
+	SetReg(0x2d, 0, 1);
+	SetReg(0x27, 0x0, 1);
+
+	SetReg(0x29, 0x80, 1);
 	SetReg(0x10, 0xbf);
 	SetReg(0x10, 0);
 }
@@ -194,5 +211,10 @@ C2610B::C2610B(CPort* pt1, CPort* pt2, int fsamp) : COPNB(pt1, pt2, fsamp, DEVIC
 /*----------------*/
 COPN3L::COPN3L(CPort* pt1, CPort* pt2, int fsamp) : COPNA(pt1, pt2, fsamp, DEVICE_OPN3L)
 {
+}
+
+void COPN3L::Init()
+{
+	COPNA::Init();
 	SetReg(0x20, 0x02, 1);
 }

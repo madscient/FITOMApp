@@ -31,6 +31,10 @@ CSoundDevice(devtype, 9, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x4
 	}
 }
 
+void COPLL::Init()
+{
+}
+
 void COPLL::SetVoice(UINT8 ch, FMVOICE* voice, int update)
 {
 	update = (voice->AL & 0x40) ? update : -1;

@@ -23,6 +23,7 @@ protected:
 	static UINT8 carmsk[8];
 public:
 	COPN(CPort* pt, int fsamp, UINT8 devtype=DEVICE_OPN);
+	virtual void Init();
 };
 
 class COPN2 : public CSpanDevice {
@@ -33,6 +34,7 @@ protected:
 public:
 	COPN2(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype=DEVICE_OPN2);
 	~COPN2();
+	virtual void Init();
 	virtual void EnableDevPM(UINT8 ch, UINT8 on);
 	virtual void EnableDevAM(UINT8 ch, UINT8 on);
 	virtual void SetDevPMDepth(UINT8 ch, UINT8 dep);
@@ -76,12 +78,15 @@ protected:
 	virtual void UpdateRhythmVol();
 public:
 	COPNA(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype=DEVICE_OPNA);
+	virtual void Init();
 	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
 };
 
 class COPN3L : public COPNA {
+protected:
 public:
 	COPN3L(CPort* pt1, CPort* pt2, int fsamp);
+	virtual void Init();
 };
 
 class COPNARhythm : public CRhythmDevice {

@@ -6,10 +6,16 @@
 
 CFMS::CFMS(CPort* pt, int fsamp) : CSoundDevice(DEVICE_FMS, 16, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100), prevkey(0)
 {
-	SetReg(0xfe, 0);
 	for (int i=0; i<16; i++) {
-		SetReg(i, 0);
 		prevvol[i] = 0;
+	}
+}
+
+void CFMS::Init()
+{
+	SetReg(0xfe, 0);
+	for (int i = 0; i<16; i++) {
+		SetReg(i, 0);
 	}
 }
 

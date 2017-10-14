@@ -8,7 +8,6 @@
 class COPM : public CSoundDevice {
 protected:
 	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0);
-
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateVoice(UINT8 ch);
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
@@ -26,6 +25,7 @@ protected:
 	LFORESOURCE* lfores;
 public:
 	COPM(CPort* pt, int fsamp);
+	virtual void Init();
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	virtual void SetLFOParam(FMVOICE* voice, int update) {};
 	virtual void SetLFOMode(UINT8 ch, UINT8 mode, int update) {};
@@ -42,6 +42,7 @@ protected:
 	virtual void UpdateLFO() {};
 public:
 	COPP(CPort* pt, int fsamp);
+	virtual void Init();
 };
 
 class COPZ : public COPM {
@@ -51,6 +52,7 @@ protected:
 	UINT8 lfos;
 public:
 	COPZ(CPort* pt, int fsamp);
+	virtual void Init();
 };
 
 #endif
