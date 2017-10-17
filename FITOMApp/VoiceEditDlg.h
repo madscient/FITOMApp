@@ -53,8 +53,7 @@ protected:
 		int bound;
 		DWORD* imglst;
 	};
-	int editting_op;
-	VoiceItem* editting_item;
+	VoiceItem* editting_item[5];
 	static VoiceItem commonItem[];
 	static VoiceItem operatorItem[];
 	static ImgView algoimg[];
@@ -67,7 +66,8 @@ protected:
 	void UpdateWaveView(int vg, int op);
 	void UpdateEnvView(int vg, int op);
 	void UpdateFreqView(int vg, int op);
-	LRESULT OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op);
+	LRESULT OnClkListParam(LPNMITEMACTIVATE pNMLV, int op);
+	void OnChangeSlider(int op, int nPos);
 
 	//Getter
 	int GetAL(int vg, int op) { return theVoice.AL; };
@@ -213,18 +213,13 @@ public:
 	CSpinButtonCtrl spnVelocity;
 	CSpinButtonCtrl spnNote;
 	LRESULT OnKickIdle(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnDblclkListCparam(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnDblclkListOpparam1(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnDblclkListOpparam2(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnDblclkListOpparam3(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnDblclkListOpparam4(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnEnChangeEditInplace();
-	afx_msg void OnKillfocusEditInplace();
-	afx_msg void OnDeltaposSpinInplace(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnClkListCparam(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnClkListOpparam1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnClkListOpparam2(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnClkListOpparam3(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnClkListOpparam4(NMHDR *pNMHDR, LRESULT *pResult);
 
 	afx_msg void OnClickedButtonBank();
-	CEdit edtInplace;
-	CSpinButtonCtrl spnInplace;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnChangeEditName();

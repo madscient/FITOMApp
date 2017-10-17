@@ -135,6 +135,10 @@ DWORD freqind[] = {
 	IDC_OP_FREQ1, IDC_OP_FREQ2, IDC_OP_FREQ3, IDC_OP_FREQ4, 0,
 };
 
+DWORD sliders[] = {
+	IDC_SLIDER1, IDC_SLIDER2, IDC_SLIDER3, IDC_SLIDER4, IDC_SLIDER5, 0,
+};
+
 CVoiceEditDlg::ImgView CVoiceEditDlg::algoimg[] = {
 	{ VOICE_GROUP_PSG, 0, 0, },
 	{ VOICE_GROUP_OPM, 15, opmal, },
@@ -194,8 +198,6 @@ void CVoiceEditDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_TEST, btnTest);
 	DDX_Control(pDX, IDC_SPIN_VELO, spnVelocity);
 	DDX_Control(pDX, IDC_SPIN_NOTE, spnNote);
-	DDX_Control(pDX, IDC_EDIT_INPLACE, edtInplace);
-	DDX_Control(pDX, IDC_SPIN_INPLACE, spnInplace);
 	DDX_Control(pDX, IDC_PIC_AL, picAL);
 	DDX_Control(pDX, IDC_PIC_WS0, picWS0);
 	DDX_Control(pDX, IDC_PIC_WS1, picWS1);
@@ -215,25 +217,21 @@ void CVoiceEditDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CVoiceEditDlg, CDialogEx)
 	ON_MESSAGE(WM_KICKIDLE, &CVoiceEditDlg::OnKickIdle)
-	ON_BN_CLICKED(IDC_BUTTON_PICK, &CVoiceEditDlg::OnBnClickedButtonPick)
+	ON_COMMAND(IDC_BUTTON_PICK, &CVoiceEditDlg::OnBnClickedButtonPick)
 	ON_EN_UPDATE(IDC_EDIT_NAME, &CVoiceEditDlg::OnUpdateEditName)
-	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CPARAM, &CVoiceEditDlg::OnDblclkListCparam)
-	ON_NOTIFY(NM_DBLCLK, IDC_LIST_OPPARAM1, &CVoiceEditDlg::OnDblclkListOpparam1)
-	ON_NOTIFY(NM_DBLCLK, IDC_LIST_OPPARAM2, &CVoiceEditDlg::OnDblclkListOpparam2)
-	ON_NOTIFY(NM_DBLCLK, IDC_LIST_OPPARAM3, &CVoiceEditDlg::OnDblclkListOpparam3)
-	ON_NOTIFY(NM_DBLCLK, IDC_LIST_OPPARAM4, &CVoiceEditDlg::OnDblclkListOpparam4)
-	ON_EN_CHANGE(IDC_EDIT_INPLACE, &CVoiceEditDlg::OnEnChangeEditInplace)
-	ON_EN_KILLFOCUS(IDC_EDIT_INPLACE, &CVoiceEditDlg::OnKillfocusEditInplace)
-	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_INPLACE, &CVoiceEditDlg::OnDeltaposSpinInplace)
-	ON_BN_CLICKED(IDCANCEL, &CVoiceEditDlg::OnBnClickedCancel)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_CPARAM, &CVoiceEditDlg::OnClkListCparam)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_OPPARAM1, &CVoiceEditDlg::OnClkListOpparam1)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_OPPARAM2, &CVoiceEditDlg::OnClkListOpparam2)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_OPPARAM3, &CVoiceEditDlg::OnClkListOpparam3)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_OPPARAM4, &CVoiceEditDlg::OnClkListOpparam4)
+	ON_COMMAND(IDCANCEL, &CVoiceEditDlg::OnBnClickedCancel)
 	ON_EN_CHANGE(IDC_EDIT_NAME, &CVoiceEditDlg::OnChangeEditName)
 	ON_COMMAND(IDC_VOICE_COPY, &CVoiceEditDlg::OnVoiceCopy)
 	ON_COMMAND(IDC_VOICE_PASTE, &CVoiceEditDlg::OnVoicePaste)
 	ON_UPDATE_COMMAND_UI(IDC_VOICE_PASTE, &CVoiceEditDlg::OnUpdateVoicePaste)
-	ON_BN_CLICKED(IDC_VOICE_IMPORT, &CVoiceEditDlg::OnBnClickedVoiceText)
+	ON_COMMAND(IDC_VOICE_IMPORT, &CVoiceEditDlg::OnBnClickedVoiceText)
 	ON_COMMAND(IDC_BTN_REVERT, &CVoiceEditDlg::OnClickedBtnRevert)
 	ON_UPDATE_COMMAND_UI(IDC_BTN_REVERT, &CVoiceEditDlg::OnUpdateRevert)
-	ON_BN_CLICKED(IDC_BTN_APPLY, &CVoiceEditDlg::OnClickedBtnApply)
 	ON_WM_VSCROLL()
 END_MESSAGE_MAP()
 
@@ -305,7 +303,10 @@ void CVoiceEditDlg::UpdateListCtrl(int op, BOOL bInit)
 			}
 		}
 		if (lstctls[op]->GetSelectionMark() < 0) {
-			lstctls[op]->SetSelectionMark(0);
+			lstctls[op]->SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+			NMITEMACTIVATE ia;
+			ia.iItem = 0;
+			OnClkListParam(&ia, op);
 		}
 	}
 }
@@ -506,46 +507,46 @@ BOOL CVoiceEditDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 }
 
 
-void CVoiceEditDlg::OnDblclkListCparam(NMHDR *pNMHDR, LRESULT *pResult)
+void CVoiceEditDlg::OnClkListCparam(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	*pResult = OnDblclkListParam(pNMItemActivate, 0);
+	*pResult = OnClkListParam(pNMItemActivate, 0);
 }
 
 
-void CVoiceEditDlg::OnDblclkListOpparam1(NMHDR *pNMHDR, LRESULT *pResult)
+void CVoiceEditDlg::OnClkListOpparam1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	*pResult = OnDblclkListParam(pNMItemActivate, 1);
+	*pResult = OnClkListParam(pNMItemActivate, 1);
 }
 
 
-void CVoiceEditDlg::OnDblclkListOpparam2(NMHDR *pNMHDR, LRESULT *pResult)
+void CVoiceEditDlg::OnClkListOpparam2(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	*pResult = OnDblclkListParam(pNMItemActivate, 2);
+	*pResult = OnClkListParam(pNMItemActivate, 2);
 }
 
 
-void CVoiceEditDlg::OnDblclkListOpparam3(NMHDR *pNMHDR, LRESULT *pResult)
+void CVoiceEditDlg::OnClkListOpparam3(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	*pResult = OnDblclkListParam(pNMItemActivate, 3);
+	*pResult = OnClkListParam(pNMItemActivate, 3);
 }
 
 
-void CVoiceEditDlg::OnDblclkListOpparam4(NMHDR *pNMHDR, LRESULT *pResult)
+void CVoiceEditDlg::OnClkListOpparam4(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	*pResult = OnDblclkListParam(pNMItemActivate, 4);
+	*pResult = OnClkListParam(pNMItemActivate, 4);
 }
 
-LRESULT CVoiceEditDlg::OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op)
+LRESULT CVoiceEditDlg::OnClkListParam(LPNMITEMACTIVATE pNMLV, int op)
 {
 	CListCtrl* plst = lstctls[op];
 	if (pNMLV->iItem < 0) {
@@ -561,39 +562,34 @@ LRESULT CVoiceEditDlg::OnDblclkListParam(LPNMITEMACTIVATE pNMLV, int op)
 		this->ScreenToClient(ColumnRect);
 		int cxedge = ::GetSystemMetrics(SM_CXEDGE);
 		int cyedge = ::GetSystemMetrics(SM_CYEDGE);
-		editting_item = pvi;
-		editting_op = op;
-		edtInplace.SetWindowPos(plst, ColumnRect.left - (cxedge / 2), ColumnRect.top - (cyedge / 2),
-			ColumnRect.Width() + cxedge, ColumnRect.Height() + cyedge,SWP_SHOWWINDOW | SWP_DRAWFRAME);
-		edtInplace.ShowWindow(TRUE);
-		edtInplace.SetWindowText(plst->GetItemText(pNMLV->iItem, 1));
-		edtInplace.SetSel(0, -1);
-		spnInplace.SetWindowPos(plst, ColumnRect.left, ColumnRect.top - (cyedge / 2), 0, ColumnRect.Height() + cyedge, SWP_SHOWWINDOW | SWP_DRAWFRAME);
-		spnInplace.SetBuddy(&edtInplace);
-		spnInplace.ShowWindow(TRUE);
-		spnInplace.SetRange32(pvi->min, pvi->max);
-		spnInplace.SetPos32((this->*(pvi->pGetter))(vg, op - 1));
-
-		edtInplace.SetFocus();
+		editting_item[op] = pvi;
+		CSliderCtrl* pSlider = (CSliderCtrl*)GetDlgItem(sliders[op]);
+		pSlider->EnableWindow();
+		pSlider->SetRange(0, (pvi->max - pvi->min));
+		pSlider->SetPos((pvi->max - pvi->min) - ((this->*(pvi->pGetter))(vg, op - 1) - pvi->min));
 	}
 	return 0;
 }
 
 
-void CVoiceEditDlg::OnEnChangeEditInplace()
+void CVoiceEditDlg::OnChangeSlider(int op, int nPos)
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加してください。
-	if (editting_item != 0) {
+	if (0 <= op && op < 5 && editting_item[op] != 0) {
 		//edtInplace.SetSel(0, -1);
-		if (editting_item->pSetter) {
-			int val = spnInplace.GetPos32();
+		if (editting_item[op]->pSetter) {
 			int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
-			if (editting_item->min <= val && editting_item->max >= val && editting_item->pSetter) {
-				(this->*(editting_item->pSetter))(vg, editting_op - 1, val);
+			if (editting_item[op]->pSetter) {
+				int value = (editting_item[op]->max - editting_item[op]->min) - (nPos - editting_item[op]->min);
+				value = min(value, editting_item[op]->max);
+				value = max(value, editting_item[op]->min);
+				(this->*(editting_item[op]->pSetter))(vg, op - 1, value);
 				pICh->SetVoiceData(&theVoice);
-				if (editting_item->pViewer) {
-					(this->*(editting_item->pViewer))(vg, editting_op);
+				if (editting_item[op]->pViewer) {
+					(this->*(editting_item[op]->pViewer))(vg, op);
 				}
+				UpdateListCtrl(op, FALSE);
+				OnClickedBtnApply();
 			}
 		}
 		bModified = TRUE;
@@ -603,50 +599,10 @@ void CVoiceEditDlg::OnEnChangeEditInplace()
 	}
 }
 
-
-void CVoiceEditDlg::OnKillfocusEditInplace()
-{
-	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	if (::GetFocus() != spnInplace.GetSafeHwnd()) {
-		if (editting_item) {
-			TCHAR tmp1[40], tmp2[40], tmp3[40];
-			edtInplace.GetWindowText(tmp1, _countof(tmp1));
-			lstctls[editting_op]->GetItemText(lstctls[editting_op]->GetSelectionMark(), 1, tmp3, _countof(tmp3));
-			if (lstrcmp(tmp1, tmp3) != 0) {
-				bModified = TRUE;
-				int val = ::_tcstol(tmp1, 0, 10);
-				StringCchPrintf(tmp2, _countof(tmp2), _T("%i"), val);
-				if (lstrcmp(tmp1, tmp2) == 0) { // is valid
-					if (editting_item->min <= val && editting_item->max >= val && editting_item->pSetter) {
-						spnInplace.SetPos32(val);
-						int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
-						(this->*(editting_item->pSetter))(vg, editting_op - 1, val);
-						pICh->SetVoiceData(&theVoice);
-						UpdateListCtrl(editting_op, FALSE);
-					}
-				}
-			}
-		}
-		edtInplace.ShowWindow(SW_HIDE);
-		spnInplace.ShowWindow(SW_HIDE);
-		editting_item = 0;
-		editting_op = -1;
-	}
-}
-
-void CVoiceEditDlg::OnDeltaposSpinInplace(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
-	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	*pResult = 0;
-}
-
-
 void CVoiceEditDlg::OnClickedButtonBank()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 }
-
 
 BOOL CVoiceEditDlg::PreTranslateMessage(MSG* pMsg)
 {
@@ -656,17 +612,8 @@ BOOL CVoiceEditDlg::PreTranslateMessage(MSG* pMsg)
 		switch (pMsg->wParam)
 		{
 		case VK_RETURN:
-			if (edtInplace.IsWindowVisible()) {
-				OnKillfocusEditInplace();
-			}
 			return FALSE;
 		case VK_ESCAPE:
-			if (edtInplace.IsWindowVisible()) {
-				TCHAR tmp[40];
-				lstctls[editting_op]->GetItemText(lstctls[editting_op]->GetSelectionMark(), 1, tmp, _countof(tmp));
-				edtInplace.SetWindowText(tmp);
-				OnKillfocusEditInplace();
-			}
 			return FALSE;
 		default:
 			break;
@@ -680,6 +627,9 @@ void CVoiceEditDlg::OnBnClickedCancel()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	if (!bModified || ::AfxMessageBox(IDS_CONFIRM_VOICE_DISCARD, MB_YESNO) == IDYES) {
+		UpdateVoiceView(&orgVoice);
+		bModified = FALSE;
+		OnClickedBtnApply();
 		CDialogEx::OnCancel();
 	}
 }
@@ -778,6 +728,15 @@ void CVoiceEditDlg::OnClickedBtnApply()
 void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
-	UINT32 sender = pScrollBar->GetDlgCtrlID();
-	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
+	if ((nSBCode == SB_THUMBTRACK || nSBCode == SB_THUMBPOSITION) && pScrollBar) {
+		for (int i = 0; i < 5; i++) {
+			UINT32 sender = pScrollBar->GetDlgCtrlID();
+			if (sender == sliders[i]) {
+				OnChangeSlider(i, (int)nPos);
+			}
+		}
+	}
+	else {
+		CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
+	}
 }
