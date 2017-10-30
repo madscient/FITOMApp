@@ -28,7 +28,7 @@ BOOL CFTSPI::Init()
 	assert(status == FT_OK);
 
 	for (DWORD i = 0; i < numDevices; i++) {
-		if (lstrcmp(devList[i].Description, _T("FTSPI")) == 0) {
+		if (strncmp(devList[i].Description, _T("FTSPI"), 5) == 0) {
 			SPIINFO spiinfo;
 			spiinfo.index = i;
 			spiinfo.rptr = spiinfo.wptr = 0;

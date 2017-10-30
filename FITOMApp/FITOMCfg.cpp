@@ -195,6 +195,7 @@ CSoundDevice* CFITOMConfig::AddDevice(CSoundDevice* pdev)
 	vPhyDev[phydevs++] = pdev;
 	for (int i = 0; i<logdevs; i++) {
 		if (pdev->GetDevice() == vLogDev[i]->GetDevice()	//デバイスタイプが一致
+
 			//&& pdev->GetDevPort()->GetClock() == vLogDev[i]->GetDevPort()->GetClock()	//クロックが一致
 			) {
 			// 同一デバイスは束ねる
