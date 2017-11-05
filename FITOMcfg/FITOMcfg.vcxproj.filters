@@ -66,6 +66,9 @@
     <ClInclude Include="DevModeDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InstDevDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FITOMcfg.cpp">
@@ -99,6 +102,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DevModeDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InstDevDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
