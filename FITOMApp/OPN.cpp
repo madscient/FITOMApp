@@ -192,3 +192,25 @@ COPNC::COPNC(CPort* pt, int fsamp) : COPN(pt, fsamp, DEVICE_OPNC)
 
 
 //-----
+COPNARhythm::COPNARhythm(CSoundDevice* pParent) : CRhythmDevice(pParent, DEVICE_OPNA_RHY, 6)
+{
+}
+
+void COPNARhythm::UpdateVolExp(UINT8 ch)
+{
+}
+
+void COPNARhythm::UpdatePanpot(UINT8 ch)
+{
+
+}
+
+void COPNARhythm::UpdateKey(UINT8 ch, UINT8 keyon)
+{
+
+}
+
+UINT8 COPNARhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+{
+
+}

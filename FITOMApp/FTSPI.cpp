@@ -29,6 +29,7 @@ BOOL CFTSPI::Init()
 
 	for (DWORD i = 0; i < numDevices; i++) {
 		if (strncmp(devList[i].Description, _T("FTSPI"), 5) == 0) {
+			sprintf_s(description, _countof(description), _T("%s(%s)"), devList[i].Description, devList[i].SerialNumber);
 			SPIINFO spiinfo;
 			spiinfo.index = i;
 			spiinfo.rptr = spiinfo.wptr = 0;
@@ -188,4 +189,9 @@ void CFTSPI::InitialClear()
 		SPI_Push(index, 0xff);	//dir
 		SPI_Flush(index);
 	}
+}
+
+void CFTSPI::GetInterfaceDesc(TCHAR* str, int len)
+{
+	sprintf_s(str, len, _T("%s"), description);
 }

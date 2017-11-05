@@ -26,6 +26,8 @@ public:
 	virtual void flush() {};
 	virtual int GetDesc(TCHAR* str, int len) = 0;
 	virtual int GetClock() = 0;
+	virtual int GetPanpot() = 0;
+	virtual void GetInterfaceDesc(TCHAR* str, int len) = 0;
 	virtual UINT32 GetPhysicalId() { return physical_id; };
 	virtual void SetPhysicalId(UINT32 id) { physical_id = id; };
 };
@@ -52,8 +54,10 @@ public:
 	virtual void reset() { parent ? parent->reset() : void(0); };
 	virtual int GetClock() { return parent ? parent->GetClock() : 0; };
 	virtual int GetDesc(TCHAR* str, int len) { return parent ? parent->GetDesc(str, len) : (str[0] = '\0'); };
+	virtual void GetInterfaceDesc(TCHAR* str, int len) { return parent ? parent->GetInterfaceDesc(str, len) : (str[0] = '\0'); };
 	virtual UINT32 GetPhysicalId() { return parent ? parent->GetPhysicalId() : 0; };
 	virtual void SetPhysicalId(UINT32 id) { parent ? parent->SetPhysicalId(id) : void(0); };
+	virtual int GetPanpot() { return parent ? (parent->GetPanpot()) : 0; };
 };
 
 class CMappedPort : public CMultiPort
@@ -80,6 +84,8 @@ public:
 	virtual UINT8 status() { return (0 < ports.size()) ? ports[0].port->status() : 0; };
 	virtual void reset();
 	virtual int GetDesc(TCHAR* str, int len);
+	virtual void GetInterfaceDesc(TCHAR* str, int len) {};
+	virtual int GetPanpot() { return (0 < ports.size()) ? ports[0].port->GetPanpot() : 0; };
 	virtual int GetClock() { return (0 < ports.size()) ? ports[0].port->GetClock() : 0; };
 	virtual UINT32 GetPhysicalId() { return 0; };
 	virtual CPort* GetSubPort(int idx) { return (idx < ports.size()) ? ports[idx].port : 0; };
@@ -91,11 +97,11 @@ class CSCCIPort : public CPort
 {
 protected:
 	SoundChip* pChip;
-	SoundInterface* pInterface;
+	scciInterface* pInterface;
 	size_t regsize;
 public:
 	CSCCIPort();
-	CSCCIPort(SoundInterface* pif, SoundChip* pchip, size_t maxreg);
+	CSCCIPort(scciInterface* pif, SoundChip* pchip, size_t maxreg);
 	~CSCCIPort(void) {};
 	virtual void write(UINT16 addr, UINT16 data);
 	virtual void writeRaw(UINT16 addr, UINT16 data) { write(addr, data); };
@@ -103,6 +109,8 @@ public:
 	virtual UINT8 status();
 	virtual void reset();
 	virtual int GetClock();
+	virtual int GetPanpot();
+	virtual void GetInterfaceDesc(TCHAR* str, int len);
 	virtual int GetDesc(TCHAR* str, int len);
 };
 
@@ -128,6 +136,8 @@ public:
 	virtual void reset();
 	virtual void flush();
 	virtual int GetClock();
+	virtual int GetPanpot();
+	virtual void GetInterfaceDesc(TCHAR* str, int len);
 	virtual int GetDesc(TCHAR* str, int len);
 };
 

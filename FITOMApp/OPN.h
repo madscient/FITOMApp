@@ -90,7 +90,16 @@ public:
 };
 
 class COPNARhythm : public CRhythmDevice {
-
+protected:
+	//Updater
+	virtual void UpdateVolExp(UINT8 ch);
+	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum = 0) {};
+	virtual void UpdateVoice(UINT8 ch) {};
+	virtual void UpdatePanpot(UINT8 ch);
+	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
+public:
+	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	COPNARhythm(CSoundDevice* parent);
 };
 
 #endif

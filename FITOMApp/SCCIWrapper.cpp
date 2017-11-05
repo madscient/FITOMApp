@@ -63,6 +63,7 @@ int CSCCIWrapper::Init()
 		scciInterface* psi = new scciInterface();
 		psi->psi = pManager->getInterface(i);
 		psi->scs.clear();
+		psi->sii = pManager->getInterfaceInfo(i);
 		int count = psi->psi->getSoundChipCount();
 		for (int j = 0; j<count; j++) {
 			SoundChip* pchip = psi->psi->getSoundChip(j);
@@ -121,6 +122,14 @@ SoundInterface* CSCCIWrapper::getSoundInterface(int ifid)
 	return 0;
 }
 
+scciInterface* CSCCIWrapper::getScciInterface(int ifid)
+{
+	if (ifid >= 0 && ifid < sis.size()) {
+		return sis[ifid];
+	}
+	return 0;
+}
+
 int CSCCIWrapper::getInterfaceIDFromChip(SoundChip* pchip)
 {
 	for (int i = 0; i<sis.size(); i++) {
@@ -132,6 +141,27 @@ int CSCCIWrapper::getInterfaceIDFromChip(SoundChip* pchip)
 	}
 	return -1;
 }
+
+int CSCCIWrapper::getInterfaceIDFromIF(SoundInterface* psi)
+{
+	for (int i = 0; i<sis.size(); i++) {
+		for (int j = 0; j<sis[i]->scs.size(); j++) {
+			if (sis[i]->psi == psi) {
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+int CSCCIWrapper::getInterfaceDesc(TCHAR* str, int len, int id)
+{
+	if (id < sis.size()) {
+		sprintf_s(str, len, _T("%s"), sis[id]->sii->cInterfaceName);
+	}
+	return -1;
+}
+
 
 int CSCCIWrapper::getSlotIDFromChip(int ifid, SoundChip* pchip)
 {

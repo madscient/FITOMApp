@@ -19,6 +19,7 @@ protected:
 	std::vector<SPIINFO> SPIChannel;
 	void SPI_Push(UINT32 index, BYTE data);
 	void SPI_Push(UINT32 index, BYTE* buf, UINT32 length);
+	TCHAR description[96];
 public:
 	CFTSPI();
 	~CFTSPI();
@@ -27,6 +28,7 @@ public:
 	UINT32 GetChannels() { return SPIChannel.size(); };
 	UINT32 GetChannelIndex(UINT32 index);
 	void InitialClear();
+	void GetInterfaceDesc(TCHAR* str, int len);
 	FT_HANDLE GetChannelHandle(UINT32 index);
 	FT_STATUS SPI_OpenChannel(UINT32 index, FT_HANDLE* handle);
 	FT_STATUS SPI_InitChannel(UINT32 index);

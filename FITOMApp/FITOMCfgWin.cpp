@@ -48,7 +48,7 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 			if (chip) {
 				SCCI_SOUND_CHIP_INFO* sci = chip->getSoundChipInfo();
 				ifid = pScci->getInterfaceIDFromChip(chip);
-				SoundInterface* psi = pScci->getSoundInterface(ifid);
+				scciInterface* psi = pScci->getScciInterface(ifid);
 				ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
 				slid = pScci->getSlotIDFromChip(ifid, chip);
 			}
@@ -60,7 +60,7 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 			slid = std::stoi(lstparams.front());
 			lstparams.erase(lstparams.begin());
 			SoundChip* chip = pScci->getSoundChipFromId(ifid, slid);
-			SoundInterface* psi = pScci->getSoundInterface(ifid);
+			scciInterface* psi = pScci->getScciInterface(ifid);
 			if (chip && psi) {
 				ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
 			}

@@ -1,11 +1,12 @@
 #include "STDAFX.H"
+#include "SCCIWrapper.h"
 #include "Port.h"
 
 CSCCIPort::CSCCIPort() : regsize(0), pInterface(0), pChip(0)
 {
 }
 
-CSCCIPort::CSCCIPort(SoundInterface* pif, SoundChip* pchip, size_t maxreg) : pInterface(pif), pChip(pchip), regsize(maxreg)
+CSCCIPort::CSCCIPort(scciInterface* pif, SoundChip* pchip, size_t maxreg) : pInterface(pif), pChip(pchip), regsize(maxreg)
 {
 }
 
@@ -59,6 +60,11 @@ int CSCCIPort::GetClock()
 {
 	SCCI_SOUND_CHIP_INFO* pci = pChip->getSoundChipInfo();
 	return pci->dClock;
+}
+
+void CSCCIPort::GetInterfaceDesc(TCHAR* str, int len)
+{
+	sprintf_s(str, len, _T("%s"), pInterface->sii->cInterfaceName);
 }
 
 

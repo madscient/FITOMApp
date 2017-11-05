@@ -126,6 +126,7 @@ protected:
 	int LoadDrumBank(CDrumBank* bank, LPCTSTR fname);
 	int LoadADPCMBank(int bank, LPCTSTR fname);
 	int LoadSCCWaveBank();
+	virtual int isSpannable(CSoundDevice* src, CSoundDevice* tgt);
 
 public:
 	CFITOMConfig(LPCTSTR strinifile);
