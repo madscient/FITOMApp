@@ -85,8 +85,10 @@ struct ChannelMap {
 	int polyphon;
 };
 
+class CFnumTable;
 class CFITOMConfig {
 protected:
+	CFnumTable* theFnumTable;
 	boost::property_tree::tiptree fitom_ini;
 	CMasterVolumeCtrl* pMasVol;
 	CMidiIn* vMidiIn[MAX_MPUS];

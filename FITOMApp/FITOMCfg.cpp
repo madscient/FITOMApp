@@ -59,6 +59,9 @@ CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : phydevs(0), logdevs(0), pcmdevs
 	for (int i = 0; i < 16; i++) {
 		channelMap[i].device_id = channelMap[i].polyphon = 0;
 	}
+	double pitch = fitom_ini.get<double>(_T("SYSTEM.MasterPitch"), 440.0);
+	theFnumTable = new CFnumTable(pitch);
+	theFnum = *theFnumTable;
 }
 
 CFITOMConfig::~CFITOMConfig()
@@ -374,16 +377,40 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 			AddDevice(new COPL2(pt, fs));
 			break;
 		case DEVICE_OPLL:
-			AddDevice(new COPLL(pt, UINT8(md), fs));
+			{
+				COPLL* pOpll = new COPLL(pt, UINT8(md), fs);
+				AddDevice(pOpll);
+				if (md == 1) {
+					AddDevice(new COPLLRhythm(pOpll));
+				}
+			}
 			break;
 		case DEVICE_OPLL2:
-			AddDevice(new COPLL2(pt, UINT8(md), fs));
+			{
+				COPLL2* pOpll = new COPLL2(pt, UINT8(md), fs);
+				AddDevice(pOpll);
+				if (md == 1) {
+					AddDevice(new COPLLRhythm(pOpll));
+				}
+			}
 			break;
 		case DEVICE_OPLLP:
-			AddDevice(new COPLLP(pt, UINT8(md), fs));
+			{
+				COPLLP* pOpll = new COPLLP(pt, UINT8(md), fs);
+				AddDevice(pOpll);
+				if (md == 1) {
+					AddDevice(new COPLLRhythm(pOpll));
+				}
+			}
 			break;
 		case DEVICE_OPLLX:
-			AddDevice(new COPLLX(pt, UINT8(md), fs));
+			{
+				COPLLX* pOpll = new COPLLX(pt, UINT8(md), fs);
+				AddDevice(pOpll);
+				if (md == 1) {
+					AddDevice(new COPLLRhythm(pOpll));
+				}
+			}
 			break;
 		case DEVICE_OPK:
 			AddDevice(new COPK(pt, fs));

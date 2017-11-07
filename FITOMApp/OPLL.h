@@ -6,6 +6,7 @@
 #include "MIDI.h"
 
 class COPLL : public CSoundDevice {
+	friend class COPLLRhythm;
 protected:
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateVoice(UINT8 ch);
@@ -14,18 +15,10 @@ protected:
 	virtual void UpdateSustain(UINT8 ch);
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-	UINT8 RhythmOnMap;
-	UINT8 RhythmOffMap;
-	static UINT8 RhythmFreq[3];
-	static FNUM RhythmFnum[3];
-	static UINT8 RhythmReg[];
-	static UINT8 RhythmMapCh[];
 public:
 	COPLL(CPort* pt, UINT8 mode, int fsamp, UINT8 devtype=DEVICE_OPLL);
 	virtual void Init();
 	virtual void SetVoice(UINT8 ch, FMVOICE* voice, int update);
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
-	virtual void RhythmOff(UINT8 num);
 	virtual void TimerCallBack(UINT32 tick);
 };
 
@@ -44,6 +37,26 @@ protected:
 	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
 public:
 	COPLL2(CPort* pt, UINT8 mode, int fsamp);
+};
+
+class COPLLRhythm : public CRhythmDevice {
+protected:
+	UINT8 RhythmOnMap;
+	UINT8 RhythmOffMap;
+	static UINT8 RhythmFreq[3];
+	static FNUM RhythmFnum[3];
+	static UINT8 RhythmReg[];
+	static UINT8 RhythmMapCh[];
+	//Updater
+	virtual void UpdateVolExp(UINT8 ch);
+	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum = 0);
+	virtual void UpdateVoice(UINT8 ch) {};
+	virtual void UpdatePanpot(UINT8 ch) {};
+	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
+public:
+	virtual void Init();
+	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	COPLLRhythm(CSoundDevice* parent);
 };
 
 #endif

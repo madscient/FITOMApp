@@ -2,9 +2,7 @@
 #include "Fnum.h"
 #include <math.h>
 
-CFnumTable theFnum;
-
-CFnumTable::CFnumTable()
+CFnumTable::CFnumTable(double pitch) : TuningFrequency(pitch)
 {
 	tablelist.clear();
 }
@@ -53,7 +51,7 @@ const UINT16* CFnumTable::GetFnumTable(int master, int devide, int offset)
 	fti.type = FnumTableType::Fnumber;
 	fti.body = new UINT16[768];
 	for (int i = 0; i < 768; i++) {
-		double freq = 440 * pow(2.0, (double)(i + offset) / 768.0);
+		double freq = TuningFrequency * pow(2.0, (double)(i + offset) / 768.0);
 		double sig = round(freq * (pow(2, 17) / rate));
 		fti.body[i] = UINT16(sig);
 	}
@@ -75,7 +73,7 @@ const UINT16* CFnumTable::GetTPTable(int master, int devide, int offset)
 	fti.type = FnumTableType::TonePeriod;
 	fti.body = new UINT16[768];
 	for (int i = 0; i < 768; i++) {
-		double freq = 440 * pow(2.0, (double)(i + offset) / 768.0);
+		double freq = TuningFrequency * pow(2.0, (double)(i + offset) / 768.0);
 		double sig = round((8 * rate) / freq);
 		fti.body[i] = UINT16(sig);
 	}
@@ -141,7 +139,7 @@ const UINT16* CFnumTable::GetSAATable(int master, int devide, int offset)
 	fti.type = FnumTableType::saa;
 	fti.body = new UINT16[768];
 	for (int i = 0; i < 768; i++) {
-		double freq = 440 * pow(2.0, (double)(i + offset) / 768.0);
+		double freq = TuningFrequency * pow(2.0, (double)(i + offset) / 768.0);
 		double sig = round(256.0 * log2(freq / rate));
 		fti.body[i] = UINT16(sig) & 0xff;
 	}

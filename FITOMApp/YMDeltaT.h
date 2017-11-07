@@ -42,8 +42,6 @@ public:
 	virtual void Init() = 0;
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) { return 0; };
 	virtual void LoadVoice(int prog, UINT8* data, size_t length);
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
-	virtual void RhythmOff(UINT8 num);
 	virtual void TimerCallBack(UINT32 tick) {};
 };
 

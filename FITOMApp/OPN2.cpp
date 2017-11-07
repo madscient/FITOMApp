@@ -161,34 +161,6 @@ void COPNA::Init()
 	SetReg(0x10, 0);
 }
 
-void COPNA::UpdateRhythmVol()
-{
-	UINT8 evol = 63 - Linear2dB(CalcLinearLevel(rhythmvol, 0), RANGE48DB, STEP075DB, 6);
-	if (GetReg(0x11, 0) != evol) {
-		SetReg(0x11, evol);
-	}
-}
-
-void COPNA::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
-{
-	UINT8 evol = 31 - Linear2dB(CalcLinearLevel(vel, 0), RANGE24DB, STEP075DB, 5);
-	if (num < rhythmcap) {
-		pan /= 8;
-		UINT8 chena = 0;
-		if (pan >= 4) { //R
-			chena = 0x40;
-		}
-		else if (pan <= -4) { //L
-			chena = 0x80;
-		}
-		else { //C
-			chena = 0xc0;
-		}
-		SetReg(0x18 + num, chena | evol, 1);	//Instrumental Level
-		SetReg(0x10, (1 << num), 1);
-	}
-}
-
 /*----------------*/
 COPNB::COPNB(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype) : COPN2(pt1, pt2, fsamp, devtype)
 {
@@ -217,4 +189,59 @@ void COPN3L::Init()
 {
 	COPNA::Init();
 	SetReg(0x20, 0x02, 1);
+}
+
+//-----
+COPNARhythm::COPNARhythm(CSoundDevice* pParent) : CRhythmDevice(pParent, DEVICE_OPNA_RHY, 6)
+{
+}
+
+void COPNARhythm::UpdateVolExp(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (attr) {
+		UINT8 evol = 31 - Linear2dB(CalcLinearLevel(attr->velocity, 0), RANGE24DB, STEP075DB, 5);
+		SetReg(0x18 + ch, (GetReg(0x18, 0) & 0xc0) | evol, 1);	//Instrumental Level
+
+		evol = 63 - Linear2dB(CalcLinearLevel(attr->volume, 0), RANGE48DB, STEP075DB, 6);
+		if (GetReg(0x11, 0) != evol) {
+			SetReg(0x11, evol);
+		}
+	}
+}
+
+void COPNARhythm::UpdatePanpot(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (attr) {
+		SINT8 pan = attr->panpot / 8;
+		UINT8 chena = 0;
+		if (pan >= 4) { //R
+			chena = 0x40;
+		}
+		else if (pan <= -4) { //L
+			chena = 0x80;
+		}
+		else { //C
+			chena = 0xc0;
+		}
+		SetReg(0x18 + ch, chena | (GetReg(0x18, 0) & 0x3f), 1);	//Instrumental Level
+	}
+}
+
+void COPNARhythm::UpdateKey(UINT8 ch, UINT8 keyon)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (attr) {
+		SetReg(0x10, (1 << ch), 1);
+	}
+}
+
+UINT8 COPNARhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+{
+	UINT8 ret = 0xff;
+	if (voice) {
+		ret = voice->AL & 0xf;
+	}
+	return ret;
 }

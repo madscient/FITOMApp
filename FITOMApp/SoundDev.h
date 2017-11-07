@@ -369,8 +369,6 @@ protected:
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon) = 0;
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
 	virtual void UpdateFnumber(UINT8 ch, int update = 1) {};
-	//Internal utility
-	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0) { return pParent ? pParent->GetFnumber(ch, offset) : FNUM({ 0,0 }); };
 public:
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) = 0;
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v = 1) { if (pParent) { pParent->SetReg(reg, data, v); } };

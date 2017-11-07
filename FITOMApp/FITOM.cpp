@@ -144,7 +144,7 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 			strncpy(voice->name, pcmprog.progname, 15);
 		}
 		else {
-			std::sprintf(voice->name, "PCM:%03i:%03i", bank, prog);
+			std::sprintf(voice->name, _T("PCM:%03i:%03i"), bank, prog);
 		}
 		return 0;
 	}
@@ -154,7 +154,7 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 		voice->AL = prog;
 		voice->FB = bank;
 		{
-			std::sprintf(voice->name, "OPL4:%03i:%03i", bank, prog);
+			std::sprintf(voice->name, _T("BuiltIn:%03i:%03i"), bank, prog);
 		}
 		return 0;
 	}

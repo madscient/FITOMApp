@@ -75,11 +75,9 @@ public:
 
 class COPNA : public COPN2 {
 protected:
-	virtual void UpdateRhythmVol();
 public:
 	COPNA(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype=DEVICE_OPNA);
 	virtual void Init();
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
 };
 
 class COPN3L : public COPNA {

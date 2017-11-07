@@ -114,19 +114,6 @@ void CYmDelta::StopPCM(UINT8 ch, UINT8 num)
 	SetReg(regmap.control1, 0);
 }
 
-void CYmDelta::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
-{
-	int offset = fnum ? (SINT16)fnum->fnum : 0;
-	StopPCM(0, num);
-	PlayPCM(0, num, CalcVolExpVel(rhythmvol, 127, vel), pan, offset);
-}
-
-void CYmDelta::RhythmOff(UINT8 num)
-{
-	StopPCM(0, num);
-}
-
-
 void CYmDelta::UpdateKey(UINT8 ch, UINT8 keyon)
 {
 	if (ch < chs) {
@@ -334,8 +321,12 @@ void CAdPcm2610A::UpdateVolExp(UINT8 ch)
 	CHATTR* attr = GetChAttribute(ch);
 	UINT8 evol = 31 - Linear2dB(CalcVolExpVel(attr->velocity, attr->express, 127), RANGE24DB, STEP075DB, 5);
 	rhythmvol = attr->volume;
-	UpdateRhythmVol();
 	SetReg(0x08 + ch, (GetReg(0x8 + ch, 0) & 0xe0) | evol, 1);
+
+	evol = 63 - Linear2dB(CalcLinearLevel(rhythmvol, 0), RANGE48DB, STEP075DB, 6);
+	if (GetReg(0x01, 0) != evol) {
+		SetReg(0x01, evol);
+	}
 }
 
 void CAdPcm2610A::UpdateRhythmVol()
