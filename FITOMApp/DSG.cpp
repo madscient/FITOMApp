@@ -83,6 +83,7 @@ void CDSG::UpdateSustain(UINT8 ch)
 	SetReg(0x8 + ch, sus | tmp);
 }
 
+#if 0
 void CDSG::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
 {
 	//SetReg(0x0e, 0x20);
@@ -100,6 +101,8 @@ void CDSG::RhythmOff(UINT8 num)
 		//SetReg(0x10, (~(1 << num) & (GetReg(0x10, 0) & 0x1f)));
 	}
 }
+
+#endif
 
 void CDSG::SetReg(UINT16 reg, UINT8 data, UINT8 v)
 {

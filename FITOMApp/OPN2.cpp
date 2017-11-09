@@ -146,7 +146,6 @@ COPN2L::COPN2L(CPort* pt1, CPort* pt2, int fsamp) : COPN2(pt1, pt2, fsamp, DEVIC
 COPNA::COPNA(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype) : COPN2(pt1, pt2, fsamp, devtype)
 {
 //	COPN::COPN(pt1, fsamp, devtype);
-	rhythmcap = 6;
 }
 
 void COPNA::Init()

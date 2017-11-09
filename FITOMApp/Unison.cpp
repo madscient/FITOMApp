@@ -158,15 +158,6 @@ void CUnison::Reset()
 	}
 }
 
-UINT8 CUnison::GetRhythmCaps()
-{
-	UINT8 ret = 0;
-	if (numchips) {
-		ret = chips[0]->GetRhythmCaps();
-	}
-	return ret;
-}
-
 void CUnison::SetSustain(UINT8 ch, UINT8 sus, int update)
 {
 	for (int i=0; i<numchips; i++) {
@@ -241,13 +232,6 @@ void CUnison::SetLFOMode(UINT8 ch, UINT8 mode, int update)
 {
 	for (int i=0; i<numchips; i++) {
 		chips[i]->SetLFOMode(ch, mode, update);
-	}
-}
-
-void CUnison::SetRhythmVol(UINT8 vol, int update)
-{
-	for (int i=0; i<numchips; i++) {
-		chips[i]->SetRhythmVol(vol, update);
 	}
 }
 
@@ -347,19 +331,5 @@ void CUnison::NoteOff(UINT8 ch)
 {
 	for (int i=0; i<numchips; i++) {
 		chips[0]->NoteOff(ch);
-	}
-}
-
-void CUnison::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
-{
-	for (int i=0; i<numchips; i++) {
-		chips[0]->RhythmOn(num, vel, pan, rv, fnum);
-	}
-}
-
-void CUnison::RhythmOff(UINT8 num)
-{
-	for (int i=0; i<numchips; i++) {
-		chips[0]->RhythmOff(num);
 	}
 }

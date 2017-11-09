@@ -46,7 +46,6 @@ public:
 	virtual CHATTR* GetChAttribute(UINT8 ch) const;
 	virtual void AddDevice(CSoundDevice* chip);
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan=0, FMVOICE* rv=0, FNUM* fnum=0);
 };
 
 class CUnison : public CMultiDevice {
@@ -64,8 +63,6 @@ public:
 
 	virtual void NoteOn(UINT8 ch, UINT8 vel=127);
 	virtual void NoteOff(UINT8 ch);
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
-	virtual void RhythmOff(UINT8 num);
 
 	// Device status
 	virtual void EnableCh(UINT8 ch, UINT8 ena);
@@ -95,7 +92,6 @@ public:
 	virtual void SetMasterVolume(UINT8 vol, int update=1);
 	virtual void SetLFOParam(FMVOICE* voice, int update=1);
 	virtual void SetLFOMode(UINT8 ch, UINT8 mode, int update=1);
-	virtual void SetRhythmVol(UINT8 vol, int update=1);
 
 	virtual void EnableDevPM(UINT8 ch, UINT8 on);
 	virtual void EnableDevAM(UINT8 ch, UINT8 on);

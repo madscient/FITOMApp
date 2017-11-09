@@ -159,18 +159,11 @@ void COPL::UpdateKey(UINT8 ch, UINT8 keyon)
 		tmp = (GET_SL(voice, i) << 4) | (sr & 0xf);
 		SetReg(0x80 + i * 3 + map[ch], tmp, 1);
 	}
-	if (rhythmcap == 4 && ch == 6) {
-		if (keyon) {
-			SetReg(0xbd, (GetReg(0xbd, 0) & 0xc0) | 0x21);
-		}
-		else {
-			SetReg(0xbd, GetReg(0xbd, 0) & 0xfe);
-		}
-	} else {
-		tmp = GetReg(0xb0 + ch, 0) & 0xdf;
-		SetReg(0xb0 + ch, tmp | (keyon ? 0x20 : 0), 1);
-	}
+	tmp = GetReg(0xb0 + ch, 0) & 0xdf;
+	SetReg(0xb0 + ch, tmp | (keyon ? 0x20 : 0), 1);
 }
+
+#if 0
 
 void COPL::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
 {
@@ -200,6 +193,8 @@ void COPL::RhythmOff(UINT8 num)
 		//RhythmOffMap |= (1 << num);
 	}
 }
+
+#endif
 
 void COPL::TimerCallBack(UINT32 tick)
 {

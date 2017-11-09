@@ -116,14 +116,3 @@ UINT8 CSpanDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	}
 	return ret;
 }
-
-void CSpanDevice::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
-{
-	UINT8 cap = chips[0]->GetRhythmCaps();
-	if (cap) {
-		UINT8 dev = num / cap;
-		if (dev < numchips) {
-			chips[dev]->RhythmOn(num % cap, vel, pan, rv, fnum);
-		}
-	}
-}

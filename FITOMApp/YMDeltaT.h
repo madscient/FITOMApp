@@ -78,9 +78,6 @@ public:
 	CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev = DEVICE_OPNB);
 	virtual void Init();
 	virtual void LoadVoice(int prog, UINT8* data, size_t length);
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
-	virtual void RhythmOff(UINT8 num);
-	virtual void UpdateRhythmVol();
 	virtual void UpdateVolExp(UINT8 ch);
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 	virtual void UpdateVoice(UINT8 ch);

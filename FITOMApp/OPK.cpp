@@ -16,10 +16,6 @@ COPK::COPK(CPort* pt, int fsamp)
 	: CSoundDevice(DEVICE_OPK, 8, fsamp, 108, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x90)
 {
 	ops = 2;
-	rhythmcap = 16;
-	for (int i=0; i<4; i++) {
-		RhythmStat[i] = 0xff;
-	}
 	NoteOffset = -69;
 }
 
@@ -115,56 +111,49 @@ void COPK::UpdatePanpot(UINT8 ch)
 	}
 }
 
-UINT8 COPK::GetRhythmCh(UINT8 num)
-{
-	UINT8 rch = 0xff;
-	for (int i=0; i<4; i++) {
-		if (RhythmStat[i] ==num) {
-			SetReg(0x84, GetReg(0x84, 0) & ~(0x1 << i), 1);
-			rch = i;
-		}
-	}
-	if (rch == 0xff) {
-		for (int i=0; i<4; i++) {
-			if (RhythmStat[i] == -1) {
-				RhythmStat[i] = num;
-				rch = i;
-			}
-		}
-	}
-	if (rch == 0xff) {
-		SetReg(0x84, GetReg(0x84, 0) & 0xfe, 1);
-		RhythmStat[0] = num;
-		rch = 0;
-	}
-	return rch;
-}
-
-void COPK::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
-{
-	//SetReg(0xbd, 0x20);
-	if (num < rhythmcap) {
-		UINT8 evol = Linear2dB(CalcLinearLevel(vel, 127-rhythmvol), RANGE48DB, STEP150DB, 4);
-		UINT8 rch = GetRhythmCh(num);
-		SetReg(0x80 + rch, (num << 4) | evol, 1);
-		UINT8 tmp = GetReg(0x84, 0) & ~(0x1 << rch);
-		SetReg(0x84, tmp | (0x1 << rch) , 1);
-	}
-}
-
-void COPK::RhythmOff(UINT8 num)
-{
-	if (num < rhythmcap) {
-		for (int i=0; i<4; i++) {
-			if (RhythmStat[i] == num) {
-				SetReg(0x84, GetReg(0x84, 0) & ~(0x1 << i), 1);
-				RhythmStat[i] = 0xff;
-			}
-		}
-	}
-}
-
 COPK2::COPK2(CPort* pt, int fsamp) : COPK(pt, fsamp)
 {
 	SetDevice(DEVICE_OPK2);
+}
+
+
+//-----
+COPKRhythm::COPKRhythm(CSoundDevice* parent) : CRhythmDevice(pParent, DEVICE_OPK_RHY, 4)
+{
+}
+
+void COPKRhythm::Init()
+{
+}
+
+void COPKRhythm::UpdateVolExp(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (attr) {
+		UINT8 evol = Linear2dB(CalcLinearLevel(attr->velocity, 127 - attr->volume), RANGE48DB, STEP150DB, 4);
+		SetReg(0x80 + ch, (GetReg(0x80 + ch, 0) & 0xf0) | evol, 1);
+	}
+}
+
+void COPKRhythm::UpdateVoice(UINT8 ch)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (attr) {
+		UINT8 num = attr->GetVoice()->AL & 0xf;
+		SetReg(0x80 + ch, (num << 4) | (GetReg(0x80 + ch, 0) & 0xf), 1);
+	}
+}
+
+void COPKRhythm::UpdateKey(UINT8 ch, UINT8 keyon)
+{
+	CHATTR* attr = GetChAttribute(ch);
+	if (attr) {
+		UINT8 tmp = GetReg(0x84, 0) & ~(0x1 << ch);
+		SetReg(0x84, tmp | ((keyon ? 1 : 0) << ch), 1);
+	}
+}
+
+UINT8 COPKRhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+{
+	return CSoundDevice::QueryCh(parent, voice, mode);
 }

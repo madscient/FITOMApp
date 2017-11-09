@@ -256,7 +256,6 @@ CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
 	: CAdPcmBase(DEVICE_ADPCMA, pt, 0x30, fsamp, 0, YMDELTA_OFFSET, memsize, 6, pardev)
 {
 	boundary = 0x100000;
-	rhythmcap = 6;
 }
 
 void CAdPcm2610A::Init()
@@ -291,24 +290,6 @@ void CAdPcm2610A::LoadVoice(int prog, UINT8* data, size_t length)
 	}
 }
 
-void CAdPcm2610A::RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum)
-{
-	if (num < rhythmcap) {
-		SetVelocity(num, vel);
-		SetPanpot(num, pan);
-		SetVoice(num, rv);
-		NoteOn(num, vel);
-	}
-}
-
-void CAdPcm2610A::RhythmOff(UINT8 num)
-{
-	if (num < rhythmcap) {
-		NoteOff(num);
-	}
-}
-
-
 void CAdPcm2610A::UpdateKey(UINT8 ch, UINT8 keyon)
 {
 	if (keyon) {
@@ -320,18 +301,9 @@ void CAdPcm2610A::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	UINT8 evol = 31 - Linear2dB(CalcVolExpVel(attr->velocity, attr->express, 127), RANGE24DB, STEP075DB, 5);
-	rhythmvol = attr->volume;
 	SetReg(0x08 + ch, (GetReg(0x8 + ch, 0) & 0xe0) | evol, 1);
 
-	evol = 63 - Linear2dB(CalcLinearLevel(rhythmvol, 0), RANGE48DB, STEP075DB, 6);
-	if (GetReg(0x01, 0) != evol) {
-		SetReg(0x01, evol);
-	}
-}
-
-void CAdPcm2610A::UpdateRhythmVol()
-{
-	UINT8 evol = 63 - Linear2dB(CalcLinearLevel(rhythmvol, 0), RANGE48DB, STEP075DB, 6);
+	evol = 63 - Linear2dB(CalcLinearLevel(attr->volume, 0), RANGE48DB, STEP075DB, 6);
 	if (GetReg(0x01, 0) != evol) {
 		SetReg(0x01, evol);
 	}

@@ -202,7 +202,6 @@ public:
 	virtual void SetDevAMDepth(UINT8 ch, UINT8 dep) = 0;
 	virtual void SetDevPMRate(UINT8 ch, UINT8 rate) = 0;
 	virtual void SetDevAMRate(UINT8 ch, UINT8 rate) = 0;
-	virtual UINT8 GetRhythmCaps() = 0;
 
 	// Physical accesses
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v=1) = 0;
@@ -213,8 +212,6 @@ public:
 	// Note control interfaces (polymorph)
 	virtual void NoteOn(UINT8 ch, UINT8 vel=127) = 0;
 	virtual void NoteOff(UINT8 ch) = 0;
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan=0, FMVOICE* rv=0, FNUM* fnum=0) = 0;
-	virtual void RhythmOff(UINT8 num) = 0;
 
 	// Ch Property settings
 	virtual void SetSustain(UINT8 ch, UINT8 sus, int update=1) = 0;
@@ -228,7 +225,6 @@ public:
 	virtual void SetMasterVolume(UINT8 vol, int update=1) = 0;
 	virtual void SetLFOParam(FMVOICE* voice, int update=1) = 0;
 	virtual void SetLFOMode(UINT8 ch, UINT8 mode, int update=1) = 0;
-	virtual void SetRhythmVol(UINT8 vol, int update=1) = 0;
 	virtual void OverrideAttribute(CHATTR* attr) = 0;
 
 	//For Monitoring
@@ -258,9 +254,7 @@ protected:
 	UINT8	potency;	//
 	UINT8	ops;
 	UINT8	volume;
-	UINT8	rhythmvol;
 	UINT8	prior_ch;
-	UINT8	rhythmcap;
 	CPort*	port;
 	CHATTR*	chattr;
 	UINT8*	regbak;
@@ -275,7 +269,6 @@ protected:
 	virtual void UpdateVoice(UINT8 ch) = 0;
 	virtual void UpdatePanpot(UINT8 ch) = 0;
 	virtual void UpdateOpLFO(UINT8 ch, UINT8 op);
-	virtual void UpdateRhythmVol() {};
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon) = 0;
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) = 0;
 	virtual void UpdateFnumber(UINT8 ch, int update=1);
@@ -288,8 +281,6 @@ public:
 
 	virtual void NoteOn(UINT8 ch, UINT8 vel=127);
 	virtual void NoteOff(UINT8 ch);
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum) {};
-	virtual void RhythmOff(UINT8 num) {};
 	virtual void Damp(UINT8 ch) { NoteOff(ch); };
 
 	// Device status
@@ -307,7 +298,6 @@ public:
 	virtual CPort* GetDevPort() { return port; };
 	virtual void Reset();
 	virtual void Init() = 0;
-	virtual UINT8 GetRhythmCaps() { return rhythmcap; };
 	virtual void SetPresetTone(UINT8 tn, FMVOICE* voice) {};
 	virtual void UpdatePresetTone() {};
 
@@ -328,7 +318,6 @@ public:
 	virtual void SetMasterVolume(UINT8 vol, int update=1);
 	virtual void SetLFOParam(FMVOICE* voice, int update=1) {};
 	virtual void SetLFOMode(UINT8 ch, UINT8 mode, int update=1) {};
-	virtual void SetRhythmVol(UINT8 vol, int update=1);
 
 	virtual void EnableDevPM(UINT8 ch, UINT8 on) {};
 	virtual void EnableDevAM(UINT8 ch, UINT8 on) {};
