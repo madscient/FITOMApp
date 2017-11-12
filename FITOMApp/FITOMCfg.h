@@ -85,10 +85,8 @@ struct ChannelMap {
 	int polyphon;
 };
 
-class CFnumTable;
 class CFITOMConfig {
 protected:
-	CFnumTable* theFnumTable;
 	boost::property_tree::tiptree fitom_ini;
 	CMasterVolumeCtrl* pMasVol;
 	CMidiIn* vMidiIn[MAX_MPUS];
@@ -159,12 +157,12 @@ public:
 	const UINT8 GetLogDevs() const { return logdevs; };
 	const UINT8 GetPhyDevs() const { return phydevs; };
 	const UINT8 GetPcmDevs() const { return pcmdevs; };
-	CMidiIn* GetMidiIn(UINT8 i) const { return (i<mpus) ? vMidiIn[i] : NULL; };
+	CMidiIn* GetMidiIn(UINT8 i) const { return (i < mpus) ? vMidiIn[i] : NULL; };
 	CMidiOut* GetMidiOut(UINT8 i) const { return NULL; };
 	//CMidiInst* GetMidiInst(UINT8 i) const { return (i<mpus) ? vMidiInst[i] : NULL; };
-	CSoundDevice* GetLogDeviceFromIndex(UINT8 i) const { return (i<logdevs) ? vLogDev[i] : NULL; };
-	CSoundDevice* GetPhysDeviceFromIndex(UINT8 i) const { return (i<phydevs) ? vPhyDev[i] : NULL; };
-	CAdPcmBase* GetPCMDeviceFromIndex(UINT8 i) const { return (i<pcmdevs) ? vPcmDev[i] : NULL; };
+	CSoundDevice* GetLogDeviceFromIndex(UINT8 i) const { return (i < logdevs) ? vLogDev[i] : NULL; };
+	CSoundDevice* GetPhysDeviceFromIndex(UINT8 i) const { return (i < phydevs) ? vPhyDev[i] : NULL; };
+	CAdPcmBase* GetPCMDeviceFromIndex(UINT8 i) const { return (i < pcmdevs) ? vPcmDev[i] : NULL; };
 	CAdPcmBase* GetPCMDeviceFromID(UINT32 id);
 	CSoundDevice* GetPhysDeviceFromID(UINT32 id) const;
 	CSoundDevice* GetLogDeviceFromID(UINT8 devid) const;
@@ -224,3 +222,4 @@ public:
 	CSCCIWrapper* GetScci() { return pScci; };
 	CFTSPI* GetFTspi() { return pFtspi; };
 };
+

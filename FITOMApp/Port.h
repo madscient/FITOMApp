@@ -4,6 +4,7 @@
 #ifdef _WIN32
 #include "scci.h"
 #include "SCCIDefines.h"
+#include "SCCIWrapper.h"
 #include "FTSPI.h"
 #endif
 

@@ -2,7 +2,9 @@
 #include "Fnum.h"
 #include <math.h>
 
-CFnumTable::CFnumTable(double pitch) : TuningFrequency(pitch)
+CFnumTable theFnum;
+
+CFnumTable::CFnumTable()
 {
 	tablelist.clear();
 }

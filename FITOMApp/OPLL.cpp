@@ -186,7 +186,7 @@ void COPLLRhythm::UpdateVolExp(UINT8 ch)
 	}
 }
 
-void COPLLRhythm::UpdateFreq(UINT8 ch, const FNUM* fnum = 0)
+void COPLLRhythm::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	UINT8 vch = RhythmMapCh[ch];
 	fnum = fnum ? fnum : &RhythmFnum[vch - 6];
