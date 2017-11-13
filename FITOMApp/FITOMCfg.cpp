@@ -60,8 +60,7 @@ CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : phydevs(0), logdevs(0), pcmdevs
 		channelMap[i].device_id = channelMap[i].polyphon = 0;
 	}
 	double pitch = fitom_ini.get<double>(_T("SYSTEM.MasterPitch"), 440.0);
-	theFnumTable = new CFnumTable(pitch);
-	theFnum = *theFnumTable;
+	theFnum.SetMasterPitch(pitch);
 }
 
 CFITOMConfig::~CFITOMConfig()

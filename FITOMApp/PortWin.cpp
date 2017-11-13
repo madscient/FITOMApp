@@ -182,6 +182,16 @@ int CFTSPIPort::GetDesc(TCHAR* str, int len)
 	return sprintf_s(str, len, _T("FTSPI:%i:%i"), chidx, csidx);
 }
 
+int CFTSPIPort::GetPanpot()
+{
+	return 0;
+}
+
+void CFTSPIPort::GetInterfaceDesc(TCHAR* str, int len)
+{
+	pInterface->GetInterfaceDesc(str, len);
+}
+
 CDebugPort::CDebugPort() : chipname(0), regsize(0), regbak(0)
 {
 }

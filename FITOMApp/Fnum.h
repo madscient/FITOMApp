@@ -20,8 +20,9 @@ protected:
 	std::vector<FnumTableInfo> tablelist;
 	double TuningFrequency;
 public:
-	CFnumTable(double pitch);
+	CFnumTable();
 	~CFnumTable();
+	void SetMasterPitch(double pitch) { TuningFrequency = pitch; };
 	const UINT16* GetTable(FnumTableType type, int master, int devide, int offset);
 	const UINT16* GetFnumTable(int master, int devide, int offset);
 	const UINT16* GetTPTable(int master, int devide, int offset);
@@ -30,4 +31,4 @@ public:
 	const UINT16* GetSAATable(int master, int devide, int offset);
 };
 
-extern CFnumTable& theFnum;
+extern CFnumTable theFnum;
