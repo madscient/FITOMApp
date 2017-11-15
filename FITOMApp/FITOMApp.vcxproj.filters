@@ -228,6 +228,9 @@
     <ClInclude Include="SysCtlDlg.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -406,6 +409,9 @@
     </ClCompile>
     <ClCompile Include="SysCtlDlg.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

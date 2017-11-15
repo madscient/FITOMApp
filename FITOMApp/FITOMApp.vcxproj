@@ -159,6 +159,7 @@
     <ClInclude Include="TestButton.h" />
     <ClInclude Include="TextVoiceEditDlg.h" />
     <ClInclude Include="TYPES.H" />
+    <ClInclude Include="util.h" />
     <ClInclude Include="VoiceEditDlg.h" />
     <ClInclude Include="VoicePicker.h" />
     <ClInclude Include="FITOMApp.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="TestButton.cpp" />
     <ClCompile Include="TextVoiceEditDlg.cpp" />
     <ClCompile Include="Unison.cpp" />
+    <ClCompile Include="util.cpp" />
     <ClCompile Include="VoiceBank.cpp" />
     <ClCompile Include="VoiceEditDlg.cpp" />
     <ClCompile Include="VoicePicker.cpp" />

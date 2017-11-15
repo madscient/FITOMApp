@@ -33,8 +33,9 @@
 #include "MAx.h"
 #include "codec.h"
 #include "MasterVolumeCtrl.h"
+#include "util.h"
 
-CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : phydevs(0), logdevs(0), pcmdevs(0), mpus(0)
+CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : mpus(0)
 , pProgressMessage(0), pProgressFilename(0), pMasVol(0), UsingVoiceGroup(0)
 {
 	boost::property_tree::read_ini(_T(".\\FITOM.ini"), fitom_ini);
@@ -180,8 +181,7 @@ CPcmBank* CFITOMConfig::GetPcmBank(int prog)
 CAdPcmBase* CFITOMConfig::AddDevice(CAdPcmBase* pdev)
 {
 	pdev->Init();
-	//vPhyDev[phydevs++] = pdev;
-	vPcmDev[pcmdevs++] = pdev;
+	vPcmDev.push_back(pdev);
 	return pdev;
 }
 
@@ -189,12 +189,12 @@ CSoundDevice* CFITOMConfig::AddDevice(CSoundDevice* pdev)
 {
 	TCHAR tmp1[80], tmp2[80], tmp3[80], tmp4[80];
 	pdev->Init();
-	if (logdevs >= MAX_DEVS || !pdev) return 0;
+	if (!pdev) return 0;
 	pdev->GetDescriptor(tmp1, 80);
 	if (pdev->GetDevPort()) {
 		pdev->GetDevPort()->GetDesc(tmp2, 80);
 	}
-	vPhyDev[phydevs++] = pdev;
+	vPhyDev.push_back(pdev);
 	for (int i = 0; i<logdevs; i++) {
 		if (pdev->GetDevice() == vLogDev[i]->GetDevice()	//デバイスタイプが一致
 
@@ -215,8 +215,8 @@ CSoundDevice* CFITOMConfig::AddDevice(CSoundDevice* pdev)
 			return vLogDev[i];
 		}
 	}
-	fprintf(stderr, _T("Dev.%i: %s port=%s\n"), logdevs, tmp1, tmp2);
-	vLogDev[logdevs++] = pdev;
+	fprintf(stderr, _T("Dev.%i: %s port=%s\n"), vLogDev.size(), tmp1, tmp2);
+	vLogDev.push_back(pdev);
 	UsingVoiceGroup |= CFITOM::GetDeviceVoiceGroupMask(pdev->GetDevice());
 	return pdev;
 }
@@ -451,7 +451,7 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 
 CSoundDevice* CFITOMConfig::GetPhysDeviceFromID(UINT32 id) const
 {
-	for (int i = 0; i < phydevs; i++) {
+	for (int i = 0; i < vPcmDev.size(); i++) {
 		CPort* pt = (vPhyDev[i]) ? vPhyDev[i]->GetDevPort() : 0;
 		if (pt && pt->GetPhysicalId() == id) {
 			return vPhyDev[i];
@@ -462,34 +462,24 @@ CSoundDevice* CFITOMConfig::GetPhysDeviceFromID(UINT32 id) const
 
 const int CFITOMConfig::GetLogDeviceIDFromIndex(UINT8 i) const
 {
-	return (i < logdevs) ? vLogDev[i]->GetDevice() : DEVICE_NONE;
+	return (i < vLogDev.size()) ? vLogDev[i]->GetDevice() : DEVICE_NONE;
 }
 
 int CFITOMConfig::GetLogDeviceIndex(CSoundDevice* pdev)
 {
-	for (int i = 0; i<logdevs; i++) {
-		if (pdev == vLogDev[i]) {
-			return i;
-		}
-	}
-	return -1;
+	return vector_finder<CSoundDevice*>(vLogDev, pdev);
 }
 
 int CFITOMConfig::GetLogDeviceIndex(UINT8 devid)
 {
-	for (int i = 0; i<logdevs; i++) {
-		if (vLogDev[i]->GetDevice() == devid) {
-			return i;
-		}
-	}
-	return -1;
+	return vector_finder<CSoundDevice, UINT8>(vLogDev, devid, &CSoundDevice::GetDevice);
 }
 
 CSoundDevice* CFITOMConfig::GetLogDeviceFromID(UINT8 devid) const
 {
 	CSoundDevice* ret = 0;
 	if (devid != DEVICE_RHYTHM) {
-		for (int i = 0; i < logdevs; i++) {
+		for (int i = 0; i < vLogDev.size(); i++) {
 			if (vLogDev[i]->GetDevice() == devid) {
 				ret = vLogDev[i];
 				break;
@@ -499,7 +489,7 @@ CSoundDevice* CFITOMConfig::GetLogDeviceFromID(UINT8 devid) const
 			DWORD* cmplst = CFITOM::GetCompatiList(devid);
 			if (cmplst) {
 				for (int k = 0; (cmplst[k] != DEVICE_NONE) && (ret == 0); k++) {
-					for (int i = 0; i < logdevs; i++) {
+					for (int i = 0; i < vLogDev.size(); i++) {
 						if (vLogDev[i]->GetDevice() == cmplst[k]) {
 							ret = vLogDev[i];
 							break;
@@ -515,7 +505,7 @@ CSoundDevice* CFITOMConfig::GetLogDeviceFromID(UINT8 devid) const
 CAdPcmBase* CFITOMConfig::GetPCMDeviceFromID(UINT32 devid)
 {
 	CAdPcmBase* ret = 0;
-	for (int i = 0; i<pcmdevs; i++) {
+	for (int i = 0; i<vPcmDev.size(); i++) {
 		if (devid == GetDeviceUniqID(vPcmDev[i])) {
 			ret = vPcmDev[i];
 			break;
@@ -526,22 +516,12 @@ CAdPcmBase* CFITOMConfig::GetPCMDeviceFromID(UINT32 devid)
 
 int CFITOMConfig::GetPcmDeviceIndex(CAdPcmBase* pdev)
 {
-	for (int i = 0; i<pcmdevs; i++) {
-		if (pdev == vPcmDev[i]) {
-			return i;
-		}
-	}
-	return -1;
+	return vector_finder<CAdPcmBase*>(vPcmDev, pdev);
 }
 
 int CFITOMConfig::GetPcmDeviceIndex(UINT32 devid)
 {
-	for (int i = 0; i<pcmdevs; i++) {
-		if (vPcmDev[i]->GetDevice() == devid) {
-			return i;
-		}
-	}
-	return -1;
+	return vector_finder<CAdPcmBase, UINT8>(vPcmDev, devid, &CAdPcmBase::GetDevice);
 }
 
 CSoundDevice* CFITOMConfig::GetDeviceFromUniqID(UINT32 uid)
@@ -578,7 +558,7 @@ const TCHAR* CFITOMConfig::GetBankName(UINT32 devid, UINT32 bank)
 {
 	const TCHAR* ret = 0;
 	if (isPcmDevice(devid)) {
-		if (bank < pcmdevs) {
+		if (bank < vPcmDev.size()) {
 			ret = vPcmBank[bank]->GetBankName();
 		}
 	}
@@ -602,7 +582,7 @@ int CFITOMConfig::GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* na
 	int ret = 0;
 	*name = _T('\0');
 	if (isPcmDevice(devid)) {
-		if (bank < pcmdevs) {
+		if (bank < vPcmDev.size()) {
 			PCMPROG pcmprog;
 			vPcmBank[bank]->GetVoice(prog, &pcmprog);
 			tcsncpy(name, pcmprog.progname, count);

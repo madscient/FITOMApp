@@ -91,9 +91,13 @@ protected:
 	CMasterVolumeCtrl* pMasVol;
 	CMidiIn* vMidiIn[MAX_MPUS];
 	//CMidiInst* vMidiInst[MAX_MPUS];
-	CSoundDevice* vPhyDev[MAX_DEVS];
-	CSoundDevice* vLogDev[MAX_DEVS];
-	CAdPcmBase* vPcmDev[MAX_DEVS];
+	std::vector<CSoundDevice*> vPhyDev;
+	std::vector<CSoundDevice*> vLogDev;
+	std::vector<CAdPcmBase*> vPcmDev;
+	std::vector<CPort*> vPort;
+	//CSoundDevice* vPhyDev[MAX_DEVS];
+	//CSoundDevice* vLogDev[MAX_DEVS];
+	//CAdPcmBase* vPcmDev[MAX_DEVS];
 	CFMBank* vOpmBank[MAX_BANK];	//OPM/OPP/OPZ
 	CFMBank* vOpnBank[MAX_BANK];	//OPN/OPNA/OPN2/etc...
 	CFMBank* vOpl2Bank[MAX_BANK];	//OPL/OPL2/MA-2(2OP)/etc...
@@ -104,9 +108,6 @@ protected:
 	CPcmBank* vPcmBank[MAX_BANK];
 	CDrumBank* vDrumBank[MAX_BANK];
 	SCCWAVE vSccWaveForm[64];
-	int phydevs;
-	int logdevs;
-	int pcmdevs;
 	int mpus;
 	int MIDIClockCh;
 	ChannelMap channelMap[16];
@@ -154,15 +155,15 @@ public:
 	const TCHAR* GetBankName(UINT32 devid, UINT32 bank);
 	const UINT8 GetMidiInputs() const { return mpus; };
 	const UINT8 GetMidiOutputs() const { return 0; };
-	const UINT8 GetLogDevs() const { return logdevs; };
-	const UINT8 GetPhyDevs() const { return phydevs; };
-	const UINT8 GetPcmDevs() const { return pcmdevs; };
+	const UINT8 GetLogDevs() const { return vLogDev.size(); };
+	const UINT8 GetPhyDevs() const { return vPhyDev.size(); };
+	const UINT8 GetPcmDevs() const { return vPcmDev.size(); };
 	CMidiIn* GetMidiIn(UINT8 i) const { return (i < mpus) ? vMidiIn[i] : NULL; };
 	CMidiOut* GetMidiOut(UINT8 i) const { return NULL; };
 	//CMidiInst* GetMidiInst(UINT8 i) const { return (i<mpus) ? vMidiInst[i] : NULL; };
-	CSoundDevice* GetLogDeviceFromIndex(UINT8 i) const { return (i < logdevs) ? vLogDev[i] : NULL; };
-	CSoundDevice* GetPhysDeviceFromIndex(UINT8 i) const { return (i < phydevs) ? vPhyDev[i] : NULL; };
-	CAdPcmBase* GetPCMDeviceFromIndex(UINT8 i) const { return (i < pcmdevs) ? vPcmDev[i] : NULL; };
+	CSoundDevice* GetLogDeviceFromIndex(UINT8 i) const { return (i < vLogDev.size()) ? vLogDev[i] : NULL; };
+	CSoundDevice* GetPhysDeviceFromIndex(UINT8 i) const { return (i < vPhyDev.size()) ? vPhyDev[i] : NULL; };
+	CAdPcmBase* GetPCMDeviceFromIndex(UINT8 i) const { return (i < vPcmDev.size()) ? vPcmDev[i] : NULL; };
 	CAdPcmBase* GetPCMDeviceFromID(UINT32 id);
 	CSoundDevice* GetPhysDeviceFromID(UINT32 id) const;
 	CSoundDevice* GetLogDeviceFromID(UINT8 devid) const;
