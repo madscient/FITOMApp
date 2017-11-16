@@ -286,7 +286,8 @@ public:
 	// Device status
 	virtual void SetDevice(UINT8 devid);
 	virtual UINT8 GetDevice() { return device; };
-	virtual UINT8 GetChipCouont() { return 1; };
+	virtual UINT8 GetChipCount() { return 1; };
+	virtual int GetLocation();
 	virtual void EnableCh(UINT8 ch, UINT8 ena);
 	virtual UINT8 AllocCh(CMidiCh* parent, FMVOICE* voice = 0);
 	virtual UINT8 Assign(UINT8 ch, CMidiCh* parent, FMVOICE* voice);

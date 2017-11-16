@@ -182,6 +182,10 @@ CSoundDevice::~CSoundDevice()
 	}
 }
 
+int CSoundDevice::GetLocation()
+{
+}
+
 void CSoundDevice::OverrideAttribute(ISoundDevice::CHATTR* attr)
 {
 	delete[] chattr;

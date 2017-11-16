@@ -178,6 +178,41 @@ CPcmBank* CFITOMConfig::GetPcmBank(int prog)
 	return ret;
 }
 
+//return value:
+//  0: register as single
+//  1: register as spanned
+//  2: register as stereo
+// -1: not to be registered
+int CFITOMConfig::isSpannable(CSoundDevice* src, CSoundDevice* tgt)
+{
+	CPort* srcport = src->GetDevPort();
+	CPort* tgtport = tgt->GetDevPort();
+	TCHAR srcdesc[80], tgtdesc[80];
+	srcport->GetInterfaceDesc(srcdesc, _countof(srcdesc));
+	tgtport->GetInterfaceDesc(tgtdesc, _countof(tgtdesc));
+	if (src->GetDevice() == tgt->GetDevice()) {
+		//同じデバイス
+		if (tcscmp(srcdesc, tgtdesc) == 0) {
+			//同じI/F
+			int srcloc = srcport->GetPanpot();
+			int tgtloc = tgtport->GetPanpot();
+			if ((srcloc == 1 && tgtloc == 2) || (srcloc == 2 && tgtloc == 1)) {
+				//左･右または右･左の組み合わせならステレオとして束ねる
+				return 2;
+			}
+			else {
+				return 1;
+			}
+		}
+		else {
+			//異なるI/Fの同デバイスは登録しない
+			return -1;
+		}
+	}
+	//単独で登録
+	return 0;
+}
+
 CAdPcmBase* CFITOMConfig::AddDevice(CAdPcmBase* pdev)
 {
 	pdev->Init();

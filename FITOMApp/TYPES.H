@@ -74,6 +74,8 @@ typedef PCTSTR LPCTSTR;
 #define tcsncpy wcsncpy
 #define tcslen wcslen
 #define tifstream wifstream
+#define tcscmpn wcsncmp
+#define tcscmp wcscmp
 #else
 #define tstring string
 #define terr cerr
@@ -82,6 +84,8 @@ typedef PCTSTR LPCTSTR;
 #define tcsncpy strncpy
 #define tcslen strlen
 #define tifstream ifstream
+#define tcscmpn strncmp
+#define tcscmp strcmp
 #endif
 
 #endif
