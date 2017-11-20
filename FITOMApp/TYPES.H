@@ -82,6 +82,7 @@ typedef PCTSTR LPCTSTR;
 #define generic_tstring generic_string
 #define tiptree iptree
 #define tcsncpy strncpy
+#define tcscpy strcpy
 #define tcslen strlen
 #define tifstream ifstream
 #define tcscmpn strncmp

@@ -85,6 +85,13 @@ struct ChannelMap {
 	int polyphon;
 };
 
+struct PortInfo {
+	TCHAR ifname[16];
+	DWORD ifid;
+	DWORD slid;
+	CPort* port;
+};
+
 class CFITOMConfig {
 protected:
 	boost::property_tree::tiptree fitom_ini;
@@ -94,7 +101,7 @@ protected:
 	std::vector<CSoundDevice*> vPhyDev;
 	std::vector<CSoundDevice*> vLogDev;
 	std::vector<CAdPcmBase*> vPcmDev;
-	std::vector<CPort*> vPort;
+	std::vector<PortInfo> vPort;
 	//CSoundDevice* vPhyDev[MAX_DEVS];
 	//CSoundDevice* vLogDev[MAX_DEVS];
 	//CAdPcmBase* vPcmDev[MAX_DEVS];
@@ -127,6 +134,7 @@ protected:
 	int LoadDrumBank(CDrumBank* bank, LPCTSTR fname);
 	int LoadADPCMBank(int bank, LPCTSTR fname);
 	int LoadSCCWaveBank();
+	CPort* FindPort(PortInfo& pinf);
 	virtual int isSpannable(CSoundDevice* src, CSoundDevice* tgt);
 
 public:

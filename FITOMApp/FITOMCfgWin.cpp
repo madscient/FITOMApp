@@ -29,8 +29,7 @@ CFITOMConfigWin32::~CFITOMConfigWin32()
 CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 {
 	CPort* ret = 0;
-	DWORD ifid;
-	DWORD slid;
+	PortInfo pinf;
 	std::tstring strparams(params);
 	std::tstring striftype;
 	std::tstring strportdef;
@@ -39,6 +38,8 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 	if (lstparams.size() < 2) { return 0; }
 	striftype = boost::trim_copy<std::tstring>(lstparams.front());
 	lstparams.erase(lstparams.begin());
+	tcscpy(pinf.ifname, striftype.c_str());
+
 	if (striftype.compare(_T("SCCI")) == 0) {
 		SC_CHIP_TYPE chiptype = pScci->getScChipType(devtype);
 		strportdef = boost::trim_copy<std::tstring>(lstparams.front());
@@ -47,39 +48,58 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 			SoundChip* chip = pScci->getSoundChipFromType(chiptype);
 			if (chip) {
 				SCCI_SOUND_CHIP_INFO* sci = chip->getSoundChipInfo();
-				ifid = pScci->getInterfaceIDFromChip(chip);
-				scciInterface* psi = pScci->getScciInterface(ifid);
-				ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
-				slid = pScci->getSlotIDFromChip(ifid, chip);
+				pinf.ifid = pScci->getInterfaceIDFromChip(chip);
+				scciInterface* psi = pScci->getScciInterface(pinf.ifid);
+				ret = FindPort(pinf);
+				if (ret) {
+					return ret;
+				}
+				else {
+					ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
+				}
+				pinf.slid = pScci->getSlotIDFromChip(pinf.ifid, chip);
 			}
 		}
 		else {
 			if (lstparams.size() < 2) { return 0; }
-			ifid = std::stoi(lstparams.front());
+			pinf.ifid = std::stoi(lstparams.front());
 			lstparams.erase(lstparams.begin());
-			slid = std::stoi(lstparams.front());
+			pinf.slid = std::stoi(lstparams.front());
 			lstparams.erase(lstparams.begin());
-			SoundChip* chip = pScci->getSoundChipFromId(ifid, slid);
-			scciInterface* psi = pScci->getScciInterface(ifid);
+			SoundChip* chip = pScci->getSoundChipFromId(pinf.ifid, pinf.slid);
+			scciInterface* psi = pScci->getScciInterface(pinf.ifid);
 			if (chip && psi) {
-				ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
+				ret = FindPort(pinf);
+				if (ret) {
+					return ret;
+				}
+				else {
+					ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
+				}
 			}
 		}
 	}
 	if (striftype.compare(_T("FTSPI")) == 0 && pFtspi->IsValid()) {
 		strportdef = boost::trim_copy<std::tstring>(lstparams.front());
 		if (lstparams.size() < 2) { return 0; }
-		ifid = std::stoi(lstparams.front());	//MPSSE_SPI CH No.
+		pinf.ifid = std::stoi(lstparams.front());	//MPSSE_SPI CH No.
 		lstparams.erase(lstparams.begin());
-		slid = std::stoi(lstparams.front());	//MPSSE_SPI CS No.
+		pinf.slid = std::stoi(lstparams.front());	//MPSSE_SPI CS No.
 		lstparams.erase(lstparams.begin());
-		ret = new CFTSPIPort(pFtspi, ifid, slid, size_t(CFITOM::GetDeviceRegSize(devtype)));
+		ret = FindPort(pinf);
+		if (ret) {
+			return ret;
+		}
+		else {
+			ret = new CFTSPIPort(pFtspi, pinf.ifid, pinf.slid, size_t(CFITOM::GetDeviceRegSize(devtype)));
+		}
 	}
 	if (!ret) {
 		fprintf(stderr, _T("Failed to init port: %s\n"), params);
 	}
 	if (ret) {
-		ret->SetPhysicalId((ifid << 16) | (slid << 8) | devtype);
+		ret->SetPhysicalId((pinf.ifid << 16) | (pinf.slid << 8) | devtype);
+		vPort.push_back(pinf);
 	}
 	return ret;
 }

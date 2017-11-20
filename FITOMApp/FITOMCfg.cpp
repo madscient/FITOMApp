@@ -200,7 +200,7 @@ int CFITOMConfig::isSpannable(CSoundDevice* src, CSoundDevice* tgt)
 				//左･右または右･左の組み合わせならステレオとして束ねる
 				return 2;
 			}
-			else {
+			else if (srcloc == tgtloc) {
 				return 1;
 			}
 		}
@@ -210,6 +210,16 @@ int CFITOMConfig::isSpannable(CSoundDevice* src, CSoundDevice* tgt)
 		}
 	}
 	//単独で登録
+	return 0;
+}
+
+CPort* CFITOMConfig::FindPort(PortInfo& pinf)
+{
+	for (int i = 0; i < vPort.size(); i++) {
+		if ((tcscmp(vPort[i].ifname, pinf.ifname) == 0) && vPort[i].ifid == pinf.ifid && vPort[i].slid == pinf.slid) {
+			return vPort[i].port;
+		}
+	}
 	return 0;
 }
 
@@ -230,28 +240,7 @@ CSoundDevice* CFITOMConfig::AddDevice(CSoundDevice* pdev)
 		pdev->GetDevPort()->GetDesc(tmp2, 80);
 	}
 	vPhyDev.push_back(pdev);
-	for (int i = 0; i<logdevs; i++) {
-		if (pdev->GetDevice() == vLogDev[i]->GetDevice()	//デバイスタイプが一致
-
-			//&& pdev->GetDevPort()->GetClock() == vLogDev[i]->GetDevPort()->GetClock()	//クロックが一致
-			) {
-			// 同一デバイスは束ねる
-			vLogDev[i]->GetDescriptor(tmp3, 80);
-			CPort* pt = vLogDev[i]->GetDevPort();
-			if (pt) {
-				pt->GetDesc(tmp4, 80);
-				fprintf(stderr, _T("Dev.%i: %s+%s (spanned) port=%s%s\n"), i, tmp1, tmp3, tmp2, tmp4);
-				CSpanDevice* pspan = new CSpanDevice(pdev, vLogDev[i]);
-				vLogDev[i] = pspan;
-			}
-			else { //already spanned
-				((CSpanDevice*)vLogDev[i])->AddDevice(pdev);
-			}
-			return vLogDev[i];
-		}
-	}
 	fprintf(stderr, _T("Dev.%i: %s port=%s\n"), vLogDev.size(), tmp1, tmp2);
-	vLogDev.push_back(pdev);
 	UsingVoiceGroup |= CFITOM::GetDeviceVoiceGroupMask(pdev->GetDevice());
 	return pdev;
 }
