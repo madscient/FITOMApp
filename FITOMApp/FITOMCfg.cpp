@@ -204,13 +204,9 @@ int CFITOMConfig::isSpannable(CSoundDevice* src, CSoundDevice* tgt)
 				return 1;
 			}
 		}
-		else {
-			//ˆÙ‚È‚éI/F‚Ì“¯ƒfƒoƒCƒX‚Í“o˜^‚µ‚È‚¢
-			return -1;
-		}
 	}
-	//’P“Æ‚Å“o˜^
-	return 0;
+	//‘©‚Ë‚ç‚ê‚È‚¢
+	return -1;
 }
 
 CPort* CFITOMConfig::FindPort(PortInfo& pinf)
@@ -221,6 +217,32 @@ CPort* CFITOMConfig::FindPort(PortInfo& pinf)
 		}
 	}
 	return 0;
+}
+
+int CFITOMConfig::BuildLogDevice()
+{
+	vLogDev.clear();
+	for (int i = 0; i < vPhyDev.size(); i++) {
+		int l = 0;
+		CSpanDevice* pDev = 0;
+		for (int j = 0; j < vPhyDev.size(); j++) {
+			if (i != j) {
+				if (isSpannable(vPhyDev[i], vPhyDev[j]) == 1) {
+					if (pDev == 0) {
+						pDev = new CSpanDevice(vPhyDev[i], vPhyDev[j]);
+						vLogDev.push_back(pDev);
+						l++;
+					}
+					else {
+						pDev->AddDevice(vPhyDev[j]);
+					}
+				}
+			}
+		}
+		if (l == 0) {
+			vLogDev.push_back(vPhyDev[i]);
+		}
+	}
 }
 
 CAdPcmBase* CFITOMConfig::AddDevice(CAdPcmBase* pdev)

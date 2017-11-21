@@ -135,6 +135,7 @@ protected:
 	int LoadADPCMBank(int bank, LPCTSTR fname);
 	int LoadSCCWaveBank();
 	CPort* FindPort(PortInfo& pinf);
+	int BuildLogDevice();
 	virtual int isSpannable(CSoundDevice* src, CSoundDevice* tgt);
 
 public:
