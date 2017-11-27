@@ -182,6 +182,7 @@ CPcmBank* CFITOMConfig::GetPcmBank(int prog)
 //  0: register as single
 //  1: register as spanned
 //  2: register as stereo
+//  3: register as stereo
 // -1: not to be registered
 int CFITOMConfig::isSpannable(CSoundDevice* src, CSoundDevice* tgt)
 {
@@ -196,9 +197,12 @@ int CFITOMConfig::isSpannable(CSoundDevice* src, CSoundDevice* tgt)
 			//同じI/F
 			int srcloc = srcport->GetPanpot();
 			int tgtloc = tgtport->GetPanpot();
-			if ((srcloc == 1 && tgtloc == 2) || (srcloc == 2 && tgtloc == 1)) {
+			if ((srcloc == 1 && tgtloc == 2)) {
 				//左･右または右･左の組み合わせならステレオとして束ねる
 				return 2;
+			}
+			else if ((srcloc == 2 && tgtloc == 1)) {
+				return 3;
 			}
 			else if (srcloc == tgtloc) {
 				return 1;
@@ -222,6 +226,7 @@ CPort* CFITOMConfig::FindPort(PortInfo& pinf)
 int CFITOMConfig::BuildLogDevice()
 {
 	vLogDev.clear();
+	//同種デバイスを束ねる
 	for (int i = 0; i < vPhyDev.size(); i++) {
 		int l = 0;
 		CSpanDevice* pDev = 0;
@@ -241,6 +246,39 @@ int CFITOMConfig::BuildLogDevice()
 		}
 		if (l == 0) {
 			vLogDev.push_back(vPhyDev[i]);
+		}
+	}
+	//ステレオ化デバイスを束ねる
+	for (int i = 0; i < vLogDev.size(); i++) {
+		if (vLogDev[i] != 0) {
+			CLinearPan* pDev = 0;
+			for (int j = 0; j < vLogDev.size(); j++) {
+				if (i != j && vLogDev[j] != 0) {
+					switch (isSpannable(vLogDev[i], vLogDev[j])) {
+					case 2:	//L:R
+						pDev = new CLinearPan(vLogDev[i], vLogDev[j]);
+						break;
+					case 3:	//R:L
+						pDev = new CLinearPan(vLogDev[j], vLogDev[i]);
+						break;
+					}
+					if (pDev) {
+						vLogDev[i] = pDev;
+						vLogDev[j] = 0;
+						pDev = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+	//残骸を除去する
+	for (auto itr = vLogDev.begin(); itr != vLogDev.end();) {
+		if ((*itr) == 0) {
+			itr = vLogDev.erase(itr);
+		}
+		else {
+			itr++;
 		}
 	}
 }
@@ -753,6 +791,7 @@ int CFITOMConfig::LoadDeviceConfig()
 			res++;
 		}
 	}
+	BuildLogDevice();
 	return res;
 }
 
