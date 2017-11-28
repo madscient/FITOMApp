@@ -222,13 +222,13 @@
     <ClInclude Include="..\pthread\semaphore.h">
       <Filter>ヘッダー ファイル\pthread</Filter>
     </ClInclude>
-    <ClInclude Include="FITOMdefine.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="util.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
     </ClInclude>
     <ClInclude Include="SysCtlDlg.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
     </ClInclude>
-    <ClInclude Include="util.h">
+    <ClInclude Include="FITOMdefine.h">
       <Filter>ヘッダー ファイル\FITOM core</Filter>
     </ClInclude>
   </ItemGroup>

@@ -184,6 +184,10 @@ CSoundDevice::~CSoundDevice()
 
 int CSoundDevice::GetLocation()
 {
+	if (port) {
+		return port->GetPanpot();
+	}
+	return 0;
 }
 
 void CSoundDevice::OverrideAttribute(ISoundDevice::CHATTR* attr)

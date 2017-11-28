@@ -16,17 +16,9 @@ protected:
 	virtual void UpdateSustain(UINT8 ch);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	UINT8 RhythmOnMap;
-	UINT8 RhythmOffMap;
-	static UINT8 RhythmFreq[];
-	static FNUM RhythmFnum[];
 	static UINT8 map[];
-	static UINT8 RhythmReg[];
-	static UINT8 RhythmMapCh[];
 public:
 	COPL(CPort* pt, int fsamp, UINT8 devtype=DEVICE_OPL);
-	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
-	virtual void RhythmOff(UINT8 num);
 	virtual void TimerCallBack(UINT32 tick);
 };
 

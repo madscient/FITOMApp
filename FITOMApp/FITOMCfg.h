@@ -214,6 +214,37 @@ public:
 	int BuildMA3Voice(FMVOICE* voice, int index, TCHAR* result, size_t length);
 	int BuildPSGVoice(FMVOICE* voice, int index, TCHAR* result, size_t length);
 	int BuildLFOParam(FMVOICE* voice, int index, TCHAR* result, size_t length);
+
+	int AddOPN(CPort* pt, int md, int fs);
+	int AddOPN2(CPort* pt, int md, int fs);
+	int AddOPN2C(CPort* pt, int md, int fs);
+	int AddOPN2L(CPort* pt, int md, int fs);
+	int AddOPN3L(CPort* pt, int md, int fs);
+	int AddOPNA(CPort* pt, int md, int fs);
+	int AddOPNB(CPort* pt, int md, int fs);
+	int AddOPNBB(CPort* pt, int md, int fs);
+	int AddOPNBK(CPort* pt, int md, int fs);
+	int AddOPNC(CPort* pt, int md, int fs);
+	int AddOPM(CPort* pt, int md, int fs);
+	int AddOPP(CPort* pt, int md, int fs);
+	int AddOPZ(CPort* pt, int md, int fs);
+	int AddOPL(CPort* pt, int md, int fs);
+	int AddOPL2(CPort* pt, int md, int fs);
+	int AddOPL3(CPort* pt, int md, int fs);
+	int AddOPLL(CPort* pt, int md, int fs);
+	int AddOPLL2(CPort* pt, int md, int fs);
+	int AddOPLLP(CPort* pt, int md, int fs);
+	int AddOPLLX(CPort* pt, int md, int fs);
+	int AddOPK(CPort* pt, int md, int fs);
+	int AddOPK2(CPort* pt, int md, int fs);
+	int AddSSG(CPort* pt, int md, int fs);
+	int AddPSG(CPort* pt, int md, int fs);
+	int AddEPSG(CPort* pt, int md, int fs);
+	int AddDCSG(CPort* pt, int md, int fs);
+	int AddDSG(CPort* pt, int md, int fs);
+	int AddSCC(CPort* pt, int md, int fs);
+	int AddSCCP(CPort* pt, int md, int fs);
+	int AddSD1(CPort* pt, int md, int fs);
 };
 
 class CFTSPI;

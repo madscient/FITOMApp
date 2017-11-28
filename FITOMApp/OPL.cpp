@@ -1,13 +1,17 @@
 #include "STDAFX.h"
 #include "OPL.h"
 
+
 UINT8 COPL::map[] = { 0, 1, 2, 8, 9, 10, 16, 17, 18, };
+
+#if 0
 UINT8 COPL::RhythmReg[] = { 0x51, 0x55, 0x52, 0x54, 0x53, };
 UINT8 COPL::RhythmMapCh[] = { 7, 8, 8, 7, 6, };
 ISoundDevice::FNUM COPL::RhythmFnum[] = {	
 	ISoundDevice::FNUM(2, 0x480), ISoundDevice::FNUM(2, 0x540), ISoundDevice::FNUM(0, 0x700)
 };
 UINT8 COPL::RhythmFreq[] = { 47, 60, 53, };
+#endif
 
 #define GET_AR(v,o)	(v->op[o].AR >> 3)
 #define GET_DR(v,o)	(v->op[o].DR >> 3)
@@ -21,7 +25,6 @@ UINT8 COPL::RhythmFreq[] = { 47, 60, 53, };
 
 COPL::COPL(CPort* pt, int fsamp, UINT8 devtype)
 	: CSoundDevice(devtype, 9, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100)
-	,RhythmOnMap(0), RhythmOffMap(0)
 {
 	ops = 2;
 }

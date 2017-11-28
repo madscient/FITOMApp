@@ -445,7 +445,7 @@ void CMidiChCtrlDlg::OnBnClickedBtnVedit()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	UINT32 devid = cmbDevice.GetItemData(cmbDevice.GetCurSel());
-	if (theConfig->isPcmDevice(devid)) {
+	if (theConfig->isPcmDevice(devid) || (devid | BUILTIN_RHYTHM)) {
 		AfxMessageBox(IDS_NOT_SUPPORTED_EDIT, MB_OK);
 		return;
 	}
