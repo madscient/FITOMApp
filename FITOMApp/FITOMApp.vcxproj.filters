@@ -222,9 +222,6 @@
     <ClInclude Include="..\pthread\semaphore.h">
       <Filter>ヘッダー ファイル\pthread</Filter>
     </ClInclude>
-    <ClInclude Include="util.h">
-      <Filter>ヘッダー ファイル\FITOM core</Filter>
-    </ClInclude>
     <ClInclude Include="SysCtlDlg.h">
       <Filter>ヘッダー ファイル\Win32 GUI</Filter>
     </ClInclude>
@@ -409,9 +406,6 @@
     </ClCompile>
     <ClCompile Include="SysCtlDlg.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="util.cpp">
-      <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

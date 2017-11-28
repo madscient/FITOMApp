@@ -33,20 +33,11 @@
 #include "MAx.h"
 #include "codec.h"
 #include "MasterVolumeCtrl.h"
-#include "util.h"
 
 CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : mpus(0)
 , pProgressMessage(0), pProgressFilename(0), pMasVol(0), UsingVoiceGroup(0)
 {
 	boost::property_tree::read_ini(_T(".\\FITOM.ini"), fitom_ini);
-	for (int i = 0; i < MAX_MPUS; i++) {
-		vMidiIn[i] = 0;
-	}
-	for (int i = 0; i < MAX_DEVS; i++) {
-		vPhyDev[i] = 0;
-		vLogDev[i] = 0;
-		vPcmDev[i] = 0;
-	}
 	for (int i = 0; i < MAX_BANK; i++) {
 		vOpmBank[i] = 0;
 		vOpnBank[i] = 0;
@@ -755,7 +746,12 @@ const int CFITOMConfig::GetLogDeviceIDFromIndex(UINT8 i) const
 
 int CFITOMConfig::GetLogDeviceIndex(CSoundDevice* pdev)
 {
-	return vector_finder(vLogDev, pdev);
+	for (auto itr = vLogDev.begin(); itr != vLogDev.end(); itr++) {
+		if (*itr == pdev) {
+			return std::distance(vLogDev.begin(), itr);
+		}
+	}
+	return 0;
 }
 
 int CFITOMConfig::GetLogDeviceIndex(UINT8 devid)
@@ -809,7 +805,12 @@ CAdPcmBase* CFITOMConfig::GetPCMDeviceFromID(UINT32 devid)
 
 int CFITOMConfig::GetPcmDeviceIndex(CAdPcmBase* pdev)
 {
-	return vector_finder(vPcmDev, pdev);
+	for (auto itr = vPcmDev.begin(); itr != vPcmDev.end(); itr++) {
+		if (*itr == pdev) {
+			return std::distance(vPcmDev.begin(), itr);
+		}
+	}
+	return 0;
 }
 
 int CFITOMConfig::GetPcmDeviceIndex(UINT32 devid)
