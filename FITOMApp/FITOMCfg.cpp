@@ -180,23 +180,25 @@ int CFITOMConfig::isSpannable(CSoundDevice* src, CSoundDevice* tgt)
 	CPort* srcport = src->GetDevPort();
 	CPort* tgtport = tgt->GetDevPort();
 	TCHAR srcdesc[80], tgtdesc[80];
-	srcport->GetInterfaceDesc(srcdesc, _countof(srcdesc));
-	tgtport->GetInterfaceDesc(tgtdesc, _countof(tgtdesc));
-	if (src->GetDevice() == tgt->GetDevice()) {
-		//同じデバイス
-		if (tcscmp(srcdesc, tgtdesc) == 0) {
-			//同じI/F
-			int srcloc = srcport->GetPanpot();
-			int tgtloc = tgtport->GetPanpot();
-			if ((srcloc == 1 && tgtloc == 2)) {
-				//左･右または右･左の組み合わせならステレオとして束ねる
-				return 2;
-			}
-			else if ((srcloc == 2 && tgtloc == 1)) {
-				return 3;
-			}
-			else if (srcloc == tgtloc) {
-				return 1;
+	if (srcport && tgtport) {
+		srcport->GetInterfaceDesc(srcdesc, _countof(srcdesc));
+		tgtport->GetInterfaceDesc(tgtdesc, _countof(tgtdesc));
+		if (src->GetDevice() == tgt->GetDevice()) {
+			//同じデバイス
+			if (tcscmp(srcdesc, tgtdesc) == 0) {
+				//同じI/F
+				int srcloc = srcport->GetPanpot();
+				int tgtloc = tgtport->GetPanpot();
+				if ((srcloc == 1 && tgtloc == 2)) {
+					//左･右または右･左の組み合わせならステレオとして束ねる
+					return 2;
+				}
+				else if ((srcloc == 2 && tgtloc == 1)) {
+					return 3;
+				}
+				else if (srcloc == tgtloc) {
+					return 1;
+				}
 			}
 		}
 	}

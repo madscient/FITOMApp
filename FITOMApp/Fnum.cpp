@@ -22,129 +22,98 @@ const UINT16* CFnumTable::GetTable(FnumTableType type, int master, int devide, i
 	if (!(master && devide)) {
 		return 0;
 	}
+	double rate = master / devide;
+	for (int i = 0; i< tablelist.size(); i++) {
+		if (fabs(rate - tablelist[i].rate) < DBL_EPSILON && tablelist[i].type == type && tablelist[i].offset == offset) {
+			return (const UINT16*)tablelist[i].body;
+		}
+	}
+	FREQFUNC pfunc = GetFreqFunc(type);
+	return pfunc ? CreateTable(type, rate, offset, pfunc) : 0;
+}
+
+void CFnumTable::UpdateMasterTuning()
+{
+	for (int i = 0; i< tablelist.size(); i++) {
+		FREQFUNC pfunc = GetFreqFunc(tablelist[i].type);
+		if (pfunc) {
+			for (int j = 0; i < 768; j++) {
+				tablelist[i].body[j] = UINT16((this->*pfunc)(tablelist[i].rate, tablelist[i].offset + j));
+			}
+		}
+	}
+}
+
+CFnumTable::FREQFUNC CFnumTable::GetFreqFunc(FnumTableType type)
+{
+	FREQFUNC pfunc = 0;
 	switch (type) {
 	case FnumTableType::Fnumber:
-		return (GetFnumTable(master, devide, offset));
+		pfunc = &CFnumTable::GetFnum;
+		break;
 	case FnumTableType::DeltaN:
-		return (GetDeltaNTable(master, devide, offset));
+		pfunc = &CFnumTable::GetDeltaN;
+		break;
 	case FnumTableType::TonePeriod:
-		return (GetTPTable(master, devide, offset));
+		pfunc = &CFnumTable::GetTP;
+		break;
 	case FnumTableType::opl4:
-		return (GetOPL4Table(master, devide, offset));
+		pfunc = &CFnumTable::GetOPL4Fnum;
+		break;
 	case FnumTableType::saa:
-		return (GetSAATable(master, devide, offset));
+		pfunc = &CFnumTable::GetSAATP;
+		break;
 	default:
 		return 0;
 	}
+	return pfunc;
 }
 
-
-// Build or get F-number table (for FM)
-const UINT16* CFnumTable::GetFnumTable(int master, int devide, int offset)
+const UINT16* CFnumTable::CreateTable(FnumTableType type, double rate, int offset, FREQFUNC func)
 {
-	double rate = master / devide;
-	for (int i = 0; i< tablelist.size(); i++) {
-		if (round(rate) == tablelist[i].rate && tablelist[i].type == FnumTableType::Fnumber) {
-			return (const UINT16*)tablelist[i].body;
-		}
-	}
 	FnumTableInfo fti;
-	fti.rate = round(rate);
+	fti.rate = rate;
+	fti.offset = offset;
 	fti.type = FnumTableType::Fnumber;
 	fti.body = new UINT16[768];
 	for (int i = 0; i < 768; i++) {
-		double freq = TuningFrequency * pow(2.0, (double)(i + offset) / 768.0);
-		double sig = round(freq * (pow(2, 17) / rate));
-		fti.body[i] = UINT16(sig);
+		fti.body[i] = UINT16((this->*func)(rate, offset + i));
 	}
 	tablelist.push_back(fti);
-	return GetFnumTable(master, devide, offset);
+	return fti.body;
 }
 
-// Build or get Tone period table (for PSG)
-const UINT16* CFnumTable::GetTPTable(int master, int devide, int offset)
+double CFnumTable::GetFnum(double rate, int note)
 {
-	double rate = master / devide;
-	for (int i = 0; i< tablelist.size(); i++) {
-		if (round(rate) == tablelist[i].rate && tablelist[i].type == FnumTableType::TonePeriod) {
-			return (const UINT16*)tablelist[i].body;
-		}
-	}
-	FnumTableInfo fti;
-	fti.rate = round(rate);
-	fti.type = FnumTableType::TonePeriod;
-	fti.body = new UINT16[768];
-	for (int i = 0; i < 768; i++) {
-		double freq = TuningFrequency * pow(2.0, (double)(i + offset) / 768.0);
-		double sig = round((8 * rate) / freq);
-		fti.body[i] = UINT16(sig);
-	}
-	tablelist.push_back(fti);
-	return GetTPTable(master, devide, offset);
+	double freq = TuningFrequency * pow(2.0, (double)(note) / 768.0);
+	double sig = round(freq * (pow(2.0, 17.0) / rate));
+	return sig;
 }
 
-// Build or get Delta N table (for ADPCM)
-const UINT16* CFnumTable::GetDeltaNTable(int master, int devide, int offset)
+double CFnumTable::GetTP(double rate, int note)
 {
-	double rate = master / devide;
-	for (int i = 0; i< tablelist.size(); i++) {
-		if (round(rate) == tablelist[i].rate && tablelist[i].type == FnumTableType::DeltaN) {
-			return (const UINT16*)tablelist[i].body;
-		}
-	}
-	FnumTableInfo fti;
-	fti.rate = round(rate);
-	fti.type = FnumTableType::DeltaN;
-	fti.body = new UINT16[768];
-	for (int i = 0; i < 768; i++) {
-		double freq = 16000 * pow(2.0, (double)(i + offset) / 768.0);
-		double sig = round(65536 * (freq / rate));
-		fti.body[i] = UINT16(sig);
-	}
-	tablelist.push_back(fti);
-	return GetDeltaNTable(master, devide, offset);
+	double freq = TuningFrequency * pow(2.0, (double)(note) / 768.0);
+	double sig = round((8 * rate) / freq);
+	return sig;
 }
 
-// Build or get F-number table (for OPL4)
-const UINT16* CFnumTable::GetOPL4Table(int master, int devide, int offset)
+double CFnumTable::GetDeltaN(double rate, int note)
 {
-	double rate = master / devide;
-	for (int i = 0; i< tablelist.size(); i++) {
-		if (round(rate) == tablelist[i].rate && tablelist[i].type == FnumTableType::opl4) {
-			return (const UINT16*)tablelist[i].body;
-		}
-	}
-	FnumTableInfo fti;
-	fti.rate = round(rate);
-	fti.type = FnumTableType::Fnumber;
-	fti.body = new UINT16[768];
-	for (int i = 0; i < 768; i++) {
-		double freq = pow(2.0, (double)(i + offset) / 768.0);
-		double sig = round(freq * 1024);
-		fti.body[i] = UINT16(sig);
-	}
-	tablelist.push_back(fti);
-	return GetFnumTable(master, devide, offset);
+	double freq = 16000 * pow(2.0, (double)(note) / 768.0);
+	double sig = round(65536 * (freq / rate));
+	return sig;
 }
 
-// Build or get Tone No. table (for SAA1099)
-const UINT16* CFnumTable::GetSAATable(int master, int devide, int offset)
+double CFnumTable::GetOPL4Fnum(double rate, int note)
 {
-	double rate = master / devide;
-	for (int i = 0; i< tablelist.size(); i++) {
-		if (round(rate) == tablelist[i].rate && tablelist[i].type == FnumTableType::saa) {
-			return (const UINT16*)tablelist[i].body;
-		}
-	}
-	FnumTableInfo fti;
-	fti.rate = round(rate);
-	fti.type = FnumTableType::saa;
-	fti.body = new UINT16[768];
-	for (int i = 0; i < 768; i++) {
-		double freq = TuningFrequency * pow(2.0, (double)(i + offset) / 768.0);
-		double sig = round(256.0 * log2(freq / rate));
-		fti.body[i] = UINT16(sig) & 0xff;
-	}
-	tablelist.push_back(fti);
-	return GetDeltaNTable(master, devide, offset);
+	double freq = pow(2.0, (double)(note) / 768.0);
+	double sig = round(freq * 1024);
+	return sig;
+}
+
+double CFnumTable::GetSAATP(double rate, int note)
+{
+	double freq = TuningFrequency * pow(2.0, (double)(note) / 768.0);
+	double sig = round(256.0 * log2(freq / rate));
+	return sig;
 }

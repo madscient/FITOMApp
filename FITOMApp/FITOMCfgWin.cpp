@@ -28,8 +28,7 @@ CFITOMConfigWin32::~CFITOMConfigWin32()
 
 CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 {
-	CPort* ret = 0;
-	PortInfo pinf;
+	PortInfo pinf = { 0, 0, };
 	std::tstring strparams(params);
 	std::tstring striftype;
 	std::tstring strportdef;
@@ -50,12 +49,12 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 				SCCI_SOUND_CHIP_INFO* sci = chip->getSoundChipInfo();
 				pinf.ifid = pScci->getInterfaceIDFromChip(chip);
 				scciInterface* psi = pScci->getScciInterface(pinf.ifid);
-				ret = FindPort(pinf);
-				if (ret) {
-					return ret;
+				pinf.port = FindPort(pinf);
+				if (pinf.port) {
+					return pinf.port;
 				}
 				else {
-					ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
+					pinf.port = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
 				}
 				pinf.slid = pScci->getSlotIDFromChip(pinf.ifid, chip);
 			}
@@ -69,12 +68,12 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 			SoundChip* chip = pScci->getSoundChipFromId(pinf.ifid, pinf.slid);
 			scciInterface* psi = pScci->getScciInterface(pinf.ifid);
 			if (chip && psi) {
-				ret = FindPort(pinf);
-				if (ret) {
-					return ret;
+				pinf.port = FindPort(pinf);
+				if (pinf.port) {
+					return pinf.port;
 				}
 				else {
-					ret = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
+					pinf.port = new CSCCIPort(psi, chip, size_t(CFITOM::GetDeviceRegSize(devtype)));
 				}
 			}
 		}
@@ -86,22 +85,22 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 		lstparams.erase(lstparams.begin());
 		pinf.slid = std::stoi(lstparams.front());	//MPSSE_SPI CS No.
 		lstparams.erase(lstparams.begin());
-		ret = FindPort(pinf);
-		if (ret) {
-			return ret;
+		pinf.port = FindPort(pinf);
+		if (pinf.port) {
+			return pinf.port;
 		}
 		else {
-			ret = new CFTSPIPort(pFtspi, pinf.ifid, pinf.slid, size_t(CFITOM::GetDeviceRegSize(devtype)));
+			pinf.port = new CFTSPIPort(pFtspi, pinf.ifid, pinf.slid, size_t(CFITOM::GetDeviceRegSize(devtype)));
 		}
 	}
-	if (!ret) {
+	if (!pinf.port) {
 		fprintf(stderr, _T("Failed to init port: %s\n"), params);
 	}
-	if (ret) {
-		ret->SetPhysicalId((pinf.ifid << 16) | (pinf.slid << 8) | devtype);
+	if (pinf.port) {
+		pinf.port->SetPhysicalId((pinf.ifid << 16) | (pinf.slid << 8) | devtype);
 		vPort.push_back(pinf);
 	}
-	return ret;
+	return pinf.port;
 }
 
 CMidiIn* CFITOMConfigWin32::CreateMidiInPort(LPCTSTR param)
