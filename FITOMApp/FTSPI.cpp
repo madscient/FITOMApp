@@ -28,7 +28,7 @@ BOOL CFTSPI::Init()
 	assert(status == FT_OK);
 
 	for (DWORD i = 0; i < numDevices; i++) {
-		if (strncmp(devList[i].Description, _T("FTSPI"), 5) == 0) {
+		if (devList[i].Type == FT_DEVICE_232H) {
 			sprintf_s(description, _countof(description), _T("%s(%s)"), devList[i].Description, devList[i].SerialNumber);
 			SPIINFO spiinfo;
 			spiinfo.index = i;
