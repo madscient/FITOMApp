@@ -1268,12 +1268,6 @@ void CRhythmCh::ProgChange(UINT8 prog)
 void CRhythmCh::SetVolume(UINT8 vol)
 {
 	Volume = vol & 0x7f;
-	for (int i=0; i<Parent->GetLogDevs(); i++) {
-		CSoundDevice* dev = Parent->GetLogicalDeviceFromIndex(i);
-		if (dev) {
-			dev->SetRhythmVol(Volume);
-		}
-	}
 }
 
 void CRhythmCh::NoteOn(UINT8 note, UINT8 vel)
@@ -1293,32 +1287,19 @@ void CRhythmCh::NoteOn(UINT8 note, UINT8 vel, DRUMMAP* dm)
 		if (Note[note].device) {
 			NoteOff(note);
 		}
-		if (dm->num & 0x80) { //Internal Rhythm
-			ISoundDevice::FNUM fnum(dm->fnum>>12, dm->fnum&0x7ff);
-			dm->num &= 0x7f;
-			if (dm->bank < MAX_BANK && dm->prog < 128) {//for OPL
-				Parent->GetVoice(&dv, dm->devID, dm->bank, dm->prog);
-			}
-			dm->device->SetRhythmVol(Volume);
-			dm->device->RhythmOn(dm->num, vel, dm->pan, &dv, &fnum);
+		//Inst Rhythm
+		Parent->GetVoice(&dv, dm->devID, dm->bank, dm->prog);
+		UINT8 ch = dm->device->AllocCh(this, &dv);
+		if (ch != 0xff) {
+			dm->device->SetExpress(ch, 127);
+			dm->device->SetVolume(ch, Volume, 0);
+			dm->device->SetPanpot(ch, dm->pan + 64);
+			dm->device->SetNoteFine(ch, dm->num, (SINT16)dm->fnum);
+			dm->device->NoteOn(ch, vel);
 			Note[note].device = dm->device;
-			Note[note].ch = 255;
+			Note[note].ch = ch;
 			Note[note].note = dm->num;
 			Note[note].count = dm->gate;
-		} else { //Inst Rhythm
-			Parent->GetVoice(&dv, dm->devID, dm->bank, dm->prog);
-			UINT8 ch = dm->device->AllocCh(this, &dv);
-			if (ch != 0xff) {
-				dm->device->SetExpress(ch, 127);
-				dm->device->SetVolume(ch, Volume, 0);
-				dm->device->SetPanpot(ch, dm->pan + 64);
-				dm->device->SetNoteFine(ch, dm->num, (SINT16)dm->fnum);
-				dm->device->NoteOn(ch, vel);
-				Note[note].device = dm->device;
-				Note[note].ch = ch;
-				Note[note].note = dm->num;
-				Note[note].count = dm->gate;
-			}
 		}
 	}
 }
@@ -1327,12 +1308,8 @@ void CRhythmCh::NoteOff(UINT8 note)
 {
 	LastNote = 0xff;
 	if (note < 128 && Note[note].device) {
-		if (Note[note].ch == 255) { //Internal Rhythm
-			Note[note].device->RhythmOff(Note[note].note);
-		} else { //Inst Rhythm
-			Note[note].device->NoteOff(Note[note].ch);
-			Note[note].device->ReleaseCh(Note[note].ch);
-		}
+		Note[note].device->NoteOff(Note[note].ch);
+		Note[note].device->ReleaseCh(Note[note].ch);
 		Note[note].device = 0;
 		Note[note].ch = 0;
 		Note[note].note = 0;

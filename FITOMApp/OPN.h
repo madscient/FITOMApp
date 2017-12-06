@@ -96,6 +96,7 @@ protected:
 	virtual void UpdatePanpot(UINT8 ch);
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 public:
+	virtual void Init() {};
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	COPNARhythm(CSoundDevice* parent);
 };

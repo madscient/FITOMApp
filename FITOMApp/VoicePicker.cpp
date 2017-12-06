@@ -175,8 +175,6 @@ void CDlgVoicePicker::RefreshDevice()
 			int oh_my_god = 1;
 		}
 	}
-
-
 }
 
 void CDlgVoicePicker::RefreshBank()
@@ -185,19 +183,26 @@ void CDlgVoicePicker::RefreshBank()
 	CString tmp;
 	BOOL isPcm = theConfig->isPcmDevice(theDevice);
 	UINT vg = CFITOM::GetDeviceVoiceGroupMask(theDevice & 0xff);
-	for (int i = 0; i < MAX_BANK; i++) {
-		if (isPcm ? (i < theConfig->GetPcmDevs()) : (theConfig->GetFMBank(vg, i) != 0)) {
-			CString pBankName = GetBankName(theDevice, i);
-			tmp.Format(_T("%03i:%s"), i, pBankName);
-			int n = cmbBank.AddString(tmp);
-			cmbBank.SetItemData(n, i);
-			if (i == theBank) {
-				cmbBank.SetCurSel(n);
+	if (!(vg & VOICE_GROUP_RHYTHM)) {
+		for (int i = 0; i < MAX_BANK; i++) {
+			if (isPcm ? (i < theConfig->GetPcmDevs()) : (theConfig->GetFMBank(vg, i) != 0)) {
+				CString pBankName = GetBankName(theDevice, i);
+				tmp.Format(_T("%03i:%s"), i, pBankName);
+				int n = cmbBank.AddString(tmp);
+				cmbBank.SetItemData(n, i);
+				if (i == theBank) {
+					cmbBank.SetCurSel(n);
+				}
 			}
 		}
+		if (theBank >= cmbBank.GetCount()) {
+			theBank = 0;
+			cmbBank.SetCurSel(0);
+		}
 	}
-	if (theBank >= cmbBank.GetCount()) {
-		theBank = 0;
+	else {
+		int k = cmbBank.AddString(_T("0:Built-In"));
+		cmbBank.SetItemData(k, 0);
 		cmbBank.SetCurSel(0);
 	}
 }

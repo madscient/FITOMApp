@@ -1,5 +1,7 @@
 #include "STDAFX.H"
 #include "MultiDev.h"
+#define _USE_MATH_DEFINES // for C++  
+#include <math.h>  
 
 CSplitPan::CSplitPan(CSoundDevice* chip1, CSoundDevice* chip2) : CUnison(chip1, chip2)
 {
@@ -28,22 +30,12 @@ CLinearPan::CLinearPan(CSoundDevice* chip1, CSoundDevice* chip2) : CUnison(chip1
 void CLinearPan::UpdatePanpot(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	int pan = (attr->panpot - 64);
-	int lvol, rvol;
-	if (pan > 0) { // R
-		lvol = 63 - pan;
-		rvol = 63;
-	} else if (pan < 0) {
-		lvol = 63;
-		rvol = 63 + pan;
-	} else {
-		lvol = 63;
-		rvol = 63;
-	}
-	lvol = (lvol * attr->volume + lvol + attr->volume) >> 6;
-	rvol = (rvol * attr->volume + rvol + attr->volume) >> 6;
-	chips[0]->SetVolume(ch, lvol, 1);
-	chips[1]->SetVolume(ch, rvol, 1);
+	int pan = (attr->panpot - 1);
+	pan = (pan < 0) ? 0 : pan;
+	double lgain = cos(M_PI_2 * pan / 126.0);
+	double rgain = sin(M_PI_2 * pan / 126.0);
+	chips[0]->SetVolume(ch, round(lgain * double(attr->volume)), 1);
+	chips[1]->SetVolume(ch, round(rgain * double(attr->volume)), 1);
 }
 
 void CLinearPan::SetVolume(UINT8 ch, UINT8 vol, int update)

@@ -67,6 +67,11 @@ void CSCCIPort::GetInterfaceDesc(TCHAR* str, int len)
 	sprintf_s(str, len, _T("%s"), pInterface->sii->cInterfaceName);
 }
 
+int CSCCIPort::GetPanpot()
+{
+	SCCI_SOUND_CHIP_INFO* pci = pChip->getSoundChipInfo();
+	return pci->dSoundLocation;
+}
 
 CFTSPIPort::CFTSPIPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHandle(0)
 {

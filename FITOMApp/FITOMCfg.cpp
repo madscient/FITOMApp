@@ -33,20 +33,11 @@
 #include "MAx.h"
 #include "codec.h"
 #include "MasterVolumeCtrl.h"
-#include "util.h"
 
 CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : mpus(0)
 , pProgressMessage(0), pProgressFilename(0), pMasVol(0), UsingVoiceGroup(0)
 {
 	boost::property_tree::read_ini(_T(".\\FITOM.ini"), fitom_ini);
-	for (int i = 0; i < MAX_MPUS; i++) {
-		vMidiIn[i] = 0;
-	}
-	for (int i = 0; i < MAX_DEVS; i++) {
-		vPhyDev[i] = 0;
-		vLogDev[i] = 0;
-		vPcmDev[i] = 0;
-	}
 	for (int i = 0; i < MAX_BANK; i++) {
 		vOpmBank[i] = 0;
 		vOpnBank[i] = 0;
@@ -182,26 +173,32 @@ CPcmBank* CFITOMConfig::GetPcmBank(int prog)
 //  0: register as single
 //  1: register as spanned
 //  2: register as stereo
+//  3: register as stereo
 // -1: not to be registered
 int CFITOMConfig::isSpannable(CSoundDevice* src, CSoundDevice* tgt)
 {
 	CPort* srcport = src->GetDevPort();
 	CPort* tgtport = tgt->GetDevPort();
 	TCHAR srcdesc[80], tgtdesc[80];
-	srcport->GetInterfaceDesc(srcdesc, _countof(srcdesc));
-	tgtport->GetInterfaceDesc(tgtdesc, _countof(tgtdesc));
-	if (src->GetDevice() == tgt->GetDevice()) {
-		//同じデバイス
-		if (tcscmp(srcdesc, tgtdesc) == 0) {
-			//同じI/F
-			int srcloc = srcport->GetPanpot();
-			int tgtloc = tgtport->GetPanpot();
-			if ((srcloc == 1 && tgtloc == 2) || (srcloc == 2 && tgtloc == 1)) {
-				//左･右または右･左の組み合わせならステレオとして束ねる
-				return 2;
-			}
-			else if (srcloc == tgtloc) {
-				return 1;
+	if (srcport && tgtport) {
+		srcport->GetInterfaceDesc(srcdesc, _countof(srcdesc));
+		tgtport->GetInterfaceDesc(tgtdesc, _countof(tgtdesc));
+		if (src->GetDevice() == tgt->GetDevice()) {
+			//同じデバイス
+			if (tcscmp(srcdesc, tgtdesc) == 0) {
+				//同じI/F
+				int srcloc = srcport->GetPanpot();
+				int tgtloc = tgtport->GetPanpot();
+				if ((srcloc == 1 && tgtloc == 2)) {
+					//左･右または右･左の組み合わせならステレオとして束ねる
+					return 2;
+				}
+				else if ((srcloc == 2 && tgtloc == 1)) {
+					return 3;
+				}
+				else if (srcloc == tgtloc) {
+					return 1;
+				}
 			}
 		}
 	}
@@ -222,6 +219,7 @@ CPort* CFITOMConfig::FindPort(PortInfo& pinf)
 int CFITOMConfig::BuildLogDevice()
 {
 	vLogDev.clear();
+	//同種デバイスを束ねる
 	for (int i = 0; i < vPhyDev.size(); i++) {
 		int l = 0;
 		CSpanDevice* pDev = 0;
@@ -243,6 +241,40 @@ int CFITOMConfig::BuildLogDevice()
 			vLogDev.push_back(vPhyDev[i]);
 		}
 	}
+	//ステレオ化デバイスを束ねる
+	for (int i = 0; i < vLogDev.size(); i++) {
+		if (vLogDev[i] != 0) {
+			CLinearPan* pDev = 0;
+			for (int j = 0; j < vLogDev.size(); j++) {
+				if (i != j && vLogDev[j] != 0) {
+					switch (isSpannable(vLogDev[i], vLogDev[j])) {
+					case 2:	//L:R
+						pDev = new CLinearPan(vLogDev[i], vLogDev[j]);
+						break;
+					case 3:	//R:L
+						pDev = new CLinearPan(vLogDev[j], vLogDev[i]);
+						break;
+					}
+					if (pDev) {
+						vLogDev[i] = pDev;
+						vLogDev[j] = 0;
+						pDev = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+	//残骸を除去する
+	for (auto itr = vLogDev.begin(); itr != vLogDev.end();) {
+		if ((*itr) == 0) {
+			itr = vLogDev.erase(itr);
+		}
+		else {
+			itr++;
+		}
+	}
+	return 0;
 }
 
 CAdPcmBase* CFITOMConfig::AddDevice(CAdPcmBase* pdev)
@@ -336,6 +368,339 @@ int CFITOMConfig::CreateADPCMDevice(int devtype, LPCTSTR param)
 	return res;
 }
 
+struct ADDDEVICE {
+	DWORD devtype;
+	int (CFITOMConfig::*pAddDevice)(CPort* pt, int md, int fs);
+};
+
+ADDDEVICE ADDDEVTBL[] = {
+	{ DEVICE_OPN, &CFITOMConfig::AddOPN, },
+	{ DEVICE_OPN2, &CFITOMConfig::AddOPN2, },
+	{ DEVICE_OPN2C, &CFITOMConfig::AddOPN2C, },
+	{ DEVICE_OPN2L, &CFITOMConfig::AddOPN2L, },
+	{ DEVICE_OPN3L, &CFITOMConfig::AddOPN3L, },
+	{ DEVICE_OPNA, &CFITOMConfig::AddOPNA, },
+	{ DEVICE_OPNB, &CFITOMConfig::AddOPNB, },
+	{ DEVICE_2610B, &CFITOMConfig::AddOPNBB, },
+	{ DEVICE_F286, &CFITOMConfig::AddOPNBK, },
+	{ DEVICE_OPNC, &CFITOMConfig::AddOPNC, },
+	{ DEVICE_OPM, &CFITOMConfig::AddOPM, },
+	{ DEVICE_OPP, &CFITOMConfig::AddOPP, },
+	{ DEVICE_OPZ, &CFITOMConfig::AddOPZ, },
+	{ DEVICE_OPL, &CFITOMConfig::AddOPL, },
+	{ DEVICE_Y8950, &CFITOMConfig::AddOPL, },
+	{ DEVICE_OPL2, &CFITOMConfig::AddOPL2, },
+	{ DEVICE_OPL3, &CFITOMConfig::AddOPL3, },
+	{ DEVICE_OPLL, &CFITOMConfig::AddOPLL, },
+	{ DEVICE_OPLL2, &CFITOMConfig::AddOPLL2, },
+	{ DEVICE_OPLLP, &CFITOMConfig::AddOPLLP, },
+	{ DEVICE_OPLLX, &CFITOMConfig::AddOPLLX, },
+	{ DEVICE_OPK, &CFITOMConfig::AddOPK, },
+	{ DEVICE_OPK2, &CFITOMConfig::AddOPK2, },
+	{ DEVICE_PSG, &CFITOMConfig::AddPSG, },
+	{ DEVICE_SSG, &CFITOMConfig::AddSSG, },
+	{ DEVICE_EPSG, &CFITOMConfig::AddEPSG, },
+	{ DEVICE_DCSG, &CFITOMConfig::AddDCSG, },
+	{ DEVICE_DSG, &CFITOMConfig::AddDSG, },
+	{ DEVICE_SCC, &CFITOMConfig::AddSCC, },
+	{ DEVICE_SCCP, &CFITOMConfig::AddSCCP, },
+	{ DEVICE_NONE, 0, },
+};
+
+int CFITOMConfig::AddOPN(CPort* pt, int md, int fs)
+{
+	int res = 0;
+	if (!(md & 1)) {
+		AddDevice(new COPN(pt, fs));
+		res++;
+	}
+	if (!(md & 2)) {
+		AddDevice(new CSSG(pt, fs / 4));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPNC(CPort* pt, int md, int fs)
+{
+	int res = 0;
+	if (!(md & 1)) {
+		AddDevice(new COPNC(pt, fs));
+		res++;
+	}
+	if (!(md & 2)) {
+		AddDevice(new CSSG(pt, fs / 4));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPN2(CPort* pt, int md, int fs)
+{
+	AddDevice(new COPN2(pt, new COffsetPort(pt, 0x100), fs));
+	return 1;
+}
+
+int CFITOMConfig::AddOPN2C(CPort* pt, int md, int fs)
+{
+	AddDevice(new COPN2C(pt, new COffsetPort(pt, 0x100), fs));
+	return 1;
+}
+
+int CFITOMConfig::AddOPN2L(CPort* pt, int md, int fs)
+{
+	AddDevice(new COPN2L(pt, new COffsetPort(pt, 0x100), fs));
+	return 1;
+}
+
+int CFITOMConfig::AddOPNB(CPort* pt, int md, int fs)
+{
+	int res = 0;
+	if (!(md & 1)) {
+		AddDevice(new COPNB(pt, new COffsetPort(pt, 0x100), fs));
+		res++;
+	}
+	if (!(md & 2)) {
+		AddDevice(new CSSG(pt, fs / 4));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPNBB(CPort* pt, int md, int fs)
+{
+	int res = 0;
+	if (!(md & 1)) {
+		AddDevice(new C2610B(pt, new COffsetPort(pt, 0x100), fs));
+		res++;
+	}
+	if (!(md & 2)) {
+		AddDevice(new CSSG(pt, fs / 4));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPNBK(CPort* pt, int md, int fs)
+{
+	int res = 0;
+	if (!(md & 1)) {
+		AddDevice(new CF286(pt, new COffsetPort(pt, 0x100), fs));
+		res++;
+	}
+	if (!(md & 2)) {
+		AddDevice(new CSSG(pt, fs / 4));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPNA(CPort* pt, int md, int fs)
+{
+	int res = 0;
+	COPNA* pOpna = new COPNA(pt, new COffsetPort(pt, 0x100), fs);
+	if (!(md & 1)) {
+		AddDevice(pOpna);
+		res++;
+	}
+	if (!(md & 2)) {
+		AddDevice(new CSSG(pt, fs / 4));
+		res++;
+	}
+	if (!(md & 4)) {
+		AddDevice(new COPNARhythm(pOpna));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPN3L(CPort* pt, int md, int fs)
+{
+	int res = 0;
+	COPNA* pOpna = new COPN3L(pt, new COffsetPort(pt, 0x100), fs);
+	if (!(md & 1)) {
+		AddDevice(pOpna);
+		res++;
+	}
+	if (!(md & 2)) {
+		AddDevice(new CSSG(pt, fs / 4));
+		res++;
+	}
+	if (!(md & 4)) {
+		AddDevice(new COPNARhythm(pOpna));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPM(CPort* pt, int md, int fs)
+{
+	AddDevice(new COPM(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddOPP(CPort* pt, int md, int fs)
+{
+	AddDevice(new COPP(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddOPZ(CPort* pt, int md, int fs)
+{
+	AddDevice(new COPZ(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddOPL(CPort* pt, int md, int fs)
+{
+	AddDevice(new COPL(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddOPL2(CPort* pt, int md, int fs)
+{
+	AddDevice(new COPL2(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddOPL3(CPort* pt, int md, int fs)
+{
+	int res = 0;
+	CPort* pt2 = new COffsetPort(pt, 0x100);
+	switch (md) {
+	case 0:	// 6op4 + 6op2
+		AddDevice(new COPL3(pt, fs));
+		AddDevice(new COPL3_2(pt, pt2, 0, fs));
+		res = 2;
+		break;
+	case 1:	// 18op2
+		AddDevice(new COPL3_2(pt, pt2, UINT8(md), fs));
+		res = 1;
+		break;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPLL(CPort* pt, int md, int fs)
+{
+	int res = 1;
+	COPLL* pOpll = new COPLL(pt, md, fs);
+	AddDevice(pOpll);
+	if (md == 1) {
+		AddDevice(new COPLLRhythm(pOpll));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPLL2(CPort* pt, int md, int fs)
+{
+	int res = 1;
+	COPLL2* pOpll = new COPLL2(pt, md, fs);
+	AddDevice(pOpll);
+	if (md == 1) {
+		AddDevice(new COPLLRhythm(pOpll));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPLLP(CPort* pt, int md, int fs)
+{
+	int res = 1;
+	COPLLP* pOpll = new COPLLP(pt, md, fs);
+	AddDevice(pOpll);
+	if (md == 1) {
+		AddDevice(new COPLLRhythm(pOpll));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPLLX(CPort* pt, int md, int fs)
+{
+	int res = 1;
+	COPLLX* pOpll = new COPLLX(pt, md, fs);
+	AddDevice(pOpll);
+	if (md == 1) {
+		AddDevice(new COPLLRhythm(pOpll));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPK(CPort* pt, int md, int fs)
+{
+	int res = 1;
+	COPK* pOpk = new COPK(pt, fs);
+	AddDevice(pOpk);
+	if (md != 1) {
+		AddDevice(new COPKRhythm(pOpk));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddOPK2(CPort* pt, int md, int fs)
+{
+	int res = 1;
+	COPK* pOpk = new COPK2(pt, fs);
+	AddDevice(pOpk);
+	if (md != 1) {
+		AddDevice(new COPKRhythm(pOpk));
+		res++;
+	}
+	return res;
+}
+
+int CFITOMConfig::AddPSG(CPort* pt, int md, int fs)
+{
+	AddDevice(new CPSG(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddSSG(CPort* pt, int md, int fs)
+{
+	AddDevice(new CSSG(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddEPSG(CPort* pt, int md, int fs)
+{
+	AddDevice(new CEPSG(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddDSG(CPort* pt, int md, int fs)
+{
+	AddDevice(new CDSG(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddDCSG(CPort* pt, int md, int fs)
+{
+	AddDevice(new CDCSG(pt, fs));
+	return 1;
+}
+
+int CFITOMConfig::AddSCC(CPort* pt, int md, int fs)
+{
+	AddDevice(new CSCC(new COffsetPort(pt, 0x9800), fs / 2));
+	return 1;
+}
+
+int CFITOMConfig::AddSCCP(CPort* pt, int md, int fs)
+{
+	AddDevice(new CSCCP(new COffsetPort(pt, 0xb800), fs / 2));
+	return 1;
+}
+
+int CFITOMConfig::AddSD1(CPort* pt, int md, int fs)
+{
+	AddDevice(new CSD1(pt, 12288000));
+	return 1;
+}
+
 int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 {
 	int res = 0;
@@ -350,145 +715,15 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 	strport = lstparam.front();
 	lstparam.erase(lstparam.begin());
 	CPort* pt = 0;
-	CPort* pt2 = 0;
 	if ((pt = CreatePort(devtype, strport.c_str()))) {
 		int fs = pt->GetClock();
-		switch (devtype) {
-		case DEVICE_OPN:
-			if (md == 0 || md == 1) { AddDevice(new COPN(pt, fs)); }
-			if (md == 0 || md == 2) { AddDevice(new CSSG(pt, fs / 4)); }
-			break;
-		case DEVICE_OPNC:
-			if (md == 0 || md == 1) { AddDevice(new COPNC(pt, fs)); }
-			if (md == 0 || md == 2) { AddDevice(new CSSG(pt, fs / 4)); }
-			break;
-		case DEVICE_OPM:
-			AddDevice(new COPM(pt, fs));
-			break;
-		case DEVICE_OPP:
-			AddDevice(new COPP(pt, fs));
-			break;
-		case DEVICE_OPZ:
-			AddDevice(new COPZ(pt, fs));
-			break;
-		case DEVICE_OPN2:
-			AddDevice(new COPN2(pt, new COffsetPort(pt, 0x100), fs));
-			break;
-		case DEVICE_OPN2C:
-			AddDevice(new COPN2C(pt, new COffsetPort(pt, 0x100), fs));
-			break;
-		case DEVICE_OPN2L:
-			AddDevice(new COPN2L(pt, new COffsetPort(pt, 0x100), fs));
-			break;
-		case DEVICE_OPNB:
-			if (md == 0 || md == 1) { AddDevice(new COPNB(pt, new COffsetPort(pt, 0x100), fs)); }
-			if (md == 0 || md == 2) { AddDevice(new CSSG(pt, fs / 4)); }
-			break;
-		case DEVICE_F286:
-			if (md == 0 || md == 1) { AddDevice(new CF286(pt, new COffsetPort(pt, 0x100), fs)); }
-			if (md == 0 || md == 2) { AddDevice(new CSSG(pt, fs / 4)); }
-			break;
-		case DEVICE_2610B:
-			if (md == 0 || md == 1) { AddDevice(new C2610B(pt, new COffsetPort(pt, 0x100), fs)); }
-			if (md == 0 || md == 2) { AddDevice(new CSSG(pt, fs / 4)); }
-			break;
-		case DEVICE_OPNA:
-			if (md == 0 || md == 1) { AddDevice(new COPNA(pt, new COffsetPort(pt, 0x100), fs)); }
-			if (md == 0 || md == 2) { AddDevice(new CSSG(pt, fs / 4)); }
-			break;
-		case DEVICE_OPN3L:
-			if (md == 0 || md == 1) { AddDevice(new COPN3L(pt, new COffsetPort(pt, 0x100), fs)); }
-			if (md == 0 || md == 2) { AddDevice(new CSSG(pt, fs / 4)); }
-			break;
-		case DEVICE_OPL3:
-			pt2 = new COffsetPort(pt, 0x100);
-			switch (md) {
-			case 0:	// 6op4 + 6op2
-				AddDevice(new COPL3(pt, fs));
-				AddDevice(new COPL3_2(pt, pt2, 0, fs));
-				break;
-			case 1:	// 18op2
-				AddDevice(new COPL3_2(pt, pt2, UINT8(md), fs));
-				break;
+		int res = 0;
+		for (int i = 0; ADDDEVTBL[i].devtype != DEVICE_NONE; i++) {
+			if (devtype == ADDDEVTBL[i].devtype) {
+				res += (this->*(ADDDEVTBL[i].pAddDevice))(pt, md, fs);
 			}
-			break;
-		case DEVICE_OPL:
-			AddDevice(new COPL(pt, fs));
-			break;
-		case DEVICE_Y8950:
-			AddDevice(new C3801(pt, fs));
-			break;
-		case DEVICE_OPL2:
-			AddDevice(new COPL2(pt, fs));
-			break;
-		case DEVICE_OPLL:
-			{
-				COPLL* pOpll = new COPLL(pt, UINT8(md), fs);
-				AddDevice(pOpll);
-				if (md == 1) {
-					AddDevice(new COPLLRhythm(pOpll));
-				}
-			}
-			break;
-		case DEVICE_OPLL2:
-			{
-				COPLL2* pOpll = new COPLL2(pt, UINT8(md), fs);
-				AddDevice(pOpll);
-				if (md == 1) {
-					AddDevice(new COPLLRhythm(pOpll));
-				}
-			}
-			break;
-		case DEVICE_OPLLP:
-			{
-				COPLLP* pOpll = new COPLLP(pt, UINT8(md), fs);
-				AddDevice(pOpll);
-				if (md == 1) {
-					AddDevice(new COPLLRhythm(pOpll));
-				}
-			}
-			break;
-		case DEVICE_OPLLX:
-			{
-				COPLLX* pOpll = new COPLLX(pt, UINT8(md), fs);
-				AddDevice(pOpll);
-				if (md == 1) {
-					AddDevice(new COPLLRhythm(pOpll));
-				}
-			}
-			break;
-		case DEVICE_OPK:
-			AddDevice(new COPK(pt, fs));
-			break;
-		case DEVICE_OPK2:
-			AddDevice(new COPK2(pt, fs));
-			break;
-		case DEVICE_DSG:
-			AddDevice(new CDSG(pt, fs));
-			break;
-		case DEVICE_SSG:
-			AddDevice(new CSSG(pt, fs));
-			break;
-		case DEVICE_PSG:
-			AddDevice(new CPSG(pt, fs));
-			break;
-		case DEVICE_EPSG:
-			AddDevice(new CEPSG(pt, fs));
-			break;
-		case DEVICE_DCSG:
-			AddDevice(new CDCSG(pt, fs));
-			break;
-		case DEVICE_SCC:
-			AddDevice(new CSCC(new COffsetPort(pt, 0x9800), fs / 2));
-			break;
-		case DEVICE_SCCP:
-			AddDevice(new CSCCP(new COffsetPort(pt, 0xb800), fs / 2));
-			break;
-		case DEVICE_SD1:
-			AddDevice(new CSD1(pt,12288000));
-			break;
-		default:
-			res = -1;
+		}
+		if (res == 0) {
 			delete pt;
 		}
 	}
@@ -513,12 +748,22 @@ const int CFITOMConfig::GetLogDeviceIDFromIndex(UINT8 i) const
 
 int CFITOMConfig::GetLogDeviceIndex(CSoundDevice* pdev)
 {
-	return vector_finder<CSoundDevice*>(vLogDev, pdev);
+	for (auto itr = vLogDev.begin(); itr != vLogDev.end(); itr++) {
+		if (*itr == pdev) {
+			return std::distance(vLogDev.begin(), itr);
+		}
+	}
+	return 0;
 }
 
 int CFITOMConfig::GetLogDeviceIndex(UINT8 devid)
 {
-	return vector_finder<CSoundDevice, UINT8>(vLogDev, devid, &CSoundDevice::GetDevice);
+	for (auto itr = vLogDev.begin(); itr != vLogDev.end(); itr++) {
+		if (((*itr)->GetDevice() & 0xff) == devid) {
+			return std::distance(vLogDev.begin(), itr);
+		}
+	}
+	return -1;
 }
 
 CSoundDevice* CFITOMConfig::GetLogDeviceFromID(UINT8 devid) const
@@ -562,12 +807,18 @@ CAdPcmBase* CFITOMConfig::GetPCMDeviceFromID(UINT32 devid)
 
 int CFITOMConfig::GetPcmDeviceIndex(CAdPcmBase* pdev)
 {
-	return vector_finder<CAdPcmBase*>(vPcmDev, pdev);
+	for (auto itr = vPcmDev.begin(); itr != vPcmDev.end(); itr++) {
+		if (*itr == pdev) {
+			return std::distance(vPcmDev.begin(), itr);
+		}
+	}
+	return 0;
 }
 
 int CFITOMConfig::GetPcmDeviceIndex(UINT32 devid)
 {
-	return vector_finder<CAdPcmBase, UINT8>(vPcmDev, devid, &CAdPcmBase::GetDevice);
+	CAdPcmBase* pdev = GetPCMDeviceFromID(devid);
+	return GetPcmDeviceIndex(pdev);
 }
 
 CSoundDevice* CFITOMConfig::GetDeviceFromUniqID(UINT32 uid)
@@ -753,6 +1004,7 @@ int CFITOMConfig::LoadDeviceConfig()
 			res++;
 		}
 	}
+	BuildLogDevice();
 	return res;
 }
 
@@ -949,22 +1201,11 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 					strnote = lstparam[4];
 					pan = std::stoi(lstparam[5]);
 					gate = std::stoi(lstparam[6]);
-					if (strnote[0] == _T('#')) {
-						std::vector<std::tstring> lstnote;
-						strnote = strnote.substr(1);
-						boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
-						num = std::stoi(lstnote[0]) | 0x80;
-						if (lstnote.size() > 1) {
-							fnum = std::stoi(lstnote[1], 0, 16);
-						}
-					}
-					else {
-						std::vector<std::tstring> lstnote;
-						boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
-						num = std::stoi(lstnote[0]);
-						if (lstnote.size() > 1) {
-							fnum = std::stoi(lstnote[1], 0, 16);
-						}
+					std::vector<std::tstring> lstnote;
+					boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
+					num = std::stoi(lstnote[0]);
+					if (lstnote.size() > 1) {
+						fnum = std::stoi(lstnote[1], 0, 16);
 					}
 					tcsncpy(drumnote.name, strnotename.c_str(), (sizeof(DRUMMAP::name) / sizeof(TCHAR)) - 1);
 					if (strdevname.find(_T(':')) != std::string::npos) {

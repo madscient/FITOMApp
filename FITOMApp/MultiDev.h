@@ -74,7 +74,6 @@ public:
 	virtual UINT8 GetAvailable();
 	virtual UINT8 GetAssignable();
 	virtual void Reset();
-	virtual UINT8 GetRhythmCaps();
 
 	// Physical accesses
 	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v=1);
@@ -127,6 +126,7 @@ protected:
 public:
 	CLinearPan(CSoundDevice* chip1, CSoundDevice* chips);
 	virtual void SetVolume(UINT8 ch, UINT8 vol, int update=1);
+	virtual int GetLocation() { return 3; };
 };
 
 #endif
