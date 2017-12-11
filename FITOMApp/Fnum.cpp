@@ -99,14 +99,16 @@ double CFnumTable::GetTP(double rate, int note)
 
 double CFnumTable::GetDeltaN(double rate, int note)
 {
-	double freq = 16000 * pow(2.0, (double)(note) / 768.0);
+	double tuningoffset = 768.0 * log2(TuningFrequency / 440.0);
+	double freq = 16000 * pow(2.0, (double(note) + tuningoffset) / 768.0);
 	double sig = round(65536 * (freq / rate));
 	return sig;
 }
 
 double CFnumTable::GetOPL4Fnum(double rate, int note)
 {
-	double freq = pow(2.0, (double)(note) / 768.0);
+	double tuningoffset = 768.0 * log2(TuningFrequency / 440.0);
+	double freq = pow(2.0, (double(note) + tuningoffset) / 768.0);
 	double sig = round(freq * 1024);
 	return sig;
 }
@@ -116,4 +118,10 @@ double CFnumTable::GetSAATP(double rate, int note)
 	double freq = TuningFrequency * pow(2.0, (double)(note) / 768.0);
 	double sig = round(256.0 * log2(freq / rate));
 	return sig;
+}
+
+double CFnumTable::GetOPMMasterOffset(int fsamp)
+{
+	double ret = 768.0 * log2((3579545.0 * TuningFrequency) / ((double)fsamp * 440.0));
+	return ret;
 }

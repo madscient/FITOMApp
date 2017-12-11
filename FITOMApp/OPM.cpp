@@ -17,7 +17,7 @@ COPM::COPM(CPort* pt, int fsamp) : CSoundDevice(DEVICE_OPM, 8, 0, 0, 0, FnumTabl
 {
 	//if (pt) { pt->reset(); }
 	lfores = new LFORESOURCE[1];
-	MasterTune = 768.0 * log2(3579545.0/(double)fsamp);
+	MasterTune = round(theFnum.GetOPMMasterOffset(fsamp));
 	NoteOffset = -61;	// origin note: O4C+
 }
 
@@ -44,8 +44,10 @@ ISoundDevice::FNUM COPM::GetFnumber(UINT8 ch, SINT16 offset)
 		index -= 768;
 	}
 	if (oct >= 0 && oct < 8) {
-		ret.block = (oct << 4) | COPM::KeyCode[index >> 6];
-		ret.fnum = (attr->GetLastNote() << 8) | (UINT8(index & 0x3f) << 2);	//Key Fraction
+		//ret.block = (oct << 4) | COPM::KeyCode[index >> 6];
+		//ret.fnum = (attr->GetLastNote() << 8) | (UINT8(index & 0x3f) << 2);	//Key Fraction
+		ret.block = oct;
+		ret.fnum = (UINT16(COPM::KeyCode[index >> 6]) << 6) | (UINT8(index & 0x3f));
 	} else {
 		ret.block = 0;
 		ret.fnum = 0;
@@ -107,8 +109,10 @@ void COPM::UpdateVolExp(UINT8 ch)
 void COPM::UpdateFreq(UINT8 ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	SetReg(0x28 + ch, fnum->block, 0);	// kc
-	SetReg(0x30 + ch, (UINT8(fnum->fnum) & 0xfc) | (GetReg(0x30 + ch, 0) & 0x3), 0);	// kf
+	UINT8 kc = (fnum->block << 4) | (fnum->fnum >> 6);
+	UINT8 kf = fnum->fnum << 2;
+	SetReg(0x28 + ch, kc, 0);	// kc
+	SetReg(0x30 + ch, kf | (GetReg(0x30 + ch, 0) & 0x3), 0);	// kf
 }
 
 void COPM::UpdatePanpot(UINT8 ch)

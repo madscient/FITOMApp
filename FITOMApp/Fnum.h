@@ -38,6 +38,7 @@ public:
 	~CFnumTable();
 	void SetMasterPitch(double pitch) { TuningFrequency = pitch; };
 	const UINT16* GetTable(FnumTableType type, int master, int devide, int offset);
+	double GetOPMMasterOffset(int fsamp);
 
 	void UpdateMasterTuning();
 };
