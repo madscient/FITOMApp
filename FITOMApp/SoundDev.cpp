@@ -596,6 +596,10 @@ ISoundDevice::FNUM CSoundDevice::GetFnumber(UINT8 ch, SINT16 offset)
 			ret.block = UINT8(oct);
 		}
 	}
+	else if (attr) {
+		ret.block = UINT16(attr->GetLastFineFreq()) >> 12;
+		ret.fnum = UINT16(attr->GetLastFineFreq()) & 0xfff;
+	}
 	return ret;
 }
 
