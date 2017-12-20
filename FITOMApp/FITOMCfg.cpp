@@ -1201,14 +1201,22 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 					strnote = lstparam[4];
 					pan = std::stoi(lstparam[5]);
 					gate = std::stoi(lstparam[6]);
-					if (strnote[0] == _T('#')) {
-						//Fnum
-						num = 255;
-						fnum = std::stoi(&strnote[1], 0, 16);
+					std::vector<std::tstring> lstnote;
+					boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
+					if (lstnote.size() > 0) {
+						num = std::stoi(lstnote[0]);
+						fnum = std::stoi(lstnote[1]);
 					}
 					else {
-						fnum = 0;
-						num = std::stoi(strnote);
+						if (strnote[0] == _T('#')) {
+							//Fnum
+							num = 255;
+							fnum = std::stoi(&strnote[1], 0, 16);
+						}
+						else {
+							fnum = 0;
+							num = std::stoi(strnote);
+						}
 					}
 					tcsncpy(drumnote.name, strnotename.c_str(), (sizeof(DRUMMAP::name) / sizeof(TCHAR)) - 1);
 					if (strdevname.find(_T(':')) != std::string::npos) {

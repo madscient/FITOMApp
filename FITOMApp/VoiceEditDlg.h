@@ -5,6 +5,7 @@
 #include "SoundDev.h"
 #include "MIDI.h"
 #include "EnvView.h"
+#include "StretchPicture.h"
 
 #define VOICE_PARAM_ENV		1
 #define VOICE_PARAM_SLFO	2
@@ -230,11 +231,11 @@ public:
 	afx_msg void OnBnClickedVoiceText();
 	afx_msg void OnClickedBtnRevert();
 	afx_msg void OnClickedBtnApply();
-	CStatic picAL;
-	CStatic picWS0;
-	CStatic picWS1;
-	CStatic picWS2;
-	CStatic picWS3;
+	CStretchPicture picAL;
+	CStretchPicture picWS0;
+	CStretchPicture picWS1;
+	CStretchPicture picWS2;
+	CStretchPicture picWS3;
 	CEnvView picEnv0;
 	CEnvView picEnv1;
 	CEnvView picEnv2;

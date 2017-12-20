@@ -66,6 +66,7 @@ void CFITOMAppDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_MIDIMON, btnMidiMon);
 	DDX_Check(pDX, IDC_CHECK_MIDIMON, bMidMon);
 	DDX_Control(pDX, IDC_MASVOL, sldMasterVol);
+	DDX_Control(pDX, IDC_LOGO, stcLogo);
 }
 
 BEGIN_MESSAGE_MAP(CFITOMAppDlg, CDialogEx)
@@ -115,6 +116,7 @@ BOOL CFITOMAppDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 小さいアイコンの設定
 
 	// TODO: 初期化をここに追加します。
+	stcLogo.SetBitmap(LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP1)));
 	theFitom = ((CFITOMApp*)AfxGetApp())->GetFitom();
 	dlgMidi = new CMidiMonitor(theFitom, this);
 	SetTimer(IDD, 15, NULL);

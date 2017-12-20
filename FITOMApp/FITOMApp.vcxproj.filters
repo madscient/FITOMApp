@@ -228,6 +228,9 @@
     <ClInclude Include="FITOMdefine.h">
       <Filter>ヘッダー ファイル\FITOM core</Filter>
     </ClInclude>
+    <ClInclude Include="StretchPicture.h">
+      <Filter>ヘッダー ファイル\Win32 GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -406,6 +409,9 @@
     </ClCompile>
     <ClCompile Include="SysCtlDlg.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchPicture.cpp">
+      <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

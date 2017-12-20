@@ -154,6 +154,7 @@
     <ClInclude Include="SoundDev.h" />
     <ClInclude Include="SplashDlg.h" />
     <ClInclude Include="SSG.h" />
+    <ClInclude Include="StretchPicture.h" />
     <ClInclude Include="SysCtlDlg.h" />
     <ClInclude Include="tables.h" />
     <ClInclude Include="TestButton.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="SplashDlg.cpp" />
     <ClCompile Include="SSG.cpp" />
     <ClCompile Include="Stereo.cpp" />
+    <ClCompile Include="StretchPicture.cpp" />
     <ClCompile Include="SysCtlDlg.cpp" />
     <ClCompile Include="TestButton.cpp" />
     <ClCompile Include="TextVoiceEditDlg.cpp" />

@@ -8,6 +8,7 @@
 #include "afxcmn.h"
 
 #include "LCDView.h"
+#include "StretchPicture.h"
 
 class CMidiMonitor;
 class CFITOM;
@@ -53,4 +54,5 @@ public:
 	CSliderCtrl sldMasterVol;
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnBnClickedButtonSysctl();
+	CStretchPicture stcLogo;
 };

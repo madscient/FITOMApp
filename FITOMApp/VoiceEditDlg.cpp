@@ -396,7 +396,7 @@ void CVoiceEditDlg::UpdateAlgoView(int vg, int op)
 
 void CVoiceEditDlg::UpdateWaveView(int vg, int op)
 {
-	CStatic* picwave[] = { &picWS0, &picWS1, &picWS2, &picWS3, 0, };
+	CStretchPicture* picwave[] = { &picWS0, &picWS1, &picWS2, &picWS3, 0, };
 	int ws = GetWS(vg, op);
 	for (int i = 0; waveimg[i].vg != VOICE_GROUP_NONE; i++) {
 		if (waveimg[i].vg == vg) {

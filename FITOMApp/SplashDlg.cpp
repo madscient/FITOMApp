@@ -15,6 +15,7 @@ CSplashDlg::CSplashDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSplashDlg::IDD, pParent)
 {
 	Create(IDD, NULL);
+	stcLogo.SetBitmap(LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_SPLASH)));
 	SetWindowText(_T("Starting FITOM..."));
 }
 
@@ -25,6 +26,7 @@ CSplashDlg::~CSplashDlg()
 void CSplashDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LOGO, stcLogo);
 }
 
 

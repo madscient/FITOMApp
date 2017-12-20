@@ -1,4 +1,5 @@
 #pragma once
+#include "StretchPicture.h"
 
 
 // CSplashDlg ダイアログ
@@ -22,4 +23,6 @@ protected:
 	virtual void PostNcDestroy();
 	virtual void OnOK();
 	virtual void OnCancel();
+public:
+	CStretchPicture stcLogo;
 };
