@@ -716,7 +716,7 @@ CRhythmDevice::CRhythmDevice(CSoundDevice* parent, UINT8 devid, UINT8 maxch) :
 {
 	if (parent) {
 		Fnum = parent->Fnum;
-		port = parent->port;
+		port = parent->GetDevPort();
 		NoteOffset = parent->NoteOffset;
 		MasterTune = parent->MasterTune;
 	}

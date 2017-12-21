@@ -1203,7 +1203,7 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 					gate = std::stoi(lstparam[6]);
 					std::vector<std::tstring> lstnote;
 					boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
-					if (lstnote.size() > 0) {
+					if (lstnote.size() > 1) {
 						num = std::stoi(lstnote[0]);
 						fnum = std::stoi(lstnote[1]);
 					}

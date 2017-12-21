@@ -10,18 +10,23 @@
 
 IMPLEMENT_DYNAMIC(CStretchPicture, CStatic)
 
-CStretchPicture::CStretchPicture()
+CStretchPicture::CStretchPicture() : m_hBmp(NULL)
 {
-
 }
 
 CStretchPicture::~CStretchPicture()
 {
 }
 
+HBITMAP CStretchPicture::SetBitmap(HBITMAP hbmp)
+{
+	HBITMAP ret = m_hBmp;
+	m_hBmp = hbmp;
+	Invalidate(FALSE);
+	return ret;
+}
 
 BEGIN_MESSAGE_MAP(CStretchPicture, CStatic)
-	ON_WM_PAINT()
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
 

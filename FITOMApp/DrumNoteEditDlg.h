@@ -40,11 +40,8 @@ public:
 	CEdit edtMapNote;
 	CEdit edtNoteName;
 	CComboBox cmbDevice;
-	CComboBox cmbType;
 	CEdit edtNoteNum;
 	CSpinButtonCtrl spnNoteNum;
-	CEdit edtBlk;
-	CEdit edtFnum;
 	CListCtrl lstOption;
 	afx_msg void OnBtnTest();
 	afx_msg void OnUpdateBtnTest(CCmdUI *pCmdUI);

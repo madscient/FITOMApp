@@ -83,7 +83,7 @@ BOOL CDrumEditDlg::OnInitDialog()
 	lstDrumNote.InsertColumn(0, _T("Note#"), LVCFMT_RIGHT, 40);
 	lstDrumNote.InsertColumn(1, _T("Name"), LVCFMT_LEFT, 160);
 	lstDrumNote.InsertColumn(2, _T("Device"), LVCFMT_LEFT, 160);
-	lstDrumNote.InsertColumn(3, _T("Type"), LVCFMT_LEFT, 100);
+	//lstDrumNote.InsertColumn(3, _T("Type"), LVCFMT_LEFT, 100);
 
 	Refresh();
 	SetTimer(IDD, 10, NULL);
@@ -125,13 +125,13 @@ void CDrumEditDlg::Refresh()
 					}
 					lstDrumNote.SetItemText(rows, 1, drum.name);
 					lstDrumNote.SetItemText(rows, 2, str);
-					lstDrumNote.SetItemText(rows, 3, (drum.num & 0x80) ? _T("Internal") : _T("Tone"));
+					//lstDrumNote.SetItemText(rows, 3, (drum.num & 0x80) ? _T("Internal") : _T("Tone"));
 					if (top < 0) { top = i; }
 				}
 				else {
 					lstDrumNote.SetItemText(rows, 1, _T("EMPTY"));
 					lstDrumNote.SetItemText(rows, 2, _T("----"));
-					lstDrumNote.SetItemText(rows, 3, (drum.num & 0x80) ? _T("Internal") : _T("Tone"));
+					//lstDrumNote.SetItemText(rows, 3, (drum.num & 0x80) ? _T("Internal") : _T("Tone"));
 				}
 				lstDrumNote.SetItemData(rows, DWORD_PTR(i));
 				rows++;

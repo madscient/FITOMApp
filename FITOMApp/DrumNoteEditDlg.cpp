@@ -35,10 +35,8 @@ void CDrumNoteEditDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_MAPNUM, edtMapNote);
 	DDX_Control(pDX, IDC_EDIT_NOTENAME, edtNoteName);
 	DDX_Control(pDX, IDC_COMBO_DEV, cmbDevice);
-	DDX_Control(pDX, IDC_COMBO_TYPE, cmbType);
 	DDX_Control(pDX, IDC_EDIT_NOTE, edtNoteNum);
 	DDX_Control(pDX, IDC_SPIN_NOTE, spnNoteNum);
-	DDX_Control(pDX, IDC_EDIT_FNUM, edtFnum);
 	DDX_Control(pDX, IDC_SPIN_PAN, spnPanpot);
 	DDX_Control(pDX, IDC_SPIN_GATE, spnGate);
 	DDX_Control(pDX, IDC_EDIT_PAN, edtPanpot);
@@ -135,9 +133,6 @@ BOOL CDrumNoteEditDlg::OnInitDialog()
 			int k = cmbDevice.AddString(str);
 			cmbDevice.SetItemData(k, phyid);
 		}
-		cmbType.ResetContent();
-		cmbType.AddString(_T("Tone"));
-		cmbType.AddString(_T("Internal"));
 		spnNoteNum.SetRange(0, 255);
 		spnPanpot.SetRange(-63, 63);
 		spnGate.SetRange(0, 127);
@@ -178,17 +173,6 @@ void CDrumNoteEditDlg::Refresh()
 		}
 		UINT devgrp = CFITOM::GetDeviceVoiceGroupMask(theDrum.devID & 0xff);
 		//btnVoiceBrowse.EnableWindow();
-		cmbType.SetCurSel(theDrum.num & 0x80 ? 1 : 0);
-		if (cmbType.GetCurSel() == 1 && devgrp == VOICE_GROUP_OPLL) { //Internal
-			edtFnum.EnableWindow();
-			edtTune.EnableWindow(FALSE);
-			spnTune.EnableWindow(FALSE);
-		}
-		else {
-			edtFnum.EnableWindow(FALSE);
-			edtTune.EnableWindow();
-			spnTune.EnableWindow();
-		}
 		if (theDrum.bank == 255 && theDrum.prog == 255) { // ROM rhythm
 			edtVoice.SetWindowText(_T("(255:255 Internal ROM)"));
 		}
@@ -199,9 +183,6 @@ void CDrumNoteEditDlg::Refresh()
 			edtVoice.SetWindowText(LPCTSTR(str));
 		}
 		str.Format(_T("%04X"), theDrum.fnum);
-		if (edtFnum.GetSafeHwnd() != wndFocused->GetSafeHwnd()) {
-			edtFnum.SetWindowText(LPCTSTR(str));
-		}
 		if (edtNoteNum.GetSafeHwnd() != wndFocused->GetSafeHwnd()) {
 			spnNoteNum.SetPos(theDrum.num & 0x7f);
 		}
@@ -220,20 +201,12 @@ void CDrumNoteEditDlg::Refresh()
 void CDrumNoteEditDlg::Update()
 {
 	CString str;
-	if (edtFnum.IsWindowEnabled()) {
-		edtFnum.GetWindowText(str);
-		//sscanf_s(str, _T("%X"), &theDrum.fnum);
-		str = _T("0x") + str;
-		theDrum.fnum = ::_tcstol(str, 0, 16);
-	}
-	else {
-		theDrum.fnum = (UINT16)spnTune.GetPos();
-	}
+	theDrum.fnum = (UINT16)spnTune.GetPos();
 	edtNoteName.GetWindowText(str);
 	StringCchCopy(theDrum.name, _countof(theDrum.name), LPCTSTR(str));
 	theDrum.devID = cmbDevice.GetItemData(cmbDevice.GetCurSel());
 	theDrum.device = theConfig->GetDeviceFromUniqID(theDrum.devID);
-	theDrum.num = spnNoteNum.GetPos32() | ((cmbType.GetCurSel() == 1) ? 0x80 : 0);
+	theDrum.num = spnNoteNum.GetPos32();
 	if ((theDrum.num & 0x80) && (CFITOM::GetDeviceVoiceGroupMask(theDrum.devID & 0xff) != VOICE_GROUP_OPL2)) {
 		theDrum.bank = 255;
 		theDrum.prog = 255;
@@ -332,7 +305,6 @@ void CDrumNoteEditDlg::OnUpdateCmbType(CCmdUI *pCmdUI)
 		break;
 	default:
 		pCmdUI->Enable(FALSE);
-		cmbType.SetCurSel(0);	//Tone only
 		break;
 	}
 }
