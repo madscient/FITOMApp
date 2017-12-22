@@ -219,26 +219,28 @@ CPort* CFITOMConfig::FindPort(PortInfo& pinf)
 int CFITOMConfig::BuildLogDevice()
 {
 	vLogDev.clear();
+	std::vector<CSoundDevice*> vPhyCopy(vPhyDev);
 	//同種デバイスを束ねる
-	for (int i = 0; i < vPhyDev.size(); i++) {
+	for (int i = 0; i < vPhyCopy.size(); i++) {
 		int l = 0;
 		CSpanDevice* pDev = 0;
-		for (int j = 0; j < vPhyDev.size(); j++) {
-			if (i != j) {
-				if (isSpannable(vPhyDev[i], vPhyDev[j]) == 1) {
+		for (int j = 0; j < vPhyCopy.size(); j++) {
+			if (i != j && vPhyCopy[i] && vPhyCopy[j]) {
+				if (isSpannable(vPhyCopy[i], vPhyCopy[j]) == 1) {
 					if (pDev == 0) {
-						pDev = new CSpanDevice(vPhyDev[i], vPhyDev[j]);
+						pDev = new CSpanDevice(vPhyCopy[i], vPhyCopy[j]);
 						vLogDev.push_back(pDev);
 						l++;
 					}
 					else {
-						pDev->AddDevice(vPhyDev[j]);
+						pDev->AddDevice(vPhyCopy[j]);
 					}
+					vPhyCopy[j] = 0;
 				}
 			}
 		}
 		if (l == 0) {
-			vLogDev.push_back(vPhyDev[i]);
+			vLogDev.push_back(vPhyCopy[i]);
 		}
 	}
 	//ステレオ化デバイスを束ねる
@@ -878,6 +880,7 @@ int CFITOMConfig::GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* na
 {
 	int ret = 0;
 	*name = _T('\0');
+	UINT32 vtype = CFITOM::GetDeviceVoiceGroupMask(devid);
 	if (isPcmDevice(devid)) {
 		if (bank < vPcmDev.size()) {
 			PCMPROG pcmprog;
@@ -891,6 +894,9 @@ int CFITOMConfig::GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* na
 			tcsncpy(name, vDrumBank[prog]->GetBankName(), count);
 			ret = tcslen(name);
 		}
+	}
+	else if (vtype == VOICE_GROUP_RHYTHM || vtype == VOICE_GROUP_OPL4) {
+		ret = std::sprintf(name, _T("BuiltIn:%03i:%03i"), bank, prog);
 	}
 	else {
 		CFMBank* pbank = GetFMBank(CFITOM::GetDeviceVoiceGroupMask(devid & 0xff), bank);

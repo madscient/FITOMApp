@@ -121,6 +121,9 @@ const DWORD CFITOM::GetDeviceIDFromName(LPCTSTR name)
 
 const TCHAR* CFITOM::GetDeviceNameFromID(DWORD devid)
 {
+	if (devid & 0x80000000) {
+		devid &= 0x7fffffff;
+	}
 	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {
 			return ROM::devmap[i].chipname;

@@ -102,6 +102,7 @@ BOOL CDrumNoteEditDlg::OnInitDialog()
 			int k = cmbDevice.AddString(LPCTSTR(str));
 			cmbDevice.SetItemData(k, did);
 		}
+		/*
 		for (int i = 0; i < theConfig->GetPhyDevs(); i++) {
 			UINT32 phyid = theConfig->GetDeviceUniqID(theConfig->GetPhysDeviceFromIndex(i), TRUE);
 			BOOL regist = TRUE;
@@ -121,6 +122,7 @@ BOOL CDrumNoteEditDlg::OnInitDialog()
 				cmbDevice.SetItemData(k, phyid);
 			}
 		}
+		*/
 		for (int i = 0; i < theConfig->GetPcmDevs(); i++) {
 			CAdPcmBase* pdev = theConfig->GetPCMDeviceFromIndex(i);
 			UINT32 phyid = theConfig->GetDeviceUniqID(pdev);
