@@ -814,7 +814,7 @@ int CFITOMConfig::GetPcmDeviceIndex(CAdPcmBase* pdev)
 			return std::distance(vPcmDev.begin(), itr);
 		}
 	}
-	return 0;
+	return -1;
 }
 
 int CFITOMConfig::GetPcmDeviceIndex(UINT32 devid)

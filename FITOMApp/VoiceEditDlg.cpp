@@ -65,7 +65,10 @@ CVoiceEditDlg::VoiceItem CVoiceEditDlg::operatorItem[] = {
 	{ _T("VIB Enable"), 0, 0, 1, VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3, &CVoiceEditDlg::SetVIB, &CVoiceEditDlg::GetVIB, 0, },
 	{ _T("VIB Depth"), 0, 0, 7, VOICE_GROUP_MA3, &CVoiceEditDlg::SetVIB, &CVoiceEditDlg::GetVIB, 0, },
 	{ _T("Osc Fix"), 0, 0, 1, VOICE_GROUP_OPM, &CVoiceEditDlg::SetFIX, &CVoiceEditDlg::GetFIX, 0, },
-	{ _T("Wave Select"), 0, 0, 127, VOICE_GROUP_OPM | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_PSG | VOICE_GROUP_MA3, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, &CVoiceEditDlg::UpdateWaveView, },
+	{ _T("Wave Select"), 0, 0, 1, VOICE_GROUP_OPLL, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, &CVoiceEditDlg::UpdateWaveView, },
+	{ _T("Wave Select"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, &CVoiceEditDlg::UpdateWaveView, },
+	{ _T("Wave Select"), 0, 0, 31, VOICE_GROUP_MA3, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, &CVoiceEditDlg::UpdateWaveView, },
+	{ _T("Wave Select"), 0, 0, 127, VOICE_GROUP_PSG, &CVoiceEditDlg::SetWS, &CVoiceEditDlg::GetWS, &CVoiceEditDlg::UpdateWaveView, },
 	{ _T("Multiple"), 0, 0, 15, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL, &CVoiceEditDlg::SetML, &CVoiceEditDlg::GetML, &CVoiceEditDlg::UpdateFreqView, },
 	{ _T("Detune1"), 0, 0, 7, VOICE_GROUP_OPM | VOICE_GROUP_OPNA | VOICE_GROUP_MA3, &CVoiceEditDlg::SetDT1, &CVoiceEditDlg::GetDT1, &CVoiceEditDlg::UpdateFreqView, },
 	{ _T("Detune2"), 0, 0, 3, VOICE_GROUP_OPM, &CVoiceEditDlg::SetDT2, &CVoiceEditDlg::GetDT2, &CVoiceEditDlg::UpdateFreqView, },
@@ -554,7 +557,7 @@ LRESULT CVoiceEditDlg::OnClkListParam(LPNMITEMACTIVATE pNMLV, int op)
 	}
 
 	VoiceItem* pvi = (VoiceItem*)(plst->GetItemData(pNMLV->iItem));
-	if (pvi->pSetter) {
+	if (pvi->pSetter && pvi->pGetter) {
 		CRect ColumnRect;
 		int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
 		plst->GetSubItemRect(pNMLV->iItem, 1, LVIR_BOUNDS, ColumnRect);
@@ -579,18 +582,16 @@ void CVoiceEditDlg::OnChangeSlider(int op, int nPos)
 		//edtInplace.SetSel(0, -1);
 		if (editting_item[op]->pSetter) {
 			int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
-			if (editting_item[op]->pSetter) {
-				int value = (editting_item[op]->max - editting_item[op]->min) - (nPos - editting_item[op]->min);
-				value = min(value, editting_item[op]->max);
-				value = max(value, editting_item[op]->min);
-				(this->*(editting_item[op]->pSetter))(vg, op - 1, value);
-				pICh->SetVoiceData(&theVoice);
-				if (editting_item[op]->pViewer) {
-					(this->*(editting_item[op]->pViewer))(vg, op);
-				}
-				UpdateListCtrl(op, FALSE);
-				OnClickedBtnApply();
+			int value = (editting_item[op]->max - editting_item[op]->min) - (nPos - editting_item[op]->min);
+			value = min(value, editting_item[op]->max);
+			value = max(value, editting_item[op]->min);
+			(this->*(editting_item[op]->pSetter))(vg, op - 1, value);
+			pICh->SetVoiceData(&theVoice);
+			if (editting_item[op]->pViewer) {
+				(this->*(editting_item[op]->pViewer))(vg, op);
 			}
+			UpdateListCtrl(op, FALSE);
+			OnClickedBtnApply();
 		}
 		bModified = TRUE;
 	}

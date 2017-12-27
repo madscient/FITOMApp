@@ -43,7 +43,7 @@ void CStretchPicture::OnPaint()
 	HBITMAP hbmp = GetBitmap();
 	if (hbmp) {
 		CRect rc;
-		this->GetWindowRect(&rc);
+		this->GetClientRect(&rc);
 		Gdiplus::Graphics* gr = new Gdiplus::Graphics(dc);
 		Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(hbmp, 0);
 		gr->DrawImage(bmp, Gdiplus::Rect(0, 0, rc.Width(), rc.Height()));
