@@ -399,6 +399,7 @@ void CVoiceEditDlg::UpdateAlgoView(int vg, int op)
 
 void CVoiceEditDlg::UpdateWaveView(int vg, int op)
 {
+	--op;
 	CStretchPicture* picwave[] = { &picWS0, &picWS1, &picWS2, &picWS3, 0, };
 	int ws = GetWS(vg, op);
 	for (int i = 0; waveimg[i].vg != VOICE_GROUP_NONE; i++) {
@@ -729,10 +730,16 @@ void CVoiceEditDlg::OnClickedBtnApply()
 void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
-	if ((nSBCode == SB_THUMBTRACK || nSBCode == SB_THUMBPOSITION) && pScrollBar) {
+	if ((nSBCode == SB_THUMBTRACK || nSBCode == SB_THUMBPOSITION ||
+		nSBCode == SB_LINEUP || nSBCode == SB_LINEDOWN ||
+		nSBCode == SB_PAGEUP || nSBCode == SB_PAGEDOWN) && pScrollBar) {
 		for (int i = 0; i < 5; i++) {
 			UINT32 sender = pScrollBar->GetDlgCtrlID();
 			if (sender == sliders[i]) {
+				if (nSBCode == SB_LINEUP || nSBCode == SB_LINEDOWN ||
+					nSBCode == SB_PAGEUP || nSBCode == SB_PAGEDOWN) {
+					nPos += pScrollBar->GetScrollPos();
+				}
 				OnChangeSlider(i, (int)nPos);
 			}
 		}
