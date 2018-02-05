@@ -730,16 +730,12 @@ void CVoiceEditDlg::OnClickedBtnApply()
 void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
-	if ((nSBCode == SB_THUMBTRACK || nSBCode == SB_THUMBPOSITION ||
-		nSBCode == SB_LINEUP || nSBCode == SB_LINEDOWN ||
-		nSBCode == SB_PAGEUP || nSBCode == SB_PAGEDOWN) && pScrollBar) {
+	if (pScrollBar) {
+		SCROLLINFO scrlinfo;
+		pScrollBar->GetScrollInfo(&scrlinfo, SIF_ALL);
 		for (int i = 0; i < 5; i++) {
 			UINT32 sender = pScrollBar->GetDlgCtrlID();
 			if (sender == sliders[i]) {
-				if (nSBCode == SB_LINEUP || nSBCode == SB_LINEDOWN ||
-					nSBCode == SB_PAGEUP || nSBCode == SB_PAGEDOWN) {
-					nPos += pScrollBar->GetScrollPos();
-				}
 				OnChangeSlider(i, (int)nPos);
 			}
 		}
