@@ -425,10 +425,18 @@ void CVoiceEditDlg::UpdateFreqView(int vg, int op)
 	else {
 		double oplml[] = { 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 10.0, 12.0, 12.0, 15.0, 15.0, };
 		double opmml[] = { 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, };
-		double opmdt2[] = { 1.0, 1.4142135623730950488016887242097, 1.5703015887805285931588871794778, 1.731073122012286053390184437556, };
+		double opmdt2[4];
+		double opmdt3[4];
+		int opmdt2_seed[] = { 0, 384, 500, 608, };
+		int opmdt3_seed[] = { 0, 64, 96, 112, };
+		for (int i = 0; i < 4; i++) {
+			opmdt2[i] = pow(2, opmdt2_seed[i] / 768.0);
+			opmdt3[i] = pow(2, opmdt3_seed[i] / 768.0) - 1.0;
+		}
 		double ML = ((vg & (VOICE_GROUP_OPL2 | VOICE_GROUP_OPL3 | VOICE_GROUP_OPLL | VOICE_GROUP_MA3)) ? oplml : opmml)[GetML(vg, op)];
 		double DT2 = (vg & VOICE_GROUP_OPM) ? opmdt2[GetDT2(vg, op) & 3] : double(1.0);
-		str.Format(_T("Ratio\tx%2.2f"), ML * DT2);
+		double DT3 = (vg & VOICE_GROUP_OPM) ? (opmdt3[GetDT2(vg, op) & 3] * GetDT3(vg, op)) : double(0.0);
+		str.Format(_T("Ratio\tx%2.2f"), ML * DT2 + DT3);
 	}
 	SetDlgItemText(freqind[op], str);
 }
@@ -732,8 +740,14 @@ void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
 	if (pScrollBar) {
 		SCROLLINFO scr;
+		CSliderCtrl* pSlider = (CSliderCtrl*)pScrollBar;
 		scr.cbSize = sizeof(SCROLLINFO);
-		pScrollBar->GetScrollInfo(&scr, SIF_ALL);
+		//::GetScrollInfo(pSlider->GetSafeHwnd(), SB_VERT, &scr);
+		scr.nPos = pSlider->GetPos();
+		scr.nPage = 1;
+		scr.nMin = pSlider->GetRangeMin();
+		scr.nMax = pSlider->GetRangeMax();
+		scr.nTrackPos = nPos;
 		switch (nSBCode) {
 		case SB_TOP:
 			scr.nPos = scr.nMin;
