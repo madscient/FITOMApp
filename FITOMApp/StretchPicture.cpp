@@ -47,5 +47,7 @@ void CStretchPicture::OnPaint()
 		Gdiplus::Graphics* gr = new Gdiplus::Graphics(dc);
 		Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(hbmp, 0);
 		gr->DrawImage(bmp, Gdiplus::Rect(0, 0, rc.Width(), rc.Height()));
+		delete bmp;
+		delete gr;
 	}
 }

@@ -110,7 +110,7 @@ void CEnvView::Update()
 
 	memDC.SelectObject(oldbs);
 	memDC.Detach();
-
+	Invalidate(FALSE);
 }
 
 void CEnvView::OnPaint()
@@ -123,4 +123,6 @@ void CEnvView::OnPaint()
 	Gdiplus::Graphics* gr = new Gdiplus::Graphics(dc);
 	Gdiplus::Bitmap* bmp = new Gdiplus::Bitmap(hBmp, 0);
 	gr->DrawImage(bmp, Gdiplus::Rect(0, 0, rc.Width(), rc.Height()));
+	delete bmp;
+	delete gr;
 }

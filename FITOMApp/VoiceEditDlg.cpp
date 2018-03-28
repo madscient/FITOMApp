@@ -447,7 +447,7 @@ void CVoiceEditDlg::UpdateEnvView(int vg, int op)
 	FMOP* env = &(theVoice.op[op]);
 	if (0 <= op && op < 4) {
 		picenv[op]->SetEnv(env->TL, env->EGS, env->AR, env->DR, env->SL, env->SR, env->RR);
-		picenv[op]->Invalidate();
+		//picenv[op]->Invalidate();
 	}
 }
 
@@ -597,7 +597,7 @@ void CVoiceEditDlg::OnChangeSlider(int op, int nPos)
 			(this->*(editting_item[op]->pSetter))(vg, op - 1, value);
 			pICh->SetVoiceData(&theVoice);
 			if (editting_item[op]->pViewer) {
-				(this->*(editting_item[op]->pViewer))(vg, op);
+				(this->*(editting_item[op]->pViewer))(vg, op - 1);
 			}
 			UpdateListCtrl(op, FALSE);
 			OnClickedBtnApply();
@@ -739,6 +739,7 @@ void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
 	if (pScrollBar) {
+#if 0
 		SCROLLINFO scr;
 		CSliderCtrl* pSlider = (CSliderCtrl*)pScrollBar;
 		scr.cbSize = sizeof(SCROLLINFO);
@@ -775,10 +776,12 @@ void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			scr.nPos = nPos;
 			break;
 		}
+#else
+#endif
 		for (int i = 0; i < 5; i++) {
 			UINT32 sender = pScrollBar->GetDlgCtrlID();
 			if (sender == sliders[i]) {
-				OnChangeSlider(i, (int)scr.nPos);
+				OnChangeSlider(i, (int)nPos);
 			}
 		}
 	}
