@@ -428,7 +428,7 @@ void CVoiceEditDlg::UpdateFreqView(int vg, int op)
 		double opmdt2[4];
 		double opmdt3[4];
 		int opmdt2_seed[] = { 0, 384, 500, 608, };
-		int opmdt3_seed[] = { 0, 64, 96, 112, };
+		int opmdt3_seed[] = { 64, 88, 106, 118, };
 		for (int i = 0; i < 4; i++) {
 			opmdt2[i] = pow(2, opmdt2_seed[i] / 768.0);
 			opmdt3[i] = pow(2, opmdt3_seed[i] / 768.0) - 1.0;
