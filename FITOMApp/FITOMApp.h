@@ -27,6 +27,7 @@ public:
 protected:
 	UINT hTimer;
 	HANDLE hPolling;
+	HANDLE hCommand;
 	volatile UINT32 lltickcount;
 	volatile BOOL bRunning;
 	CFITOM* theFitom;
@@ -76,7 +77,7 @@ public:
 	//スタティック
 	static void CALLBACK TimerProc(UINT uTimerID, UINT uMsg, DWORD dwUser, DWORD dummy1, DWORD dummy2);
 	static unsigned int CALLBACK PollingProc(void* params);
-
+	static unsigned int CALLBACK CommandProc(void* params);
 // オーバーライド
 public:
 	virtual BOOL InitInstance();

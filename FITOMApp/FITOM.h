@@ -103,6 +103,7 @@ public:
 	//Utility
 	void AllNoteOff();
 	void ResetAllCtrl();
+	BOOL CmdProc(TCHAR* cmd, TCHAR* result, int reslen);
 
 	//Static utils
 	static const DWORD GetDeviceVoiceType(DWORD device);

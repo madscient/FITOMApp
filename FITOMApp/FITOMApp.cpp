@@ -267,6 +267,31 @@ unsigned int CFITOMApp::PollingProc(void* params)
 	return 0;
 }
 
+unsigned int CFITOMApp::CommandProc(void* params)
+{
+	CFITOMApp* theFitomApp = (CFITOMApp*)params;
+	HANDLE namedpipe = ::CreateNamedPipe(_T("\\\\.\\pipe\\FITOM"), PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_WAIT,
+		1, 1024, 1024, 10, NULL);
+	BYTE buf[1024];
+	if (namedpipe != INVALID_HANDLE_VALUE) {
+		::ConnectNamedPipe(namedpipe, NULL);
+		while (theFitomApp->bRunning && theFitomApp->theFitom) {
+			DWORD len = 0;
+			::ReadFile(namedpipe, (LPVOID)buf, 1024, &len, NULL);
+			if (len) {
+				for (int i = 0; i < len; i++) {
+					fprintf_s(stderr, _T("%02X "), buf[i]);
+				}
+				fputc(_T('\n'), stderr);
+			}
+		}
+		::FlushFileBuffers(namedpipe);
+		::DisconnectNamedPipe(namedpipe);
+		::CloseHandle(namedpipe);
+	}
+	return 0;
+}
+
 void CFITOMApp::VoiceCopy(FMVOICE* voice)
 {
 	if (!clipvoice) {

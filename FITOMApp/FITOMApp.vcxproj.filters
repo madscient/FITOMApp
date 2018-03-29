@@ -413,6 +413,9 @@
     <ClCompile Include="StretchPicture.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
+    <ClCompile Include="cmdproc.cpp">
+      <Filter>ソース ファイル\FITOM core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FITOMApp.rc">

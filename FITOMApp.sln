@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scsh", "scsh\scsh.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FITOMOPi", "FITOMApp\FITOMOPi.vcxproj", "{2B05AA35-2851-46DC-80C3-E8C2A8A1DD06}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PipeTest1", "PipeTest1\PipeTest1.vcxproj", "{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -57,6 +59,16 @@ Global
 		{2B05AA35-2851-46DC-80C3-E8C2A8A1DD06}.Release|Win32.Build.0 = Release|ARM
 		{2B05AA35-2851-46DC-80C3-E8C2A8A1DD06}.Release|x64.ActiveCfg = Release|x64
 		{2B05AA35-2851-46DC-80C3-E8C2A8A1DD06}.Release|x64.Build.0 = Release|x64
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Debug|ARM.ActiveCfg = Debug|Win32
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Debug|Win32.Build.0 = Debug|Win32
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Debug|x64.ActiveCfg = Debug|x64
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Debug|x64.Build.0 = Debug|x64
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Release|ARM.ActiveCfg = Release|Win32
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Release|Win32.ActiveCfg = Release|Win32
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Release|Win32.Build.0 = Release|Win32
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Release|x64.ActiveCfg = Release|x64
+		{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
