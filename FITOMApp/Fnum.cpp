@@ -109,7 +109,7 @@ double CFnumTable::GetOPL4Fnum(double rate, int note)
 {
 	double tuningoffset = 768.0 * log2(TuningFrequency / 440.0);
 	double freq = pow(2.0, (double(note) + tuningoffset) / 768.0);
-	double sig = round(freq * 1024);
+	double sig = round(1024 * log2(freq));
 	return sig;
 }
 

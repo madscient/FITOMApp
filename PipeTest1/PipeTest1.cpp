@@ -10,7 +10,14 @@ int main()
 	HANDLE namedpipe = ::CreateFile(_T("\\\\.\\pipe\\FITOM"), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 	if (namedpipe != INVALID_HANDLE_VALUE) {
 		TCHAR buf[1024];
-		fgets(buf, 1024, stdin);
+		while (1) {
+			fgets(buf, 1024, stdin);
+			if (strcmp(_T("exit"), buf) == 0) {
+				break;
+			}
+			DWORD len = 0;
+			::WriteFile(namedpipe, buf, strlen(buf), &len, NULL);
+		}
 	}
 	::CloseHandle(namedpipe);
 	return 0;
