@@ -213,6 +213,7 @@ int CFITOMApp::FITOMStart()
 		::timeBeginPeriod(1);
 		hTimer = timeSetEvent(10 - 1, 0, TimerProc, (DWORD)this, TIME_PERIODIC | TIME_CALLBACK_FUNCTION);
 		hPolling = (HANDLE)_beginthreadex(0, 0, PollingProc, (void*)this, 0, 0);
+		hCommand = (HANDLE)_beginthreadex(0, 0, CommandProc, (void*)this, 0, 0);
 		bRunning = TRUE;
 	}
 	return res;
@@ -225,6 +226,8 @@ int CFITOMApp::FITOMStop()
 	timeEndPeriod(1);
 	::Sleep(100);
 	::TerminateThread(hPolling, 0);
+	::Sleep(100);
+	::TerminateThread(hCommand, 0);
 	::Sleep(100);
 	theFitom->ExitInstance();
 	delete theConfig;
@@ -288,6 +291,9 @@ unsigned int CFITOMApp::CommandProc(void* params)
 		::FlushFileBuffers(namedpipe);
 		::DisconnectNamedPipe(namedpipe);
 		::CloseHandle(namedpipe);
+	}
+	else {
+		fprintf(stderr, _T("can't create pipe.\n"));
 	}
 	return 0;
 }

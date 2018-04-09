@@ -19,6 +19,9 @@ int main()
 			::WriteFile(namedpipe, buf, strlen(buf), &len, NULL);
 		}
 	}
+	else {
+		fprintf(stderr, _T("pipe can't open.\n"));
+	}
 	::CloseHandle(namedpipe);
 	return 0;
 }
