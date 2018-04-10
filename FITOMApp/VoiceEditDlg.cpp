@@ -738,7 +738,7 @@ void CVoiceEditDlg::OnClickedBtnApply()
 void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
-	if (pScrollBar) {
+	if (pScrollBar && (nSBCode == TB_THUMBPOSITION || nSBCode == TB_THUMBTRACK)) {
 #if 0
 		SCROLLINFO scr;
 		CSliderCtrl* pSlider = (CSliderCtrl*)pScrollBar;

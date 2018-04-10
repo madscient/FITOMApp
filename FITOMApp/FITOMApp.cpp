@@ -291,9 +291,10 @@ unsigned int CFITOMApp::CommandProc(void* params)
 		::FlushFileBuffers(namedpipe);
 		::DisconnectNamedPipe(namedpipe);
 		::CloseHandle(namedpipe);
+		fprintf_s(stderr, _T("pipe closed."));
 	}
 	else {
-		fprintf(stderr, _T("can't create pipe.\n"));
+		fprintf_s(stderr, _T("can't create pipe.\n"));
 	}
 	return 0;
 }
