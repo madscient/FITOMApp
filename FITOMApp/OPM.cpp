@@ -352,7 +352,8 @@ void COPZ::UpdateVoice(UINT8 ch)
 		UINT8 ofm = voice->op[map[i]].DM0;
 		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (voice->op[map[i]].DT3 & 0xf);
 		SetReg(0x40 + i * 8 + ch, tmp);
-		tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | GET_RV(voice, map[i]) | 0x20;
+		//tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | GET_RV(voice, map[i]) | 0x20;
+		tmp = 0x20;
 		SetReg(0xc0 + i * 8 + ch, tmp);
 	}
 	COPM::UpdateVoice(ch);

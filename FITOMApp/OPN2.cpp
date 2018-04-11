@@ -199,20 +199,6 @@ void COPNARhythm::UpdateVolExp(UINT8 ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (attr) {
-		UINT8 evol = 31 - Linear2dB(CalcLinearLevel(attr->velocity, 0), RANGE24DB, STEP075DB, 5);
-		SetReg(0x18 + ch, (GetReg(0x18, 0) & 0xc0) | evol, 1);	//Instrumental Level
-
-		evol = 63 - Linear2dB(CalcLinearLevel(attr->volume, 0), RANGE48DB, STEP075DB, 6);
-		if (GetReg(0x11, 0) != evol) {
-			SetReg(0x11, evol);
-		}
-	}
-}
-
-void COPNARhythm::UpdatePanpot(UINT8 ch)
-{
-	CHATTR* attr = GetChAttribute(ch);
-	if (attr) {
 		SINT8 pan = attr->panpot / 8;
 		UINT8 chena = 0;
 		if (pan >= 4) { //R
@@ -224,14 +210,25 @@ void COPNARhythm::UpdatePanpot(UINT8 ch)
 		else { //C
 			chena = 0xc0;
 		}
-		SetReg(0x18 + ch, chena | (GetReg(0x18, 0) & 0x3f), 1);	//Instrumental Level
+		UINT8 evol = 31 - Linear2dB(CalcLinearLevel(attr->velocity, 0), RANGE24DB, STEP075DB, 5);
+		SetReg(0x18 + ch, chena | evol, 1);	//Instrumental Level
+
+		evol = 63 - Linear2dB(CalcLinearLevel(attr->volume, 0), RANGE48DB, STEP075DB, 6);
+		if (GetReg(0x11, 0) != evol) {
+			SetReg(0x11, evol);
+		}
 	}
+}
+
+void COPNARhythm::UpdatePanpot(UINT8 ch)
+{
+	UpdateVolExp(ch);
 }
 
 void COPNARhythm::UpdateKey(UINT8 ch, UINT8 keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	if (attr) {
+	if (attr && keyon) {
 		SetReg(0x10, (1 << ch), 1);
 	}
 }

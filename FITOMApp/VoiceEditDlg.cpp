@@ -738,46 +738,23 @@ void CVoiceEditDlg::OnClickedBtnApply()
 void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
-	if (pScrollBar && (nSBCode == TB_THUMBPOSITION || nSBCode == TB_THUMBTRACK)) {
-#if 0
+	if (pScrollBar) {
 		SCROLLINFO scr;
 		CSliderCtrl* pSlider = (CSliderCtrl*)pScrollBar;
-		scr.cbSize = sizeof(SCROLLINFO);
-		//::GetScrollInfo(pSlider->GetSafeHwnd(), SB_VERT, &scr);
-		scr.nPos = pSlider->GetPos();
-		scr.nPage = 1;
-		scr.nMin = pSlider->GetRangeMin();
-		scr.nMax = pSlider->GetRangeMax();
-		scr.nTrackPos = nPos;
 		switch (nSBCode) {
-		case SB_TOP:
-			scr.nPos = scr.nMin;
+		case TB_ENDTRACK:
+		case TB_TOP:
+		case TB_BOTTOM:
+		case TB_LINEUP:
+		case TB_LINEDOWN:
+		case TB_PAGEUP:
+		case TB_PAGEDOWN:
+			nPos = pSlider->GetPos();
 			break;
-		case SB_BOTTOM:
-			scr.nPos = scr.nMax;
-			break;
-		case SB_LINEUP:
-			if (scr.nPos) {
-				scr.nPos--;
-			}
-			break;
-		case SB_LINEDOWN:
-			if (scr.nPos < scr.nMax - 1) {
-				scr.nPos++;
-			}
-			break;
-		case SB_PAGEUP:
-			scr.nPos -= scr.nPage;
-			break;
-		case SB_PAGEDOWN:
-			scr.nPos += scr.nPage;
-			break;
-		case SB_THUMBPOSITION:
-			scr.nPos = nPos;
+		case TB_THUMBPOSITION:
+		case TB_THUMBTRACK:
 			break;
 		}
-#else
-#endif
 		for (int i = 0; i < 5; i++) {
 			UINT32 sender = pScrollBar->GetDlgCtrlID();
 			if (sender == sliders[i]) {

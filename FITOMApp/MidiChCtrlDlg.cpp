@@ -445,7 +445,7 @@ void CMidiChCtrlDlg::OnBnClickedBtnVedit()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	UINT32 devid = cmbDevice.GetItemData(cmbDevice.GetCurSel());
-	if (theConfig->isPcmDevice(devid) || (devid | BUILTIN_RHYTHM)) {
+	if (theConfig->isPcmDevice(devid) || (devid & BUILTIN_RHYTHM)) {
 		AfxMessageBox(IDS_NOT_SUPPORTED_EDIT, MB_OK);
 		return;
 	}
@@ -488,6 +488,20 @@ void CMidiChCtrlDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
 	for (int i = 0; i < numMultiCtrl; i++) {
 		if (pMulCtrl[i] && pMulCtrl[i]->IsMember(pScrollBar->GetDlgCtrlID())) {
+			switch (nSBCode) {
+			case TB_ENDTRACK:
+			case TB_TOP:
+			case TB_BOTTOM:
+			case TB_LINEUP:
+			case TB_LINEDOWN:
+			case TB_PAGEUP:
+			case TB_PAGEDOWN:
+				nPos = ((CSliderCtrl*)pScrollBar)->GetPos();
+				break;
+			case TB_THUMBPOSITION:
+			case TB_THUMBTRACK:
+				break;
+			}
 			NMUPDOWN nms;
 			nms.hdr.hwndFrom = pScrollBar->GetSafeHwnd();
 			nms.hdr.idFrom = pScrollBar->GetDlgCtrlID();
