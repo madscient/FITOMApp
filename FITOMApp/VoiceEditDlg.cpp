@@ -399,7 +399,6 @@ void CVoiceEditDlg::UpdateAlgoView(int vg, int op)
 
 void CVoiceEditDlg::UpdateWaveView(int vg, int op)
 {
-	--op;
 	CStretchPicture* picwave[] = { &picWS0, &picWS1, &picWS2, &picWS3, 0, };
 	int ws = GetWS(vg, op);
 	for (int i = 0; waveimg[i].vg != VOICE_GROUP_NONE; i++) {
@@ -455,6 +454,8 @@ void CVoiceEditDlg::OnOK()
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (bModified) {
+		UpdateVoiceView(NULL);
+
 		int vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
 		CFMBank* pbank = theConfig->GetFMBank(vg, theBank);
 		if (pbank) {
@@ -469,6 +470,10 @@ void CVoiceEditDlg::OnOK()
 void CVoiceEditDlg::OnBnClickedButtonPick()
 {
 	if (!bModified || ::AfxMessageBox(IDS_CONFIRM_VOICE_DISCARD, MB_YESNO) == IDYES) {
+		//revert
+		UpdateVoiceView(&orgVoice);
+		OnClickedBtnApply();
+
 		CDlgVoicePicker dlg;
 		dlg.SetDevice(theDevice);
 		dlg.SetBank(theBank);
@@ -652,6 +657,7 @@ void CVoiceEditDlg::OnChangeEditName()
 	tmp[16] = _T(0);
 	memcpy(theVoice.name, CT2A(tmp), 16);
 	bModified = TRUE;
+	OnClickedBtnApply();
 }
 
 void CVoiceEditDlg::OnVoiceCopy()
