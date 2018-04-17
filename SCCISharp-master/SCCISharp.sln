@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SCCISharp", "SCCISharp\SCCISharp.vcxproj", "{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{363414EF-B14A-476B-84E6-F753458083BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleProgram1", "samples\SampleProgram1\SampleProgram1.csproj", "{81A6E6BD-6887-4973-BF12-EF4302562DCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleProgram2", "samples\SampleProgram2\SampleProgram2.csproj", "{38401607-BADF-42E1-A447-809B706DE1AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleProgram3", "samples\SampleProgram3\SampleProgram3.csproj", "{5C51E30C-0187-4D02-AD1E-033735D5D402}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{75E377EC-F6BD-49EB-A859-15FDB1B79857}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Debug|x86.ActiveCfg = Debug|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Debug|x86.Build.0 = Debug|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|x86.ActiveCfg = Release|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|x86.Build.0 = Release|Win32
+		{81A6E6BD-6887-4973-BF12-EF4302562DCA}.Debug|x86.ActiveCfg = Debug|x86
+		{81A6E6BD-6887-4973-BF12-EF4302562DCA}.Debug|x86.Build.0 = Debug|x86
+		{81A6E6BD-6887-4973-BF12-EF4302562DCA}.Release|x86.ActiveCfg = Release|x86
+		{81A6E6BD-6887-4973-BF12-EF4302562DCA}.Release|x86.Build.0 = Release|x86
+		{38401607-BADF-42E1-A447-809B706DE1AF}.Debug|x86.ActiveCfg = Debug|x86
+		{38401607-BADF-42E1-A447-809B706DE1AF}.Debug|x86.Build.0 = Debug|x86
+		{38401607-BADF-42E1-A447-809B706DE1AF}.Release|x86.ActiveCfg = Release|x86
+		{38401607-BADF-42E1-A447-809B706DE1AF}.Release|x86.Build.0 = Release|x86
+		{5C51E30C-0187-4D02-AD1E-033735D5D402}.Debug|x86.ActiveCfg = Debug|x86
+		{5C51E30C-0187-4D02-AD1E-033735D5D402}.Debug|x86.Build.0 = Debug|x86
+		{5C51E30C-0187-4D02-AD1E-033735D5D402}.Release|x86.ActiveCfg = Release|x86
+		{5C51E30C-0187-4D02-AD1E-033735D5D402}.Release|x86.Build.0 = Release|x86
+		{75E377EC-F6BD-49EB-A859-15FDB1B79857}.Debug|x86.ActiveCfg = Debug|x86
+		{75E377EC-F6BD-49EB-A859-15FDB1B79857}.Debug|x86.Build.0 = Debug|x86
+		{75E377EC-F6BD-49EB-A859-15FDB1B79857}.Release|x86.ActiveCfg = Release|x86
+		{75E377EC-F6BD-49EB-A859-15FDB1B79857}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81A6E6BD-6887-4973-BF12-EF4302562DCA} = {363414EF-B14A-476B-84E6-F753458083BF}
+		{38401607-BADF-42E1-A447-809B706DE1AF} = {363414EF-B14A-476B-84E6-F753458083BF}
+		{5C51E30C-0187-4D02-AD1E-033735D5D402} = {363414EF-B14A-476B-84E6-F753458083BF}
+	EndGlobalSection
+EndGlobal

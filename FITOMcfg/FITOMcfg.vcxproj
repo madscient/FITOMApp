@@ -14,6 +14,7 @@
     <ProjectGuid>{C54BB124-C926-439A-925F-297896FC7E8B}</ProjectGuid>
     <RootNamespace>FITOMcfg</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <ProjectName>FITOMcfg(C++)</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

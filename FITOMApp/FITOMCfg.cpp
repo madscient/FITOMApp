@@ -1002,15 +1002,18 @@ int CFITOMConfig::LoadDeviceConfig()
 {
 	//SCCI devices
 	int res = 0;
-	int devices = fitom_ini.get<int>(_T("Device.count"), 0);
-	for (int i = 0; i < devices; i++) {
-		std::tstring strkeyname = (boost::format(_T("Device.device%1%")) % i).str();
-		boost::optional<std::tstring> valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
-		if (valparam && CreateDevice(valparam.get().c_str()) == 0) {
-			res++;
+	std::tstring devcfgmode = (boost::format(_T("Device.mode%1%")) % i).str();
+	if (devcfgmode.compare(_T("MANUAL")) == 0 || devcfgmode.empty()) {
+		int devices = fitom_ini.get<int>(_T("Device.count"), 0);
+		for (int i = 0; i < devices; i++) {
+			std::tstring strkeyname = (boost::format(_T("Device.device%1%")) % i).str();
+			boost::optional<std::tstring> valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
+			if (valparam && CreateDevice(valparam.get().c_str()) == 0) {
+				res++;
+			}
 		}
+		BuildLogDevice();
 	}
-	BuildLogDevice();
 	return res;
 }
 
