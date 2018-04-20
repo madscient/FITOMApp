@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FITOMApp", "FITOMApp\FITOMApp.vcxproj", "{B04CDE73-6C3C-46E1-B430-CC893CED7BF6}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PipeTest1", "PipeTest1\PipeTest1.vcxproj", "{BA17FE38-38A0-4A33-8F4B-791828CCEAE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FITOM_config", "FITOM_config\FITOM_config.csproj", "{5DD23520-F136-4785-B6BC-C65E36D27748}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SCCISharp", "SCCISharp-master\SCCISharp\SCCISharp.vcxproj", "{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,8 +101,21 @@ Global
 		{5DD23520-F136-4785-B6BC-C65E36D27748}.Release|Win32.Build.0 = Release|Any CPU
 		{5DD23520-F136-4785-B6BC-C65E36D27748}.Release|x64.ActiveCfg = Release|Any CPU
 		{5DD23520-F136-4785-B6BC-C65E36D27748}.Release|x64.Build.0 = Release|Any CPU
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Debug|ARM.ActiveCfg = Debug|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Debug|Win32.Build.0 = Debug|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Debug|x64.ActiveCfg = Debug|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|Any CPU.ActiveCfg = Release|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|ARM.ActiveCfg = Release|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|Win32.ActiveCfg = Release|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|Win32.Build.0 = Release|Win32
+		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB8E08FE-F49B-4692-A3F9-7E18E891C7B5}
 	EndGlobalSection
 EndGlobal
