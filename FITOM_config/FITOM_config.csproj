@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SCCISharp">
-      <HintPath>..\SCCISharp-master\bin\lib\SCCISharp.dll</HintPath>
+      <HintPath>..\bin\lib\SCCISharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

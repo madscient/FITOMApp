@@ -115,6 +115,8 @@ namespace FITOM_config
             new ChipTypeConversion("NONE", "NONE", ChipType.None, FITOMDeviceType.NONE, false, false, false, false),
             new ChipTypeConversion("AY-3-891x", "PSG", ChipType.AY8910, FITOMDeviceType.PSG, false, false, false, true),
             new ChipTypeConversion("AY8930", "EPSG", ChipType.AY8930, FITOMDeviceType.EPSG, false, false, false, true),
+            new ChipTypeConversion("SN76489", "DCSG", ChipType.SN76489, FITOMDeviceType.DCSG, false, false, false, true),
+            new ChipTypeConversion("SN76496", "DCSG", ChipType.SN76496, FITOMDeviceType.DCSG, false, false, false, true),
             new ChipTypeConversion("YM2149", "SSG", ChipType.YM2149, FITOMDeviceType.SSG, false, false, false, true),
             new ChipTypeConversion("YM2203(FM)", "OPN", ChipType.YM2203, FITOMDeviceType.OPN, true, false, false, false),
             new ChipTypeConversion("YM2203(SSG)", "SSG", ChipType.YM2203, FITOMDeviceType.SSG, false, false, false, true),
