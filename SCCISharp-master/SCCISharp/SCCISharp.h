@@ -52,7 +52,13 @@ namespace SCCISharp {
 		YMZ280,
 		YMZ705,
 		YMZ735,
+		YM2423,
 		SPC700,
+		NBV4,
+		AYB02,
+		I8253,
+		OTHER,
+		UNKNOWN,
 		MAX
 	};
 

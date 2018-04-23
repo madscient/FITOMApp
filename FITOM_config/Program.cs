@@ -113,7 +113,9 @@ namespace FITOM_config
         static ChipTypeConversion[] ChipTypeConversionTable =
         {
             new ChipTypeConversion("NONE", "NONE", ChipType.None, FITOMDeviceType.NONE, false, false, false, false),
-            new ChipTypeConversion("AY-3-8910", "PSG", ChipType.AY8910, FITOMDeviceType.PSG, false, false, false, true),
+            new ChipTypeConversion("AY-3-891x", "PSG", ChipType.AY8910, FITOMDeviceType.PSG, false, false, false, true),
+            new ChipTypeConversion("AY8930", "EPSG", ChipType.AY8930, FITOMDeviceType.EPSG, false, false, false, true),
+            new ChipTypeConversion("YM2149", "SSG", ChipType.YM2149, FITOMDeviceType.SSG, false, false, false, true),
             new ChipTypeConversion("YM2203(FM)", "OPN", ChipType.YM2203, FITOMDeviceType.OPN, true, false, false, false),
             new ChipTypeConversion("YM2203(SSG)", "SSG", ChipType.YM2203, FITOMDeviceType.SSG, false, false, false, true),
             new ChipTypeConversion("YM2612", "OPN2", ChipType.YM2612, FITOMDeviceType.OPN2, true, false, false, false),
@@ -133,8 +135,18 @@ namespace FITOM_config
             new ChipTypeConversion("YM2414", "OPZ", ChipType.YM2414, FITOMDeviceType.OPZ, true, false, false, false),
             new ChipTypeConversion("YM2413", "OPLL", ChipType.YM2413, FITOMDeviceType.OPLL, true, false, false, false),
             new ChipTypeConversion("YM2420", "OPLL2", ChipType.YM2420, FITOMDeviceType.OPLL2, true, false, false, false),
-            new ChipTypeConversion("YM2423", "OPLLX", ChipType.YM2413, FITOMDeviceType.OPLL, true, false, false, false),
-            new ChipTypeConversion("YM2413", "OPLL", ChipType.YM2413, FITOMDeviceType.OPLL, true, false, false, false),
+            new ChipTypeConversion("YM2423", "OPLLX", ChipType.YM2423, FITOMDeviceType.OPLLX, true, false, false, false),
+            new ChipTypeConversion("YMF281", "OPLLP", ChipType.YMF281, FITOMDeviceType.OPLLP, true, false, false, false),
+            new ChipTypeConversion("YM2413(Rhythm)", "OPLL_Rhythm", ChipType.YM2413, FITOMDeviceType.OPLL_Rhythm, false, true, false, false),
+            new ChipTypeConversion("YM2420(Rhythm)", "OPLL_Rhythm", ChipType.YM2420, FITOMDeviceType.OPLL_Rhythm, false, true, false, false),
+            new ChipTypeConversion("YM2423(Rhythm)", "OPLL_Rhythm", ChipType.YM2423, FITOMDeviceType.OPLL_Rhythm, false, true, false, false),
+            new ChipTypeConversion("YMF281(Rhythm)", "OPLL_Rhythm", ChipType.YMF281, FITOMDeviceType.OPLL_Rhythm, false, true, false, false),
+            new ChipTypeConversion("YM3526", "OPL", ChipType.YM3526, FITOMDeviceType.OPL, true, false, false, false),
+            new ChipTypeConversion("YM3812", "OPL2", ChipType.YM3812, FITOMDeviceType.OPL2, true, false, false, false),
+            new ChipTypeConversion("Y8950(FM)", "OPL", ChipType.Y8950, FITOMDeviceType.OPL, true, false, false, false),
+            new ChipTypeConversion("Y8950(ADPCM)", "ADPCM_B", ChipType.Y8950, FITOMDeviceType.ADPCMB, false, false, true, false),
+            new ChipTypeConversion("YMF262(4OP)", "OPL3", ChipType.YMF262, FITOMDeviceType.OPL3, true, false, false, false),
+            new ChipTypeConversion("YMF262(2OP)", "OPL3_2", ChipType.YMF262, FITOMDeviceType.OPL3_2, true, false, false, false),
 
         };
         class FITOMDeviceInfo
