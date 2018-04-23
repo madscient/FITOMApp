@@ -41,7 +41,13 @@ enum SC_CHIP_TYPE {
 	SC_TYPE_YMZ280,		// PCM8:ADPCM8ch:試作予定
 	SC_TYPE_YMZ705,		// SSGS:SSG*2set+ADPCM8ch:試作中
 	SC_TYPE_YMZ735,		// FMS:FM8ch+ADPCM8ch:試作中
+	SC_TYPE_YM2423,		// YM2413の音色違い
 	SC_TYPE_SPC700,		// SPC700
+	SC_TYPE_NBV4,		// NBV4用
+	SC_TYPE_AYB02,		// AYB02用
+	SC_TYPE_8253,		// i8253（及び互換チップ用）
+	SC_TYPE_OTHER,		// その他デバイス用、アドレスがA0-A3で動作する
+	SC_TYPE_UNKNOWN,	// 開発デバイス向け
 	SC_TYPE_MAX
 };
 
@@ -49,6 +55,7 @@ enum SC_CHIP_TYPE {
 enum SC_CHIP_CLOCK {
 	SC_CLOCK_NONE		= 0,
 	SC_CLOCK_1789773	= 1789773,	// SSG,OPN,OPM,SN76489 etc
+	SC_CLOCK_1996800	= 1996800,	// SSG,OPN,OPM,SN76489 etc
 	SC_CLOCK_2000000	= 2000000,	// SSG,OPN,OPM,SN76489 etc
 	SC_CLOCK_2048000	= 2048000,	// SSGLP(4096/2|6144/3)
 	SC_CLOCK_3579545	= 3579545,	// SSG,OPN,OPM,SN76489 etc
@@ -80,7 +87,7 @@ enum SC_CHIP_LOCATION {
 #define	SC_ACQUISITION_MODE_NEAR	(0x00000000)
 #define	SC_ACQUISITION_MODE_MATCH	(0x00000001)	
 
-#define	SC_WAIT_REG		(0xffffffff)
-#define SC_FLUSH_REG	(0xfffffffe)
-
+#define	SC_WAIT_REG			(0xffffffff)	// ウェイとコマンド送信（データは送信するコマンド数）
+#define SC_FLUSH_REG		(0xfffffffe)	// 書き込みデータフラッシュ待ち
+#define SC_DIRECT_BUS		(0x80000000)	// アドレスバスダイレクトモード
 
