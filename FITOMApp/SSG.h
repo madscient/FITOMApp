@@ -7,7 +7,7 @@
 class CSSG : public CPSGBase
 {
 public:
-	CSSG(CPort* pt, int fsamp);
+	CSSG(CPort* pt, int fsamp, UINT8 dev = DEVICE_SSG);
 	virtual void Init();
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 protected:
@@ -22,7 +22,19 @@ protected:
 class CPSG : public CSSG
 {
 public:
-	CPSG(CPort* pt, int fsamp);
+	CPSG(CPort* pt, int fsamp) : CSSG(pt, fsamp, DEVICE_PSG) {};
+};
+
+class CSSGLP : public CSSG
+{
+public:
+	CSSGLP(CPort* pt, int fsamp) : CSSG(pt, fsamp, DEVICE_SSGLP) {};
+};
+
+class CSSGD : public CSSG
+{
+public:
+	CSSGD(CPort* pt, int fsamp) : CSSG(pt, fsamp, DEVICE_SSGD) {};
 };
 
 #endif

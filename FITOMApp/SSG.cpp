@@ -2,7 +2,7 @@
 #include "SSG.h"
 
 //-------------------------------
-CSSG::CSSG(CPort* pt, int fsamp) : CPSGBase(DEVICE_SSG, pt, 0x20, 3, fsamp)
+CSSG::CSSG(CPort* pt, int fsamp, UINT8 dev) : CPSGBase(dev, pt, 0x20, 3, fsamp)
 {
 	ops = 2;
 }
@@ -133,10 +133,3 @@ UINT8 CSSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	}
 	return CSoundDevice::QueryCh(parent, voice, mode);
 }
-
-//-------------------------------
-CPSG::CPSG(CPort* pt, int fsamp) : CSSG(pt, fsamp)
-{
-	SetDevice(DEVICE_PSG);
-}
-

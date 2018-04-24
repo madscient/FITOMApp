@@ -135,6 +135,7 @@ protected:
 	int LoadADPCMBank(int bank, LPCTSTR fname);
 	int LoadSCCWaveBank();
 	CPort* FindPort(PortInfo& pinf);
+	CSoundDevice* FindDeviceFromPort(CPort* pt);
 	int BuildLogDevice();
 	virtual int isSpannable(CSoundDevice* src, CSoundDevice* tgt);
 
@@ -217,27 +218,29 @@ public:
 
 	int AddOPN(CPort* pt, int md, int fs);
 	int AddOPN2(CPort* pt, int md, int fs);
-	int AddOPN2C(CPort* pt, int md, int fs);
-	int AddOPN2L(CPort* pt, int md, int fs);
 	int AddOPN3L(CPort* pt, int md, int fs);
 	int AddOPNA(CPort* pt, int md, int fs);
+	int AddOPNARhythm(CPort* pt, int md, int fs);
+	int AddOPN3LRhythm(CPort* pt, int md, int fs);
 	int AddOPNB(CPort* pt, int md, int fs);
-	int AddOPNBB(CPort* pt, int md, int fs);
-	int AddOPNBK(CPort* pt, int md, int fs);
-	int AddOPNC(CPort* pt, int md, int fs);
 	int AddOPM(CPort* pt, int md, int fs);
 	int AddOPP(CPort* pt, int md, int fs);
 	int AddOPZ(CPort* pt, int md, int fs);
 	int AddOPL(CPort* pt, int md, int fs);
 	int AddOPL2(CPort* pt, int md, int fs);
 	int AddOPL3(CPort* pt, int md, int fs);
+	int AddOPL3_2(CPort* pt, int md, int fs);
 	int AddOPLL(CPort* pt, int md, int fs);
 	int AddOPLL2(CPort* pt, int md, int fs);
 	int AddOPLLP(CPort* pt, int md, int fs);
 	int AddOPLLX(CPort* pt, int md, int fs);
+	int AddOPLLRhythm(CPort* pt, int md, int fs);
 	int AddOPK(CPort* pt, int md, int fs);
 	int AddOPK2(CPort* pt, int md, int fs);
+	int AddOPKRhythm(CPort* pt, int md, int fs);
 	int AddSSG(CPort* pt, int md, int fs);
+	int AddSSGLP(CPort* pt, int md, int fs);
+	int AddSSGD(CPort* pt, int md, int fs);
 	int AddPSG(CPort* pt, int md, int fs);
 	int AddEPSG(CPort* pt, int md, int fs);
 	int AddDCSG(CPort* pt, int md, int fs);
