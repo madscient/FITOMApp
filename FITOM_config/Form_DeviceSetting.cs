@@ -14,7 +14,20 @@ namespace FITOM_config
     public partial class Form_DeviceSetting : Form
     {
         private SoundInterfaceManager SIManager = SoundInterfaceManager.GetInstance();
-
+        struct FITOMDeviceConfigure
+        {
+            int SlotID;
+            string DeviceSymbol;
+            int Mode;
+            int Clock;
+        };
+        struct FITOMInterfaceConfigure
+        {
+            string InterfaceManager;
+            int InterfaceID;
+            List<FITOMDeviceConfigure> DeviceCongires;
+        };
+        private List<FITOMInterfaceConfigure> InterfaceConfigures;
         public Form_DeviceSetting()
         {
             InitializeComponent();
