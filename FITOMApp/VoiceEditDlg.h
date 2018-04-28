@@ -108,11 +108,11 @@ protected:
 	int GetTL5(int vg, int op) { return theVoice.op[op].TL >> 2; };
 	int GetTL4(int vg, int op) { return ((theVoice.op[op].TL > 63) ? 63 : (theVoice.op[op].TL & 63)) >> 2; };
 	int GetML(int vg, int op) { return theVoice.op[op].MUL; };
-	int GetDT1(int vg, int op) { return theVoice.op[op].DT1; };
-	int GetDT2(int vg, int op) { return theVoice.op[op].DT2; };
-	int GetDT3(int vg, int op) { return theVoice.op[op].DT3; };
-	int GetPDT(int vg, int op) { int pdt = ((GetDT1(vg, op) << 7) | (GetDT2(vg, op))) - 8192; return pdt; };
-	int GetPDT2(int vg, int op) { int pdt = ((GetDT3(vg, op) << 7) | (GetDT2(vg, op))) - 8192; return pdt; };
+	int GetDT1(int vg, int op) { return theVoice.op[op].DT1 & 7; };
+	int GetDT2(int vg, int op) { return theVoice.op[op].DT2 & 3; };
+	int GetDT3(int vg, int op) { return theVoice.op[op].DT3 & 15; };
+	int GetPDT(int vg, int op) { int pdt = ((theVoice.op[op].DT1 << 7) | (theVoice.op[op].DT2)) - 8192; return pdt; };
+	int GetPDT2(int vg, int op) { int pdt = ((theVoice.op[op].DT3 << 7) | (theVoice.op[op].DT2)) - 8192; return pdt; };
 	int GetAME(int vg, int op) { return theVoice.op[op].AM; };
 	int GetVIB(int vg, int op) { return theVoice.op[op].VIB; };
 	int GetFIX(int vg, int op) { return theVoice.op[op].DM0; };

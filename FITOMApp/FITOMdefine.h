@@ -59,6 +59,7 @@
 #define DEVICE_MA7		55	//YMU768
 #define DEVICE_SD1		56	//YMF825
 #define DEVICE_PCMD8	57	//YMZ280
+#define DEVICE_SSGD		58	//SSG on Digital (YMF288/YMF294)
 
 #define	DEVICE_ADPCM	119	//virtual device for ADPCM channel
 #define	DEVICE_ADPCMA	118	//YM2610/YM2610B

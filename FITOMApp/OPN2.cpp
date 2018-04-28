@@ -131,15 +131,6 @@ void COPN2::SetDevPMRate(UINT8 ch, UINT8 rate)
 		SetReg(0x22, rate >> 3);
 	}
 }
-/*----------------*/
-COPN2C::COPN2C(CPort* pt1, CPort* pt2, int fsamp) : COPN2(pt1, pt2, fsamp, DEVICE_OPN2C)
-{
-}
-
-/*----------------*/
-COPN2L::COPN2L(CPort* pt1, CPort* pt2, int fsamp) : COPN2(pt1, pt2, fsamp, DEVICE_OPN2L)
-{
-}
 
 /*----------------*/
 
@@ -163,27 +154,15 @@ void COPNA::Init()
 /*----------------*/
 COPNB::COPNB(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype) : COPN2(pt1, pt2, fsamp, devtype)
 {
+}
+
+void COPNB::Init()
+{
 	EnableCh(0, 0);
 	EnableCh(3, 0);
 }
 
 /*----------------*/
-CF286::CF286(CPort* pt1, CPort* pt2, int fsamp) : COPNB(pt1, pt2, fsamp, DEVICE_F286)
-{
-}
-
-/*----------------*/
-C2610B::C2610B(CPort* pt1, CPort* pt2, int fsamp) : COPNB(pt1, pt2, fsamp, DEVICE_2610B)
-{
-	EnableCh(0, 1);
-	EnableCh(3, 1);
-}
-
-/*----------------*/
-COPN3L::COPN3L(CPort* pt1, CPort* pt2, int fsamp) : COPNA(pt1, pt2, fsamp, DEVICE_OPN3L)
-{
-}
-
 void COPN3L::Init()
 {
 	COPNA::Init();

@@ -1,7 +1,7 @@
 #ifndef __FMIDI98_H__
 #define __FMIDI98_H__
 
-#define MAX_BANK 8
+#define MAX_BANK 10
 #define MAX_MPUS 4
 #define MAX_DEVS 64
 #define MAX_IOIF 16

@@ -43,34 +43,10 @@ public:
 	virtual void SetDevAMRate(UINT8 ch, UINT8 rate);
 };
 
-class COPNC : public COPN {
-public:
-	COPNC(CPort* pt, int fsamp = 0);
-};
-
-class COPN2C : public COPN2 {
-public:
-	COPN2C(CPort* pt1, CPort* pt2, int fsamp);
-};
-
-class COPN2L : public COPN2 {
-public:
-	COPN2L(CPort* pt1, CPort* pt2, int fsamp);
-};
-
 class COPNB : public COPN2 {
 public:
 	COPNB(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype=DEVICE_OPNB);
-};
-
-class CF286 : public COPNB {
-public:
-	CF286(CPort* pt1, CPort* pt2, int fsamp);
-};
-
-class C2610B : public COPNB {
-public:
-	C2610B(CPort* pt1, CPort* pt2, int fsamp);
+	virtual void Init();
 };
 
 class COPNA : public COPN2 {
@@ -83,7 +59,7 @@ public:
 class COPN3L : public COPNA {
 protected:
 public:
-	COPN3L(CPort* pt1, CPort* pt2, int fsamp);
+	COPN3L(CPort* pt1, CPort* pt2, int fsamp) : COPNA(pt1, pt2, fsamp, DEVICE_OPN3L) {};
 	virtual void Init();
 };
 
@@ -99,6 +75,11 @@ public:
 	virtual void Init() {};
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	COPNARhythm(CSoundDevice* parent);
+};
+
+class COPN3LRhythm : public COPNARhythm {
+public:
+	COPN3LRhythm(CSoundDevice* parent) : COPN3LRhythm(parent) {};
 };
 
 #endif
