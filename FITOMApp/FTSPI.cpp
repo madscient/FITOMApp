@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FTSPI.h"
 
-CFTSPI::CFTSPI() : bValid(FALSE)
+CFTSPI::CFTSPI()
 {
 	bValid = Init();
 }

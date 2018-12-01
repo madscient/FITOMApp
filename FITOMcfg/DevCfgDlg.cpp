@@ -141,14 +141,6 @@ BOOL CDevCfgDlg::OnInitDialog()
 			psi->psii = pManager->getInterfaceInfo(i);
 			psi->sdps.clear();
 			if (psi->psi && psi->psii) {
-				HTREEITEM hi = m_treeSCCI.InsertItem(LPCTSTR(psi->psii->cInterfaceName));
-				TVITEM tvi;
-				tvi.hItem = hi;
-				tvi.lParam = DWORD_PTR(psi);
-				tvi.state = TVIS_EXPANDED;
-				tvi.stateMask = TVIS_EXPANDED;
-				tvi.mask = TVIF_PARAM | TVIF_STATE | TVIF_HANDLE;
-				m_treeSCCI.SetItem(&tvi);
 				for (int j = 0; j < psi->psi->getSoundChipCount(); j++) {
 					scciDeviceProperty* sdp = new scciDeviceProperty();
 					sdp->psc = psi->psi->getSoundChip(j);
@@ -163,24 +155,10 @@ BOOL CDevCfgDlg::OnInitDialog()
 							symbols[sdp->pssci->iSoundChip].chipcode,
 							sdp->pssci->dClock
 							);
-						HTREEITEM hsi = m_treeSCCI.InsertItem(LPCTSTR(devname), hi);
-						m_treeSCCI.SetItemData(hsi, DWORD_PTR(sdp));
 					}
 				}
 				sis.push_back(psi);
 			}
-		}
-		TCHAR  curdir[MAX_PATH];
-		::GetCurrentDirectory(MAX_PATH, curdir);
-		CString profile;
-		profile.Format(_T("%s\\FITOM.ini"), curdir);
-		int devcount = ::GetPrivateProfileInt(_T("Device"), _T("count"), 0, LPCTSTR(profile));
-		for (int i = 0; i < devcount; i++) {
-			CString keyname;
-			keyname.Format(_T("device%i"), i);
-			TCHAR devstr[256];
-			::GetPrivateProfileString(_T("Device"), LPCTSTR(keyname), _T(""), devstr, 256, LPCTSTR(profile));
-			devuse.push_back(DevString(CString(devstr)));
 		}
 		RefreshUseList();
 	}
@@ -208,7 +186,7 @@ void CDevCfgDlg::OnOK()
 	for (int i = 0; i<devuse.size(); i++) {
 		CString keyname;
 		keyname.Format(_T("device%i"), i);
-		::WritePrivateProfileString(_T("Device"), LPCTSTR(keyname), LPCTSTR(devuse[i]), LPCTSTR(profile));
+		//::WritePrivateProfileString(_T("Device"), LPCTSTR(keyname), LPCTSTR(devuse[i]), LPCTSTR(profile));
 	}
 
 	CDialogEx::OnOK();

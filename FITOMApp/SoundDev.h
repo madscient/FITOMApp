@@ -347,6 +347,7 @@ class CRhythmDevice : public CSoundDevice
 {
 public:
 	CRhythmDevice(CSoundDevice* parent, UINT8 devid, UINT8 maxch);
+	CRhythmDevice(CPort* parent, UINT8 devid, UINT8 maxch);
 protected:
 	CSoundDevice* pParent;
 	//Updater
@@ -361,9 +362,6 @@ protected:
 	virtual void UpdateFnumber(UINT8 ch, int update = 1) {};
 public:
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) = 0;
-	virtual void SetReg(UINT16 reg, UINT8 data, UINT8 v = 1) { if (pParent) { pParent->SetReg(reg, data, v); } };
-	virtual UINT8 GetReg(UINT16 reg, UINT8 v = 0) { return pParent ? pParent->GetReg(reg, v) : 0; };
-	virtual void Flush() { if (pParent) { pParent->Flush(); } };
 };
 
 #endif

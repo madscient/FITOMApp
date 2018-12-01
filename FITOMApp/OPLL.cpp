@@ -15,10 +15,13 @@ COPLL::COPLL(CPort* pt, UINT8 mode, int fsamp, UINT8 devtype) :
 CSoundDevice(devtype, 9, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x40)
 {
 	ops = 2;
-	if (mode) {
-		for (int i=6; i<9; i++) {
-			EnableCh(i, 0);
-		}
+	ChangeRhythmMode(mode);
+}
+
+void COPLL::ChangeRhythmMode(int mode)
+{
+	for (int i = 6; i<9; i++) {
+		EnableCh(i, (mode == 0));
 	}
 }
 
@@ -160,8 +163,9 @@ UINT8 COPLLRhythm::RhythmMapCh[] = { 7, 8, 8, 7, 6, };
 UINT8 COPLLRhythm::RhythmFreq[3] = { 47, 60, 53, };
 
 
-COPLLRhythm::COPLLRhythm(CSoundDevice* parent) : CRhythmDevice(pParent, DEVICE_OPLL_RHY, 5)
+COPLLRhythm::COPLLRhythm(COPLL* parent) : CRhythmDevice(parent, DEVICE_OPLL_RHY, 5)
 {
+	parent->ChangeRhythmMode(1);
 }
 
 void COPLLRhythm::Init()

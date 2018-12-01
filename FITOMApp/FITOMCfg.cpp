@@ -436,7 +436,7 @@ int CFITOMConfig::AddOPN2(CPort* pt, int md, int fs)
 
 int CFITOMConfig::AddOPNB(CPort* pt, int md, int fs)
 {
-	AddDevice(new COPNB(pt, new COffsetPort(pt, 0x100), fs));
+	AddDevice(new COPNB(pt, new COffsetPort(pt, 0x100), fs, DEVICE_OPNA));
 	return 1;
 }
 
@@ -594,6 +594,11 @@ int CFITOMConfig::AddSD1(CPort* pt, int md, int fs)
 int CFITOMConfig::AddOPNARhythm(CPort* pt, int md, int fs)
 {
 	COPNA* pOpna = (COPNA*)FindDeviceFromPort(pt);
+	return AddOPNARhythm(pOpna);
+}
+
+int CFITOMConfig::AddOPNARhythm(COPNA* pOpna)
+{
 	if (pOpna) {
 		AddDevice(new COPNARhythm(pOpna));
 		return 1;
@@ -604,8 +609,44 @@ int CFITOMConfig::AddOPNARhythm(CPort* pt, int md, int fs)
 int CFITOMConfig::AddOPN3LRhythm(CPort* pt, int md, int fs)
 {
 	COPN3L* pOpn3l = (COPN3L*)FindDeviceFromPort(pt);
+	return AddOPN3LRhythm(pOpn3l);
+}
+
+int CFITOMConfig::AddOPN3LRhythm(COPN3L* pOpn3l)
+{
 	if (pOpn3l) {
-		AddDevice(new COPNL3Rhythm(pOpn3l));
+		AddDevice(new COPN3LRhythm(pOpn3l));
+		return 1;
+	}
+	return 0;
+}
+
+int CFITOMConfig::AddOPKRhythm(CPort* pt, int md, int fs)
+{
+	COPK* pOpk = (COPK*)FindDeviceFromPort(pt);
+	return AddOPKRhythm(pOpk);
+}
+
+int CFITOMConfig::AddOPKRhythm(COPK* pOpk)
+{
+	if (pOpk) {
+		AddDevice(new COPKRhythm(pOpk));
+		return 1;
+	}
+	return 0;
+}
+
+int CFITOMConfig::AddOPLLRhythm(CPort* pt, int md, int fs)
+{
+	COPLL* pOpll = (COPLL*)FindDeviceFromPort(pt);
+	return AddOPLLRhythm(pOpll);
+}
+
+int CFITOMConfig::AddOPLLRhythm(COPLL* pOpll)
+{
+	if (pOpll) {
+
+		AddDevice(new COPLLRhythm(pOpll));
 		return 1;
 	}
 	return 0;
@@ -910,9 +951,9 @@ int CFITOMConfig::LoadDeviceConfig()
 {
 	//SCCI devices
 	int res = 0;
-	std::tstring devcfgmode = (boost::format(_T("Device.mode%1%")) % i).str();
+	std::tstring devcfgmode = fitom_ini.get<std::tstring>(_T("Device.mode"), _T(""));
 	if (devcfgmode.compare(_T("MANUAL")) == 0 || devcfgmode.empty()) {
-		int devices = fitom_ini.get<int>(_T("Device.count"), 0);
+		int devices = 64;
 		for (int i = 0; i < devices; i++) {
 			std::tstring strkeyname = (boost::format(_T("Device.device%1%")) % i).str();
 			boost::optional<std::tstring> valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
@@ -920,6 +961,11 @@ int CFITOMConfig::LoadDeviceConfig()
 				res++;
 			}
 		}
+	}
+	else {
+		res = AutoDeviceConfig();
+	}
+	if (res) {
 		BuildLogDevice();
 	}
 	return res;
@@ -956,28 +1002,31 @@ int CFITOMConfig::LoadADPCMConfig()
 {
 	//SCCI devices
 	int res = 0;
-	int devices = fitom_ini.get<int>(_T("ADPCM.count"), 0);
-	for (int i = 0; i < devices; i++) {
-		std::tstring strkeyname;
-		std::tstring strparam;
-		strkeyname = (boost::format(_T("ADPCM.device%1%")) % i).str();
-		strparam = fitom_ini.get<std::tstring>(strkeyname, _T("**NONE**"));
-		if (strparam.compare(_T("**NONE**"))) {
-			std::tstring strdev;
-			std::tstring strport;
-			std::tstring strbankfile;
-			std::vector<std::tstring> lstparam;
-			boost::split(lstparam, strparam, boost::is_any_of(_T(",")));
-			if (lstparam.size() > 2) {
-				strdev = lstparam[0];
-				strport = lstparam[1];
-				strbankfile = lstparam[2];
-				strparam = (boost::format(_T("%1%,%2%")) % strdev % strport).str();
-				boost::system::error_code err;
-				bool exists = boost::filesystem::exists(boost::filesystem::path(strbankfile), err);
-				if (exists && !err && CreateDevice(strparam.c_str()) == 0) {
-					std::terr << LoadADPCMBank(i, strbankfile.c_str()) << _T(" files loaded for ") << strparam;
-					res++;
+	std::tstring devcfgmode = fitom_ini.get<std::tstring>(_T("Device.mode"), _T(""));
+	if (devcfgmode.compare(_T("MANUAL")) == 0 || devcfgmode.empty()) {
+		int devices = fitom_ini.get<int>(_T("ADPCM.count"), 0);
+		for (int i = 0; i < devices; i++) {
+			std::tstring strkeyname;
+			std::tstring strparam;
+			strkeyname = (boost::format(_T("ADPCM.device%1%")) % i).str();
+			strparam = fitom_ini.get<std::tstring>(strkeyname, _T("**NONE**"));
+			if (strparam.compare(_T("**NONE**"))) {
+				std::tstring strdev;
+				std::tstring strport;
+				std::tstring strbankfile;
+				std::vector<std::tstring> lstparam;
+				boost::split(lstparam, strparam, boost::is_any_of(_T(",")));
+				if (lstparam.size() > 2) {
+					strdev = lstparam[0];
+					strport = lstparam[1];
+					strbankfile = lstparam[2];
+					strparam = (boost::format(_T("%1%,%2%")) % strdev % strport).str();
+					boost::system::error_code err;
+					bool exists = boost::filesystem::exists(boost::filesystem::path(strbankfile), err);
+					if (exists && !err && CreateDevice(strparam.c_str()) == 0) {
+						std::terr << LoadADPCMBank(i, strbankfile.c_str()) << _T(" files loaded for ") << strparam;
+						res++;
+					}
 				}
 			}
 		}

@@ -37,7 +37,7 @@ protected:
 public:
 	virtual void Init();
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
-	COPKRhythm(CSoundDevice* parent);
+	COPKRhythm(COPK* parent);
 };
 
 #endif //__OPK_H__

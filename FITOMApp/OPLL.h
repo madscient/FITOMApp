@@ -15,6 +15,7 @@ protected:
 	virtual void UpdateSustain(UINT8 ch);
 	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
 	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
+	virtual void ChangeRhythmMode(int mode);
 public:
 	COPLL(CPort* pt, UINT8 mode, int fsamp, UINT8 devtype=DEVICE_OPLL);
 	virtual void Init();
@@ -56,7 +57,7 @@ protected:
 public:
 	virtual void Init();
 	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
-	COPLLRhythm(CSoundDevice* parent);
+	COPLLRhythm(COPLL* parent);
 };
 
 #endif

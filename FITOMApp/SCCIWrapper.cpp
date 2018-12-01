@@ -74,6 +74,30 @@ int CSCCIWrapper::Init()
 	return 0;
 }
 
+int CSCCIWrapper::getInterfaceCount()
+{
+	return sis.size();
+}
+
+int CSCCIWrapper::getSoundChipCount()
+{
+	int res = 0;
+	for each (scciInterface* psi in sis)
+	{
+		res += psi->scs.size();
+	}
+	return res;
+}
+
+int CSCCIWrapper::getSoundChipCount(int ifid)
+{
+	if (0 <= ifid && ifid < sis.size())
+	{
+		return sis[ifid]->scs.size();
+	}
+	return 0;
+}
+
 CSCCIWrapper::~CSCCIWrapper()
 {
 	if (pManager) {

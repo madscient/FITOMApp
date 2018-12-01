@@ -118,7 +118,7 @@ COPK2::COPK2(CPort* pt, int fsamp) : COPK(pt, fsamp)
 
 
 //-----
-COPKRhythm::COPKRhythm(CSoundDevice* parent) : CRhythmDevice(pParent, DEVICE_OPK_RHY, 4)
+COPKRhythm::COPKRhythm(COPK* parent) : CRhythmDevice(parent, DEVICE_OPK_RHY, 4)
 {
 }
 

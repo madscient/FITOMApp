@@ -25,6 +25,9 @@ public:
 	SoundInterface* getSoundInterface(int ifid);
 	scciInterface* getScciInterface(int ifid);
 	void InitialClear();
+	int getInterfaceCount();
+	int getSoundChipCount();
+	int getSoundChipCount(int ifid);
 	int getInterfaceIDFromChip(SoundChip* pchip);
 	int getInterfaceIDFromIF(SoundInterface* psi);
 	int getSlotIDFromChip(int ifid, SoundChip* pchip);

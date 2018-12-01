@@ -721,3 +721,9 @@ CRhythmDevice::CRhythmDevice(CSoundDevice* parent, UINT8 devid, UINT8 maxch) :
 		MasterTune = parent->MasterTune;
 	}
 }
+
+CRhythmDevice::CRhythmDevice(CPort* pt, UINT8 devid, UINT8 maxch) :
+	CSoundDevice(devid, maxch, 0, 0, 0, FnumTableType::none, 0, 0), pParent(NULL)
+{
+	port = pt;
+}

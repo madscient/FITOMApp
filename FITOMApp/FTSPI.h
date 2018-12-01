@@ -13,23 +13,33 @@ public:
 	int rptr;
 };
 
-class CFTSPI {
+class CFTInterface {
 protected:
 	BOOL bValid;
+	TCHAR description[96];
+public:
+	virtual BOOL IsValid() { return bValid; };
+	virtual UINT32 GetChannels() = 0;
+	virtual UINT32 GetChannelIndex(UINT32 index) = 0;
+	virtual void InitialClear() = 0;
+	virtual void GetInterfaceDesc(TCHAR* str, int len) = 0;
+	virtual FT_HANDLE GetChannelHandle(UINT32 index) = 0;
+};
+
+class CFTSPI : public CFTInterface {
+protected:
 	std::vector<SPIINFO> SPIChannel;
 	void SPI_Push(UINT32 index, BYTE data);
 	void SPI_Push(UINT32 index, BYTE* buf, UINT32 length);
-	TCHAR description[96];
 public:
 	CFTSPI();
 	~CFTSPI();
-	BOOL Init();
-	BOOL IsValid() { return bValid; };
-	UINT32 GetChannels() { return SPIChannel.size(); };
-	UINT32 GetChannelIndex(UINT32 index);
-	void InitialClear();
-	void GetInterfaceDesc(TCHAR* str, int len);
-	FT_HANDLE GetChannelHandle(UINT32 index);
+	virtual BOOL Init();
+	virtual UINT32 GetChannels() { return SPIChannel.size(); };
+	virtual UINT32 GetChannelIndex(UINT32 index);
+	virtual void InitialClear();
+	virtual void GetInterfaceDesc(TCHAR* str, int len);
+	virtual FT_HANDLE GetChannelHandle(UINT32 index);
 	FT_STATUS SPI_OpenChannel(UINT32 index, FT_HANDLE* handle);
 	FT_STATUS SPI_InitChannel(UINT32 index);
 	FT_STATUS SPI_CloseChannel(UINT32 index);

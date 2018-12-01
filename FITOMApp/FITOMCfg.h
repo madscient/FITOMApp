@@ -92,6 +92,11 @@ struct PortInfo {
 	CPort* port;
 };
 
+class COPNA;
+class COPK;
+class COPLL;
+class COPN3L;
+
 class CFITOMConfig {
 protected:
 	boost::property_tree::tiptree fitom_ini;
@@ -138,6 +143,7 @@ protected:
 	CSoundDevice* FindDeviceFromPort(CPort* pt);
 	int BuildLogDevice();
 	virtual int isSpannable(CSoundDevice* src, CSoundDevice* tgt);
+	virtual int AutoDeviceConfig() = 0;
 
 public:
 	CFITOMConfig(LPCTSTR strinifile);
@@ -220,7 +226,9 @@ public:
 	int AddOPN2(CPort* pt, int md, int fs);
 	int AddOPN3L(CPort* pt, int md, int fs);
 	int AddOPNA(CPort* pt, int md, int fs);
+	int AddOPNARhythm(COPNA* pOpna);
 	int AddOPNARhythm(CPort* pt, int md, int fs);
+	int AddOPN3LRhythm(COPN3L* pOpn3l);
 	int AddOPN3LRhythm(CPort* pt, int md, int fs);
 	int AddOPNB(CPort* pt, int md, int fs);
 	int AddOPM(CPort* pt, int md, int fs);
@@ -235,9 +243,11 @@ public:
 	int AddOPLLP(CPort* pt, int md, int fs);
 	int AddOPLLX(CPort* pt, int md, int fs);
 	int AddOPLLRhythm(CPort* pt, int md, int fs);
+	int AddOPLLRhythm(COPLL* pOpll);
 	int AddOPK(CPort* pt, int md, int fs);
 	int AddOPK2(CPort* pt, int md, int fs);
 	int AddOPKRhythm(CPort* pt, int md, int fs);
+	int AddOPKRhythm(COPK* pOpk);
 	int AddSSG(CPort* pt, int md, int fs);
 	int AddSSGLP(CPort* pt, int md, int fs);
 	int AddSSGD(CPort* pt, int md, int fs);
@@ -256,6 +266,7 @@ protected:
 	CSCCIWrapper* pScci;
 	CFTSPI* pFtspi;
 	int g_devno;
+	virtual int AutoDeviceConfig();
 public:
 	CFITOMConfigWin32(LPCTSTR strinifile);
 	~CFITOMConfigWin32();
@@ -263,6 +274,8 @@ public:
 	virtual CPort* CreatePort(int devtype, LPCTSTR params);
 	virtual CMidiIn* CreateMidiInPort(LPCTSTR params);
 	virtual CMasterVolumeCtrl* CreateMasVol(LPCTSTR param);
+	virtual int CreateSCCIDevice(int ifid, int slid);
+	CPort* CreateSCCIPort(int ifid, int slid, int devtype);
 	CSCCIWrapper* GetScci() { return pScci; };
 	CFTSPI* GetFTspi() { return pFtspi; };
 };

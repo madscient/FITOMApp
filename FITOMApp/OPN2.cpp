@@ -170,7 +170,7 @@ void COPN3L::Init()
 }
 
 //-----
-COPNARhythm::COPNARhythm(CSoundDevice* pParent) : CRhythmDevice(pParent, DEVICE_OPNA_RHY, 6)
+COPNARhythm::COPNARhythm(COPNA* pParent) : CRhythmDevice(pParent, DEVICE_OPNA_RHY, 6)
 {
 }
 
@@ -219,4 +219,9 @@ UINT8 COPNARhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		ret = voice->AL & 0xf;
 	}
 	return ret;
+}
+
+COPN3LRhythm::COPN3LRhythm(COPN3L* pParent) : COPNARhythm(pParent)
+{
+	device = DEVICE_OPN3L_RHY;
 }
