@@ -4,20 +4,19 @@
 #define	MAX_SYSEX	8192
 #define	RPN_ENTRY	1
 #define	NRPN_ENTRY	2
-#define	RPN_PITCHBEND	0
-#define	RPN_FINETUNE	1
-#define	RPN_COASETUNE	2
-#define	RPN_TUNEPROG	3
-#define	RPN_TUNEBANK	4
+#define	RPN_PITCHBEND	0x0000
+#define	RPN_FINETUNE	0x0001
+#define	RPN_COASETUNE	0x0002
+#define	RPN_TUNEPROG	0x0003
+#define	RPN_TUNEBANK	0x0004
+#define	RPN_MOD_DEPTH	0x0005
 
 #define NRPN_PMRATE		1
 #define NRPN_PMWAVE		2
 #define NRPN_AMRATE		4
 #define NRPN_AMWAVE		5
 
-#define NRPN_PRESET		0x1800
-#define NRPN_PHYCH		0x2001
-#define NRPN_DIRDEV		0x3001
+#define NRPN_PHYCH		0x3001
 #define NRPN_DIRADR		0x3002
 #define NRPN_DIRDAT		0x3003
 
@@ -28,8 +27,16 @@
 #define NRPN_DRUM_VOFF	0x2000
 #define NRPN_DRUM_POFF	0x2100
 
-#define	RPN_NULL		16383
+#define	NRPN_GPCTRL1		0x3010
+#define	NRPN_GPCTRL2		0x3011
+#define	NRPN_GPCTRL3		0x3012
+#define	NRPN_GPCTRL4		0x3013
+#define	NRPN_GPCTRL5		0x3014
+#define	NRPN_GPCTRL6		0x3015
+#define	NRPN_GPCTRL7		0x3016
+#define	NRPN_GPCTRL8		0x3017
 
+#define	RPN_NULL		16383
 
 #define MID_KAWAI	0x40
 #define MID_ROLAND	0x41
@@ -96,7 +103,7 @@ public:
 	virtual void DataEntry(UINT8 data);
 	virtual void DataEntryLSB(UINT8 data) { DataLSB = data; };
 	virtual void DataIncrement(SINT16 data);
-	virtual void DataDecrement(SINT16 data) { DataIncrement(-data); };
+	virtual void DataDecrement(SINT16 data);
 	virtual void SetPMRate(UINT8 rate) {};
 	virtual void SetAMRate(UINT8 rate) {};
 	virtual void SetFineTune(UINT16 tune) {};
@@ -200,7 +207,14 @@ protected:
 	UINT8	Expression;
 	UINT8	PMDepth;
 	UINT8	AMDepth;
-
+	UINT8	VibRate;
+	UINT8	VibDepth;
+	UINT8	VibDelay;
+	UINT8	Resonance;
+	UINT8	Brightness;
+	UINT8	AttackTime;
+	UINT8	DecayTime;
+	UINT8	ReleaseTime;
 	//RPN
 	UINT8	BendRange;
 	UINT16	Tuning;

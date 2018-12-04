@@ -4,7 +4,7 @@
 #include "Port.h"
 #include "Fnum.h"
 
-#define FNUM_OFFSET	(-576)	//Fnum算出基点(440Hz)とノートNo基点(60=O4C)との差分
+#define FNUM_OFFSET	(-576)	//Fnum算出基点(440Hz)とノートNo基点(60=O4C)との差分(100/64セント単位)
 
 #pragma pack(1)
 
@@ -146,6 +146,14 @@ protected:
 		UINT8	velocity;
 		SINT8	panpot;
 		UINT8	lastvel;
+		SINT8	vibrate;
+		SINT8	vibdepth;
+		SINT8	vibdelay;
+		SINT8	resonance;
+		SINT8	releasetime;
+		SINT8	attacktime;
+		SINT8	decaytime;
+		SINT8	brightness;
 		UINT16	count;
 		UINT32	noteon;
 		CLFOControl chlfo;

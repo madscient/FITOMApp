@@ -637,10 +637,22 @@ void CMidiCh::DataIncrement(SINT16 data)
 {
 	switch (EntryMode) {
 	case NRPN_ENTRY:
-		SetNRPNRegister(NRPNReg, max(GetNRPNRegister(NRPNReg) + data, 127));
+		SetNRPNRegister(NRPNReg, min(GetNRPNRegister(NRPNReg) + 1, 127));
 		break;
 	case RPN_ENTRY:
-		SetRPNRegister(RPNReg, max(GetRPNRegister(RPNReg) + data, 127));
+		SetRPNRegister(RPNReg, min(GetRPNRegister(RPNReg) + 1, 127));
+		break;
+	}
+}
+
+void CMidiCh::DataDecrement(SINT16 data)
+{
+	switch (EntryMode) {
+	case NRPN_ENTRY:
+		SetNRPNRegister(NRPNReg, max((int)GetNRPNRegister(NRPNReg) - 1, 0));
+		break;
+	case RPN_ENTRY:
+		SetRPNRegister(RPNReg, max((int)GetRPNRegister(RPNReg) - 1, 0));
 		break;
 	}
 }
