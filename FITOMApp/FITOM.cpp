@@ -333,85 +333,8 @@ void CFITOM::ReloadVoice(FMVOICE* voice, UINT32 dev, UINT8 bank, UINT8 num)
 	}
 }
 
-BYTE CFITOM::GetLCDdot(int x, int y)
+int CFITOM::CommandCallBack(TCHAR* cmd, TCHAR* param)
 {
-	return ((0<=x && x < 16) && (0 <= y && y< 16)) ? LCDdot[LCDdisp][y][x] : 0;
-}
-
-void CFITOM::GetLCDrow(BYTE dst[16], int r)
-{
-	if (0 <= r && r < 16) {
-		for (int i = 0; i < 16; i++) {
-			dst[i] = LCDdot[LCDdisp][r][i];
-		}
-	}
-}
-
-void CFITOM::GetLCDcol(BYTE dst[16], int c)
-{
-	if (0 <= c && c < 16) {
-		for (int i = 0; i < 16; i++) {
-			dst[i] = LCDdot[LCDdisp][i][c];
-		}
-	}
-}
-
-void CFITOM::GetLCDall(BYTE dst[16][16])
-{
-	for (int i = 0; i < 16; i++) {
-		for (int j = 0; j < 16; j++) {
-			dst[i][j] = LCDdot[LCDdisp][i][j];
-		}
-	}
-}
-
-void CFITOM::SetLCDdot(int page, int x, int y, int val)
-{
-	if ((0 <= x && x < 16) && (0 <= y && y < 16)) {
-		LCDdot[page][y][x] = BYTE(val);
-	}
-}
-
-void CFITOM::SetLCDrow(int page, int r, BYTE src[16])
-{
-	if (0 <= r && r < 16) {
-		for (int i = 0; i < 16; i++) {
-			LCDdot[page][r][i] = src[i];
-		}
-	}
-}
-
-void CFITOM::SetLCDcol(int page, int c, BYTE src[16])
-{
-	if (0 <= c && c < 16) {
-		for (int i = 0; i < 16; i++) {
-			LCDdot[page][i][c] = src[i];
-		}
-	}
-}
-
-void CFITOM::SetLCDall(int page, BYTE src[16][16])
-{
-	for (int i = 0; i < 16; i++) {
-		for (int j = 0; j < 16; j++) {
-			LCDdot[page][i][j] = src[i][j];
-		}
-	}
-}
-
-void CFITOM::GetLCDstr(char dst[17])
-{
-	lstrcpynA(dst, (LPCSTR)LCDstr, 16);
-}
-
-void CFITOM::SetLCDstr(char src[17])
-{
-	lstrcpynA((LPSTR)LCDstr, src, 16);
-}
-
-void CFITOM::SetLCDpage(int page)
-{
-	if (0 <= page && page <= 10) {
-		LCDdisp = page;
-	}
+	int ret = 0;
+	return ret;
 }

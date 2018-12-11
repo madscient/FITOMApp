@@ -82,23 +82,12 @@ public:
 	void SetMasterVolume(UINT8 vol) { theConfig ? theConfig->SetMasterVolume(vol) : void(0); };
 	UINT8 GetMasterVolume() { return theConfig ? theConfig->GetMasterVolume() : 0; };
 	void GetWaveform(SCCWAVE* dst, int num) { theConfig ? theConfig->GetWaveform(dst, num) : void(0); };
-	void SetLCDdot(int page, int x, int y, int val);
-	void SetLCDrow(int page, int r, BYTE src[16]);
-	void SetLCDcol(int page, int c, BYTE src[16]);
-	void SetLCDall(int page, BYTE lcd[16][16]);
-	void SetLCDpage(int page);
-	void SetLCDstr(char src[17]);
-	BYTE GetLCDdot(int x, int y);
-	void GetLCDrow(BYTE dst[16], int r);
-	void GetLCDcol(BYTE dst[16], int c);
-	void GetLCDall(BYTE dst[16][16]);
-	void GetLCDstr(char dst[17]);
-
 
 	//Callback
 	int PollingCallBack();
 	void TimerCallBack(UINT32 tick);
 	void MIDIClockCallBack();
+	int CommandCallBack(TCHAR* cmd, TCHAR* param);
 
 	//Utility
 	void AllNoteOff();

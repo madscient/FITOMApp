@@ -7,8 +7,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 #include <boost/property_tree/ini_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <boost/filesystem.hpp>
 #include <gdiplus.h>
+#include <WinSock2.h>
 
 #include "FITOM.h"
 #include "FITOMdefine.h"
@@ -273,29 +275,72 @@ unsigned int CFITOMApp::PollingProc(void* params)
 unsigned int CFITOMApp::CommandProc(void* params)
 {
 	CFITOMApp* theFitomApp = (CFITOMApp*)params;
-	HANDLE namedpipe = ::CreateNamedPipe(_T("\\\\.\\pipe\\FITOM"), PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_WAIT,
-		1, 1024, 1024, 10, NULL);
-	BYTE buf[1024];
-	if (namedpipe != INVALID_HANDLE_VALUE) {
-		::ConnectNamedPipe(namedpipe, NULL);
-		while (theFitomApp->bRunning && theFitomApp->theFitom) {
-			DWORD len = 0;
-			::ReadFile(namedpipe, (LPVOID)buf, 1024, &len, NULL);
-			if (len) {
-				for (int i = 0; i < len; i++) {
-					fprintf_s(stderr, _T("%02X "), buf[i]);
-				}
-				fputc(_T('\n'), stderr);
-			}
+	WSADATA wsaData;
+	SOCKET sock0;
+	struct sockaddr_in addr;
+	struct sockaddr_in client;
+	int len;
+	SOCKET sock;
+	BOOL yes = 1;
+
+	char buf[2048];
+	char inbuf[2048];
+
+	WSAStartup(MAKEWORD(2, 0), &wsaData);
+
+	sock0 = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock0 == INVALID_SOCKET) {
+		printf("socket : %d\n", WSAGetLastError());
+		return 1;
+	}
+
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(12345);
+	addr.sin_addr.S_un.S_addr = INADDR_ANY;
+
+	setsockopt(sock0,
+		SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(yes));
+
+	if (bind(sock0, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+		printf("bind : %d\n", WSAGetLastError());
+		return 1;
+	}
+
+	if (listen(sock0, 5) != 0) {
+		printf("listen : %d\n", WSAGetLastError());
+		return 1;
+	}
+
+	// 応答用HTTPメッセージ作成
+	memset(buf, 0, sizeof(buf));
+	_snprintf(buf, sizeof(buf),
+		"HTTP/1.0 200 OK\r\n"
+		"Content-Length: 20\r\n"
+		"Content-Type: text/json\r\n"
+		"\r\n"
+		"HELLO\r\n");
+
+	while (1) {
+		len = sizeof(client);
+		sock = accept(sock0, (struct sockaddr *)&client, &len);
+		if (sock == INVALID_SOCKET) {
+			printf("accept : %d\n", WSAGetLastError());
+			break;
 		}
-		::FlushFileBuffers(namedpipe);
-		::DisconnectNamedPipe(namedpipe);
-		::CloseHandle(namedpipe);
-		fprintf_s(stderr, _T("pipe closed."));
+
+		memset(inbuf, 0, sizeof(inbuf));
+		recv(sock, inbuf, sizeof(inbuf), 0);
+		// 本来ならばクライアントからの要求内容をパースすべきです
+		printf("%s", inbuf);
+
+		// 相手が何を言おうとダミーHTTPメッセージ送信
+		send(sock, buf, (int)strlen(buf), 0);
+
+		closesocket(sock);
 	}
-	else {
-		fprintf_s(stderr, _T("can't create pipe.\n"));
-	}
+
+	WSACleanup();
+
 	return 0;
 }
 
