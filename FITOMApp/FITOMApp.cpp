@@ -301,7 +301,7 @@ unsigned int CFITOMApp::CommandProc(void* params)
 	setsockopt(sock0,
 		SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(yes));
 
-	if (bind(sock0, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+	if (::bind(sock0, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
 		printf("bind : %d\n", WSAGetLastError());
 		return 1;
 	}
