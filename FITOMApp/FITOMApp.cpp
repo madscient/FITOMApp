@@ -290,7 +290,7 @@ unsigned int CFITOMApp::CommandProc(void* params)
 
 	sock0 = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock0 == INVALID_SOCKET) {
-		printf("socket : %d\n", WSAGetLastError());
+		fprintf(stderr, "socket : %d\n", WSAGetLastError());
 		return 1;
 	}
 
@@ -302,12 +302,12 @@ unsigned int CFITOMApp::CommandProc(void* params)
 		SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(yes));
 
 	if (::bind(sock0, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-		printf("bind : %d\n", WSAGetLastError());
+		fprintf(stderr, "bind : %d\n", WSAGetLastError());
 		return 1;
 	}
 
 	if (listen(sock0, 5) != 0) {
-		printf("listen : %d\n", WSAGetLastError());
+		fprintf(stderr, "listen : %d\n", WSAGetLastError());
 		return 1;
 	}
 
