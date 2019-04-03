@@ -28,8 +28,6 @@ struct DeviceControlSlice {
 	UINT16 data;
 };
 
-
-
 class CFITOM {
 public:
 protected:
@@ -87,12 +85,33 @@ public:
 	int PollingCallBack();
 	void TimerCallBack(UINT32 tick);
 	void MIDIClockCallBack();
-	int CommandCallBack(TCHAR* cmd, TCHAR* param);
 
 	//Utility
 	void AllNoteOff();
 	void ResetAllCtrl();
+
+	//Command shell
+	typedef BOOL(CFITOM::*cmdfunc)(TCHAR* cmd, TCHAR* result, int reslen);
+
+	typedef struct {
+		const char* cmd;
+		cmdfunc func;
+	} cmdvect;
 	BOOL CmdProc(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdSetVoice(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetVoice(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetMidiStatus(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetDeviceStatus(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdSendMidi(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetPhysicalDevice(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetLogicalDevice(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetMidiDevice(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdSetPcmVoice(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetPcmVoice(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdSetWaveForm(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetWaveForm(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdSetDeviceReg(TCHAR* cmd, TCHAR* result, int reslen);
+	BOOL cmdGetDeviceReg(TCHAR* cmd, TCHAR* result, int reslen);
 
 	//Static utils
 	static const DWORD GetDeviceVoiceType(DWORD device);
@@ -102,7 +121,9 @@ public:
 	static const DWORD GetDeviceRegSize(DWORD devid);
 	static DWORD* GetCompatiList(DWORD devid);
 	static int GetClockCode(UINT32 clock);
+
 private:
+	static cmdvect commandtable[];
 	CFITOM();
 	CFITOM& operator=(CFITOM& rhs);
 	CFITOM(CFITOM& rhs);

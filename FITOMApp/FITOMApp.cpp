@@ -283,8 +283,8 @@ unsigned int CFITOMApp::CommandProc(void* params)
 	SOCKET sock;
 	BOOL yes = 1;
 
-	char buf[2048];
-	char inbuf[2048];
+	char buf[65536];
+	char inbuf[65536];
 
 	WSAStartup(MAKEWORD(2, 0), &wsaData);
 
@@ -311,29 +311,20 @@ unsigned int CFITOMApp::CommandProc(void* params)
 		return 1;
 	}
 
-	// 応答用HTTPメッセージ作成
-	memset(buf, 0, sizeof(buf));
-	_snprintf(buf, sizeof(buf),
-		"HTTP/1.0 200 OK\r\n"
-		"Content-Length: 20\r\n"
-		"Content-Type: text/json\r\n"
-		"\r\n"
-		"HELLO\r\n");
-
 	while (1) {
 		len = sizeof(client);
 		sock = accept(sock0, (struct sockaddr *)&client, &len);
 		if (sock == INVALID_SOCKET) {
-			printf("accept : %d\n", WSAGetLastError());
+			fprintf(stderr, "accept : %d\n", WSAGetLastError());
 			break;
 		}
 
 		memset(inbuf, 0, sizeof(inbuf));
 		recv(sock, inbuf, sizeof(inbuf), 0);
-		// 本来ならばクライアントからの要求内容をパースすべきです
-		printf("%s", inbuf);
-
-		// 相手が何を言おうとダミーHTTPメッセージ送信
+		fprintf(stderr, "%s", inbuf);
+		if (!theFitomApp->theFitom->CmdProc(inbuf, buf, sizeof(buf))) {
+			sprintf_s(buf, sizeof(buf), "ERR.\r\n");
+		}
 		send(sock, buf, (int)strlen(buf), 0);
 
 		closesocket(sock);
