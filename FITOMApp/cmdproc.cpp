@@ -96,7 +96,7 @@ BOOL CFITOM::CmdProc(TCHAR* cmd, TCHAR* result, int reslen)
 	BOOL ret = false;
 	TCHAR cmdstr[128];
 	TCHAR param[65536];
-	sscanf_s(cmd, _T("%[^,],%s"), cmdstr, _countof(cmdstr), param, _countof(param));
+	sscanf_s(cmd, _T("%s %[^\n]"), cmdstr, _countof(cmdstr), param, _countof(param));
 	size_t len = strnlen(cmdstr, _countof(cmdstr));
 	for each (cmdvect var in commandtable)
 	{
