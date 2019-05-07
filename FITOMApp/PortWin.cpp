@@ -73,20 +73,20 @@ int CSCCIPort::GetPanpot()
 	return pci->dSoundLocation;
 }
 
-CFTSPIPort::CFTSPIPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHandle(0)
+CFTPort::CFTPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHandle(0)
 {
 }
 
-CFTSPIPort::CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
+CFTPort::CFTPort(CFTInterface* pif, UINT32 index, UINT32 cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
 {
 	assert(pif && pif->IsValid() && index < pif->GetChannels() && cs < 5);
 }
 
-CFTSPIPort::~CFTSPIPort(void)
+CFTPort::~CFTPort(void)
 {
 }
 
-void CFTSPIPort::write(UINT16 addr, UINT16 data)
+void CFTPort::write(UINT16 addr, UINT16 data)
 {
 	UINT32 sizeToTransfer = 0;
 	UINT32 sizeTransfered = 0;
@@ -98,7 +98,7 @@ void CFTSPIPort::write(UINT16 addr, UINT16 data)
 	/* Write command EWEN(with CS_High -> CS_Low) */
 	sizeToTransfer = 2;
 	sizeTransfered = 0;
-	status = pInterface->SPI_Write(chidx, buf, sizeToTransfer, csidx);
+	status = pInterface->BufferedWrite(chidx, buf, sizeToTransfer, csidx);
 	//pInterface->SPI_Flush(chidx);
 #ifdef DEBUG
 	TCHAR str[80];
@@ -107,7 +107,7 @@ void CFTSPIPort::write(UINT16 addr, UINT16 data)
 #endif
 }
 
-void CFTSPIPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
+void CFTPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
 {
 	BYTE* newbuf = new BYTE[length + 1];
 	newbuf[0] = BYTE(addr);
@@ -116,9 +116,9 @@ void CFTSPIPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
 	delete[] newbuf;
 }
 
-void CFTSPIPort::writeBurst(BYTE* buf, size_t length)
+void CFTPort::writeBurst(BYTE* buf, size_t length)
 {
-	FT_STATUS status = pInterface->SPI_Write(chidx, buf, length, csidx);
+	FT_STATUS status = pInterface->BufferedWrite(chidx, buf, length, csidx);
 	//pInterface->SPI_Flush(chidx);
 	assert(status == FT_OK);
 #ifdef DEBUG
@@ -133,7 +133,7 @@ void CFTSPIPort::writeBurst(BYTE* buf, size_t length)
 #endif
 }
 
-UINT8 CFTSPIPort::read(UINT16 addr)
+UINT8 CFTPort::read(UINT16 addr)
 {
 	UINT8 ret = 0;
 #ifdef DEBUG
@@ -144,15 +144,15 @@ UINT8 CFTSPIPort::read(UINT16 addr)
 	return ret;
 }
 
-UINT8 CFTSPIPort::status()
+UINT8 CFTPort::status()
 {
 	return 0;
 }
 
-void CFTSPIPort::flush()
+void CFTPort::flush()
 {
 	if (pInterface) {
-		pInterface->SPI_Flush(chidx);
+		pInterface->BufferFlush(chidx);
 #ifdef DEBUG
 		TCHAR str[80];
 		StringCchPrintf(str, _countof(str), _T("flush %08x\n"), physical_id);
@@ -161,7 +161,7 @@ void CFTSPIPort::flush()
 	}
 }
 
-void CFTSPIPort::reset()
+void CFTPort::reset()
 {
 	if (pInterface) {
 		pInterface->FT_WriteGPIO(chidx, 0xff, 0xff);
@@ -177,22 +177,22 @@ void CFTSPIPort::reset()
 #endif
 }
 
-int CFTSPIPort::GetClock()
+int CFTPort::GetClock()
 {
 	return 0;
 }
 
-int CFTSPIPort::GetDesc(TCHAR* str, int len)
+int CFTPort::GetDesc(TCHAR* str, int len)
 {
 	return sprintf_s(str, len, _T("FTSPI:%i:%i"), chidx, csidx);
 }
 
-int CFTSPIPort::GetPanpot()
+int CFTPort::GetPanpot()
 {
 	return 0;
 }
 
-void CFTSPIPort::GetInterfaceDesc(TCHAR* str, int len)
+void CFTPort::GetInterfaceDesc(TCHAR* str, int len)
 {
 	pInterface->GetInterfaceDesc(str, len);
 }

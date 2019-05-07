@@ -46,11 +46,11 @@ CDevCfgDlg::DevString::DevString(CString& str)
 {
 	TCHAR devparam[80];
 	TCHAR ifparam[80];
-	sscanf_s(LPCTSTR(str), _T("^[,\s],%s"), devparam, _countof(devparam), ifparam, _countof(ifparam));
+	sscanf_s(LPCTSTR(str), _T("%[^,],%s"), devparam, _countof(devparam), ifparam, _countof(ifparam));
 	TCHAR tmp[80];
-	sscanf_s(devparam, _T("^[:]:%i"), tmp, _countof(tmp), &mode);
+	sscanf_s(devparam, _T("%[^:]:%i"), tmp, _countof(tmp), &mode);
 	devname = CString(tmp);
-	sscanf_s(ifparam, _T("^[:]:%i:%i"), tmp, _countof(tmp), &ifid, &slid);
+	sscanf_s(ifparam, _T("%[^:]:%i:%i"), tmp, _countof(tmp), &ifid, &slid);
 	ifname = CString(tmp);
 }
 

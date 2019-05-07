@@ -93,7 +93,7 @@ CPort* CFITOMConfigWin32::CreatePort(int devtype, LPCTSTR params)
 			return pinf.port;
 		}
 		else {
-			pinf.port = new CFTSPIPort(pFtspi, pinf.ifid, pinf.slid, size_t(CFITOM::GetDeviceRegSize(devtype)));
+			pinf.port = new CFTPort(pFtspi, pinf.ifid, pinf.slid, size_t(CFITOM::GetDeviceRegSize(devtype)));
 		}
 	}
 	if (!pinf.port) {
