@@ -115,19 +115,19 @@ public:
 	virtual int GetDesc(TCHAR* str, int len);
 };
 
-class CFTSPI;
-class CFTSPIPort : public CPort
+class CFTInterface;
+class CFTPort : public CPort
 {
 protected:
-	CFTSPI* pInterface;
+	CFTInterface * pInterface;
 	size_t regsize;
 	UINT32 chidx;
 	UINT32 csidx;
 	FT_HANDLE ftHandle;
 public:
-	CFTSPIPort();
-	CFTSPIPort(CFTSPI* pif, UINT32 index, UINT32 cs, size_t maxreg);
-	~CFTSPIPort(void);
+	CFTPort();
+	CFTPort(CFTInterface* pif, UINT32 index, UINT32 cs, size_t maxreg);
+	~CFTPort(void);
 	virtual void writeBurst(UINT16 addr, BYTE* buf, size_t length);
 	virtual void writeBurst(BYTE* buf, size_t length);
 	virtual void write(UINT16 addr, UINT16 data);
