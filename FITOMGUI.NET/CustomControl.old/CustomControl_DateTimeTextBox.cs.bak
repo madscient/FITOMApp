@@ -1,0 +1,86 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace JDC_6300.CustomControl
+{
+    /// <summary>
+    /// 日付時刻用テキストボックス
+    /// </summary>
+    public partial class CustomControl_DateTimeTextBox : CustomControl_TextBoxBase
+    {
+        private DateTime internalDateTime;
+        /// <summary>
+        /// 真の値
+        /// </summary>
+        public DateTime Value
+        {
+            get
+            {
+                return internalDateTime;
+            }
+            set
+            {
+                internalDateTime = value;
+                Text = CommonProc.DatetimeString(internalDateTime.ToString("yyyyMMddhhmmss"));
+            }
+        }
+        /// <summary>
+        /// 最小値
+        /// </summary>
+        public DateTime RangeMin
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 最大値
+        /// </summary>
+        public DateTime RangeMax
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public CustomControl_DateTimeTextBox()
+        {
+            InitializeComponent();
+            this.paramName = "日付時刻";
+        }
+
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            base.OnPaint(pe);
+        }
+
+        protected override void OnMouseClick(object sender, EventArgs e)
+        {
+            if (!readOnly)
+            {
+                CustomDialog.KeyboardDialog kdlg = new CustomDialog.KeyboardDialog();
+                kdlg.DispMode = 3;
+                kdlg.TimeMin = RangeMin;
+                kdlg.TimeMax = RangeMax;
+                kdlg.Message_Text = paramName + CommonData.Info.tblMessage["D225"];
+                kdlg.InputArea = internalDateTime.ToString("yyyyMMddhhmmss");
+                if (kdlg.ShowDialog() == DialogResult.OK)
+                {
+                    Text = CommonProc.DatetimeString(kdlg.InputArea);
+                    internalDateTime = DateTime.Parse(Text);
+                    if (ValueChanged != null)
+                    {
+                        ValueChanged(sender, e);
+                    }
+                }
+            }
+
+        }
+    }
+}

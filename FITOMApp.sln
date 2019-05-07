@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FITOM_config", "FITOM_confi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SCCISharp", "SCCISharp-master\SCCISharp\SCCISharp.vcxproj", "{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FITOMGUI.NET", "FITOMGUI.NET\FITOMGUI.NET.csproj", "{D2231229-850E-498B-81E6-64F7CA615A24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,22 @@ Global
 		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|Win32.ActiveCfg = Release|Win32
 		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|Win32.Build.0 = Release|Win32
 		{ADE3AFF2-CA4D-4C23-8A5B-786045135CA3}.Release|x64.ActiveCfg = Release|Win32
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Debug|ARM.Build.0 = Debug|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Debug|Win32.Build.0 = Debug|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Debug|x64.Build.0 = Debug|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Release|ARM.ActiveCfg = Release|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Release|ARM.Build.0 = Release|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Release|Win32.ActiveCfg = Release|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Release|Win32.Build.0 = Release|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Release|x64.ActiveCfg = Release|Any CPU
+		{D2231229-850E-498B-81E6-64F7CA615A24}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
