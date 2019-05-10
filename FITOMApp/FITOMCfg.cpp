@@ -37,7 +37,7 @@
 CFITOMConfig::CFITOMConfig(LPCTSTR strinifile) : mpus(0)
 , pProgressMessage(0), pProgressFilename(0), pMasVol(0), UsingVoiceGroup(0)
 {
-	boost::property_tree::read_ini(_T(".\\FITOM.ini"), fitom_ini);
+	boost::property_tree::read_ini(strinifile, fitom_ini);
 	for (int i = 0; i < MAX_BANK; i++) {
 		vOpmBank[i] = 0;
 		vOpnBank[i] = 0;

@@ -19,7 +19,8 @@
 
 // CFITOMConfigWin32
 
-CFITOMConfigWin32::CFITOMConfigWin32(LPCTSTR strinifile) : CFITOMConfig(strinifile), g_devno(0), pScci(new CSCCIWrapper()), pFtspi(new CFTSPI())
+CFITOMConfigWin32::CFITOMConfigWin32(LPCTSTR strinifile) : CFITOMConfig(strinifile), g_devno(0),
+pScci(0), pFtspi(0)
 {
 }
 
@@ -156,6 +157,10 @@ void CFITOMConfigWin32::TimerCallBack()
 int CFITOMConfigWin32::AutoDeviceConfig()
 {
 	int res = 0;
+	std::tstring devscciena = fitom_ini.get<std::tstring>(_T("Device.SCCIEnable"), _T(""));
+	if (devscciena.compare(_T("true")) == 0) {
+		pScci = new CSCCIWrapper();
+	}
 	if (pScci) {
 		for (int i = 0; i < pScci->getInterfaceCount(); i++) {
 			for (int j = 0; j < pScci->getSoundChipCount(i); j++) {
