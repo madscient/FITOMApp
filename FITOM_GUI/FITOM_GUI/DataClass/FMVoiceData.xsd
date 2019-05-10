@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="FMVoiceData" targetNamespace="http://tempuri.org/FMVoiceData.xsd" xmlns:mstns="http://tempuri.org/FMVoiceData.xsd" xmlns="http://tempuri.org/FMVoiceData.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="FMVoiceData" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="FMVoiceData" msprop:Generator_UserDSName="FMVoiceData">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="FMVoice" msprop:Generator_TableClassName="FMVoiceDataTable" msprop:Generator_TableVarName="tableFMVoice" msprop:Generator_TablePropName="FMVoice" msprop:Generator_RowDeletingName="FMVoiceRowDeleting" msprop:Generator_RowChangingName="FMVoiceRowChanging" msprop:Generator_RowEvHandlerName="FMVoiceRowChangeEventHandler" msprop:Generator_RowDeletedName="FMVoiceRowDeleted" msprop:Generator_UserTableName="FMVoice" msprop:Generator_RowChangedName="FMVoiceRowChanged" msprop:Generator_RowEvArgName="FMVoiceRowChangeEvent" msprop:Generator_RowClassName="FMVoiceRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="group" msprop:Generator_ColumnVarNameInTable="columngroup" msprop:Generator_ColumnPropNameInRow="group" msprop:Generator_ColumnPropNameInTable="groupColumn" msprop:Generator_UserColumnName="group" type="xs:string" minOccurs="0" />
+              <xs:element name="bank" msprop:Generator_ColumnVarNameInTable="columnbank" msprop:Generator_ColumnPropNameInRow="bank" msprop:Generator_ColumnPropNameInTable="bankColumn" msprop:Generator_UserColumnName="bank" type="xs:int" minOccurs="0" />
+              <xs:element name="prog" msprop:Generator_ColumnVarNameInTable="columnprog" msprop:Generator_ColumnPropNameInRow="prog" msprop:Generator_ColumnPropNameInTable="progColumn" msprop:Generator_UserColumnName="prog" type="xs:int" minOccurs="0" />
+              <xs:element name="name" msprop:Generator_ColumnVarNameInTable="columnname" msprop:Generator_ColumnPropNameInRow="name" msprop:Generator_ColumnPropNameInTable="nameColumn" msprop:Generator_UserColumnName="name" type="xs:string" minOccurs="0" />
+              <xs:element name="algorithm" msprop:Generator_ColumnVarNameInTable="columnalgorithm" msprop:Generator_ColumnPropNameInRow="algorithm" msprop:Generator_ColumnPropNameInTable="algorithmColumn" msprop:Generator_UserColumnName="algorithm" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
