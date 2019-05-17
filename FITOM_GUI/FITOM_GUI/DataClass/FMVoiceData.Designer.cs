@@ -289,6 +289,22 @@ namespace FITOM_GUI.DataClass {
             
             private global::System.Data.DataColumn columnalgorithm;
             
+            private global::System.Data.DataColumn columnams;
+            
+            private global::System.Data.DataColumn columnpms;
+            
+            private global::System.Data.DataColumn columnamd;
+            
+            private global::System.Data.DataColumn columnpmd;
+            
+            private global::System.Data.DataColumn columnlfo_freq;
+            
+            private global::System.Data.DataColumn columnlfo_wave;
+            
+            private global::System.Data.DataColumn columnlfo_depth;
+            
+            private global::System.Data.DataColumn columnlfo_rate;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public FMVoiceDataTable() {
@@ -364,6 +380,70 @@ namespace FITOM_GUI.DataClass {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn amsColumn {
+                get {
+                    return this.columnams;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn pmsColumn {
+                get {
+                    return this.columnpms;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn amdColumn {
+                get {
+                    return this.columnamd;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn pmdColumn {
+                get {
+                    return this.columnpmd;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn lfo_freqColumn {
+                get {
+                    return this.columnlfo_freq;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn lfo_waveColumn {
+                get {
+                    return this.columnlfo_wave;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn lfo_depthColumn {
+                get {
+                    return this.columnlfo_depth;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn lfo_rateColumn {
+                get {
+                    return this.columnlfo_rate;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -399,14 +479,22 @@ namespace FITOM_GUI.DataClass {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public FMVoiceRow AddFMVoiceRow(string group, int bank, int prog, string name, int algorithm) {
+            public FMVoiceRow AddFMVoiceRow(string group, int bank, int prog, string name, int algorithm, int ams, int pms, int amd, int pmd, int lfo_freq, int lfo_wave, int lfo_depth, int lfo_rate) {
                 FMVoiceRow rowFMVoiceRow = ((FMVoiceRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         group,
                         bank,
                         prog,
                         name,
-                        algorithm};
+                        algorithm,
+                        ams,
+                        pms,
+                        amd,
+                        pmd,
+                        lfo_freq,
+                        lfo_wave,
+                        lfo_depth,
+                        lfo_rate};
                 rowFMVoiceRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowFMVoiceRow);
                 return rowFMVoiceRow;
@@ -434,6 +522,14 @@ namespace FITOM_GUI.DataClass {
                 this.columnprog = base.Columns["prog"];
                 this.columnname = base.Columns["name"];
                 this.columnalgorithm = base.Columns["algorithm"];
+                this.columnams = base.Columns["ams"];
+                this.columnpms = base.Columns["pms"];
+                this.columnamd = base.Columns["amd"];
+                this.columnpmd = base.Columns["pmd"];
+                this.columnlfo_freq = base.Columns["lfo_freq"];
+                this.columnlfo_wave = base.Columns["lfo_wave"];
+                this.columnlfo_depth = base.Columns["lfo_depth"];
+                this.columnlfo_rate = base.Columns["lfo_rate"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -449,6 +545,22 @@ namespace FITOM_GUI.DataClass {
                 base.Columns.Add(this.columnname);
                 this.columnalgorithm = new global::System.Data.DataColumn("algorithm", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnalgorithm);
+                this.columnams = new global::System.Data.DataColumn("ams", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnams);
+                this.columnpms = new global::System.Data.DataColumn("pms", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnpms);
+                this.columnamd = new global::System.Data.DataColumn("amd", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnamd);
+                this.columnpmd = new global::System.Data.DataColumn("pmd", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnpmd);
+                this.columnlfo_freq = new global::System.Data.DataColumn("lfo_freq", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnlfo_freq);
+                this.columnlfo_wave = new global::System.Data.DataColumn("lfo_wave", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnlfo_wave);
+                this.columnlfo_depth = new global::System.Data.DataColumn("lfo_depth", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnlfo_depth);
+                this.columnlfo_rate = new global::System.Data.DataColumn("lfo_rate", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnlfo_rate);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -671,6 +783,134 @@ namespace FITOM_GUI.DataClass {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int ams {
+                get {
+                    try {
+                        return ((int)(this[this.tableFMVoice.amsColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'FMVoice\' にある列 \'ams\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableFMVoice.amsColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int pms {
+                get {
+                    try {
+                        return ((int)(this[this.tableFMVoice.pmsColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'FMVoice\' にある列 \'pms\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableFMVoice.pmsColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int amd {
+                get {
+                    try {
+                        return ((int)(this[this.tableFMVoice.amdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'FMVoice\' にある列 \'amd\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableFMVoice.amdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int pmd {
+                get {
+                    try {
+                        return ((int)(this[this.tableFMVoice.pmdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'FMVoice\' にある列 \'pmd\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableFMVoice.pmdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int lfo_freq {
+                get {
+                    try {
+                        return ((int)(this[this.tableFMVoice.lfo_freqColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'FMVoice\' にある列 \'lfo_freq\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableFMVoice.lfo_freqColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int lfo_wave {
+                get {
+                    try {
+                        return ((int)(this[this.tableFMVoice.lfo_waveColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'FMVoice\' にある列 \'lfo_wave\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableFMVoice.lfo_waveColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int lfo_depth {
+                get {
+                    try {
+                        return ((int)(this[this.tableFMVoice.lfo_depthColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'FMVoice\' にある列 \'lfo_depth\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableFMVoice.lfo_depthColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int lfo_rate {
+                get {
+                    try {
+                        return ((int)(this[this.tableFMVoice.lfo_rateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("テーブル \'FMVoice\' にある列 \'lfo_rate\' の値は DBNull です。", e);
+                    }
+                }
+                set {
+                    this[this.tableFMVoice.lfo_rateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsgroupNull() {
                 return this.IsNull(this.tableFMVoice.groupColumn);
             }
@@ -727,6 +967,102 @@ namespace FITOM_GUI.DataClass {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetalgorithmNull() {
                 this[this.tableFMVoice.algorithmColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsamsNull() {
+                return this.IsNull(this.tableFMVoice.amsColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetamsNull() {
+                this[this.tableFMVoice.amsColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IspmsNull() {
+                return this.IsNull(this.tableFMVoice.pmsColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetpmsNull() {
+                this[this.tableFMVoice.pmsColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsamdNull() {
+                return this.IsNull(this.tableFMVoice.amdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetamdNull() {
+                this[this.tableFMVoice.amdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IspmdNull() {
+                return this.IsNull(this.tableFMVoice.pmdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetpmdNull() {
+                this[this.tableFMVoice.pmdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool Islfo_freqNull() {
+                return this.IsNull(this.tableFMVoice.lfo_freqColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void Setlfo_freqNull() {
+                this[this.tableFMVoice.lfo_freqColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool Islfo_waveNull() {
+                return this.IsNull(this.tableFMVoice.lfo_waveColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void Setlfo_waveNull() {
+                this[this.tableFMVoice.lfo_waveColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool Islfo_depthNull() {
+                return this.IsNull(this.tableFMVoice.lfo_depthColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void Setlfo_depthNull() {
+                this[this.tableFMVoice.lfo_depthColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool Islfo_rateNull() {
+                return this.IsNull(this.tableFMVoice.lfo_rateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void Setlfo_rateNull() {
+                this[this.tableFMVoice.lfo_rateColumn] = global::System.Convert.DBNull;
             }
         }
         
