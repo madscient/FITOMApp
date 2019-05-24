@@ -24,8 +24,10 @@ int InitFTInterface()
 		switch (devList[i].Type)
 		{
 		case FT_DEVICE_232H:
+			ftInterfaces.push_back(new CFTSPI(fthinfo));
 			break;
 		case FT_DEVICE_2232C:
+			ftInterfaces.push_back(new CFTHBE(fthinfo));
 			break;
 		}
 	}
