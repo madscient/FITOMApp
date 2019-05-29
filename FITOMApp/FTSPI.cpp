@@ -175,8 +175,93 @@ FT_STATUS CFTSPI::FT_WriteGPIO( UINT8 dir, UINT8 value)
 	return ret;
 }
 
-
 void CFTSPI::InitialClear()
+{
+	BufferPush(0x82);	//Set high byte
+	BufferPush(0x00);	//assert IC
+	BufferPush(0xff);	//dir
+	BufferFlush();
+	::Sleep(10);
+	BufferPush(0x82);	//Set high byte
+	BufferPush(0xff);	//dessert IC
+	BufferPush(0xff);	//dir
+	BufferFlush();
+}
+
+CFTHBE::CFTHBE(FTHINFO& fth) : CFTInterface()
+{
+	FT_STATUS status = FT_OK;
+	FTChannel = fth;
+	status = FT_Open(FTChannel.index, &FTChannel.ftHandle);
+	assert(status == FT_OK);
+	status = Init();
+	assert(status == FT_OK);
+}
+
+FT_STATUS CFTHBE::Init()
+{
+	FT_STATUS ret = FT_OTHER_ERROR;
+	//ret = FT_SetBaudRate(SPIChannel[index].ftHandle, 2000000L);	//1Mbps
+	//if (ret != FT_OK) return ret;
+	ret = FT_Purge(FTChannel.ftHandle, FT_PURGE_RX | FT_PURGE_TX);
+	if (ret != FT_OK) return ret;
+	::Sleep(10);
+	ret = FT_SetLatencyTimer(FTChannel.ftHandle, 1);	//1ms
+	if (ret != FT_OK) return ret;
+	ret = FT_SetBitMode(FTChannel.ftHandle, 0x0, 0x00);	//reset mode
+	if (ret != FT_OK) return ret;
+	::Sleep(10);
+	ret = FT_SetBitMode(FTChannel.ftHandle, 0x00, 0x02);	//MPSSE mode
+	if (ret != FT_OK) return ret;
+	ret = FT_Purge(FTChannel.ftHandle, FT_PURGE_RX);
+	if (ret != FT_OK) return ret;
+	::Sleep(20);
+	BufferPush(0x82);	//Set initial value of ACBUS
+	BufferPush(0xff);	//
+	BufferPush(0xff);	//
+	BufferPush(0x86);	//CK devisor (6MHz)
+	BufferPush(0x00);
+	BufferPush(0x00);
+	BufferPush(0x85);	//disable loopback
+	BufferPush(0x8d);	//disable 3 phase clocking
+	ret = BufferFlush();
+	::Sleep(100);
+	if (ret != FT_OK) return ret;
+	return ret;
+}
+
+
+FT_STATUS CFTHBE::BufferedWrite(UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs)
+{
+	FT_STATUS ret = FT_OK;
+	UINT8 csmask = ~(1 << (cs + 3));
+	if (sizeToTransfer) {
+		UINT16 length = sizeToTransfer - 1;
+		BufferPush(0x80);	//assert CS
+		BufferPush(0xf8 & csmask);	//
+		BufferPush(0xfb);	//
+		BufferPush(0x11);	//ve+ edge MSB first no read
+		BufferPush((BYTE*)(&length), 2);	//length
+		BufferPush(buffer, sizeToTransfer);
+		BufferPush(0x80);	//dessert CS
+		BufferPush(0xf8);	//
+		BufferPush(0xfb);	//
+		BufferFlush();
+	}
+	return ret;
+}
+
+FT_STATUS CFTHBE::FT_WriteGPIO(UINT8 dir, UINT8 value)
+{
+	FT_STATUS ret = FT_OK;
+	BufferPush(0x82);	//Set high byte
+	BufferPush(value);	//
+	BufferPush(dir);	//
+	BufferFlush();
+	return ret;
+}
+
+void CFTHBE::InitialClear()
 {
 	BufferPush(0x82);	//Set high byte
 	BufferPush(0x00);	//assert IC
