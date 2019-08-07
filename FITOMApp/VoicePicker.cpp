@@ -81,7 +81,7 @@ void CDlgVoicePicker::OnSelendokComboBank()
 	RefreshProg();
 }
 
-void CDlgVoicePicker::SetDevice(UINT32 dev)
+void CDlgVoicePicker::SetDevice(uint32_t dev)
 {
 	theDevice = dev;
 	if (bInit) {
@@ -89,7 +89,7 @@ void CDlgVoicePicker::SetDevice(UINT32 dev)
 	}
 }
 
-void CDlgVoicePicker::SetBank(UINT32 bank)
+void CDlgVoicePicker::SetBank(uint32_t bank)
 {
 	theBank = bank;
 	if (bInit) {
@@ -97,7 +97,7 @@ void CDlgVoicePicker::SetBank(UINT32 bank)
 	}
 }
 
-void CDlgVoicePicker::SetProg(UINT32 prog)
+void CDlgVoicePicker::SetProg(uint32_t prog)
 {
 	theProg = prog;
 	if (bInit) {
@@ -120,12 +120,12 @@ BOOL CDlgVoicePicker::OnInitDialog()
 	// 例外 : OCX プロパティ ページは必ず FALSE を返します。
 }
 
-CString CDlgVoicePicker::GetBankName(UINT32 device, UINT32 bank)
+CString CDlgVoicePicker::GetBankName(uint32_t device, uint32_t bank)
 {
 	return CString(theConfig->GetBankName(device, bank));
 }
 
-CString CDlgVoicePicker::GetProgName(UINT32 device, UINT32 bank, UINT32 prog)
+CString CDlgVoicePicker::GetProgName(uint32_t device, uint32_t bank, uint32_t prog)
 {
 	CString ret;
 	TCHAR tmp[64];
@@ -141,14 +141,14 @@ void CDlgVoicePicker::RefreshDevice()
 		CString tmp;
 		CSoundDevice* pDev = theConfig->GetLogDeviceFromIndex(i);
 		if (pDev) {
-			UINT32 devid = pDev->GetDevice();
-			UINT32 phyid = theConfig->GetDeviceUniqID(pDev);
+			uint32_t devid = pDev->GetDevice();
+			uint32_t phyid = theConfig->GetDeviceUniqID(pDev);
 			TCHAR devname[64];
 			theConfig->GetDeviceName(phyid, devname, _countof(devname));
 			tmp.Format(_T("%02X:%s"), devid, devname);
 			int k = cmbDevice.AddString(tmp);
 			cmbDevice.SetItemData(k, phyid);
-			if (UINT8(phyid) == UINT8(theDevice)) {
+			if (uint8_t(phyid) == uint8_t(theDevice)) {
 				cmbDevice.SetCurSel(k);
 			}
 		}
@@ -160,8 +160,8 @@ void CDlgVoicePicker::RefreshDevice()
 		CString tmp;
 		CAdPcmBase* pDev = theConfig->GetPCMDeviceFromIndex(i);
 		if (pDev) {
-			UINT32 devid = pDev->GetDevice();
-			UINT32 phyid = theConfig->GetDeviceUniqID(pDev);
+			uint32_t devid = pDev->GetDevice();
+			uint32_t phyid = theConfig->GetDeviceUniqID(pDev);
 			TCHAR devname[64];
 			theConfig->GetDeviceName(phyid, devname, _countof(devname));
 			tmp.Format(_T("%02X:%s"), devid, devname);
@@ -322,7 +322,7 @@ void CDlgVoicePicker::OnRdblclkListProgs(NMHDR *pNMHDR, LRESULT *pResult)
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 	theProg = lstProg.GetSelectionMark();
 	BeginWaitCursor();
-	UINT8 devm = theDevice & 0xff;
+	uint8_t devm = theDevice & 0xff;
 	BOOL isPcm = theConfig->isPcmDevice(theDevice);
 	pICh->BankSelMSB(devm);
 	pICh->BankSelLSB(theBank);

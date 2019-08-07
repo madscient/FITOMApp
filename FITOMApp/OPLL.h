@@ -8,55 +8,55 @@
 class COPLL : public CSoundDevice {
 	friend class COPLLRhythm;
 protected:
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdatePanpot(UINT8 ch) {};
-	virtual void UpdateSustain(UINT8 ch);
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdatePanpot(uint8_t ch) {};
+	virtual void UpdateSustain(uint8_t ch);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev);
 	virtual void ChangeRhythmMode(int mode);
 public:
-	COPLL(CPort* pt, UINT8 mode, int fsamp, UINT8 devtype=DEVICE_OPLL);
+	COPLL(CPort* pt, uint8_t mode, int fsamp, uint8_t devtype=DEVICE_OPLL);
 	virtual void Init();
-	virtual void SetVoice(UINT8 ch, FMVOICE* voice, int update);
-	virtual void TimerCallBack(UINT32 tick);
+	virtual void SetVoice(uint8_t ch, FMVOICE* voice, int update);
+	virtual void TimerCallBack(uint32_t tick);
 };
 
 class COPLLP : public COPLL {
 public:
-	COPLLP(CPort* pt, UINT8 mode, int fsamp);
+	COPLLP(CPort* pt, uint8_t mode, int fsamp);
 };
 
 class COPLLX : public COPLL {
 public:
-	COPLLX(CPort* pt, UINT8 mode, int fsamp);
+	COPLLX(CPort* pt, uint8_t mode, int fsamp);
 };
 
 class COPLL2 : public COPLL {
 protected:
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
 public:
-	COPLL2(CPort* pt, UINT8 mode, int fsamp);
+	COPLL2(CPort* pt, uint8_t mode, int fsamp);
 };
 
 class COPLLRhythm : public CRhythmDevice {
 protected:
-	UINT8 RhythmOnMap;
-	UINT8 RhythmOffMap;
-	static UINT8 RhythmFreq[3];
+	uint8_t RhythmOnMap;
+	uint8_t RhythmOffMap;
+	static uint8_t RhythmFreq[3];
 	static FNUM RhythmFnum[3];
-	static UINT8 RhythmReg[];
-	static UINT8 RhythmMapCh[];
+	static uint8_t RhythmReg[];
+	static uint8_t RhythmMapCh[];
 	//Updater
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum = 0);
-	virtual void UpdateVoice(UINT8 ch) {};
-	virtual void UpdatePanpot(UINT8 ch) {};
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum = 0);
+	virtual void UpdateVoice(uint8_t ch) {};
+	virtual void UpdatePanpot(uint8_t ch) {};
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
 public:
 	virtual void Init();
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	virtual uint8_t QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	COPLLRhythm(COPLL* parent);
 };
 

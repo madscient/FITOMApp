@@ -7,7 +7,7 @@
 static const FMVOICE NullVoice;
 
 namespace ROM {
-static SINT16 portspeed[] = {
+static int16_t portspeed[] = {
 	6400,4799,3599,2699,2024,1518,1138,853,640,581,528,480,436,396,360,327,297,270,
 	245,223,202,184,167,152,138,125,114,103,94,85,78,70,64,63,62,60,59,58,
 	57,56,54,53,52,51,50,48,47,46,45,44,42,41,40,39,38,36,35,34,33,
@@ -32,7 +32,7 @@ void CInstCh::CPortaCtrl::Init()
 	enable = 0;
 }
 
-void CInstCh::CPortaCtrl::Start(UINT8 dst)
+void CInstCh::CPortaCtrl::Start(uint8_t dst)
 {
 	if (current == 0xff) {
 		current = (start != 0xff) ? start : dst;
@@ -51,15 +51,15 @@ void CInstCh::CPortaCtrl::Stop()
 void CInstCh::CPortaCtrl::Enable(int flag)
 {
 	Init();
-	enable = UINT8(flag);
+	enable = uint8_t(flag);
 }
 
-void CInstCh::CPortaCtrl::SetSpeed(UINT8 sp)
+void CInstCh::CPortaCtrl::SetSpeed(uint8_t sp)
 {
 	speed = sp;
 }
 
-void CInstCh::CPortaCtrl::SetSource(UINT8 src)
+void CInstCh::CPortaCtrl::SetSource(uint8_t src)
 {
 	Stop();
 	current = 0xff;
@@ -71,14 +71,14 @@ void CInstCh::CPortaCtrl::Update()
 {
 	if (status == RUNNING) {
 		count++;
-		SINT16 delta = ROM::portspeed[speed];
-		SINT16 absnote = (SINT16(current) << 6) | fine;
-		SINT16 target = (SINT16(end) << 6);
+		int16_t delta = ROM::portspeed[speed];
+		int16_t absnote = (int16_t(current) << 6) | fine;
+		int16_t target = (int16_t(end) << 6);
 		if (delta < 0 && !(count % (-delta))) {
 			delta = 1;
 		}
 		if (delta > 0) {
-			SINT16 remain = target - absnote;
+			int16_t remain = target - absnote;
 			if (remain == 0) {
 				status = STOPPING;
 				count = 0;
@@ -89,8 +89,8 @@ void CInstCh::CPortaCtrl::Update()
 				} else {
 					absnote = (delta < abs(remain)) ? (absnote + delta) : target;
 				}
-				current = UINT8(absnote >> 6);
-				fine = UINT8(absnote & 0x3f);
+				current = uint8_t(absnote >> 6);
+				fine = uint8_t(absnote & 0x3f);
 			}
 		}
 	}
@@ -127,7 +127,7 @@ void CMidiInst::SetParent(CFITOM* parent)
 	}
 }
 
-void CMidiInst::TimerCallBack(UINT32 tick)
+void CMidiInst::TimerCallBack(uint32_t tick)
 {
 	while (bMidiProc || bTimerProc);
 	bTimerProc = TRUE;
@@ -141,10 +141,10 @@ void CMidiInst::TimerCallBack(UINT32 tick)
 
 int CMidiInst::PollingCallBack()
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	bMidiProc = TRUE;
 	while (Port->IsReceived()) {
-		UINT8 msg = Port->Read();
+		uint8_t msg = Port->Read();
 		ret = ProcMsg(msg);
 	}
 	currentstatus = ret;
@@ -154,7 +154,7 @@ int CMidiInst::PollingCallBack()
 
 int CMidiInst::InterruptCallBack(BYTE* buf, size_t length)
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	while (bTimerProc || bMidiProc);
 	bMidiProc = TRUE;
 	while (length--) {
@@ -164,7 +164,7 @@ int CMidiInst::InterruptCallBack(BYTE* buf, size_t length)
 	return ret;
 }
 
-void CMidiInst::MIDIClockCallBack(UINT32 tick)
+void CMidiInst::MIDIClockCallBack(uint32_t tick)
 {
 	for (int i = 0; i<16; i++) {
 		if (ch[i]) {
@@ -173,9 +173,9 @@ void CMidiInst::MIDIClockCallBack(UINT32 tick)
 	}
 }
 
-UINT16 CMidiInst::ProcMsg(UINT8 msg)
+uint16_t CMidiInst::ProcMsg(uint8_t msg)
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	switch (cond) {
 	case COND_SYSEX:
 		if ((SysExPt + 1)<MAX_SYSEX) {
@@ -229,11 +229,11 @@ UINT16 CMidiInst::ProcMsg(UINT8 msg)
 	return ret;
 }
 
-UINT16 CMidiInst::Status3()
+uint16_t CMidiInst::Status3()
 {
-	UINT16 ret = MsgBuf[0];
-	UINT16 tmp;
-	UINT8 midich = MsgBuf[0] & 0x0f;
+	uint16_t ret = MsgBuf[0];
+	uint16_t tmp;
+	uint8_t midich = MsgBuf[0] & 0x0f;
 
 	if (!ch[midich]) {
 		AssignInst(midich, NULL, 0);
@@ -268,7 +268,7 @@ UINT16 CMidiInst::Status3()
 		CThruCh* pch = (CThruCh*)ch[midich];
 		CMidiOut* pmo = 0; // Parent->GetMidiOut(pch->GetOutPort());
 		if (pmo) {
-			UINT8 thrumsg[4];
+			uint8_t thrumsg[4];
 			memcpy(thrumsg, MsgBuf, 3);
 			thrumsg[0] = (MsgBuf[0] & 0xf0) | (pch->GetOutCh() & 0xf);
 			pmo->Send(MsgBuf, 3);
@@ -278,10 +278,10 @@ UINT16 CMidiInst::Status3()
 	return ret;
 }
 
-UINT16 CMidiInst::Status2()
+uint16_t CMidiInst::Status2()
 {
-	UINT16 ret = 0;
-	UINT8 midich = MsgBuf[0] & 0x0f;
+	uint16_t ret = 0;
+	uint8_t midich = MsgBuf[0] & 0x0f;
 
 	if (!ch[midich]) {
 		AssignInst(midich, NULL, 0);
@@ -315,7 +315,7 @@ UINT16 CMidiInst::Status2()
 		CThruCh* pch = (CThruCh*)ch[midich];
 		CMidiOut* pmo = 0; // Parent->GetMidiOut(pch->GetOutPort());
 		if (pmo) {
-			UINT8 thrumsg[4];
+			uint8_t thrumsg[4];
 			memcpy(thrumsg, MsgBuf, 2);
 			thrumsg[0] = (MsgBuf[0] & 0xf0) | (pch->GetOutCh() & 0xf);
 			pmo->Send(thrumsg, 2);
@@ -324,9 +324,9 @@ UINT16 CMidiInst::Status2()
 	return ret;
 }
 
-UINT16 CMidiInst::Control()
+uint16_t CMidiInst::Control()
 {
-	UINT8 midich = MsgBuf[0] & 0x0f;
+	uint8_t midich = MsgBuf[0] & 0x0f;
 	if (!ch[midich]) {
 		AssignInst(midich, NULL, 0);
 	}
@@ -392,10 +392,10 @@ UINT16 CMidiInst::Control()
 		ch[midich]->SetVoiceData(MsgBuf[2]);
 		break;
 	case 0x60:	//Data Increment
-		ch[midich]->DataIncrement(SINT16(UINT16(MsgBuf[2])));
+		ch[midich]->DataIncrement(int16_t(uint16_t(MsgBuf[2])));
 		break;
 	case 0x61:	//Data Decrement
-		ch[midich]->DataDecrement(SINT16(UINT16(MsgBuf[2])));
+		ch[midich]->DataDecrement(int16_t(uint16_t(MsgBuf[2])));
 		break;
 	case 0x62:	//NRPN LSB
 		ch[midich]->SetNRPNLSB(MsgBuf[2]);
@@ -428,9 +428,9 @@ UINT16 CMidiInst::Control()
 	return MsgBuf[1];
 }
 
-UINT16 CMidiInst::SysEx()
+uint16_t CMidiInst::SysEx()
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	int rdpt = 1;
 	if (SysExBuf[0] == 0xf0 && SysExBuf[SysExPt - 1] == 0xf7) {
 		DWORD mID = SysExBuf[rdpt++];
@@ -458,7 +458,7 @@ UINT16 CMidiInst::SysEx()
 	return 0;
 }
 
-UINT16 CMidiInst::SysExRoland(BYTE* buf, size_t length)
+uint16_t CMidiInst::SysExRoland(BYTE* buf, size_t length)
 {
 	size_t rdpt = 0;
 	BYTE devID = buf[rdpt++];	// device ID
@@ -470,12 +470,12 @@ UINT16 CMidiInst::SysExRoland(BYTE* buf, size_t length)
 	return 0;
 }
 
-UINT16 CMidiInst::SysExYamaha(BYTE* buf, size_t length)
+uint16_t CMidiInst::SysExYamaha(BYTE* buf, size_t length)
 {
 	return 0;
 }
 
-UINT16 CMidiInst::SysExURT(BYTE* buf, size_t length)
+uint16_t CMidiInst::SysExURT(BYTE* buf, size_t length)
 {
 	size_t rdpt = 0;
 	BYTE devID = buf[rdpt++];	// device ID
@@ -491,19 +491,19 @@ UINT16 CMidiInst::SysExURT(BYTE* buf, size_t length)
 	return 0;
 }
 
-UINT16 CMidiInst::SysExUNRT(BYTE* buf, size_t length)
+uint16_t CMidiInst::SysExUNRT(BYTE* buf, size_t length)
 {
 	return 0;
 }
 
-UINT16 CMidiInst::ChannelMap()
+uint16_t CMidiInst::ChannelMap()
 {
 	return 0;
 }
 
-UINT16 CMidiInst::SysMsg()
+uint16_t CMidiInst::SysMsg()
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	switch (MsgBuf[0]) {
 	case 0xf0://Exclusive message
 		cond = COND_SYSEX;
@@ -542,7 +542,7 @@ UINT16 CMidiInst::SysMsg()
 	return ret;
 }
 
-void CMidiInst::AssignInst(UINT8 nch, CSoundDevice* dev, UINT8 pol)
+void CMidiInst::AssignInst(uint8_t nch, CSoundDevice* dev, uint8_t pol)
 {
 	if (nch < 16) {
 		ch[nch] = new CInstCh(nch, Parent);
@@ -550,21 +550,21 @@ void CMidiInst::AssignInst(UINT8 nch, CSoundDevice* dev, UINT8 pol)
 	}
 }
 
-void CMidiInst::AssignRhythm(UINT8 nch)
+void CMidiInst::AssignRhythm(uint8_t nch)
 {
 	if (nch < 16) {
 		ch[nch] = new CRhythmCh(nch, Parent);
 	}
 }
 
-void CMidiInst::AssignThru(UINT8 nch, UINT8 och, UINT8 opt)
+void CMidiInst::AssignThru(uint8_t nch, uint8_t och, uint8_t opt)
 {
 	if (nch < 16) {
 		//ch[nch] = new CThruCh(nch, och, opt, Parent);
 	}
 }
 
-CMidiCh* CMidiInst::GetMidiCh(UINT8 nch)
+CMidiCh* CMidiInst::GetMidiCh(uint8_t nch)
 {
 	CMidiCh* ret = NULL;
 	if (nch < 16) {
@@ -573,7 +573,7 @@ CMidiCh* CMidiInst::GetMidiCh(UINT8 nch)
 	return ret;
 }
 
-void CMidiInst::Release(UINT8 nch)
+void CMidiInst::Release(uint8_t nch)
 {
 	if (ch[nch]) {
 		if (ch[nch]->IsInst()) {
@@ -586,42 +586,42 @@ void CMidiInst::Release(UINT8 nch)
 
 /*------------------------------------------------------*/
 
-CMidiCh::CMidiCh(UINT8 ch, CFITOM* parent) : Parent(parent)
+CMidiCh::CMidiCh(uint8_t ch, CFITOM* parent) : Parent(parent)
 {
 	RPNReg = RPN_NULL;
 	NRPNReg = RPN_NULL;
 	EntryMode = 0;
 }
 
-void CMidiCh::SetNRPNLSB(UINT8 nrpn)
+void CMidiCh::SetNRPNLSB(uint8_t nrpn)
 {
 	NRPNReg = (NRPNReg & 0x3f80) | nrpn;
 	DataLSB = 0;
 	EntryMode = NRPN_ENTRY;
 }
 
-void CMidiCh::SetNRPNMSB(UINT8 nrpn)
+void CMidiCh::SetNRPNMSB(uint8_t nrpn)
 {
 	NRPNReg = (NRPNReg & 0x7f) | (nrpn << 7);
 	DataLSB = 0;
 	EntryMode = NRPN_ENTRY;
 }
 
-void CMidiCh::SetRPNLSB(UINT8 rpn)
+void CMidiCh::SetRPNLSB(uint8_t rpn)
 {
 	RPNReg = (RPNReg & 0x3f80) | rpn;
 	DataLSB = 0;
 	EntryMode = RPN_ENTRY;
 }
 
-void CMidiCh::SetRPNMSB(UINT8 rpn)
+void CMidiCh::SetRPNMSB(uint8_t rpn)
 {
 	RPNReg = (RPNReg & 0x7f) | (rpn << 7);
 	DataLSB = 0;
 	EntryMode = RPN_ENTRY;
 }
 
-void CMidiCh::DataEntry(UINT8 data)
+void CMidiCh::DataEntry(uint8_t data)
 {
 	switch (EntryMode) {
 	case NRPN_ENTRY:
@@ -633,7 +633,7 @@ void CMidiCh::DataEntry(UINT8 data)
 	}
 }
 
-void CMidiCh::DataIncrement(SINT16 data)
+void CMidiCh::DataIncrement(int16_t data)
 {
 	switch (EntryMode) {
 	case NRPN_ENTRY:
@@ -645,7 +645,7 @@ void CMidiCh::DataIncrement(SINT16 data)
 	}
 }
 
-void CMidiCh::DataDecrement(SINT16 data)
+void CMidiCh::DataDecrement(int16_t data)
 {
 	switch (EntryMode) {
 	case NRPN_ENTRY:
@@ -688,7 +688,7 @@ void CMidiCh::ResetAllCtrl()
 
 /*-----*/
 
-CInstCh::CInstCh(UINT8 ch, CFITOM* parent) : CMidiCh(ch, parent)
+CInstCh::CInstCh(uint8_t ch, CFITOM* parent) : CMidiCh(ch, parent)
 {
 	Device = NULL;
 	voice = NullVoice;
@@ -722,7 +722,7 @@ void CInstCh::ResetAllCtrl()
 }
 
 
-void CInstCh::Assign(CSoundDevice* dev, UINT8 pol)
+void CInstCh::Assign(CSoundDevice* dev, uint8_t pol)
 {
 	if (dev)
 	{
@@ -738,7 +738,7 @@ void CInstCh::Assign(CSoundDevice* dev, UINT8 pol)
 	}
 }
 
-void CInstCh::BankSelLSB(UINT8 bsl)
+void CInstCh::BankSelLSB(uint8_t bsl)
 {
 	BankSelL = bsl;
 	if (BankSelM == ADPCM_BANK) { //ADPCM
@@ -746,7 +746,7 @@ void CInstCh::BankSelLSB(UINT8 bsl)
 	}
 }
 
-void CInstCh::BankSelMSB(UINT8 bsm)
+void CInstCh::BankSelMSB(uint8_t bsm)
 {
 	if (bsm) {
 		BankSelM = bsm;
@@ -759,13 +759,13 @@ void CInstCh::BankSelMSB(UINT8 bsm)
 	}
 }
 
-void CInstCh::BankSel(UINT16 bank)
+void CInstCh::BankSel(uint16_t bank)
 {
 	BankSelM = bank >> 8;
 	BankSelL = bank & 0xff;
 }
 
-void CInstCh::ProgChange(UINT8 prog)
+void CInstCh::ProgChange(uint8_t prog)
 {
 	ProgramNo = prog;
 	if (Device)
@@ -779,13 +779,13 @@ void CInstCh::ProgChange(UINT8 prog)
 	}
 }
 
-void CInstCh::NoteOn(UINT8 note, UINT8 vel)
+void CInstCh::NoteOn(uint8_t note, uint8_t vel)
 {
-	UINT8 ch = 0xff;
+	uint8_t ch = 0xff;
 	if (Device)
 	{
-		UINT8 noteon = 1;
-		UINT16 id = 0;
+		uint8_t noteon = 1;
+		uint16_t id = 0;
 
 		if (PhyCh != 127 && PhyCh < Device->GetChs()) {
 			ch = Device->Assign(PhyCh, this, &voice);
@@ -793,7 +793,7 @@ void CInstCh::NoteOn(UINT8 note, UINT8 vel)
 		else {
 			if (Mono && timbres) {
 				ch = Note[0].ch;
-				if (Note[0].note != UINT8(-1) && !Legato) {
+				if (Note[0].note != uint8_t(-1) && !Legato) {
 					Note[0].dev->NoteOff(ch);
 				}
 				if (Legato) {
@@ -831,7 +831,7 @@ void CInstCh::NoteOn(UINT8 note, UINT8 vel)
 				Portamento.Start(note);
 			}
 			else {
-				int fine = SINT16(BendRange) * (SINT16(PitchBend >> 7) - 64) + (SINT16(Tuning >> 7) - 64);
+				int fine = int16_t(BendRange) * (int16_t(PitchBend >> 7) - 64) + (int16_t(Tuning >> 7) - 64);
 				Device->SetNoteFine(ch, note, fine, 1);
 			}
 
@@ -845,7 +845,7 @@ void CInstCh::NoteOn(UINT8 note, UINT8 vel)
 	}
 }
 
-void CInstCh::NoteOff(UINT8 note)
+void CInstCh::NoteOff(uint8_t note)
 {
 	if (Device && !(Mono && Legato)) {
 		for (int i=0; i<timbres; i++) {
@@ -871,7 +871,7 @@ void CInstCh::AllNoteOff()
 	timbres = 0;
 }
 
-void CInstCh::SetModulation(UINT8 dep)
+void CInstCh::SetModulation(uint8_t dep)
 {
 	PMDepth = dep;
 	if (Device) {
@@ -881,7 +881,7 @@ void CInstCh::SetModulation(UINT8 dep)
 	}
 }
 
-void CInstCh::SetFootCtrl(UINT8 dep)
+void CInstCh::SetFootCtrl(uint8_t dep)
 {
 	AMDepth = dep;
 	if (Device) {
@@ -891,11 +891,11 @@ void CInstCh::SetFootCtrl(UINT8 dep)
 	}
 }
 
-void CInstCh::SetBreathCtrl(UINT8 dep)
+void CInstCh::SetBreathCtrl(uint8_t dep)
 {
 }
 
-void CInstCh::SetExpress(UINT8 exp)
+void CInstCh::SetExpress(uint8_t exp)
 {
 	Expression = exp;
 	if (Device) {
@@ -905,7 +905,7 @@ void CInstCh::SetExpress(UINT8 exp)
 	}
 }
 
-void CInstCh::SetVolume(UINT8 vol)
+void CInstCh::SetVolume(uint8_t vol)
 {
 	Volume = vol;
 	if (Device) {
@@ -915,7 +915,7 @@ void CInstCh::SetVolume(UINT8 vol)
 	}
 }
 
-void CInstCh::SetPanpot(UINT8 pan)
+void CInstCh::SetPanpot(uint8_t pan)
 {
 	Panpot = pan;
 	if (Device) {
@@ -929,7 +929,7 @@ void CInstCh::UpdateFineTune()
 {
 	if (Device) {
 		for (int i=0; i<timbres; i++) {
-			Note[i].fine = SINT16(BendRange) * (SINT16(PitchBend>>7)-64) + (SINT16(Tuning>>7)-64);
+			Note[i].fine = int16_t(BendRange) * (int16_t(PitchBend>>7)-64) + (int16_t(Tuning>>7)-64);
 			if (Portamento.IsEnable()) {
 				Device->SetNoteFine(Note[i].ch, Portamento.GetCurrentNote(), Portamento.GetCurrentFine()+Note[i].fine, 1);
 			} else {
@@ -939,25 +939,25 @@ void CInstCh::UpdateFineTune()
 	}
 }
 
-void CInstCh::SetPitchBend(UINT16 pt)
+void CInstCh::SetPitchBend(uint16_t pt)
 {
 	PitchBend = pt;
 	UpdateFineTune();
 }
 
-void CInstCh::SetFineTune(UINT16 tune)
+void CInstCh::SetFineTune(uint16_t tune)
 {
 	Tuning = tune;
 	UpdateFineTune();
 }
 
-void CInstCh::SetBendRange(UINT8 range)
+void CInstCh::SetBendRange(uint8_t range)
 {
 	BendRange = range;
 	UpdateFineTune();
 }
 
-void CInstCh::SetPMRate(UINT8 rate)
+void CInstCh::SetPMRate(uint8_t rate)
 {
 	PMRate = rate;
 	if (Device) {
@@ -965,7 +965,7 @@ void CInstCh::SetPMRate(UINT8 rate)
 	}
 }
 
-void CInstCh::SetAMRate(UINT8 rate)
+void CInstCh::SetAMRate(uint8_t rate)
 {
 	AMRate = rate;
 	if (Device) {
@@ -973,7 +973,7 @@ void CInstCh::SetAMRate(UINT8 rate)
 	}
 }
 
-void CInstCh::SetNRPNRegister(UINT16 reg, UINT16 data)
+void CInstCh::SetNRPNRegister(uint16_t reg, uint16_t data)
 {
 	if (!Device) { return; }
 	switch(NRPNReg) {
@@ -997,7 +997,7 @@ void CInstCh::SetNRPNRegister(UINT16 reg, UINT16 data)
 	}
 }
 
-void CInstCh::SetRPNRegister(UINT16 reg, UINT16 data)
+void CInstCh::SetRPNRegister(uint16_t reg, uint16_t data)
 {
 	switch (RPNReg)
 	{
@@ -1010,9 +1010,9 @@ void CInstCh::SetRPNRegister(UINT16 reg, UINT16 data)
 	}
 }
 
-UINT16 CInstCh::GetNRPNRegister(UINT16 reg)
+uint16_t CInstCh::GetNRPNRegister(uint16_t reg)
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	switch (NRPNReg) {
 	case NRPN_PMRATE:
 		ret = GetPMRate() << 7;
@@ -1033,9 +1033,9 @@ UINT16 CInstCh::GetNRPNRegister(UINT16 reg)
 	return ret;
 }
 
-UINT16 CInstCh::GetRPNRegister(UINT16 reg)
+uint16_t CInstCh::GetRPNRegister(uint16_t reg)
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	switch (RPNReg)
 	{
 	case RPN_PITCHBEND:
@@ -1048,20 +1048,20 @@ UINT16 CInstCh::GetRPNRegister(UINT16 reg)
 	return ret;
 }
 
-void CInstCh::SetRegAddr(UINT8 addr)
+void CInstCh::SetRegAddr(uint8_t addr)
 {
-	DirAddr = (UINT16(addr) << 7) | (DataLSB & 0x7f);
+	DirAddr = (uint16_t(addr) << 7) | (DataLSB & 0x7f);
 }
 
-void CInstCh::SetRegData(UINT8 data)
+void CInstCh::SetRegData(uint8_t data)
 {
-	DirData = (UINT16(data) << 7) | (DataLSB & 0x7f);
+	DirData = (uint16_t(data) << 7) | (DataLSB & 0x7f);
 	if (Device) {
-		Device->SetReg(DirAddr, UINT8(DirData));
+		Device->SetReg(DirAddr, uint8_t(DirData));
 	}
 }
 
-UINT8 CInstCh::GetRegData() const
+uint8_t CInstCh::GetRegData() const
 {
 	if (Device) {
 		return Device->GetReg(DirAddr, 0);
@@ -1069,35 +1069,35 @@ UINT8 CInstCh::GetRegData() const
 	return 0;
 }
 
-void CInstCh::Enter(UINT8 ch, UINT8 note, UINT16 count)
+void CInstCh::Enter(uint8_t ch, uint8_t note, uint16_t count)
 {
 	if (Mono) { timbres = 0; }
 	if (timbres < 15) {
 		Note[timbres].ch = ch;
 		Note[timbres].note = note;
-		Note[timbres].fine = SINT16(BendRange) * (SINT16(PitchBend>>7)-64) + (SINT16(Tuning>>7)-64);
+		Note[timbres].fine = int16_t(BendRange) * (int16_t(PitchBend>>7)-64) + (int16_t(Tuning>>7)-64);
 		Note[timbres].dev = Device;
 		timbres++;
 	}
 }
 
-void CInstCh::Leave(UINT8 idx)
+void CInstCh::Leave(uint8_t idx)
 {
 	if (timbres) {
 		for (int i=idx; i<(timbres-1); i++) {
 			Note[i] = Note[i+1];
 		}
 		timbres--;
-		Note[timbres].ch = (UINT8)-1;
-		Note[timbres].note = (UINT8)-1;
+		Note[timbres].ch = (uint8_t)-1;
+		Note[timbres].note = (uint8_t)-1;
 		Note[timbres].fine = 0;
 		Note[timbres].dev = 0;
 	}
 }
 
-UINT32 CInstCh::GetDeviceID() const
+uint32_t CInstCh::GetDeviceID() const
 {
-	UINT32 ret = 0;
+	uint32_t ret = 0;
 	if (Device) {
 		if (Parent->isPcmDevice(Device)) {
 			ret = Parent->GetDeviceUniqID((CAdPcmBase*)Device);
@@ -1109,21 +1109,21 @@ UINT32 CInstCh::GetDeviceID() const
 	return ret;	
 }
 
-UINT8 CInstCh::GetLastNote() const
+uint8_t CInstCh::GetLastNote() const
 {
-	UINT8 ret = 0xff;
+	uint8_t ret = 0xff;
 	if (timbres) {
 		ret = Note[timbres-1].note;
 	}
 	return ret;
 }
 
-UINT32 CInstCh::GetLastProg() const
+uint32_t CInstCh::GetLastProg() const
 {
 	return voice.ID;
 }
 
-void CInstCh::SetPoly(UINT8 poly)
+void CInstCh::SetPoly(uint8_t poly)
 {
 	if (poly > 1) {
 		if (Device) {
@@ -1143,7 +1143,7 @@ void CInstCh::SetPoly(UINT8 poly)
 	PhyCh = 127;
 }
 
-void CInstCh::SetPhyCh(UINT8 ch)
+void CInstCh::SetPhyCh(uint8_t ch)
 {
 	if (Device) {
 		PhyCh = 127;
@@ -1156,18 +1156,18 @@ void CInstCh::SetPhyCh(UINT8 ch)
 	}
 }
 
-void CInstCh::SetMono(UINT8 mono)
+void CInstCh::SetMono(uint8_t mono)
 {
 	if (!mono) { mono = 255; }
 	SetPoly(mono);
 }
 
-void CInstCh::SetLegato(UINT8 leg)
+void CInstCh::SetLegato(uint8_t leg)
 {
 	Legato = Mono ? ((leg < 64) ? 0 : 1) : 0;
 }
 
-void CInstCh::SetSustain(UINT8 sus)
+void CInstCh::SetSustain(uint8_t sus)
 {
 	Sustain = (sus < 64) ? 0 : 1;
 	if (Device) {
@@ -1177,17 +1177,17 @@ void CInstCh::SetSustain(UINT8 sus)
 	}
 }
 
-void CInstCh::SetForceDamp(UINT8 dmp)
+void CInstCh::SetForceDamp(uint8_t dmp)
 {
 	ForceDamp = (dmp < 64) ? 0 : 1;
 }
 
-void CInstCh::SetSourceNote(UINT8 note)
+void CInstCh::SetSourceNote(uint8_t note)
 {
 	Portamento.SetSource(note);
 }
 
-void CInstCh::SetPortamento(UINT8 on)
+void CInstCh::SetPortamento(uint8_t on)
 {
 	if (on > 63) {
 		if (Mono) {
@@ -1201,16 +1201,16 @@ void CInstCh::SetPortamento(UINT8 on)
 	}
 }
 
-void CInstCh::SetPortTime(UINT8 pt)
+void CInstCh::SetPortTime(uint8_t pt)
 {
 	Portamento.SetSpeed(pt);
 }
 
-void CInstCh::SetVoiceData(UINT8 data)
+void CInstCh::SetVoiceData(uint8_t data)
 {
 	if (Device)
 	{
-		((UINT8*)&voice)[VoiceAddr&0x7f] = data;
+		((uint8_t*)&voice)[VoiceAddr&0x7f] = data;
 		Device->ResetVoice(this, &voice, -1);
 		/*
 		for (int i=0; i<timbres; i++) {
@@ -1234,7 +1234,7 @@ void CInstCh::SetVoiceData(FMVOICE* data)
 	}
 }
 
-void CInstCh::TimerCallBack(UINT32 tick)
+void CInstCh::TimerCallBack(uint32_t tick)
 {
 	if (Portamento.IsEnable()) {
 		Portamento.Update();
@@ -1242,13 +1242,13 @@ void CInstCh::TimerCallBack(UINT32 tick)
 	}
 }
 
-void CInstCh::MIDIClockCallBack(UINT32 tick)
+void CInstCh::MIDIClockCallBack(uint32_t tick)
 {
 
 }
 
 //--------------------
-CRhythmCh::CRhythmCh(UINT8 ch, CFITOM* parent) : CMidiCh(ch, parent)
+CRhythmCh::CRhythmCh(uint8_t ch, CFITOM* parent) : CMidiCh(ch, parent)
 {
 	LastNote = 0xff;
 	Volume = 100;
@@ -1271,27 +1271,27 @@ void CRhythmCh::InitInstant()
 	}
 }
 
-void CRhythmCh::ProgChange(UINT8 prog)
+void CRhythmCh::ProgChange(uint8_t prog)
 {
 	ProgramNo = prog & 0x7f;
 	InitInstant();
 }
 
-void CRhythmCh::SetVolume(UINT8 vol)
+void CRhythmCh::SetVolume(uint8_t vol)
 {
 	Volume = vol & 0x7f;
 }
 
-void CRhythmCh::NoteOn(UINT8 note, UINT8 vel)
+void CRhythmCh::NoteOn(uint8_t note, uint8_t vel)
 {
 	DRUMMAP dm;
-	int res = Parent->GetDrum(&dm, 0, UINT8(ProgramNo), note);
+	int res = Parent->GetDrum(&dm, 0, uint8_t(ProgramNo), note);
 	if (!res && dm.device) {
 		NoteOn(note, vel, &dm);
 	}
 }
 
-void CRhythmCh::NoteOn(UINT8 note, UINT8 vel, DRUMMAP* dm)
+void CRhythmCh::NoteOn(uint8_t note, uint8_t vel, DRUMMAP* dm)
 {
 	FMVOICE dv;
 	if (note < 128 && dm && dm->device) {
@@ -1301,12 +1301,12 @@ void CRhythmCh::NoteOn(UINT8 note, UINT8 vel, DRUMMAP* dm)
 		}
 		//Inst Rhythm
 		Parent->GetVoice(&dv, dm->devID, dm->bank, dm->prog);
-		UINT8 ch = dm->device->AllocCh(this, &dv);
+		uint8_t ch = dm->device->AllocCh(this, &dv);
 		if (ch != 0xff) {
 			dm->device->SetExpress(ch, 127);
 			dm->device->SetVolume(ch, Volume, 0);
 			dm->device->SetPanpot(ch, dm->pan + 64);
-			dm->device->SetNoteFine(ch, dm->num, (SINT16)dm->fnum);
+			dm->device->SetNoteFine(ch, dm->num, (int16_t)dm->fnum);
 			dm->device->NoteOn(ch, vel);
 			Note[note].device = dm->device;
 			Note[note].ch = ch;
@@ -1316,7 +1316,7 @@ void CRhythmCh::NoteOn(UINT8 note, UINT8 vel, DRUMMAP* dm)
 	}
 }
 
-void CRhythmCh::NoteOff(UINT8 note)
+void CRhythmCh::NoteOff(uint8_t note)
 {
 	LastNote = 0xff;
 	if (note < 128 && Note[note].device) {
@@ -1329,7 +1329,7 @@ void CRhythmCh::NoteOff(UINT8 note)
 	}
 }
 
-void CRhythmCh::NoteOff(CSoundDevice* device, UINT8 ch)
+void CRhythmCh::NoteOff(CSoundDevice* device, uint8_t ch)
 {
 	for (int i=0; i<128; i++) {
 		if (Note[i].device == device && Note[i].ch == ch) {
@@ -1348,7 +1348,7 @@ void CRhythmCh::AllNoteOff()
 	}
 }
 
-void CRhythmCh::SetNRPNRegister(UINT16 reg, UINT16 data)
+void CRhythmCh::SetNRPNRegister(uint16_t reg, uint16_t data)
 {
 	switch (NRPNReg & 0x7f00) {
 	case NRPN_DRUM_PITCH:
@@ -1360,13 +1360,13 @@ void CRhythmCh::SetNRPNRegister(UINT16 reg, UINT16 data)
 	}
 }
 
-void CRhythmCh::SetRPNRegister(UINT16 reg, UINT16 data)
+void CRhythmCh::SetRPNRegister(uint16_t reg, uint16_t data)
 {
 }
 
-UINT16 CRhythmCh::GetNRPNRegister(UINT16 reg)
+uint16_t CRhythmCh::GetNRPNRegister(uint16_t reg)
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	switch (NRPNReg & 0x7f00) {
 	case NRPN_DRUM_PITCH:
 		break;
@@ -1378,13 +1378,13 @@ UINT16 CRhythmCh::GetNRPNRegister(UINT16 reg)
 	return ret;
 }
 
-UINT16 CRhythmCh::GetRPNRegister(UINT16 reg)
+uint16_t CRhythmCh::GetRPNRegister(uint16_t reg)
 {
-	UINT16 ret = 0;
+	uint16_t ret = 0;
 	return ret;
 }
 
-void CRhythmCh::TimerCallBack(UINT32 tick)
+void CRhythmCh::TimerCallBack(uint32_t tick)
 {
 	for (int i=0; i<128; i++) {
 		if (Note[i].device) {
@@ -1401,7 +1401,7 @@ void CRhythmCh::TimerCallBack(UINT32 tick)
 
 /*----------*/
 
-CThruCh::CThruCh(UINT8 ch, UINT8 och, UINT8 opt, CFITOM* parent) : CMidiCh(ch, parent), OutPort(opt), OutCh(och)
+CThruCh::CThruCh(uint8_t ch, uint8_t och, uint8_t opt, CFITOM* parent) : CMidiCh(ch, parent), OutPort(opt), OutCh(och)
 {
 	ResetAllCtrl();
 	Poly = 0;

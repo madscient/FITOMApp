@@ -62,14 +62,14 @@ void CFTInterface::BufferPush(BYTE data)
 	if (FTChannel.wptr == (BUFSIZE - 1)) { BufferFlush(); }
 }
 
-void CFTInterface::BufferPush(BYTE* data, UINT32 length)
+void CFTInterface::BufferPush(BYTE* data, uint32_t length)
 {
 	if ((FTChannel.wptr + length) >= (BUFSIZE - 1)) { BufferFlush(); }
 	memcpy(&FTChannel.cmdbuf[FTChannel.wptr], data, length);
 	FTChannel.wptr += length;
 }
 
-FT_STATUS CFTInterface::BufferedRead(UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs)
+FT_STATUS CFTInterface::BufferedRead(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs)
 {
 	FT_STATUS ret = FT_OK;
 	return ret;
@@ -145,12 +145,12 @@ FT_STATUS CFTSPI::Init()
 }
 
 
-FT_STATUS CFTSPI::BufferedWrite(UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs)
+FT_STATUS CFTSPI::BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs)
 {
 	FT_STATUS ret = FT_OK;
-	UINT8 csmask = ~(1 << (cs + 3));
+	uint8_t csmask = ~(1 << (cs + 3));
 	if (sizeToTransfer) {
-		UINT16 length = sizeToTransfer-1;
+		uint16_t length = sizeToTransfer-1;
 		BufferPush(0x80);	//assert CS
 		BufferPush(0xf8 & csmask);	//
 		BufferPush(0xfb);	//
@@ -165,7 +165,7 @@ FT_STATUS CFTSPI::BufferedWrite(UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs)
 	return ret;
 }
 
-FT_STATUS CFTSPI::FT_WriteGPIO( UINT8 dir, UINT8 value)
+FT_STATUS CFTSPI::FT_WriteGPIO( uint8_t dir, uint8_t value)
 {
 	FT_STATUS ret = FT_OK;
 	BufferPush(0x82);	//Set high byte
@@ -231,12 +231,12 @@ FT_STATUS CFTHBE::Init()
 }
 
 
-FT_STATUS CFTHBE::BufferedWrite(UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs)
+FT_STATUS CFTHBE::BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs)
 {
 	FT_STATUS ret = FT_OK;
-	UINT8 csmask = ~(1 << (cs + 3));
+	uint8_t csmask = ~(1 << (cs + 3));
 	if (sizeToTransfer) {
-		UINT16 length = sizeToTransfer - 1;
+		uint16_t length = sizeToTransfer - 1;
 		BufferPush(0x80);	//assert CS
 		BufferPush(0xf8 & csmask);	//
 		BufferPush(0xfb);	//
@@ -251,7 +251,7 @@ FT_STATUS CFTHBE::BufferedWrite(UINT8* buffer, UINT32 sizeToTransfer, UINT32 cs)
 	return ret;
 }
 
-FT_STATUS CFTHBE::FT_WriteGPIO(UINT8 dir, UINT8 value)
+FT_STATUS CFTHBE::FT_WriteGPIO(uint8_t dir, uint8_t value)
 {
 	FT_STATUS ret = FT_OK;
 	BufferPush(0x82);	//Set high byte

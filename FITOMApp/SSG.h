@@ -7,16 +7,16 @@
 class CSSG : public CPSGBase
 {
 public:
-	CSSG(CPort* pt, int fsamp, UINT8 dev = DEVICE_SSG);
+	CSSG(CPort* pt, int fsamp, uint8_t dev = DEVICE_SSG);
 	virtual void Init();
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	virtual uint8_t QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 protected:
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void EGOff(UINT8 ch);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void EGOff(uint8_t ch);
 };
 
 class CPSG : public CSSG

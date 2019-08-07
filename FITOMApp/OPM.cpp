@@ -1,9 +1,9 @@
 #include "STDAFX.h"
 #include "OPM.h"
 
-UINT8 COPM::KeyCode[] = { 0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, };
-UINT8 COPM::map[] = {0, 2, 1, 3};
-UINT8 COPM::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
+uint8_t COPM::KeyCode[] = { 0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, };
+uint8_t COPM::map[] = {0, 2, 1, 3};
+uint8_t COPM::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 
 #define GET_AR(v,o)	(v->op[o].AR >> 2)
 #define GET_DR(v,o)	(v->op[o].DR >> 2)
@@ -27,7 +27,7 @@ void COPM::Init()
 	SetReg(0x14, 0x00, 1);
 }
 
-ISoundDevice::FNUM COPM::GetFnumber(UINT8 ch, SINT16 offset)
+ISoundDevice::FNUM COPM::GetFnumber(uint8_t ch, int16_t offset)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FNUM ret;
@@ -45,9 +45,9 @@ ISoundDevice::FNUM COPM::GetFnumber(UINT8 ch, SINT16 offset)
 	}
 	if (oct >= 0 && oct < 8) {
 		//ret.block = (oct << 4) | COPM::KeyCode[index >> 6];
-		//ret.fnum = (attr->GetLastNote() << 8) | (UINT8(index & 0x3f) << 2);	//Key Fraction
+		//ret.fnum = (attr->GetLastNote() << 8) | (uint8_t(index & 0x3f) << 2);	//Key Fraction
 		ret.block = oct;
-		ret.fnum = (UINT16(COPM::KeyCode[index >> 6]) << 6) | (UINT8(index & 0x3f));
+		ret.fnum = (uint16_t(COPM::KeyCode[index >> 6]) << 6) | (uint8_t(index & 0x3f));
 	} else {
 		ret.block = 0;
 		ret.fnum = 0;
@@ -55,10 +55,10 @@ ISoundDevice::FNUM COPM::GetFnumber(UINT8 ch, SINT16 offset)
 	return ret;
 }
 
-void COPM::UpdateVoice(UINT8 ch)
+void COPM::UpdateVoice(uint8_t ch)
 {
-	UINT8	tmp;
-	UINT8	i;
+	uint8_t	tmp;
+	uint8_t	i;
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 
 	tmp = (GetReg(0x20 + ch, 0) & 0xc0) | (voice->FB << 3) | (voice->AL & 7);
@@ -67,7 +67,7 @@ void COPM::UpdateVoice(UINT8 ch)
 
 	for (i=0; i<4; i++)
 	{
-		UINT8 ofm = voice->op[map[i]].DM0;
+		uint8_t ofm = voice->op[map[i]].DM0;
 		tmp = ((voice->op[map[i]].DT1 & 0x7) << 4) | (voice->op[map[i]].MUL & 0xf);
 		SetReg(0x40 + i * 8 + ch, tmp);
 		SetReg(0x60 + i * 8 + ch, GET_TL(voice, map[i]));
@@ -91,14 +91,14 @@ void COPM::UpdateVoice(UINT8 ch)
 	UpdateVolExp(ch);
 }
 
-void COPM::UpdateVolExp(UINT8 ch)
+void COPM::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	UINT8 evol = attr->GetEffectiveLevel();
+	uint8_t evol = attr->GetEffectiveLevel();
 	FMVOICE* voice = attr->GetVoice();
 	for (int i=0; i<4; i++) {
 		if (carmsk[voice->AL&7] & (1<<i)) {
-			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
+			uint8_t tl = CalcLinearLevel(evol, voice->op[i].TL);
 			attr->baseTL[i] = tl;
 			tl = Linear2dB(tl, RANGE96DB, STEP075DB, 7);
 			SetReg(0x60 + map[i] * 8 + ch, tl, 0);
@@ -106,19 +106,19 @@ void COPM::UpdateVolExp(UINT8 ch)
 	}
 }
 
-void COPM::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void COPM::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	UINT8 kc = (fnum->block << 4) | (fnum->fnum >> 6);
-	UINT8 kf = fnum->fnum << 2;
+	uint8_t kc = (fnum->block << 4) | (fnum->fnum >> 6);
+	uint8_t kf = fnum->fnum << 2;
 	SetReg(0x28 + ch, kc, 0);	// kc
 	SetReg(0x30 + ch, kf | (GetReg(0x30 + ch, 0) & 0x3), 0);	// kf
 }
 
-void COPM::UpdatePanpot(UINT8 ch)
+void COPM::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
-	UINT8 chena = 0;
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
+	uint8_t chena = 0;
 	if (pan >= 4) { //R
 		chena = 0x80;
 	}
@@ -133,31 +133,31 @@ void COPM::UpdatePanpot(UINT8 ch)
 	}
 }
 
-void COPM::UpdateSustain(UINT8 ch)
+void COPM::UpdateSustain(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
 	for (int i=0; i<4; i++) {
-		UINT8 rr = ((parent && parent->GetSustain()) ? 4 : GET_RR(voice, map[i])) & 0xf;
-		UINT8 tmp = (GET_SL(voice, map[i]) << 4) | rr;
+		uint8_t rr = ((parent && parent->GetSustain()) ? 4 : GET_RR(voice, map[i])) & 0xf;
+		uint8_t tmp = (GET_SL(voice, map[i]) << 4) | rr;
 		SetReg(0xe0 + (i * 8) + ch, tmp);
 	}
 }
 
-void COPM::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void COPM::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	SetReg(0x60 + map[op] * 8 + ch, lev);
 }
 
-void COPM::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPM::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
 	if (keyon && parent && parent->GetForceDamp()) {
 		for (int i=0; i<4; i++) {
-			UINT8 tmp = (GET_SL(voice, map[i]) << 4) | 0xf;
+			uint8_t tmp = (GET_SL(voice, map[i]) << 4) | 0xf;
 			SetReg(0xe0 + (i * 8) + ch, tmp);
 		}
 	}
@@ -167,7 +167,7 @@ void COPM::UpdateKey(UINT8 ch, UINT8 keyon)
 	SetReg(0x08, (keyon ? 0x78 : 0) | ch, 1);
 }
 
-UINT8 COPM::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t COPM::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
 	CHATTR* attr7 = GetChAttribute(7);
 	if (voice && (voice->AL & 0x8)) {//Noise enabled
@@ -180,7 +180,7 @@ UINT8 COPM::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	return CSoundDevice::QueryCh(parent, voice, mode);
 }
 
-void COPM::EnableDevPM(UINT8 ch, UINT8 on)
+void COPM::EnableDevPM(uint8_t ch, uint8_t on)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -203,14 +203,14 @@ void COPM::EnableDevPM(UINT8 ch, UINT8 on)
 		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x3) | (voice->PMS << 4));
 	} else if (ch < chs) {
 		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x3));
-		lfores[0].used &= ~UINT32(1 << ch);
+		lfores[0].used &= ~uint32_t(1 << ch);
 		if (lfores[0].used == 0L) {
 			lfores[0].parent = 0;
 		}
 	}
 }
 
-void COPM::EnableDevAM(UINT8 ch, UINT8 on)
+void COPM::EnableDevAM(uint8_t ch, uint8_t on)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -229,14 +229,14 @@ void COPM::EnableDevAM(UINT8 ch, UINT8 on)
 		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x70) | (voice->AMS));
 	} else if (ch < chs) {
 		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x70));
-		lfores[0].used &= ~UINT32(1 << ch);
+		lfores[0].used &= ~uint32_t(1 << ch);
 		if (lfores[0].used == 0L) {
 			lfores[0].parent = 0;
 		}
 	}
 }
 
-void COPM::SetDevPMDepth(UINT8 ch, UINT8 dep)
+void COPM::SetDevPMDepth(uint8_t ch, uint8_t dep)
 {
 	if (ch < chs) {
 		if (lfores[0].used && lfores[0].parent != GetChAttribute(ch)->GetParent()) {
@@ -249,7 +249,7 @@ void COPM::SetDevPMDepth(UINT8 ch, UINT8 dep)
 	}
 }
 
-void COPM::SetDevAMDepth(UINT8 ch, UINT8 dep)
+void COPM::SetDevAMDepth(uint8_t ch, uint8_t dep)
 {
 	if (ch < chs) {
 		if (lfores[0].used && lfores[0].parent != GetChAttribute(ch)->GetParent()) {
@@ -262,7 +262,7 @@ void COPM::SetDevAMDepth(UINT8 ch, UINT8 dep)
 	}
 }
 
-void COPM::SetDevAMRate(UINT8 ch, UINT8 rate)
+void COPM::SetDevAMRate(uint8_t ch, uint8_t rate)
 {
 	if (lfores[0].amrate != rate) {
 		lfores[0].amrate = rate;
@@ -270,7 +270,7 @@ void COPM::SetDevAMRate(UINT8 ch, UINT8 rate)
 	}
 }
 
-void COPM::SetDevPMRate(UINT8 ch, UINT8 rate)
+void COPM::SetDevPMRate(uint8_t ch, uint8_t rate)
 {
 	if (lfores[0].pmrate != rate) {
 		lfores[0].pmrate = rate;
@@ -324,11 +324,11 @@ void COPZ::Init()
 	SetReg(0x1e, 0x0, 1);
 }
 
-void COPZ::UpdatePanpot(UINT8 ch)
+void COPZ::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
-	UINT8 chena = 0;
-	UINT8 mono = 0;
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
+	uint8_t chena = 0;
+	uint8_t mono = 0;
 	if (pan >= 4) { //R
 		chena = 0x80;
 	}
@@ -343,13 +343,13 @@ void COPZ::UpdatePanpot(UINT8 ch)
 	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xfe) | mono, 0);
 }
 
-void COPZ::UpdateVoice(UINT8 ch)
+void COPZ::UpdateVoice(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	for (int i = 0; i < 4; i++) {
-		UINT8 tmp;
-		UINT8 ofm = voice->op[map[i]].DM0;
+		uint8_t tmp;
+		uint8_t ofm = voice->op[map[i]].DM0;
 		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (voice->op[map[i]].DT3 & 0xf);
 		SetReg(0x40 + i * 8 + ch, tmp);
 		//tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | GET_RV(voice, map[i]) | 0x20;

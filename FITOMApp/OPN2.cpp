@@ -1,7 +1,7 @@
 #include "STDAFX.h"
 #include "OPN.h"
 
-COPN2::COPN2(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype)
+COPN2::COPN2(CPort* pt1, CPort* pt2, int fsamp, uint8_t devtype)
 	: CSpanDevice(new COPN(pt1, fsamp, devtype), new COPN(pt2, fsamp, devtype))
 {
 	lfores = new LFORESOURCE[1];
@@ -20,9 +20,9 @@ void COPN2::Init()
 	SetReg(0x27, 0x0, 1);
 }
 
-void COPN2::UpdateVoice(UINT8 ch)
+void COPN2::UpdateVoice(uint8_t ch)
 {
-	UINT8 tmp;
+	uint8_t tmp;
 	CSpanDevice::UpdateVoice(ch);
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -30,14 +30,14 @@ void COPN2::UpdateVoice(UINT8 ch)
 	chips[chres[ch].dev]->SetReg(0xb4 + (chres[ch].ch), tmp&0xc0);
 }
 
-void COPN2::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPN2::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
 	if (keyon && parent && parent->GetForceDamp()) {
 		for (int i=0; i<4; i++) {
-			UINT8 tmp = (voice->op[i].SL << 4) | 0xf;
+			uint8_t tmp = (voice->op[i].SL << 4) | 0xf;
 			chips[chres[ch].dev]->SetReg(0x80 + COPN::map[i] + chres[ch].ch, tmp, 1);
 		}
 	} else {
@@ -46,7 +46,7 @@ void COPN2::UpdateKey(UINT8 ch, UINT8 keyon)
 	SetReg(0x28, (keyon ? 0xf0 : 0) | (ch%3) | ((ch>2) ? 4 : 0), 1);
 }
 
-void COPN2::EnableDevPM(UINT8 ch, UINT8 on)
+void COPN2::EnableDevPM(uint8_t ch, uint8_t on)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	CMidiCh* parent = attr->GetParent();
@@ -57,14 +57,14 @@ void COPN2::EnableDevPM(UINT8 ch, UINT8 on)
 		lfores[0].parent = parent;
 		lfores[0].used |= (1 << ch);
 	} else if (ch < chs) {
-		lfores[0].used &= ~UINT32(1 << ch);
+		lfores[0].used &= ~uint32_t(1 << ch);
 		if (lfores[0].used == 0L) {
 			lfores[0].parent = 0;
 		}
 	}
 }
 
-void COPN2::EnableDevAM(UINT8 ch, UINT8 on)
+void COPN2::EnableDevAM(uint8_t ch, uint8_t on)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	CMidiCh* parent = attr->GetParent();
@@ -75,14 +75,14 @@ void COPN2::EnableDevAM(UINT8 ch, UINT8 on)
 		lfores[0].parent = parent;
 		lfores[0].used |= (1 << ch);
 	} else if (ch < chs) {
-		lfores[0].used &= ~UINT32(1 << ch);
+		lfores[0].used &= ~uint32_t(1 << ch);
 		if (lfores[0].used == 0L) {
 			lfores[0].parent = 0;
 		}
 	}
 }
 
-void COPN2::SetDevPMDepth(UINT8 ch, UINT8 dep)
+void COPN2::SetDevPMDepth(uint8_t ch, uint8_t dep)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	CMidiCh* parent = attr->GetParent();
@@ -92,14 +92,14 @@ void COPN2::SetDevPMDepth(UINT8 ch, UINT8 dep)
 		}
 		if (lfores[0].pmdepth != dep) {
 			lfores[0].pmdepth = dep;
-			UINT8 op = chres[ch].dev;
-			UINT8 dch = chres[ch].ch;
+			uint8_t op = chres[ch].dev;
+			uint8_t dch = chres[ch].ch;
 			chips[op]->SetReg(0xb4 + dch, (chips[op]->GetReg(0xb4 + dch, 0) & 0xf8) | (dep >> 4));
 		}
 	}
 }
 
-void COPN2::SetDevAMDepth(UINT8 ch, UINT8 dep)
+void COPN2::SetDevAMDepth(uint8_t ch, uint8_t dep)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	CMidiCh* parent = attr->GetParent();
@@ -109,14 +109,14 @@ void COPN2::SetDevAMDepth(UINT8 ch, UINT8 dep)
 		}
 		if (lfores[0].amdepth != dep) {
 			lfores[0].amdepth = dep;
-			UINT8 op = chres[ch].dev;
-			UINT8 dch = chres[ch].ch;
+			uint8_t op = chres[ch].dev;
+			uint8_t dch = chres[ch].ch;
 			chips[op]->SetReg(0xb4 + dch, (chips[op]->GetReg(0xb4 + dch, 0) & 0xc7) | ((dep >> 5) << 4));
 		}
 	}
 }
 
-void COPN2::SetDevAMRate(UINT8 ch, UINT8 rate)
+void COPN2::SetDevAMRate(uint8_t ch, uint8_t rate)
 {
 	if (lfores[0].amrate != rate) {
 		lfores[0].amrate = rate;
@@ -124,7 +124,7 @@ void COPN2::SetDevAMRate(UINT8 ch, UINT8 rate)
 	}
 }
 
-void COPN2::SetDevPMRate(UINT8 ch, UINT8 rate)
+void COPN2::SetDevPMRate(uint8_t ch, uint8_t rate)
 {
 	if (lfores[0].pmrate != rate) {
 		lfores[0].pmrate = rate;
@@ -134,7 +134,7 @@ void COPN2::SetDevPMRate(UINT8 ch, UINT8 rate)
 
 /*----------------*/
 
-COPNA::COPNA(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype) : COPN2(pt1, pt2, fsamp, devtype)
+COPNA::COPNA(CPort* pt1, CPort* pt2, int fsamp, uint8_t devtype) : COPN2(pt1, pt2, fsamp, devtype)
 {
 //	COPN::COPN(pt1, fsamp, devtype);
 }
@@ -152,7 +152,7 @@ void COPNA::Init()
 }
 
 /*----------------*/
-COPNB::COPNB(CPort* pt1, CPort* pt2, int fsamp, UINT8 devtype) : COPN2(pt1, pt2, fsamp, devtype)
+COPNB::COPNB(CPort* pt1, CPort* pt2, int fsamp, uint8_t devtype) : COPN2(pt1, pt2, fsamp, devtype)
 {
 }
 
@@ -174,12 +174,12 @@ COPNARhythm::COPNARhythm(COPNA* pParent) : CRhythmDevice(pParent, DEVICE_OPNA_RH
 {
 }
 
-void COPNARhythm::UpdateVolExp(UINT8 ch)
+void COPNARhythm::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (attr) {
-		SINT8 pan = attr->panpot / 8;
-		UINT8 chena = 0;
+		int8_t pan = attr->GetPanpot() / 8;
+		uint8_t chena = 0;
 		if (pan >= 4) { //R
 			chena = 0x40;
 		}
@@ -189,22 +189,22 @@ void COPNARhythm::UpdateVolExp(UINT8 ch)
 		else { //C
 			chena = 0xc0;
 		}
-		UINT8 evol = 31 - Linear2dB(CalcLinearLevel(attr->velocity, 0), RANGE24DB, STEP075DB, 5);
+		uint8_t evol = 31 - Linear2dB(CalcLinearLevel(attr->velocity, 0), RANGE24DB, STEP075DB, 5);
 		SetReg(0x18 + ch, chena | evol, 1);	//Instrumental Level
 
-		evol = 63 - Linear2dB(CalcLinearLevel(attr->volume, 0), RANGE48DB, STEP075DB, 6);
+		evol = 63 - Linear2dB(CalcLinearLevel(attr->GetVolume(), 0), RANGE48DB, STEP075DB, 6);
 		if (GetReg(0x11, 0) != evol) {
 			SetReg(0x11, evol);
 		}
 	}
 }
 
-void COPNARhythm::UpdatePanpot(UINT8 ch)
+void COPNARhythm::UpdatePanpot(uint8_t ch)
 {
 	UpdateVolExp(ch);
 }
 
-void COPNARhythm::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPNARhythm::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (attr && keyon) {
@@ -212,9 +212,9 @@ void COPNARhythm::UpdateKey(UINT8 ch, UINT8 keyon)
 	}
 }
 
-UINT8 COPNARhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t COPNARhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
-	UINT8 ret = 0xff;
+	uint8_t ret = 0xff;
 	if (voice) {
 		ret = voice->AL & 0xf;
 	}

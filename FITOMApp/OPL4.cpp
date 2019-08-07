@@ -16,7 +16,7 @@ void COPL4ML::Init()
 	SetReg(0xf9, 0x3f);
 }
 
-ISoundDevice::FNUM COPL4ML::GetFnumber(UINT8 ch, SINT16 offset)
+ISoundDevice::FNUM COPL4ML::GetFnumber(uint8_t ch, int16_t offset)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	int index = attr->GetNoteIndex(MasterTune + (NoteOffset * 64) + offset);
@@ -24,13 +24,13 @@ ISoundDevice::FNUM COPL4ML::GetFnumber(UINT8 ch, SINT16 offset)
 	int oct = (index / 768) - 2;
 	index = index % 768;
 	ret.fnum = Fnum[index];
-	ret.block = UINT8(oct);
+	ret.block = uint8_t(oct);
 	return ret;
 }
 
-void COPL4ML::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPL4ML::UpdateKey(uint8_t ch, uint8_t keyon)
 {
-	UINT8 tmp = GetReg(0x68 + ch, 0) & 0x7f;
+	uint8_t tmp = GetReg(0x68 + ch, 0) & 0x7f;
 	SetReg(0x68 + ch, tmp | (keyon ? 0x80 : 0));
 	CHATTR* attr = GetChAttribute(ch);
 	if (attr->GetParent()) {
@@ -39,33 +39,33 @@ void COPL4ML::UpdateKey(UINT8 ch, UINT8 keyon)
 	}
 }
 
-void COPL4ML::UpdateVolExp(UINT8 ch)
+void COPL4ML::UpdateVolExp(uint8_t ch)
 {
-	UINT8 volume = GetChAttribute(ch)->GetEffectiveLevel();
+	uint8_t volume = GetChAttribute(ch)->GetEffectiveLevel();
 	SetReg(0x50 + ch, (volume << 1) | 1, 0);
 }
 
-void COPL4ML::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void COPL4ML::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
-	UINT8 tmp = GetReg(0x38 + ch, 1) & 0x08;
+	uint8_t tmp = GetReg(0x38 + ch, 1) & 0x08;
 	SetReg(0x38 + ch, tmp | (fnum->block << 4) | (fnum->fnum >> 7), 0);
 	SetReg(0x20 + ch, (fnum->fnum << 1) & 0xff, 0);
 }
 
-void COPL4ML::UpdatePanpot(UINT8 ch)
+void COPL4ML::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
-	UINT8 tmp = GetReg(0x68 + ch, 0) & 0xf0;
-	SetReg(0x68 + ch, tmp | (UINT8(pan) & 0xf));
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
+	uint8_t tmp = GetReg(0x68 + ch, 0) & 0xf0;
+	SetReg(0x68 + ch, tmp | (uint8_t(pan) & 0xf));
 }
 
-void COPL4ML::UpdateVoice(UINT8 ch)
+void COPL4ML::UpdateVoice(uint8_t ch)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL | ((int)voice->FB << 7);
-	UINT8 tmp = GetReg(0x20 + ch, 0) & 0xfe;
+	uint8_t tmp = GetReg(0x20 + ch, 0) & 0xfe;
 	SetReg(0x20 + ch, (num >> 8) & 1, 0);
 	SetReg(0x08 + ch, (num & 0xff), 0);
 }

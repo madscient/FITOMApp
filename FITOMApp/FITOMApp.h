@@ -28,7 +28,7 @@ protected:
 	UINT hTimer;
 	HANDLE hPolling;
 	HANDLE hCommand;
-	volatile UINT32 lltickcount;
+	volatile uint32_t lltickcount;
 	volatile BOOL bRunning;
 	CFITOM* theFitom;
 	CFITOMConfigWin32* theConfig;

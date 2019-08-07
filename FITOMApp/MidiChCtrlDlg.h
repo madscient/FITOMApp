@@ -36,8 +36,8 @@ protected:
 	void RefreshDevice();
 	void RefreshBank();
 	void RefreshProg();
-	UINT32 prevDev;
-	UINT32 prevBank;
+	uint32_t prevDev;
+	uint32_t prevBank;
 public:
 	virtual BOOL OnInitDialog();
 	virtual void PostNcDestroy();

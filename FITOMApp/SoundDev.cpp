@@ -7,20 +7,20 @@
 #include "Fnum.h"
 
 namespace ROM {
-extern const UINT8 VolCurveLin[];
-extern const UINT8 VolCurveInv[];
+extern const uint8_t VolCurveLin[];
+extern const uint8_t VolCurveInv[];
 };
 
 ISoundDevice::FNUM::FNUM() : block(0), fnum(0)
 {
 }
 
-ISoundDevice::FNUM::FNUM(UINT8 bl, UINT16 fn) : block(bl), fnum(fn)
+ISoundDevice::FNUM::FNUM(uint8_t bl, uint16_t fn) : block(bl), fnum(fn)
 {
 }
 
 ISoundDevice::CHATTR::CHATTR() : 
-	status(CHATTR::EMPTY), express(255), volume(255), velocity(255), panpot(127), dva(true),
+	status(CHATTR::EMPTY), velocity(255), dva(true),
 	lastfnum(FNUM(0, 0)), lastvel(0), lastnote(255), finefreq(0), count(0), parent(0), device(0)
 {
 	memset(&voice, 0, sizeof(FMVOICE));
@@ -37,9 +37,6 @@ void CSoundDevice::CHATTR::Init()
 	lastnote = 255;
 	lastvel = 0;
 	lastfnum = FNUM(0, 0);
-	panpot = 127;
-	express = 255;
-	volume = 255;
 	velocity = 255;
 	count = 0;
 	device = 0;
@@ -105,33 +102,33 @@ BOOL CSoundDevice::CHATTR::SetVoice(FMVOICE* vc)
 	return TRUE;
 }
 
-void CSoundDevice::CHATTR::SetVoiceID(UINT32 vcid)
+void CSoundDevice::CHATTR::SetVoiceID(uint32_t vcid)
 {
 	voice.ID = vcid;
 }
 
-SINT16 CSoundDevice::CHATTR::GetChLFOValue()
+int16_t CSoundDevice::CHATTR::GetChLFOValue()
 {
-	SINT16 ret = 0;
+	int16_t ret = 0;
 	if (chlfo.GetStatus() != CSoundDevice::CLFOControl::LFO_NONE) {
-		SINT16 lev = SINT16(chlfo.GetValue()); // <-- 0~127 absolute level
+		int16_t lev = int16_t(chlfo.GetValue()); // <-- 0~127 absolute level
 		if (lev) {
-			SINT32 val = SINT16(GetLFOWave(voice.LWF, voice.LFO, chlfo.GetCount())); // <-- -120 ~ +120
+			int32_t val = int16_t(GetLFOWave(voice.LWF, voice.LFO, chlfo.GetCount())); // <-- -120 ~ +120
 			val = (val > 120) ? 120 : val;
 			val = (val < -120) ? -120 : val;
-			SINT32 dep = ((UINT16(voice.LDM&0x7f)<<7)|(voice.LDL&0x7f));
+			int32_t dep = ((uint16_t(voice.LDM&0x7f)<<7)|(voice.LDL&0x7f));
 			if (dep > 8191) { dep -= 16384; } // <-- 0~16383 as -8191~+8191
 			val = val * lev / 128;
 			val = val * dep / 120;
 			val = (val > 8191) ? 8191 : val;
 			val = (val < -8192) ? -8192 : val;
-			ret = SINT16(val);
+			ret = int16_t(val);
 		}
 	}
 	return ret;
 }
 
-SINT32 CSoundDevice::CHATTR::GetNoteIndex(SINT16 offset)
+int32_t CSoundDevice::CHATTR::GetNoteIndex(int16_t offset)
 {
 	return lastnote * 64 + finefreq + GetChLFOValue() + offset;
 }
@@ -143,19 +140,24 @@ void CSoundDevice::CHATTR::UpdateFnumber(ISoundDevice::FNUM* fnum)
 	}
 }
 
-UINT8 CSoundDevice::CHATTR::GetEffectiveLevel()
+uint8_t CSoundDevice::CHATTR::GetEffectiveLevel()
 {
-	return ::CalcVolExpVel(volume, express, velocity);
+	return ::CalcVolExpVel(GetVolume(), GetExpress(), velocity);
 }
 
-void CSoundDevice::CHATTR::SetNoteFine(UINT8 note, SINT16 fine)
+void CSoundDevice::CHATTR::SetNoteFine(uint8_t note, int16_t fine)
 {
 	lastnote = note;
 	finefreq = fine;
 }
 
+uint8_t CSoundDevice::CHATTR::GetVolume() { return (parent != NULL) ? parent->GetTrackVolume() : 0; }
+uint8_t CSoundDevice::CHATTR::GetExpress() { return (parent != NULL) ? parent->GetExpress() : 0; }
+uint8_t CSoundDevice::CHATTR::GetPanpot() { return (parent != NULL) ? parent->GetPanpot() : 64; }
+
+
 /*----------*/
-CSoundDevice::CSoundDevice(UINT8 devid, UINT8 maxchs, int fsamp, int devide, int offset, FnumTableType ftype, CPort* pt, int regsize) :
+CSoundDevice::CSoundDevice(uint8_t devid, uint8_t maxchs, int fsamp, int devide, int offset, FnumTableType ftype, CPort* pt, int regsize) :
 device(devid), chs(maxchs), port(pt), ops(4), prior_ch(0), NoteOffset(60), MasterTune(0), regbak(0)
 {
 	if (regsize) {
@@ -196,7 +198,7 @@ void CSoundDevice::OverrideAttribute(ISoundDevice::CHATTR* attr)
 	chattr = attr;
 }
 
-ISoundDevice::CHATTR* CSoundDevice::GetChAttribute(UINT8 ch) const
+ISoundDevice::CHATTR* CSoundDevice::GetChAttribute(uint8_t ch) const
 {
 	return (ch < chs) ? &chattr[ch] : 0;
 }
@@ -213,12 +215,12 @@ void CSoundDevice::Reset()
 	}
 }
 
-void CSoundDevice::SetDevice(UINT8 devid)
+void CSoundDevice::SetDevice(uint8_t devid)
 {
 	device = devid;
 }
 
-void CSoundDevice::SetReg(UINT16 reg, UINT8 data, UINT8 v)
+void CSoundDevice::SetReg(uint16_t reg, uint8_t data, uint8_t v)
 {
 	if (!v && regbak) {
 		v = (regbak[reg] != data);
@@ -229,14 +231,14 @@ void CSoundDevice::SetReg(UINT16 reg, UINT8 data, UINT8 v)
 	(v && port) ? port->write(reg, data) : 0;
 }
 
-UINT8 CSoundDevice::GetReg(UINT16 reg, UINT8 v)
+uint8_t CSoundDevice::GetReg(uint16_t reg, uint8_t v)
 {
-	UINT8 ret = 0;
+	uint8_t ret = 0;
 	ret = v ? (port ? port->read(reg) : 0) : (regbak ? regbak[reg] : 0);
 	return ret;
 }
 
-void CSoundDevice::SetSustain(UINT8 ch, UINT8 sus, int update)
+void CSoundDevice::SetSustain(uint8_t ch, uint8_t sus, int update)
 {
 	if (ch < chs) {
 		if (update) {
@@ -245,7 +247,7 @@ void CSoundDevice::SetSustain(UINT8 ch, UINT8 sus, int update)
 	}
 }
 
-void CSoundDevice::SetVoice(UINT8 ch, FMVOICE* voice, int update)
+void CSoundDevice::SetVoice(uint8_t ch, FMVOICE* voice, int update)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
@@ -272,11 +274,10 @@ void CSoundDevice::ResetVoice(CMidiCh* pch, FMVOICE* voice, int update)
 	}
 }
 
-void CSoundDevice::SetVolume(UINT8 ch, UINT8 vol, int update)
+void CSoundDevice::SetVolume(uint8_t ch, uint8_t vol, int update)
 {
 	if (ch < chs) {
-		if (GetChAttribute(ch)->volume != vol) {
-			GetChAttribute(ch)->volume = vol;
+		if (GetChAttribute(ch)->GetVolume() != vol) {
 			if (update) {
 				UpdateVolExp(ch);
 			}
@@ -284,11 +285,10 @@ void CSoundDevice::SetVolume(UINT8 ch, UINT8 vol, int update)
 	}
 }
 
-void CSoundDevice::SetExpress(UINT8 ch, UINT8 exp, int update)
+void CSoundDevice::SetExpress(uint8_t ch, uint8_t exp, int update)
 {
 	if (ch < chs) {
-		if (GetChAttribute(ch)->express != exp) {
-			GetChAttribute(ch)->express = exp;
+		if (GetChAttribute(ch)->GetExpress() != exp) {
 			if (update) {
 				UpdateVolExp(ch);
 			}
@@ -296,13 +296,12 @@ void CSoundDevice::SetExpress(UINT8 ch, UINT8 exp, int update)
 	}
 }
 
-void CSoundDevice::SetPanpot(UINT8 ch, UINT8 pan, int update)
+void CSoundDevice::SetPanpot(uint8_t ch, uint8_t pan, int update)
 {
 	if (ch < chs)
 	{
 		int panpot = pan - 64;
-		if (GetChAttribute(ch)->panpot != panpot) {
-			GetChAttribute(ch)->panpot = panpot;
+		if (GetChAttribute(ch)->GetPanpot() != panpot) {
 			if (update) {
 				UpdatePanpot(ch);
 			}
@@ -310,22 +309,22 @@ void CSoundDevice::SetPanpot(UINT8 ch, UINT8 pan, int update)
 	}
 }
 
-void CSoundDevice::SetMasterVolume(UINT8 vol, int update)
+void CSoundDevice::SetMasterVolume(uint8_t vol, int update)
 {
 	if (volume != vol) {
 		volume = vol;
 		for (int i=0; update && i<chs; i++)
 		{
 			if (GetChAttribute(i)->IsEnable()) {
-				UpdateVolExp((UINT8)i);
+				UpdateVolExp((uint8_t)i);
 			}
 		}
 	}
 }
 
-UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
+uint8_t CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 {
-	volatile UINT8 ret = 0xff;
+	volatile uint8_t ret = 0xff;
 	ret = QueryCh(parent, voice, 1);
 	if (ret == 0xff) {
 		ret = QueryCh(NULL, voice, 1);
@@ -359,7 +358,7 @@ UINT8 CSoundDevice::AllocCh(CMidiCh* parent, FMVOICE* voice)
 	return (ret);
 }
 
-UINT8 CSoundDevice::Assign(UINT8 ch, CMidiCh* parent, FMVOICE* voice)
+uint8_t CSoundDevice::Assign(uint8_t ch, CMidiCh* parent, FMVOICE* voice)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (ch < chs) {
@@ -386,10 +385,10 @@ UINT8 CSoundDevice::Assign(UINT8 ch, CMidiCh* parent, FMVOICE* voice)
 	}
 }
 
-UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
-	volatile UINT8 ret = 0xff;
-	UINT8 tmp = 0xff;
+	volatile uint8_t ret = 0xff;
+	uint8_t tmp = 0xff;
 	CHATTR* attr = 0;
 	if (parent && voice) {
 		tmp = prior_ch;
@@ -439,7 +438,7 @@ UINT8 CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	return ret;
 }
 
-void CSoundDevice::ReleaseCh(UINT8 ch)
+void CSoundDevice::ReleaseCh(uint8_t ch)
 {
 	if (ch < chs)
 	{
@@ -452,7 +451,7 @@ void CSoundDevice::ReleaseCh(UINT8 ch)
 	}
 }
 
-void CSoundDevice::EnableCh(UINT8 ch, UINT8 ena)
+void CSoundDevice::EnableCh(uint8_t ch, uint8_t ena)
 {
 	if (ch < chs)
 	{
@@ -460,7 +459,7 @@ void CSoundDevice::EnableCh(UINT8 ch, UINT8 ena)
 	}
 }
 
-void CSoundDevice::SetVelocity(UINT8 ch, UINT8 vel, int update)
+void CSoundDevice::SetVelocity(uint8_t ch, uint8_t vel, int update)
 {
 	if (ch < chs && vel < 128) {
 		GetChAttribute(ch)->velocity = vel;
@@ -470,7 +469,7 @@ void CSoundDevice::SetVelocity(UINT8 ch, UINT8 vel, int update)
 	}
 }
 
-void CSoundDevice::SetNoteFine(UINT8 ch, UINT8 note, SINT16 fine, int update)
+void CSoundDevice::SetNoteFine(uint8_t ch, uint8_t note, int16_t fine, int update)
 {
 	if (ch < chs) {
 		GetChAttribute(ch)->SetNoteFine(note, fine);
@@ -478,34 +477,34 @@ void CSoundDevice::SetNoteFine(UINT8 ch, UINT8 note, SINT16 fine, int update)
 	}
 }
 
-UINT8 CSoundDevice::GetAvailable()
+uint8_t CSoundDevice::GetAvailable()
 {
-	UINT8 ret = 0;
+	uint8_t ret = 0;
 	for (int i=0; i<chs; i++) {
 		if (GetChAttribute(i)->IsEnable()) { ret++; }
 	}
 	return ret;
 }
 
-UINT8 CSoundDevice::GetAssignable()
+uint8_t CSoundDevice::GetAssignable()
 {
-	UINT8 ret = 0;
+	uint8_t ret = 0;
 	for (int i=0; i<chs; i++) {
 		if (GetChAttribute(i)->IsAvailable()) { ret++; }
 	}
 	return ret;
 }
 
-UINT32 CSoundDevice::GetCurrentVoiceID(UINT8 ch) const
+uint32_t CSoundDevice::GetCurrentVoiceID(uint8_t ch) const
 {
-	UINT32 ret = 0;
+	uint32_t ret = 0;
 	if (ch < chs) {
 		ret = GetChAttribute(ch)->GetVoiceID();
 	}
 	return ret;
 }
 
-FMVOICE* CSoundDevice::GetCurrentVoice(UINT8 ch) const
+FMVOICE* CSoundDevice::GetCurrentVoice(uint8_t ch) const
 {
 	FMVOICE* ret = 0;
 	if (ch < chs) {
@@ -514,16 +513,16 @@ FMVOICE* CSoundDevice::GetCurrentVoice(UINT8 ch) const
 	return ret;
 }
 
-UINT8 CSoundDevice::GetCurrentNote(UINT8 ch) const
+uint8_t CSoundDevice::GetCurrentNote(uint8_t ch) const
 {
-	UINT8 ret = 255;
+	uint8_t ret = 255;
 	if (ch < chs && GetChAttribute(ch)->IsRunning()) {
 		ret = GetChAttribute(ch)->GetLastNote();
 	}
 	return ret;
 }
 
-ISoundDevice::FNUM CSoundDevice::GetCurrentFnum(UINT8 ch) const
+ISoundDevice::FNUM CSoundDevice::GetCurrentFnum(uint8_t ch) const
 {
 	FNUM ret;
 	if (ch < chs && GetChAttribute(ch)->IsRunning()) {
@@ -541,7 +540,7 @@ void CSoundDevice::PollingCallBack()
 {
 }
 
-void CSoundDevice::TimerCallBack(UINT32 tick)
+void CSoundDevice::TimerCallBack(uint32_t tick)
 {
 	int tflag = (tick&1);
 	if (/*tflag == 0*/1) {
@@ -562,7 +561,7 @@ void CSoundDevice::TimerCallBack(UINT32 tick)
 	}
 }
 
-ISoundDevice::FNUM CSoundDevice::GetFnumber(UINT8 ch, SINT16 offset)
+ISoundDevice::FNUM CSoundDevice::GetFnumber(uint8_t ch, int16_t offset)
 {
 	FNUM ret;
 	CHATTR* attr = GetChAttribute(ch);
@@ -593,17 +592,17 @@ ISoundDevice::FNUM CSoundDevice::GetFnumber(UINT8 ch, SINT16 offset)
 			ret.fnum = ((ret.fnum << (oct - 7)) | 1);
 		}
 		else {
-			ret.block = UINT8(oct);
+			ret.block = uint8_t(oct);
 		}
 	}
 	else if (attr) {
-		ret.block = UINT16(attr->GetLastFineFreq()) >> 12;
-		ret.fnum = UINT16(attr->GetLastFineFreq()) & 0xfff;
+		ret.block = uint16_t(attr->GetLastFineFreq()) >> 12;
+		ret.fnum = uint16_t(attr->GetLastFineFreq()) & 0xfff;
 	}
 	return ret;
 }
 
-void CSoundDevice::UpdateFnumber(UINT8 ch, int update)
+void CSoundDevice::UpdateFnumber(uint8_t ch, int update)
 {
 	if (ch < chs) {
 		FNUM fnum = GetFnumber(ch);
@@ -614,27 +613,27 @@ void CSoundDevice::UpdateFnumber(UINT8 ch, int update)
 	}
 }
 
-void CSoundDevice::UpdateOpLFO(UINT8 ch, UINT8 op)
+void CSoundDevice::UpdateOpLFO(uint8_t ch, uint8_t op)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	SINT16 lev = SINT16(attr->oplfo[op].GetValue());
+	int16_t lev = int16_t(attr->oplfo[op].GetValue());
 	if (lev) {
-		SINT16 val = SINT16(GetLFOWave(voice->op[op].SLY, voice->op[op].SLF, attr->oplfo[op].GetCount()));
-		SINT16 dep = SINT16(voice->op[op].SLD);
+		int16_t val = int16_t(GetLFOWave(voice->op[op].SLY, voice->op[op].SLF, attr->oplfo[op].GetCount()));
+		int16_t dep = int16_t(voice->op[op].SLD);
 		if (dep > 63) { dep -= 128; }
 		val = val * lev / 128; 
 		val = val * dep / 120;
 		val += attr->baseTL[op];
 		val = (val < 0) ? 0 : val;
 		val = (val > 127) ? 127 : val;
-		UpdateTL(ch, op, UINT8(val));
+		UpdateTL(ch, op, uint8_t(val));
 	} else {
 		UpdateTL(ch, op,  attr->baseTL[op]);
 	}
 }
 
-void CSoundDevice::NoteOn(UINT8 ch, UINT8 vel)
+void CSoundDevice::NoteOn(uint8_t ch, uint8_t vel)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
@@ -668,7 +667,7 @@ void CSoundDevice::NoteOn(UINT8 ch, UINT8 vel)
 	}
 }
 
-void CSoundDevice::NoteOff(UINT8 ch)
+void CSoundDevice::NoteOff(uint8_t ch)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
@@ -688,7 +687,7 @@ void CSoundDevice::NoteOff(UINT8 ch)
 }
 
 #if 0
-CMidiCh* CSoundDevice::GetParent(UINT8 ch) const
+CMidiCh* CSoundDevice::GetParent(uint8_t ch) const
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
@@ -699,7 +698,7 @@ CMidiCh* CSoundDevice::GetParent(UINT8 ch) const
 	return NULL;
 }
 
-ISoundDevice::CHATTR::CHSTAT CSoundDevice::GetChStatus(UINT8 ch) const
+ISoundDevice::CHATTR::CHSTAT CSoundDevice::GetChStatus(uint8_t ch) const
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
@@ -711,7 +710,7 @@ ISoundDevice::CHATTR::CHSTAT CSoundDevice::GetChStatus(UINT8 ch) const
 }
 #endif
 
-CRhythmDevice::CRhythmDevice(CSoundDevice* parent, UINT8 devid, UINT8 maxch) :
+CRhythmDevice::CRhythmDevice(CSoundDevice* parent, uint8_t devid, uint8_t maxch) :
 	CSoundDevice(devid, maxch, 0, 0, 0, FnumTableType::none, 0, 0), pParent(parent)
 {
 	if (parent) {
@@ -722,7 +721,7 @@ CRhythmDevice::CRhythmDevice(CSoundDevice* parent, UINT8 devid, UINT8 maxch) :
 	}
 }
 
-CRhythmDevice::CRhythmDevice(CPort* pt, UINT8 devid, UINT8 maxch) :
+CRhythmDevice::CRhythmDevice(CPort* pt, uint8_t devid, uint8_t maxch) :
 	CSoundDevice(devid, maxch, 0, 0, 0, FnumTableType::none, 0, 0), pParent(NULL)
 {
 	port = pt;

@@ -15,7 +15,7 @@ CSpanDevice::CSpanDevice(CSoundDevice* chip1, CSoundDevice* chip2)
 
 void CSpanDevice::AddDevice(CSoundDevice* chip)
 {
-	UINT8 newchs = chs + chip->GetAvailable();
+	uint8_t newchs = chs + chip->GetAvailable();
 	int dev = numchips;
 	CMultiDevice::AddDevice(chip);
 
@@ -48,56 +48,56 @@ void CSpanDevice::AddDevice(CSoundDevice* chip)
 	}
 }
 
-ISoundDevice::CHATTR* CSpanDevice::GetChAttribute(UINT8 ch) const
+ISoundDevice::CHATTR* CSpanDevice::GetChAttribute(uint8_t ch) const
 {
 	return (ch < chs) ? chips[chres[ch].dev]->GetChAttribute(chres[ch].ch) : 0;
 }
 
-void CSpanDevice::UpdateVoice(UINT8 ch)
+void CSpanDevice::UpdateVoice(uint8_t ch)
 {
 	chips[chres[ch].dev]->UpdateVoice(chres[ch].ch);
 }
 
-void CSpanDevice::UpdateVolExp(UINT8 ch)
+void CSpanDevice::UpdateVolExp(uint8_t ch)
 {
 	chips[chres[ch].dev]->UpdateVolExp(chres[ch].ch);
 }
 
-void CSpanDevice::UpdatePanpot(UINT8 ch)
+void CSpanDevice::UpdatePanpot(uint8_t ch)
 {
 	chips[chres[ch].dev]->UpdatePanpot(chres[ch].ch);
 }
 
-void CSpanDevice::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CSpanDevice::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	chips[chres[ch].dev]->UpdateFreq(chres[ch].ch, fnum);
 }
 
-void CSpanDevice::UpdateSustain(UINT8 ch)
+void CSpanDevice::UpdateSustain(uint8_t ch)
 {
 	chips[chres[ch].dev]->UpdateSustain(chres[ch].ch);
 }
 
-void CSpanDevice::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void CSpanDevice::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	chips[chres[ch].dev]->UpdateTL(chres[ch].ch, op, lev);
 }
 
-void CSpanDevice::UpdateKey(UINT8 ch, UINT8 keyon)
+void CSpanDevice::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	chips[chres[ch].dev]->UpdateKey(chres[ch].ch, keyon);
 }
 
-void CSpanDevice::UpdateFnumber(UINT8 ch, int update)
+void CSpanDevice::UpdateFnumber(uint8_t ch, int update)
 {
 	chips[chres[ch].dev]->UpdateFnumber(chres[ch].ch, update);
 }
 
-UINT8 CSpanDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t CSpanDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
-	UINT8 ret = 0xff;
-	volatile UINT8 dev = 0xff;
-	volatile UINT8 ch = 0xff;
+	uint8_t ret = 0xff;
+	volatile uint8_t dev = 0xff;
+	volatile uint8_t ch = 0xff;
 
 	for (int i=0; i<numchips && ch==0xff; i++) {
 		dev = (prior_dev + i) % numchips;

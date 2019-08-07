@@ -18,7 +18,7 @@ void CAdPcmZ280::Init()
 	}
 }
 
-UINT16 CAdPcmZ280::GetDeltaN(int off)
+uint16_t CAdPcmZ280::GetDeltaN(int off)
 {
 	int oct = 0;
 	while (off > 1216) {
@@ -32,7 +32,7 @@ UINT16 CAdPcmZ280::GetDeltaN(int off)
 	return ret;
 }
 
-ISoundDevice::FNUM CAdPcmZ280::GetFnumber(UINT8 ch, SINT16 offset)
+ISoundDevice::FNUM CAdPcmZ280::GetFnumber(uint8_t ch, int16_t offset)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	int index = attr->GetNoteIndex(MasterTune + (NoteOffset * 64) + offset);
@@ -42,10 +42,10 @@ ISoundDevice::FNUM CAdPcmZ280::GetFnumber(UINT8 ch, SINT16 offset)
 	return ret;
 }
 
-void CAdPcmZ280::LoadVoice(int prog, UINT8* data, size_t length)
+void CAdPcmZ280::LoadVoice(int prog, uint8_t* data, size_t length)
 {
-	UINT32 st = 0;
-	UINT32 ed = 0;
+	uint32_t st = 0;
+	uint32_t ed = 0;
 	if (prog) {
 		st = adpcmvoice[prog - 1].staddr + adpcmvoice[prog - 1].length;
 	}
@@ -56,7 +56,7 @@ void CAdPcmZ280::LoadVoice(int prog, UINT8* data, size_t length)
 	adpcmvoice[prog].staddr = st;
 	adpcmvoice[prog].length = blk;
 	for (size_t i = 0; i < blk; i++) {
-		UINT32 addr = st + i;
+		uint32_t addr = st + i;
 		SetReg(0x84, addr >> 16);
 		SetReg(0x85, (addr >> 8) & 0xff);
 		SetReg(0x86, addr & 0xff);
@@ -64,39 +64,39 @@ void CAdPcmZ280::LoadVoice(int prog, UINT8* data, size_t length)
 	}
 }
 
-void CAdPcmZ280::UpdateKey(UINT8 ch, UINT8 keyon)
+void CAdPcmZ280::UpdateKey(uint8_t ch, uint8_t keyon)
 {
-	UINT8 tmp = GetReg(0x01 + ch * 4, 0) & 1;
+	uint8_t tmp = GetReg(0x01 + ch * 4, 0) & 1;
 	SetReg(0x01 + ch * 4, (keyon ? 0xa0 : 0x20) | tmp);
 }
 
-void CAdPcmZ280::UpdateVolExp(UINT8 ch)
+void CAdPcmZ280::UpdateVolExp(uint8_t ch)
 {
-	UINT8 volume = GetChAttribute(ch)->GetEffectiveLevel();
+	uint8_t volume = GetChAttribute(ch)->GetEffectiveLevel();
 	SetReg(0x02 + ch * 4, (volume << 1) | (volume >> 6));
 }
 
-void CAdPcmZ280::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CAdPcmZ280::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
 	SetReg(0x00 + ch * 4, (fnum->fnum >> 8) & 0xff);
-	UINT8 tmp = (GetReg(0x01 + ch * 4, 0) & 0xfe);
+	uint8_t tmp = (GetReg(0x01 + ch * 4, 0) & 0xfe);
 	SetReg(0x01 + ch * 4, tmp | ((fnum->fnum >> 16) & 1));
 }
 
-void CAdPcmZ280::UpdatePanpot(UINT8 ch)
+void CAdPcmZ280::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
 	SetReg(0x3 + ch * 4, pan & 0xf);
 }
 
-void CAdPcmZ280::UpdateVoice(UINT8 ch)
+void CAdPcmZ280::UpdateVoice(uint8_t ch)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
-	UINT32 st = adpcmvoice[num].staddr;
-	UINT32 ed = st + adpcmvoice[num].length - 1;
+	uint32_t st = adpcmvoice[num].staddr;
+	uint32_t ed = st + adpcmvoice[num].length - 1;
 	SetReg(0x20 + ch * 4, (st >> 16) & 0xff);
 	SetReg(0x40 + ch * 4, (st >> 8) & 0xff);
 	SetReg(0x60 + ch * 4, st & 0xff);

@@ -17,7 +17,7 @@ CFnumTable::~CFnumTable()
 	tablelist.clear();
 }
 
-const UINT16* CFnumTable::GetTable(FnumTableType type, int master, int devide, int offset)
+const uint16_t* CFnumTable::GetTable(FnumTableType type, int master, int devide, int offset)
 {
 	if (!(master && devide)) {
 		return 0;
@@ -25,7 +25,7 @@ const UINT16* CFnumTable::GetTable(FnumTableType type, int master, int devide, i
 	double rate = master / devide;
 	for (int i = 0; i< tablelist.size(); i++) {
 		if (fabs(rate - tablelist[i].rate) < DBL_EPSILON && tablelist[i].type == type && tablelist[i].offset == offset) {
-			return (const UINT16*)tablelist[i].body;
+			return (const uint16_t*)tablelist[i].body;
 		}
 	}
 	FREQFUNC pfunc = GetFreqFunc(type);
@@ -38,7 +38,7 @@ void CFnumTable::UpdateMasterTuning()
 		FREQFUNC pfunc = GetFreqFunc(tablelist[i].type);
 		if (pfunc) {
 			for (int j = 0; i < 768; j++) {
-				tablelist[i].body[j] = UINT16((this->*pfunc)(tablelist[i].rate, tablelist[i].offset + j));
+				tablelist[i].body[j] = uint16_t((this->*pfunc)(tablelist[i].rate, tablelist[i].offset + j));
 			}
 		}
 	}
@@ -69,15 +69,15 @@ CFnumTable::FREQFUNC CFnumTable::GetFreqFunc(FnumTableType type)
 	return pfunc;
 }
 
-const UINT16* CFnumTable::CreateTable(FnumTableType type, double rate, int offset, FREQFUNC func)
+const uint16_t* CFnumTable::CreateTable(FnumTableType type, double rate, int offset, FREQFUNC func)
 {
 	FnumTableInfo fti;
 	fti.rate = rate;
 	fti.offset = offset;
 	fti.type = FnumTableType::Fnumber;
-	fti.body = new UINT16[768];
+	fti.body = new uint16_t[768];
 	for (int i = 0; i < 768; i++) {
-		fti.body[i] = UINT16((this->*func)(rate, offset + i));
+		fti.body[i] = uint16_t((this->*func)(rate, offset + i));
 	}
 	tablelist.push_back(fti);
 	return fti.body;

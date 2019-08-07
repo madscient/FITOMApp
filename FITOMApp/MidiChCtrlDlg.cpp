@@ -250,13 +250,13 @@ void CMidiChCtrlDlg::InitDevice()
 	CString tmp;
 	tmp.Format(_T("CH%i - %i:%s"), iCH, iIF, theConfig->GetMidiIn(iIF)->GetDescriptor());
 	edtMidiIfCh.SetWindowText(tmp);
-	UINT32 curdev = theCh->GetDeviceID();
+	uint32_t curdev = theCh->GetDeviceID();
 	cmbDevice.ResetContent();
 	cmbDevice.AddString(_T("(NONE)"));
 	for (int i = 0; i < theConfig->GetLogDevs(); i++) {
 		CSoundDevice* pDev = theConfig->GetLogDeviceFromIndex(i);
-		UINT32 physid = theConfig->GetDeviceUniqID(pDev);
-		UINT32 devid = physid & 0xff;
+		uint32_t physid = theConfig->GetDeviceUniqID(pDev);
+		uint32_t devid = physid & 0xff;
 		tmp.Format(_T("%02X:%s"), devid, CFITOM::GetDeviceNameFromID(devid));
 		int n = cmbDevice.AddString(tmp);
 		cmbDevice.SetItemData(n, physid);
@@ -266,8 +266,8 @@ void CMidiChCtrlDlg::InitDevice()
 	}
 	for (int i=0; i<theConfig->GetPcmDevs(); i++) {
 		CAdPcmBase* pDev = theConfig->GetPCMDeviceFromIndex(i);
-		UINT32 physid = theConfig->GetDeviceUniqID(pDev);
-		UINT32 devid = physid & 0xff;
+		uint32_t physid = theConfig->GetDeviceUniqID(pDev);
+		uint32_t devid = physid & 0xff;
 		TCHAR devname[64];
 		theConfig->GetDeviceName(physid, devname, _countof(devname));
 		tmp.Format(_T("%02X:%s"), devid, devname);
@@ -292,8 +292,8 @@ void CMidiChCtrlDlg::InitDevice()
 void CMidiChCtrlDlg::RefreshBank()
 {
 	if (!cmbBank.GetDroppedState()) {
-		UINT32 curdev = theCh->GetDeviceID();
-		UINT32 curbnk = theCh->GetBankNo();
+		uint32_t curdev = theCh->GetDeviceID();
+		uint32_t curbnk = theCh->GetBankNo();
 		if (::GetWindowLong(cmbBank.GetSafeHwnd(), GWL_USERDATA) != curdev) {
 			cmbBank.ResetContent();
 			::SetWindowLong(cmbBank.GetSafeHwnd(), GWL_USERDATA, curdev);
@@ -331,9 +331,9 @@ void CMidiChCtrlDlg::RefreshBank()
 void CMidiChCtrlDlg::RefreshProg()
 {
 	if (!cmbProg.GetDroppedState()) {
-		UINT32 curdev = theCh->GetDeviceID();
-		UINT32 curbnk = theCh->GetBankNo();
-		UINT32 curprg = theCh->GetProgramNo();
+		uint32_t curdev = theCh->GetDeviceID();
+		uint32_t curbnk = theCh->GetBankNo();
+		uint32_t curprg = theCh->GetProgramNo();
 		if (prevBank != curbnk || prevDev != curdev) {
 			prevBank = curbnk;
 			prevDev = curdev;
@@ -358,7 +358,7 @@ void CMidiChCtrlDlg::RefreshProg()
 
 void CMidiChCtrlDlg::RefreshDevice()
 {
-	UINT32 dev = theCh->GetDeviceID();
+	uint32_t dev = theCh->GetDeviceID();
 	if (!cmbDevice.GetDroppedState()) {
 		if (cmbDevice.GetItemData(cmbDevice.GetCurSel()) != dev) {
 			for (int i = 0; i < cmbDevice.GetCount(); i++) {
@@ -375,7 +375,7 @@ void CMidiChCtrlDlg::RefreshDevice()
 void CMidiChCtrlDlg::OnSelendokComboDevice()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	UINT32 seldev = cmbDevice.GetItemData(cmbDevice.GetCurSel());
+	uint32_t seldev = cmbDevice.GetItemData(cmbDevice.GetCurSel());
 	if (theCh->IsInst() && seldev == RHYTHM_BANK) {
 		theInst->Release(iCH);
 		theInst->AssignRhythm(iCH);
@@ -444,7 +444,7 @@ void CMidiChCtrlDlg::OnTimer(UINT_PTR nIDEvent)
 void CMidiChCtrlDlg::OnBnClickedBtnVedit()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
-	UINT32 devid = cmbDevice.GetItemData(cmbDevice.GetCurSel());
+	uint32_t devid = cmbDevice.GetItemData(cmbDevice.GetCurSel());
 	if (theConfig->isPcmDevice(devid) || (devid & BUILTIN_RHYTHM)) {
 		AfxMessageBox(IDS_NOT_SUPPORTED_EDIT, MB_OK);
 		return;
@@ -475,7 +475,7 @@ void CMidiChCtrlDlg::OnBnClickedButtonPick()
 	dlg.SetBank(cmbBank.GetCurSel());
 	dlg.SetProg(cmbProg.GetCurSel());
 	if (dlg.DoModal() == IDOK) {
-		UINT32 devid = dlg.GetDevice();
+		uint32_t devid = dlg.GetDevice();
 		theCh->BankSelMSB(theConfig->isPcmDevice(devid) ? ADPCM_BANK : (devid & 0xff));
 		theCh->BankSelLSB(dlg.GetBank());
 		theCh->ProgChange(dlg.Getprog());

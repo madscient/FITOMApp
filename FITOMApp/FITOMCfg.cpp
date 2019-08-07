@@ -71,7 +71,7 @@ CFITOMConfig::~CFITOMConfig()
 	*/
 }
 
-CFMBank* CFITOMConfig::AllocFMBank(UINT32 voicegroup, UINT32 bank)
+CFMBank* CFITOMConfig::AllocFMBank(uint32_t voicegroup, uint32_t bank)
 {
 	CFMBank* ret = 0;
 	if (bank < MAX_BANK) {
@@ -102,7 +102,7 @@ CFMBank* CFITOMConfig::AllocFMBank(UINT32 voicegroup, UINT32 bank)
 	return ret;
 }
 
-CFMBank* CFITOMConfig::GetFMBank(UINT32 voicegroup, UINT32 bank)
+CFMBank* CFITOMConfig::GetFMBank(uint32_t voicegroup, uint32_t bank)
 {
 	CFMBank* ret = 0;
 	if (bank < MAX_BANK) {
@@ -491,7 +491,7 @@ int CFITOMConfig::AddOPL3(CPort* pt, int md, int fs)
 int CFITOMConfig::AddOPL3_2(CPort* pt, int md, int fs)
 {
 	CPort* pt2 = new COffsetPort(pt, 0x100);
-	AddDevice(new COPL3_2(pt, pt2, UINT8(md), fs));
+	AddDevice(new COPL3_2(pt, pt2, uint8_t(md), fs));
 	return 1;
 }
 
@@ -681,7 +681,7 @@ int CFITOMConfig::CreateSingleDevice(int devtype, LPCTSTR param)
 	return res;
 }
 
-CSoundDevice* CFITOMConfig::GetPhysDeviceFromID(UINT32 id) const
+CSoundDevice* CFITOMConfig::GetPhysDeviceFromID(uint32_t id) const
 {
 	for (int i = 0; i < vPcmDev.size(); i++) {
 		CPort* pt = (vPhyDev[i]) ? vPhyDev[i]->GetDevPort() : 0;
@@ -692,7 +692,7 @@ CSoundDevice* CFITOMConfig::GetPhysDeviceFromID(UINT32 id) const
 	return 0;
 }
 
-const int CFITOMConfig::GetLogDeviceIDFromIndex(UINT8 i) const
+const int CFITOMConfig::GetLogDeviceIDFromIndex(uint8_t i) const
 {
 	return (i < vLogDev.size()) ? vLogDev[i]->GetDevice() : DEVICE_NONE;
 }
@@ -707,7 +707,7 @@ int CFITOMConfig::GetLogDeviceIndex(CSoundDevice* pdev)
 	return 0;
 }
 
-int CFITOMConfig::GetLogDeviceIndex(UINT8 devid)
+int CFITOMConfig::GetLogDeviceIndex(uint8_t devid)
 {
 	for (auto itr = vLogDev.begin(); itr != vLogDev.end(); itr++) {
 		if (((*itr)->GetDevice() & 0xff) == devid) {
@@ -717,7 +717,7 @@ int CFITOMConfig::GetLogDeviceIndex(UINT8 devid)
 	return -1;
 }
 
-CSoundDevice* CFITOMConfig::GetLogDeviceFromID(UINT8 devid) const
+CSoundDevice* CFITOMConfig::GetLogDeviceFromID(uint8_t devid) const
 {
 	CSoundDevice* ret = 0;
 	if (devid != DEVICE_RHYTHM) {
@@ -744,7 +744,7 @@ CSoundDevice* CFITOMConfig::GetLogDeviceFromID(UINT8 devid) const
 	return ret;
 }
 
-CAdPcmBase* CFITOMConfig::GetPCMDeviceFromID(UINT32 devid)
+CAdPcmBase* CFITOMConfig::GetPCMDeviceFromID(uint32_t devid)
 {
 	CAdPcmBase* ret = 0;
 	for (int i = 0; i<vPcmDev.size(); i++) {
@@ -766,13 +766,13 @@ int CFITOMConfig::GetPcmDeviceIndex(CAdPcmBase* pdev)
 	return -1;
 }
 
-int CFITOMConfig::GetPcmDeviceIndex(UINT32 devid)
+int CFITOMConfig::GetPcmDeviceIndex(uint32_t devid)
 {
 	CAdPcmBase* pdev = GetPCMDeviceFromID(devid);
 	return GetPcmDeviceIndex(pdev);
 }
 
-CSoundDevice* CFITOMConfig::GetDeviceFromUniqID(UINT32 uid)
+CSoundDevice* CFITOMConfig::GetDeviceFromUniqID(uint32_t uid)
 {
 	CSoundDevice* ret = 0;
 	UINT vg = CFITOM::GetDeviceVoiceGroupMask(uid & 0xff);
@@ -788,21 +788,21 @@ CSoundDevice* CFITOMConfig::GetDeviceFromUniqID(UINT32 uid)
 	return ret;
 }
 
-UINT32 CFITOMConfig::GetDeviceUniqID(CSoundDevice* pdev, int phys)
+uint32_t CFITOMConfig::GetDeviceUniqID(CSoundDevice* pdev, int phys)
 {
-	UINT32 ret = 0;
+	uint32_t ret = 0;
 	if (pdev) {
 		ret = phys ? (pdev->GetDevPort()->GetPhysicalId() & 0xffffff00) | pdev->GetDevice() : 0x80000000 | pdev->GetDevice();
 	}
 	return ret;
 }
 
-UINT32 CFITOMConfig::GetDeviceUniqID(CAdPcmBase* pdev)
+uint32_t CFITOMConfig::GetDeviceUniqID(CAdPcmBase* pdev)
 {
 	return pdev ? (pdev->GetDevPort()->GetPhysicalId() & 0xffff00) | (pdev->GetParentDev() << 24) | pdev->GetDevice() : 0;
 }
 
-const TCHAR* CFITOMConfig::GetBankName(UINT32 devid, UINT32 bank)
+const TCHAR* CFITOMConfig::GetBankName(uint32_t devid, uint32_t bank)
 {
 	const TCHAR* ret = 0;
 	if (isPcmDevice(devid)) {
@@ -825,11 +825,11 @@ const TCHAR* CFITOMConfig::GetBankName(UINT32 devid, UINT32 bank)
 	return ret;
 }
 
-int CFITOMConfig::GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* name, size_t count)
+int CFITOMConfig::GetVoiceName(uint32_t devid, uint32_t bank, uint32_t prog, TCHAR* name, size_t count)
 {
 	int ret = 0;
 	*name = _T('\0');
-	UINT32 vtype = CFITOM::GetDeviceVoiceGroupMask(devid);
+	uint32_t vtype = CFITOM::GetDeviceVoiceGroupMask(devid);
 	if (isPcmDevice(devid)) {
 		if (bank < vPcmDev.size()) {
 			PCMPROG pcmprog;
@@ -866,7 +866,7 @@ int CFITOMConfig::GetVoiceName(UINT32 devid, UINT32 bank, UINT32 prog, TCHAR* na
 	return ret;
 }
 
-int CFITOMConfig::GetDeviceName(UINT32 devid, TCHAR* name, size_t count)
+int CFITOMConfig::GetDeviceName(uint32_t devid, TCHAR* name, size_t count)
 {
 	int ret = 0;
 	std::tstring res(_T(""));
@@ -1190,7 +1190,7 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 						std::vector<std::tstring> lstaddparam;
 						boost::split(lstaddparam, strdevname, boost::is_any_of(_T(":")));
 						if (lstaddparam.size() > 1) {
-							UINT8 devid = CFITOM::GetDeviceIDFromName(lstaddparam[0].c_str());
+							uint8_t devid = CFITOM::GetDeviceIDFromName(lstaddparam[0].c_str());
 							if (CFITOM::GetDeviceVoiceGroupMask(devid) == VOICE_GROUP_PCM) {
 								int adpcmidx = std::stoi(lstaddparam[1]);
 								drumnote.device = GetPCMDeviceFromIndex(adpcmidx);
@@ -1207,7 +1207,7 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 						}
 					}
 					else {
-						UINT8 devid = CFITOM::GetDeviceIDFromName(strdevname.c_str());
+						uint8_t devid = CFITOM::GetDeviceIDFromName(strdevname.c_str());
 						if (CFITOM::GetDeviceVoiceGroupMask(devid) == VOICE_GROUP_PCM) {
 							drumnote.device = GetPCMDeviceFromIndex(bkno);
 							drumnote.devID = GetDeviceUniqID((CAdPcmBase*)drumnote.device);
@@ -1217,12 +1217,12 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 							drumnote.devID = GetDeviceUniqID(drumnote.device);
 						}
 					}
-					drumnote.bank = UINT8(bkno);
-					drumnote.prog = UINT8(prog);
-					drumnote.pan = SINT8(pan);
-					drumnote.gate = UINT16(gate);
-					drumnote.num = UINT8(num);
-					drumnote.fnum = UINT16(fnum);
+					drumnote.bank = uint8_t(bkno);
+					drumnote.prog = uint8_t(prog);
+					drumnote.pan = int8_t(pan);
+					drumnote.gate = uint16_t(gate);
+					drumnote.num = uint8_t(num);
+					drumnote.fnum = uint16_t(fnum);
 					bank->SetVoice(note, &drumnote);
 				}
 			}
@@ -1734,12 +1734,12 @@ int CFITOMConfig::BuildPSGVoice(FMVOICE* voice, int index, TCHAR* result, size_t
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
-void CFITOMConfig::SetMasterVolume(UINT8 vol)
+void CFITOMConfig::SetMasterVolume(uint8_t vol)
 {
 	pMasVol ? pMasVol->SetVolume(vol) : void(0);
 }
 
-UINT8 CFITOMConfig::GetMasterVolume()
+uint8_t CFITOMConfig::GetMasterVolume()
 {
 	return pMasVol ? pMasVol->GetVolume() : 0;
 }

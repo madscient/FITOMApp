@@ -11,19 +11,19 @@ public:
 	CDSG(CPort* pt, int fsamp);
 	virtual void Init();
 protected:
-	UINT8 regbak[0x20];
-//	UINT8 RhythmOnMap;
-//	UINT8 RhythmOffMap;
-	virtual void SetReg(UINT16 addr, UINT8 data, UINT8 v = 1);
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdatePanpot(UINT8 ch);
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	virtual void UpdateSustain(UINT8 ch);
-//	virtual void RhythmOn(UINT8 num, UINT8 vel, SINT8 pan, FMVOICE* rv, FNUM* fnum);
-//	virtual void RhythmOff(UINT8 num);
+	uint8_t regbak[0x20];
+//	uint8_t RhythmOnMap;
+//	uint8_t RhythmOffMap;
+	virtual void SetReg(uint16_t addr, uint8_t data, uint8_t v = 1);
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdatePanpot(uint8_t ch);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	virtual void UpdateSustain(uint8_t ch);
+//	virtual void RhythmOn(uint8_t num, uint8_t vel, int8_t pan, FMVOICE* rv, FNUM* fnum);
+//	virtual void RhythmOff(uint8_t num);
 };
 
 #endif

@@ -8,17 +8,17 @@
 class CFMS : public CSoundDevice
 {
 protected:
-	UINT8 prevvol[16];
-	UINT8 prevpan[16];
-	UINT16 prevfnum[16];
-	UINT16 prevkey;
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdatePanpot(UINT8 ch);
-	virtual void UpdateSustain(UINT8 ch);
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
+	uint8_t prevvol[16];
+	uint8_t prevpan[16];
+	uint16_t prevfnum[16];
+	uint16_t prevkey;
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdatePanpot(uint8_t ch);
+	virtual void UpdateSustain(uint8_t ch);
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
 public:
 	CFMS(CPort* pt, int fsamp);
 	virtual void Init();

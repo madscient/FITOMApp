@@ -8,23 +8,23 @@ class CSCCBase : public CPSGBase
 {
 protected:
 	struct REGMAP {	//レジスタアドレス
-		UINT8 device;
-		UINT8 waveform;
-		UINT8 frequency;
-		UINT8 amplitude;
-		UINT8 enable;
-		UINT8 mode;
-		UINT8 init;
-		UINT8 bank;
-		UINT16 offset;
-		UINT16 config;
-		UINT16 banksel;
+		uint8_t device;
+		uint8_t waveform;
+		uint8_t frequency;
+		uint8_t amplitude;
+		uint8_t enable;
+		uint8_t mode;
+		uint8_t init;
+		uint8_t bank;
+		uint16_t offset;
+		uint16_t config;
+		uint16_t banksel;
 	};
 	REGMAP regmap;
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdateVoice(UINT8 ch);
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdateVoice(uint8_t ch);
 public:
 	CSCCBase(CPort* pt, int fsamp, const REGMAP& regset);
 	virtual void Init();
@@ -35,7 +35,7 @@ class CSCC : public CSCCBase
 public:
 	CSCC(CPort* pt, int fsamp);
 protected:
-	virtual void UpdateVoice(UINT8 ch);
+	virtual void UpdateVoice(uint8_t ch);
 };
 
 class CSCCP : public CSCCBase

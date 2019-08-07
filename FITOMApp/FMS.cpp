@@ -19,20 +19,20 @@ void CFMS::Init()
 	}
 }
 
-void CFMS::UpdateVolExp(UINT8 ch)
+void CFMS::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	UINT8 evol = Linear2dB(attr->GetEffectiveLevel(), RANGE96DB, STEP075DB, 7);
+	uint8_t evol = Linear2dB(attr->GetEffectiveLevel(), RANGE96DB, STEP075DB, 7);
 	SetReg(0xfe, 0);
 	SetReg(ch, ((prevkey & (1 << ch)) ? 0x80 : 0) | evol);
 	prevvol[ch] = evol;
 }
 
-void CFMS::UpdateVoice(UINT8 ch)
+void CFMS::UpdateVoice(uint8_t ch)
 {
-	UINT8 tmp;
-	UINT8 i = 0;
-	UINT8 ex = 0;
+	uint8_t tmp;
+	uint8_t i = 0;
+	uint8_t ex = 0;
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
@@ -40,7 +40,7 @@ void CFMS::UpdateVoice(UINT8 ch)
 	SetReg(0xfe, 1);	//Bank select "1"
 	for(i=0; i<2; i++)
 	{
-		UINT8 fb = i ? (voice->FB & 0x70) : (voice->FB << 4);
+		uint8_t fb = i ? (voice->FB & 0x70) : (voice->FB << 4);
 		SetReg(0x00 + ch + (i<<4), fb | voice->op[i].MUL);
 		tmp = (voice->op[i].WS & 3) | (voice->op[i].EGS ? 0x10 : 0) | 0x0c;
 		SetReg(0x20 + ch + (i<<4), tmp);
@@ -53,27 +53,27 @@ void CFMS::UpdateVoice(UINT8 ch)
 	}
 }
 
-void CFMS::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CFMS::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	SetReg(0xfe, 0);	//Bank select "0"
 
 }
 
-void CFMS::UpdatePanpot(UINT8 ch)
+void CFMS::UpdatePanpot(uint8_t ch)
 {
 	SetReg(0xfe, 0);	//Bank select "0"
 }
 
-void CFMS::UpdateSustain(UINT8 ch)
+void CFMS::UpdateSustain(uint8_t ch)
 {
 	SetReg(0xfe, 1);	//Bank select "1"
 }
 
-void CFMS::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void CFMS::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 }
 
-void CFMS::UpdateKey(UINT8 ch, UINT8 keyon)
+void CFMS::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	SetReg(0xfe, 0);	//Bank select "0"
 	SetReg(0x00 + ch, (keyon ? 0x80 : 0) | prevvol[ch], 1);

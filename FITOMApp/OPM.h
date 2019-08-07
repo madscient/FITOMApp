@@ -7,34 +7,34 @@
 
 class COPM : public CSoundDevice {
 protected:
-	virtual FNUM GetFnumber(UINT8 ch, SINT16 offset = 0);
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdatePanpot(UINT8 ch);
+	virtual FNUM GetFnumber(uint8_t ch, int16_t offset = 0);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdatePanpot(uint8_t ch);
 	virtual void UpdateLFO() {};
-	virtual void UpdateSustain(UINT8 ch);
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	virtual void ResetLFO(UINT8 ch, UINT8 lfonum) {};
+	virtual void UpdateSustain(uint8_t ch);
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	virtual void ResetLFO(uint8_t ch, uint8_t lfonum) {};
 
-	static UINT8 KeyCode[];
-	static UINT8 map[];
-	static UINT8 carmsk[];
-	UINT8 lfos;
+	static uint8_t KeyCode[];
+	static uint8_t map[];
+	static uint8_t carmsk[];
+	uint8_t lfos;
 	LFORESOURCE* lfores;
 public:
 	COPM(CPort* pt, int fsamp);
 	virtual void Init();
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	virtual uint8_t QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	virtual void SetLFOParam(FMVOICE* voice, int update) {};
-	virtual void SetLFOMode(UINT8 ch, UINT8 mode, int update) {};
-	virtual void EnableDevPM(UINT8 ch, UINT8 on);
-	virtual void EnableDevAM(UINT8 ch, UINT8 on);
-	virtual void SetDevPMDepth(UINT8 ch, UINT8 dep);
-	virtual void SetDevAMDepth(UINT8 ch, UINT8 dep);
-	virtual void SetDevPMRate(UINT8 ch, UINT8 rate);
-	virtual void SetDevAMRate(UINT8 ch, UINT8 rate);
+	virtual void SetLFOMode(uint8_t ch, uint8_t mode, int update) {};
+	virtual void EnableDevPM(uint8_t ch, uint8_t on);
+	virtual void EnableDevAM(uint8_t ch, uint8_t on);
+	virtual void SetDevPMDepth(uint8_t ch, uint8_t dep);
+	virtual void SetDevAMDepth(uint8_t ch, uint8_t dep);
+	virtual void SetDevPMRate(uint8_t ch, uint8_t rate);
+	virtual void SetDevAMRate(uint8_t ch, uint8_t rate);
 };
 
 class COPP : public COPM {
@@ -47,9 +47,9 @@ public:
 
 class COPZ : public COPM {
 protected:
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdatePanpot(UINT8 ch);
-	UINT8 lfos;
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdatePanpot(uint8_t ch);
+	uint8_t lfos;
 public:
 	COPZ(CPort* pt, int fsamp);
 	virtual void Init();

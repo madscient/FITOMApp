@@ -32,7 +32,7 @@ void CMultiDevice::AddDevice(CSoundDevice* chip)
 	numchips++;
 }
 
-void CMultiDevice::SetMasterVolume(UINT8 vol, int update)
+void CMultiDevice::SetMasterVolume(uint8_t vol, int update)
 {
 	for (int i=0; i<numchips; i++) {
 		chips[i]->SetMasterVolume(vol, update);
@@ -46,7 +46,7 @@ void CMultiDevice::ResetVoice(CMidiCh* pch, FMVOICE* voice, int update)
 	}
 }
 
-void CMultiDevice::TimerCallBack(UINT32 tick)
+void CMultiDevice::TimerCallBack(uint32_t tick)
 {
 	for (int i=0; i<numchips; i++) {
 		chips[i]->TimerCallBack(tick);
@@ -60,7 +60,7 @@ void CMultiDevice::PollingCallBack()
 	}
 }
 
-void CMultiDevice::SetReg(UINT16 reg, UINT8 data, UINT8 v)
+void CMultiDevice::SetReg(uint16_t reg, uint8_t data, uint8_t v)
 {
 	if (!port) {
 		chips[0]->GetDevPort()->write(reg, data);
@@ -69,9 +69,9 @@ void CMultiDevice::SetReg(UINT16 reg, UINT8 data, UINT8 v)
 	}
 }
 
-UINT8 CMultiDevice::GetReg(UINT16 reg, UINT8 v)
+uint8_t CMultiDevice::GetReg(uint16_t reg, uint8_t v)
 {
-	UINT8 ret = 0;
+	uint8_t ret = 0;
 	if (!port) {
 		ret = chips[0]->GetDevPort()->read(reg);
 	} else {

@@ -4,24 +4,20 @@
 typedef char CHAR;
 
 #ifdef _DOS
-typedef unsigned char UINT8;
-typedef unsigned short UINT16;
-typedef unsigned long UINT32;
-inline UINT8 max(UINT8 a, UINT8 b) { return (a>b) ? a : b; };
-inline UINT8 min(UINT8 a, UINT8 b) { return (a<b) ? a : b; };
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned long uint32_t;
+inline uint8_t max(uint8_t a, uint8_t b) { return (a>b) ? a : b; };
+inline uint8_t min(uint8_t a, uint8_t b) { return (a<b) ? a : b; };
 #define FALSE	(0)
 #define TRUE	(!FALSE)
 #endif
 
 #if defined(_WIN32) && (_MSC_VER < 1300)
-typedef unsigned char UINT8;
-typedef unsigned short UINT16;
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
 typedef unsigned long DWORD_PTR;
 #endif
-
-typedef signed char SINT8;
-typedef signed short SINT16;
-typedef signed long SINT32;
 
 #if defined(_UNICODE) && !defined(_WIN32)
 typedef WCHAR TCHAR;
@@ -33,11 +29,11 @@ typedef CHAR TCHAR;
 
 #ifndef _WIN32
 typedef unsigned int UINT;
-typedef uint32_t UINT32;
+typedef uint32_t uint32_t;
 typedef wchar_t WCHAR;
 typedef bool BOOL;
-typedef unsigned char UINT8;
-typedef unsigned short UINT16;
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
 typedef unsigned long DWORD_PTR;
 typedef uint8_t BYTE;
 typedef uint16_t WORD;

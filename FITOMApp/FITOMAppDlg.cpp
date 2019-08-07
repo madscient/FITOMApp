@@ -248,7 +248,7 @@ void CFITOMAppDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
 	if (pScrollBar->GetDlgCtrlID() == IDC_MASVOL) {
-		theFitom->SetMasterVolume((UINT8)sldMasterVol.GetPos());
+		theFitom->SetMasterVolume((uint8_t)sldMasterVol.GetPos());
 	}
 	else {
 		CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);

@@ -248,7 +248,7 @@ void CFITOMApp::InitDevice()
 {
 	if (theConfig) {
 		for (int i = 0; i < theConfig->GetPhyDevs(); i++) {
-			theConfig->GetPhysDeviceFromIndex(UINT8(i))->Init();
+			theConfig->GetPhysDeviceFromIndex(uint8_t(i))->Init();
 		}
 	}
 }
@@ -828,7 +828,7 @@ void CFITOMApp::SaveDrumMap(CDrumBank* bank, int num)
 			}
 		}
 		TCHAR devparam[80];
-		UINT32 phyid;
+		uint32_t phyid;
 		phyid = drumnote.device->GetDevPort()->GetPhysicalId();
 		if (drumnote.devID & 0x80000000) {	//logical device
 			StringCchPrintf(devparam, _countof(devparam), _T("%s"), CFITOM::GetDeviceNameFromID(drumnote.devID & 0xff));

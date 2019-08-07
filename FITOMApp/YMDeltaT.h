@@ -8,41 +8,41 @@
 class CYmDelta : public CAdPcmBase	//YAMAHA DeltaT ADPCM
 {
 protected:
-	virtual ISoundDevice::FNUM GetFnumber(UINT8 ch, SINT16 offset);
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdatePanpot(UINT8 ch);
-	virtual void PlayPCM(UINT8 ch, UINT8 num, UINT8 volume, SINT8 pan, SINT32 offset);
-	virtual void StopPCM(UINT8 ch, UINT8 num);
-	virtual UINT16 GetDeltaN(int off);
-	UINT8 chena;	// L/R
+	virtual ISoundDevice::FNUM GetFnumber(uint8_t ch, int16_t offset);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdatePanpot(uint8_t ch);
+	virtual void PlayPCM(uint8_t ch, uint8_t num, uint8_t volume, int8_t pan, int32_t offset);
+	virtual void StopPCM(uint8_t ch, uint8_t num);
+	virtual uint16_t GetDeltaN(int off);
+	uint8_t chena;	// L/R
 	struct REGMAP {	//レジスタアドレス
-		UINT8 control1;
-		UINT8 control2;
-		UINT8 startLSB;
-		UINT8 startMSB;
-		UINT8 endLSB;
-		UINT8 endMSB;
-		UINT8 limitLSB;
-		UINT8 limitMSB;
-		UINT8 memory;
-		UINT8 deltanLSB;
-		UINT8 deltanMSB;
-		UINT8 volume;
-		UINT8 flag;
-		UINT8 ctrl1init;
-		UINT8 ctrl2init;
-		UINT8 panmask;
+		uint8_t control1;
+		uint8_t control2;
+		uint8_t startLSB;
+		uint8_t startMSB;
+		uint8_t endLSB;
+		uint8_t endMSB;
+		uint8_t limitLSB;
+		uint8_t limitMSB;
+		uint8_t memory;
+		uint8_t deltanLSB;
+		uint8_t deltanMSB;
+		uint8_t volume;
+		uint8_t flag;
+		uint8_t ctrl1init;
+		uint8_t ctrl2init;
+		uint8_t panmask;
 	};
 	REGMAP regmap;
 public:
-	CYmDelta(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, size_t memsize, UINT8 pardev, const REGMAP& regset);
+	CYmDelta(uint8_t devid, CPort* pt, size_t regsize, int fsamp, int devide, size_t memsize, uint8_t pardev, const REGMAP& regset);
 	virtual void Init() = 0;
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) { return 0; };
-	virtual void LoadVoice(int prog, UINT8* data, size_t length);
-	virtual void TimerCallBack(UINT32 tick) {};
+	virtual uint8_t QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) { return 0; };
+	virtual void LoadVoice(int prog, uint8_t* data, size_t length);
+	virtual void TimerCallBack(uint32_t tick) {};
 };
 
 class CAdPcm3801 : public CYmDelta	//Y8950
@@ -65,24 +65,24 @@ class CAdPcm2610B : public CYmDelta//YM2610 ADPCM B
 {
 protected:
 public:
-	CAdPcm2610B(CPort* pt, int fsamp, size_t memsize, UINT8 pardev = DEVICE_OPNB);
+	CAdPcm2610B(CPort* pt, int fsamp, size_t memsize, uint8_t pardev = DEVICE_OPNB);
 	virtual void Init();
-	virtual void LoadVoice(int prog, UINT8* data, size_t length);
-	virtual void UpdateVoice(UINT8 ch);
+	virtual void LoadVoice(int prog, uint8_t* data, size_t length);
+	virtual void UpdateVoice(uint8_t ch);
 };
 
 class CAdPcm2610A : public CAdPcmBase	//YM2610 ADPCM A
 {
 protected:
 public:
-	CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev = DEVICE_OPNB);
+	CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, uint8_t pardev = DEVICE_OPNB);
 	virtual void Init();
-	virtual void LoadVoice(int prog, UINT8* data, size_t length);
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdatePanpot(UINT8 ch);
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) { return CSoundDevice::QueryCh(parent, voice, 0); };
+	virtual void LoadVoice(int prog, uint8_t* data, size_t length);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdatePanpot(uint8_t ch);
+	virtual uint8_t QueryCh(CMidiCh* parent, FMVOICE* voice, int mode) { return CSoundDevice::QueryCh(parent, voice, 0); };
 };
 
 #endif

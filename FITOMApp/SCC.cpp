@@ -22,28 +22,28 @@ void CSCCBase::Init()
 	SetReg(regmap.mode, 0x00, 1);
 }
 
-void CSCCBase::UpdateVolExp(UINT8 ch)
+void CSCCBase::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	UINT8 evol = attr->GetEffectiveLevel();
-	SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+	uint8_t evol = attr->GetEffectiveLevel();
+	int16_t lev = int16_t(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 	lev = (lev < 0) ? 0 : lev;
 	lev = (lev > 127) ? 127 : lev;
-	//evol = 15 - Linear2dB(CalcLinearLevel(evol, 127 - UINT8(lev)), RANGE48DB, STEP300DB, 4);
-	evol = CalcLinearLevel(evol, 127 - UINT8(lev)) >> 3;
+	//evol = 15 - Linear2dB(CalcLinearLevel(evol, 127 - uint8_t(lev)), RANGE48DB, STEP300DB, 4);
+	evol = CalcLinearLevel(evol, 127 - uint8_t(lev)) >> 3;
 	SetReg(regmap.amplitude + ch, evol & 0xf, 0);
 }
 
-void CSCCBase::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CSCCBase::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> (oct + 3);
-	SetReg(ch * 2 + regmap.frequency + 0, UINT8(etp & 0xff), 0);
-	SetReg(ch * 2 + regmap.frequency + 1, UINT8(etp >> 8), 0);
+	uint8_t oct = fnum->block;
+	uint16_t etp = fnum->fnum >> (oct + 3);
+	SetReg(ch * 2 + regmap.frequency + 0, uint8_t(etp & 0xff), 0);
+	SetReg(ch * 2 + regmap.frequency + 1, uint8_t(etp >> 8), 0);
 }
 
-void CSCCBase::UpdateVoice(UINT8 ch)
+void CSCCBase::UpdateVoice(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -56,7 +56,7 @@ void CSCCBase::UpdateVoice(UINT8 ch)
 	}
 }
 
-void CSCCBase::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void CSCCBase::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	switch (op) {
@@ -76,7 +76,7 @@ CSCC::CSCC(CPort* pt, int fsamp) : CSCCBase(pt, fsamp,
 	GetChAttribute(4)->OutOfDVA();
 }
 
-void CSCC::UpdateVoice(UINT8 ch)
+void CSCC::UpdateVoice(uint8_t ch)
 {
 	if (ch < 4) {
 		CSCCBase::UpdateVoice(ch);

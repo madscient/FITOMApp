@@ -77,7 +77,7 @@
 /*								Type defines								  */
 /******************************************************************************/
 
-typedef unsigned char   uint8;
+typedef unsigned char   uint8_t;
 typedef unsigned short  uint16;
 typedef unsigned long long uint64;
 
@@ -109,7 +109,7 @@ typedef struct ChannelConfig_t
 {
 	uint32	ClockRate;
 
-	uint8	LatencyTimer;
+	uint8_t	LatencyTimer;
 
 	uint32	configOptions;	/*This member provides a way to enable/disable features
 	specific to the protocol that are implemented in the chip
@@ -151,19 +151,19 @@ FTDI_API FT_STATUS SPI_GetChannelInfo(uint32 index,
 FTDI_API FT_STATUS SPI_OpenChannel(uint32 index, FT_HANDLE *handle);
 FTDI_API FT_STATUS SPI_InitChannel(FT_HANDLE handle, ChannelConfig *config);
 FTDI_API FT_STATUS SPI_CloseChannel(FT_HANDLE handle);
-FTDI_API FT_STATUS SPI_Read(FT_HANDLE handle, uint8 *buffer,
+FTDI_API FT_STATUS SPI_Read(FT_HANDLE handle, uint8_t *buffer,
 	uint32 sizeToTransfer, uint32 *sizeTransfered, uint32 options);
-FTDI_API FT_STATUS SPI_Write(FT_HANDLE handle, uint8 *buffer,
+FTDI_API FT_STATUS SPI_Write(FT_HANDLE handle, uint8_t *buffer,
 	uint32 sizeToTransfer, uint32 *sizeTransfered, uint32 options);
-FTDI_API FT_STATUS SPI_ReadWrite(FT_HANDLE handle, uint8 *inBuffer,
-	uint8 *outBuffer, uint32 sizeToTransfer, uint32 *sizeTransferred,
+FTDI_API FT_STATUS SPI_ReadWrite(FT_HANDLE handle, uint8_t *inBuffer,
+	uint8_t *outBuffer, uint32 sizeToTransfer, uint32 *sizeTransferred,
 	uint32 transferOptions);
 FTDI_API FT_STATUS SPI_IsBusy(FT_HANDLE handle, bool *state);
 FTDI_API void Init_libMPSSE(void);
 FTDI_API void Cleanup_libMPSSE(void);
 FTDI_API FT_STATUS SPI_ChangeCS(FT_HANDLE handle, uint32 configOptions);
-FTDI_API FT_STATUS FT_WriteGPIO(FT_HANDLE handle, uint8 dir, uint8 value);
-FTDI_API FT_STATUS FT_ReadGPIO(FT_HANDLE handle,uint8 *value);
+FTDI_API FT_STATUS FT_WriteGPIO(FT_HANDLE handle, uint8_t dir, uint8_t value);
+FTDI_API FT_STATUS FT_ReadGPIO(FT_HANDLE handle,uint8_t *value);
 FTDI_API FT_STATUS SPI_ToggleCS(FT_HANDLE handle, bool state);
 
 

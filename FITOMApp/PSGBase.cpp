@@ -1,21 +1,21 @@
 #include "stdafx.h"
 #include "PSGBase.h"
 
-CPSGBase::CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp)
+CPSGBase::CPSGBase(uint8_t devid, CPort* pt, int regsize, uint8_t ch, int fsamp)
 	: CPSGBase(devid, pt, regsize, ch, fsamp, 1, -576, FnumTableType::TonePeriod)
 	//	: CSoundDevice(devid, ch, fsamp, 1, -576, FnumTableType::TonePeriod, pt)
 {
 }
 
-CPSGBase::CPSGBase(UINT8 devid, CPort* pt, int regsize, UINT8 ch, int fsamp, int div, int off, FnumTableType type)
+CPSGBase::CPSGBase(uint8_t devid, CPort* pt, int regsize, uint8_t ch, int fsamp, int div, int off, FnumTableType type)
 	: CSoundDevice(devid, ch, fsamp, div, off, type, pt, regsize)
 {
 	ops = 0;
-	lfoTL = new UINT8[chs];
+	lfoTL = new uint8_t[chs];
 	egattr = new CEnvelope[chs];
 }
 
-ISoundDevice::FNUM CPSGBase::GetFnumber(UINT8 ch, SINT16 offset)
+ISoundDevice::FNUM CPSGBase::GetFnumber(uint8_t ch, int16_t offset)
 {
 	FNUM ret;
 	CHATTR* attr = GetChAttribute(ch);
@@ -32,12 +32,12 @@ ISoundDevice::FNUM CPSGBase::GetFnumber(UINT8 ch, SINT16 offset)
 		index -= 768;
 	}
 
-	ret.block = UINT8(oct);
+	ret.block = uint8_t(oct);
 	ret.fnum = Fnum[index];
 	return ret;
 }
 
-void CPSGBase::UpdateKey(UINT8 ch, UINT8 keyon)
+void CPSGBase::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	if (keyon) {
@@ -65,7 +65,7 @@ void CPSGBase::UpdateLevelEG()
 	}
 }
 
-void CPSGBase::TimerCallBack(UINT32 tick)
+void CPSGBase::TimerCallBack(uint32_t tick)
 {
 	if (/*(tick & 1)*/1) {
 		UpdateLevelEG();

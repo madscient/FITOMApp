@@ -70,7 +70,7 @@ CFMBank::CFMBank() : CVoiceBankTemplate<FMVOICE>()
 	FMVOICE buf;
 	memset((void*)&buf, 0, sizeof(FMVOICE));
 	for (int i = 0; i<128; i++) {
-		buf.ID = UINT32(0xff000000L) | i;
+		buf.ID = uint32_t(0xff000000L) | i;
 		SetVoice(i, &buf);
 	}
 }

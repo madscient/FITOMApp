@@ -1,7 +1,7 @@
 #include "STDAFX.H"
 #include "OPK.h"
 
-const UINT8 COPK::chofs[] = {0, 1, 4, 5, 8, 9, 12, 13, };
+const uint8_t COPK::chofs[] = {0, 1, 4, 5, 8, 9, 12, 13, };
 
 #define GET_AR(v,o)	(v->op[o].AR >> 3)
 #define GET_DR(v,o)	(v->op[o].DR >> 3)
@@ -25,13 +25,13 @@ void COPK::Init()
 	SetReg(0x84, 0x00, 1);
 }
 
-void COPK::UpdateVoice(UINT8 ch)
+void COPK::UpdateVoice(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	SetReg(0x70 + ch, (GetReg(0x70 + ch, 0) & 0xf8) | (voice->FB & 0x7), 1);
 	for (int i=0; i<2; i++) {
-		UINT8 tmp;
+		uint8_t tmp;
 		tmp = (GetReg(0x10 + chofs[ch] + (i * 2), 0) & 0x90) | voice->op[i].MUL;
 		SetReg(0x10 + chofs[ch] + (i * 2), tmp | (voice->op[i].VIB ? 0x40 : 0) | (voice->op[i].WS ? 0x20 : 0), 1);
 		tmp = GET_TL(voice, i);
@@ -45,31 +45,31 @@ void COPK::UpdateVoice(UINT8 ch)
 	UpdateVolExp(ch);
 }
 
-void COPK::UpdateVolExp(UINT8 ch)
+void COPK::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	UINT8 evol = CalcLinearLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
+	uint8_t evol = CalcLinearLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
 	attr->baseTL[1] = evol;
 	evol = Linear2dB(evol, RANGE96DB, STEP075DB, 7);
 	SetReg(0x22 + chofs[ch], evol & 0x7f, 0);
 }
 
-void COPK::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void COPK::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
-	UINT8 blk = fnum->block;
-	UINT16 fn = fnum->fnum;
+	uint8_t blk = fnum->block;
+	uint16_t fn = fnum->fnum;
 	if (fn & 0x800) {
 		fn >>= 1;
 		blk++;
 	}
-	SetReg(0x52 + chofs[ch], (blk << 5) | UINT8(fn >> 6), 1);
-	SetReg(0x62 + chofs[ch], UINT8(fn << 2) & 0xf0, 1);
+	SetReg(0x52 + chofs[ch], (blk << 5) | uint8_t(fn >> 6), 1);
+	SetReg(0x62 + chofs[ch], uint8_t(fn << 2) & 0xf0, 1);
 }
 
-void COPK::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void COPK::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -80,7 +80,7 @@ void COPK::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 	}
 }
 
-void COPK::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPK::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -89,14 +89,14 @@ void COPK::UpdateKey(UINT8 ch, UINT8 keyon)
 	SetReg(0x12 + chofs[ch], (GetReg(0x12 + chofs[ch], 0) & 0x7f) | (keyon ? 0x80 : 0), 1);
 }
 
-void COPK::UpdateSustain(UINT8 ch)
+void COPK::UpdateSustain(uint8_t ch)
 {
 }
 
-void COPK::UpdatePanpot(UINT8 ch)
+void COPK::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
-	UINT8 chena = 0;
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
+	uint8_t chena = 0;
 	if (pan >= 4) { //R
 		chena = 0x40;
 	}
@@ -126,34 +126,34 @@ void COPKRhythm::Init()
 {
 }
 
-void COPKRhythm::UpdateVolExp(UINT8 ch)
+void COPKRhythm::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (attr) {
-		UINT8 evol = Linear2dB(CalcLinearLevel(attr->velocity, 127 - attr->volume), RANGE48DB, STEP150DB, 4);
+		uint8_t evol = Linear2dB(CalcLinearLevel(attr->velocity, 127 - attr->GetVolume()), RANGE48DB, STEP150DB, 4);
 		SetReg(0x80 + ch, (GetReg(0x80 + ch, 0) & 0xf0) | evol, 1);
 	}
 }
 
-void COPKRhythm::UpdateVoice(UINT8 ch)
+void COPKRhythm::UpdateVoice(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (attr) {
-		UINT8 num = attr->GetVoice()->AL & 0xf;
+		uint8_t num = attr->GetVoice()->AL & 0xf;
 		SetReg(0x80 + ch, (num << 4) | (GetReg(0x80 + ch, 0) & 0xf), 1);
 	}
 }
 
-void COPKRhythm::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPKRhythm::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (attr) {
-		UINT8 tmp = GetReg(0x84, 0) & ~(0x1 << ch);
+		uint8_t tmp = GetReg(0x84, 0) & ~(0x1 << ch);
 		SetReg(0x84, tmp | ((keyon ? 1 : 0) << ch), 1);
 	}
 }
 
-UINT8 COPKRhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t COPKRhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
 	return CSoundDevice::QueryCh(parent, voice, mode);
 }

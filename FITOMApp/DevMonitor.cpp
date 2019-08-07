@@ -172,7 +172,7 @@ void CDevMonitor::UpdateList(BOOL binit)
 			if (lstrcmp(tmp, lstDevice.GetItemText(i, 2))) {
 				lstDevice.SetItemText(i, 2, tmp);
 			}
-			int evol = ::CalcVolExpVel(pdev->GetChAttribute(i)->volume, pdev->GetChAttribute(i)->velocity, pdev->GetChAttribute(i)->express);
+			int evol = ::CalcVolExpVel(pdev->GetChAttribute(i)->GetVolume(), pdev->GetChAttribute(i)->velocity, pdev->GetChAttribute(i)->GetExpress());
 			StringCchPrintf(tmp, 80, _T("%i"), evol);
 			if (lstrcmp(tmp, lstDevice.GetItemText(i, 3))) {
 				lstDevice.SetItemText(i, 3, tmp);

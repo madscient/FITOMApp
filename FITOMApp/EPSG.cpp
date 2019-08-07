@@ -25,15 +25,15 @@ void CEPSG::Init()
 	SetReg(0x0a, 0, 1);
 }
 
-void CEPSG::UpdateVolExp(UINT8 ch)
+void CEPSG::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
-		UINT8 evol = attr->GetEffectiveLevel();
-		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+		uint8_t evol = attr->GetEffectiveLevel();
+		int16_t lev = int16_t(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
-		evol = 31 - Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[UINT8(lev)]), RANGE48DB, STEP150DB, 5);
+		evol = 31 - Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[uint8_t(lev)]), RANGE48DB, STEP150DB, 5);
 		if (evol != prevvol[ch]) {
 			prevvol[ch] = evol;
 			//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
@@ -42,7 +42,7 @@ void CEPSG::UpdateVolExp(UINT8 ch)
 	}
 }
 
-void CEPSG::UpdateKey(UINT8 ch, UINT8 keyon)
+void CEPSG::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CPSGBase::UpdateKey(ch, keyon);
 	CHATTR* attr = GetChAttribute(ch);
@@ -60,7 +60,7 @@ void CEPSG::UpdateKey(UINT8 ch, UINT8 keyon)
 	}
 }
 
-void CEPSG::EGOff(UINT8 ch)
+void CEPSG::EGOff(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -69,22 +69,22 @@ void CEPSG::EGOff(UINT8 ch)
 	}
 }
 
-void CEPSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CEPSG::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> (oct + 2);
+	uint8_t oct = fnum->block;
+	uint16_t etp = fnum->fnum >> (oct + 2);
 	if (etp != prevfreq[ch]) {
 		prevfreq[ch] = etp;
 		//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
-		SetReg(ch * 2 + 0, UINT8(etp & 0xff), 1);
-		SetReg(ch * 2 + 1, UINT8(etp >> 8), 1);
+		SetReg(ch * 2 + 0, uint8_t(etp & 0xff), 1);
+		SetReg(ch * 2 + 1, uint8_t(etp >> 8), 1);
 	}
 }
 
-void CEPSG::UpdateVoice(UINT8 ch)
+void CEPSG::UpdateVoice(uint8_t ch)
 {
-	UINT8 mix = 8;
+	uint8_t mix = 8;
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	switch (voice->AL & 3) {
@@ -132,7 +132,7 @@ void CEPSG::UpdateVoice(UINT8 ch)
 	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
 }
 
-void CEPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void CEPSG::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	switch (op) {
@@ -143,7 +143,7 @@ void CEPSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 	break;
 	case 1:// Noise freq LFO
 		if ((voice->AL & 3) == 1 || (voice->AL & 3) == 2) {
-			SINT16 frq = SINT16(lev) - 64 + (((voice->NFQ << 2) | (voice->FB >> 1)) & 0x7f);
+			int16_t frq = int16_t(lev) - 64 + (((voice->NFQ << 2) | (voice->FB >> 1)) & 0x7f);
 			frq = (frq < 0) ? 0 : frq;
 			frq = (frq > 255) ? 255 : frq;
 			//SetReg(0xd, 0xa0 | (GetReg(0xd, 0) | 0xf), 1);	//Bank select A

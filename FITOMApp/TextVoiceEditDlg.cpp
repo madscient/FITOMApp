@@ -46,7 +46,7 @@ void CTextVoiceEditDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 struct voicetypes {
-	UINT32 type;
+	uint32_t type;
 	int ops;
 	LPCTSTR name;
 	LPCTSTR alfb;
@@ -76,7 +76,7 @@ void CTextVoiceEditDlg::SetVoice(FMVOICE* voice)
 	theVoice = *voice;
 }
 
-void CTextVoiceEditDlg::SetDevice(UINT32 dev)
+void CTextVoiceEditDlg::SetDevice(uint32_t dev)
 {
 	theDevice = dev;
 	theType = CFITOM::GetDeviceVoiceGroupMask(dev);
@@ -92,7 +92,7 @@ void CTextVoiceEditDlg::GetVoice(FMVOICE* voice)
 	*voice = theVoice;
 }
 
-UINT32 CTextVoiceEditDlg::GetType()
+uint32_t CTextVoiceEditDlg::GetType()
 {
 	return theType;
 }

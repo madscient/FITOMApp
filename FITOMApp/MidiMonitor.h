@@ -26,7 +26,7 @@ protected:
 	virtual void PostNcDestroy();
 	virtual void OnCancel();
 	struct chstat {
-		UINT32 dev;
+		uint32_t dev;
 		int note;
 		int pan;
 		int vol;

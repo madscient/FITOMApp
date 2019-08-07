@@ -1,8 +1,8 @@
 #include "STDAFX.h"
 #include "OPL.h"
 
-UINT8 COPL3::opmap[] = {0x0, 0x3, 0x8, 0xb, };
-UINT8 COPL3::carmsk[] = { 0x2, 0x3, 0x8, 0xc, 0x8, 0x9, 0xa, 0xd, 0xa, 0xe, 0xb, 0xf, 0xa, 0xe, 0xb, 0xf, };
+uint8_t COPL3::opmap[] = {0x0, 0x3, 0x8, 0xb, };
+uint8_t COPL3::carmsk[] = { 0x2, 0x3, 0x8, 0xc, 0x8, 0x9, 0xa, 0xd, 0xa, 0xe, 0xb, 0xf, 0xa, 0xe, 0xb, 0xf, };
 
 #define GET_AR(v,o)	(v->op[o].AR >> 3)
 #define GET_DR(v,o)	(v->op[o].DR >> 3)
@@ -24,15 +24,15 @@ void COPL3::Init()
 	SetReg(0x105, 0x01);	//Enable OPL3
 }
 
-void COPL3::UpdateVoice(UINT8 ch)
+void COPL3::UpdateVoice(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
-	UINT8 mode = voice->AL & 0x0c;
-	UINT16 rop = (ch > 2) ? 0x100 : 0;
-	UINT8 dch = rop ? (ch-3) : ch;
-	UINT8 tmp, i;
+	uint8_t mode = voice->AL & 0x0c;
+	uint16_t rop = (ch > 2) ? 0x100 : 0;
+	uint8_t dch = rop ? (ch-3) : ch;
+	uint8_t tmp, i;
 
 	for(i=0; i<4; i++)
 	{
@@ -41,13 +41,13 @@ void COPL3::UpdateVoice(UINT8 ch)
 			(voice->op[i].MUL & 0x0F);
 		SetReg(rop + 0x20 + opmap[i] + dch, tmp);
 
-		tmp = (UINT8)((voice->op[i].KSL << 6) | GET_TL(voice, i));
+		tmp = (uint8_t)((voice->op[i].KSL << 6) | GET_TL(voice, i));
 		SetReg(rop + 0x40 + opmap[i] + dch, tmp);
 
 		tmp = (GET_AR(voice, i) << 4) | GET_DR(voice, i);
 		SetReg(rop + 0x60 + opmap[i] + dch, tmp);
 
-		UINT8 rr = ((parent && parent->GetSustain() && (carmsk[voice->AL&0xf]&(1<<i))) ?
+		uint8_t rr = ((parent && parent->GetSustain() && (carmsk[voice->AL&0xf]&(1<<i))) ?
 			GET_RV(voice, i) : (GET_SR(voice, i) ? GET_SR(voice, i) : GET_RR(voice, i))) & 0xf;
 		tmp = (GET_SL(voice, i) << 4) | rr;
 		SetReg(rop + 0x80 + opmap[i] + dch, tmp);
@@ -59,7 +59,7 @@ void COPL3::UpdateVoice(UINT8 ch)
 	tmp = (GetReg(rop + 0xc3 + dch, 0) & 0xf0) | ((voice->FB >> 3) & 0xe) | ((voice->AL >> 1) & 0x1);
 	SetReg(rop + 0xc3 + dch, tmp);
 
-	UINT8 con = GetReg(0x104, 0) & ~(1 << ch);
+	uint8_t con = GetReg(0x104, 0) & ~(1 << ch);
 	if (mode & 0x04) {// CON=1
 		SetReg(0x104, con | (1 << ch));
 	} else {// CON=0
@@ -68,32 +68,32 @@ void COPL3::UpdateVoice(UINT8 ch)
 	UpdateVolExp(ch);
 }
 
-void COPL3::UpdateVolExp(UINT8 ch)
+void COPL3::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 
-	UINT8 mode = voice->AL & 0x0c;
-	UINT16 rop = (ch > 2) ? 0x100 : 0;
-	UINT8 dch = rop ? (ch-3) : ch;
-	UINT8 evol = attr->GetEffectiveLevel();
+	uint8_t mode = voice->AL & 0x0c;
+	uint16_t rop = (ch > 2) ? 0x100 : 0;
+	uint8_t dch = rop ? (ch-3) : ch;
+	uint8_t evol = attr->GetEffectiveLevel();
 	for (int i=0; i<4; i++) {
 		if ((1 << i) & carmsk[voice->AL & 0xf]) {
-			UINT8 tl;
-			UINT8 tmp;
+			uint8_t tl;
+			uint8_t tmp;
 			tl = CalcLinearLevel(evol, voice->op[i].TL);
 			attr->baseTL[i] = tl;
 			tl = Linear2dB(tl, RANGE48DB, STEP075DB, 6);
-			tmp = (UINT8)((voice->op[i].KSL << 6) | tl);
+			tmp = (uint8_t)((voice->op[i].KSL << 6) | tl);
 			SetReg(rop + 0x40 + opmap[i] + dch, tmp, 0);
 		}
 	}
 }
 
-void COPL3::UpdatePanpot(UINT8 ch)
+void COPL3::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
-	UINT8 chena = 0;
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
+	uint8_t chena = 0;
 	if (pan >= 4) { //R
 		chena = 0x10;
 	}
@@ -103,9 +103,9 @@ void COPL3::UpdatePanpot(UINT8 ch)
 	else {	//C
 		chena = 0x30;
 	}
-	UINT16 rop = (ch > 2) ? 0x100 : 0;
-	UINT8 dch = rop ? (ch-3) : ch;
-	UINT8 tmp;
+	uint16_t rop = (ch > 2) ? 0x100 : 0;
+	uint8_t dch = rop ? (ch-3) : ch;
+	uint8_t tmp;
 	tmp = GetReg(rop + 0xc0 + dch, 0);
 	if ((tmp & 0xf0) != chena) {
 		SetReg(rop + 0xc0 + dch, (tmp & 0x0f) | chena, 0);
@@ -116,67 +116,67 @@ void COPL3::UpdatePanpot(UINT8 ch)
 	}
 }
 
-void COPL3::UpdateSustain(UINT8 ch)
+void COPL3::UpdateSustain(uint8_t ch)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
 		FMVOICE* voice = attr->GetVoice();
 		CMidiCh* parent = attr->GetParent();
-		UINT8 mode = voice->AL & 0x0c;
-		UINT16 rop = (ch > 2) ? 0x100 : 0;
-		UINT8 dch = rop ? (ch-3) : ch;
+		uint8_t mode = voice->AL & 0x0c;
+		uint16_t rop = (ch > 2) ? 0x100 : 0;
+		uint8_t dch = rop ? (ch-3) : ch;
 
 		for (int i=0; i<4; i++) {
 			if ((1 << i) & carmsk[voice->AL & 0xf]) {
-				UINT8 rr = ((parent && parent->GetSustain() && (carmsk[voice->AL&0xf]&(1<<i))) ?
+				uint8_t rr = ((parent && parent->GetSustain() && (carmsk[voice->AL&0xf]&(1<<i))) ?
 					GET_RV(voice, i) : (GET_SR(voice, i) ? GET_SR(voice, i) : GET_RR(voice, i))) & 0xf;
-				UINT8 tmp = (GET_SL(voice, i) << 4) | rr;
+				uint8_t tmp = (GET_SL(voice, i) << 4) | rr;
 				SetReg(rop + 0x80 + opmap[i] + dch, tmp);
 			}
 		}
 	}
 }
 
-void COPL3::UpdateFnumber(UINT8 ch, int update)
+void COPL3::UpdateFnumber(uint8_t ch, int update)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
 		FMVOICE* voice = attr->GetVoice();
-		SINT32 off1 = (voice->op[0].DT2 | (voice->op[0].DT1 << 7));
-		SINT32 off2 = (voice->op[2].DT2 | (voice->op[2].DT1 << 7));
+		int32_t off1 = (voice->op[0].DT2 | (voice->op[0].DT1 << 7));
+		int32_t off2 = (voice->op[2].DT2 | (voice->op[2].DT1 << 7));
 		off1 = off1 - 8192;
 		off2 = off2 - 8192;
-		PseudoDT1[ch] = GetFnumber(ch, SINT16(off1));
-		PseudoDT2[ch] = GetFnumber(ch, SINT16(off2));
+		PseudoDT1[ch] = GetFnumber(ch, int16_t(off1));
+		PseudoDT2[ch] = GetFnumber(ch, int16_t(off2));
 	}
 	CSoundDevice::UpdateFnumber(ch, update);
 }
 
-void COPL3::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void COPL3::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	UINT16 rop = (ch > 2) ? 0x100 : 0;
-	UINT8 dch = rop ? (ch-3) : ch;
-	UINT16 efn1 = (PseudoDT1[ch].fnum >> 1) & 0x3ff;
-	UINT16 efn2 = (PseudoDT2[ch].fnum >> 1) & 0x3ff;
+	uint16_t rop = (ch > 2) ? 0x100 : 0;
+	uint8_t dch = rop ? (ch-3) : ch;
+	uint16_t efn1 = (PseudoDT1[ch].fnum >> 1) & 0x3ff;
+	uint16_t efn2 = (PseudoDT2[ch].fnum >> 1) & 0x3ff;
 
-	SetReg(rop + 0xa0 + dch, (UINT8)(efn1 & 0xff), 1);
+	SetReg(rop + 0xa0 + dch, (uint8_t)(efn1 & 0xff), 1);
 	SetReg(rop + 0xb0 + dch, (GetReg(rop + 0xb0 + dch, 0) & 0x20) |
-		(UINT8)((PseudoDT1[ch].block << 2) | (efn1 >> 8)), 1);
-	SetReg(rop + 0xa3 + dch, (UINT8)(efn2 & 0xff), 1);
+		(uint8_t)((PseudoDT1[ch].block << 2) | (efn1 >> 8)), 1);
+	SetReg(rop + 0xa3 + dch, (uint8_t)(efn2 & 0xff), 1);
 	SetReg(rop + 0xb3 + dch, (GetReg(rop + 0xb3 + dch, 0) & 0x20) |
-		(UINT8)((PseudoDT2[ch].block << 2) | (efn2 >> 8)), 1);
+		(uint8_t)((PseudoDT2[ch].block << 2) | (efn2 >> 8)), 1);
 }
 
-void COPL3::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPL3::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
 
-	UINT16 rop = (ch > 2) ? 0x100 : 0;
-	UINT8 dch = rop ? (ch-3) : ch;
-	UINT8 tmp = GetReg(rop + 0xb0 + dch, 0) & 0xdf;
+	uint16_t rop = (ch > 2) ? 0x100 : 0;
+	uint8_t dch = rop ? (ch-3) : ch;
+	uint8_t tmp = GetReg(rop + 0xb0 + dch, 0) & 0xdf;
 	SetReg(rop + 0xb0 + dch, tmp | (keyon ? 0x20 : 0), 1);
 
 	if ((voice->AL & 0x08) || !keyon) {
@@ -188,23 +188,23 @@ void COPL3::UpdateKey(UINT8 ch, UINT8 keyon)
 		SetReg(0x20 + dch + opmap[i], tmp | (keyon ? 0 : 0x20), 1);
 		BOOL isCarrier = (1 << i) & carmsk[voice->AL & 0xf];
 		BOOL isSustained = (parent && parent->GetSustain());
-		UINT8 rr = (isSustained && isCarrier) ? GET_RV(voice, i) : GET_RR(voice, i);
-		UINT8 sr = keyon ? GET_SR(voice, i) : rr;
+		uint8_t rr = (isSustained && isCarrier) ? GET_RV(voice, i) : GET_RR(voice, i);
+		uint8_t sr = keyon ? GET_SR(voice, i) : rr;
 
-		UINT8 tmp = (GET_SL(voice, i) << 4) | sr;
+		uint8_t tmp = (GET_SL(voice, i) << 4) | sr;
 		SetReg(rop + 0x80 + opmap[i] + dch, tmp);
 	}
 }
 
-void COPL3::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void COPL3::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
-	UINT16 rop = (ch > 2) ? 0x100 : 0;
-	UINT8 dch = rop ? (ch-3) : ch;
+	uint16_t rop = (ch > 2) ? 0x100 : 0;
+	uint8_t dch = rop ? (ch-3) : ch;
 	lev = (lev >= 64) ? 63 : (lev & 63);
 	SetReg(rop + 0x40 + opmap[op] + dch, lev, 0);
 }
 
-COPL3_2::COPL3_2(CPort* pt1, CPort* pt2, UINT8 mode, int fsamp) : CSpanDevice(NULL, NULL)
+COPL3_2::COPL3_2(CPort* pt1, CPort* pt2, uint8_t mode, int fsamp) : CSpanDevice(NULL, NULL)
 {
 	COPL* opl1 = new COPL(pt1, fsamp/4, DEVICE_OPL3_2);
 	COPL* opl2 = new COPL(pt2, fsamp/4, DEVICE_OPL3_2);

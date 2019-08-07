@@ -55,17 +55,17 @@ void CFITOM::ExitInstance(int save)
 }
 
 
-CFMBank* CFITOM::GetFMBank(UINT32 voiceid, UINT32 bank)
+CFMBank* CFITOM::GetFMBank(uint32_t voiceid, uint32_t bank)
 {
 	return theConfig ? theConfig->GetFMBank(voiceid, bank) : 0;
 }
 
-CDrumBank* CFITOM::GetDrumBank(UINT8 prog)
+CDrumBank* CFITOM::GetDrumBank(uint8_t prog)
 {
 	return theConfig ? theConfig->GetDrumBank(prog) : 0;
 }
 
-CPcmBank* CFITOM::GetPcmBank(UINT8 bank)
+CPcmBank* CFITOM::GetPcmBank(uint8_t bank)
 {
 	return theConfig ? theConfig->GetPcmBank(bank) : 0;
 }
@@ -132,13 +132,13 @@ const TCHAR* CFITOM::GetDeviceNameFromID(DWORD devid)
 	return _T("-----");
 }
 
-int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
+int CFITOM::GetVoice(FMVOICE* voice, uint8_t dev, uint8_t bank, uint8_t prog)
 {
 	CFMBank* xmem = NULL;
-	UINT32 vtype = GetDeviceVoiceGroupMask(dev);
+	uint32_t vtype = GetDeviceVoiceGroupMask(dev);
 	if (vtype == VOICE_GROUP_PCM) {
 		memset(voice, 0, sizeof(FMVOICE));
-		voice->ID = (0xff000000L) | (UINT16(bank) << 8) | prog;
+		voice->ID = (0xff000000L) | (uint16_t(bank) << 8) | prog;
 		voice->AL = prog;
 		CPcmBank* pbank = theConfig->GetPcmBank(bank);
 		if (pbank) {
@@ -153,7 +153,7 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 	}
 	else if (vtype == VOICE_GROUP_OPL4 || vtype == VOICE_GROUP_RHYTHM) {
 		memset(voice, 0, sizeof(FMVOICE));
-		voice->ID = (0xff000000L) | (UINT16(bank) << 8) | prog;
+		voice->ID = (0xff000000L) | (uint16_t(bank) << 8) | prog;
 		voice->AL = prog;
 		voice->FB = bank;
 		{
@@ -166,16 +166,16 @@ int CFITOM::GetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 	}
 	if (xmem == NULL) {
 		memset(voice, 0, sizeof(FMVOICE));
-		voice->ID = (0xff000000L) | (UINT16(bank) << 8) | prog;
+		voice->ID = (0xff000000L) | (uint16_t(bank) << 8) | prog;
 		std::sprintf(voice->name, _T("%03i:%03i"), bank, prog);
 	}
 	return 0;
 }
 
-int CFITOM::SetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
+int CFITOM::SetVoice(FMVOICE* voice, uint8_t dev, uint8_t bank, uint8_t prog)
 {
 	CFMBank* xmem = NULL;
-	UINT32 vtype = GetDeviceVoiceGroupMask(dev);
+	uint32_t vtype = GetDeviceVoiceGroupMask(dev);
 	if (bank < MAX_BANK && prog < 128 && (xmem = GetFMBank(vtype, bank))) {
 		xmem->SetVoice(prog, voice);
 	} else {
@@ -184,7 +184,7 @@ int CFITOM::SetVoice(FMVOICE* voice, UINT8 dev, UINT8 bank, UINT8 prog)
 	return 0;
 }
 
-int CFITOM::GetDrum(DRUMMAP* drum, UINT8 bank, UINT8 prog, UINT8 note)
+int CFITOM::GetDrum(DRUMMAP* drum, uint8_t bank, uint8_t prog, uint8_t note)
 {
 	int ret = -1;
 	if (note < 128 && drum) {
@@ -245,7 +245,7 @@ int CFITOM::PollingCallBack()
 	return ret;
 }
 
-void CFITOM::TimerCallBack(UINT32 tick)
+void CFITOM::TimerCallBack(uint32_t tick)
 {
 	if (!timerprocessing) {
 		timerprocessing = 1;
@@ -321,7 +321,7 @@ int CFITOM::ImportConfig(CFITOMConfig* cfg)
 	return res;
 }
 
-void CFITOM::ReloadVoice(FMVOICE* voice, UINT32 dev, UINT8 bank, UINT8 num)
+void CFITOM::ReloadVoice(FMVOICE* voice, uint32_t dev, uint8_t bank, uint8_t num)
 {
 	for (int i = 0; i < theConfig->GetMidiInputs(); i++) {
 		for (int j = 0; j < 16; j++) {

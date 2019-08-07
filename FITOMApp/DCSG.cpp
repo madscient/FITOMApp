@@ -28,14 +28,14 @@ void CDCSG::Init()
 	GetChAttribute(3)->OutOfDVA();	// Noise ch should always be assigned manually
 }
 
-void CDCSG::UpdateVolExp(UINT8 ch)
+void CDCSG::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	UINT8 evol = attr->GetEffectiveLevel();
-	SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+	uint8_t evol = attr->GetEffectiveLevel();
+	int16_t lev = int16_t(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 	lev = (lev < 0) ? 0 : lev;
 	lev = (lev > 127) ? 127 : lev;
-	evol = Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[UINT8(lev)]), RANGE48DB, STEP300DB, 4);
+	evol = Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[uint8_t(lev)]), RANGE48DB, STEP300DB, 4);
 	if (prevvol[ch] != evol) {
 		prevvol[ch] = evol;
 		if (ch < 3) {
@@ -47,12 +47,12 @@ void CDCSG::UpdateVolExp(UINT8 ch)
 	}
 }
 
-void CDCSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CDCSG::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
 	if (ch < 3) {
-		UINT8 oct = fnum->block;
-		UINT16 etp = fnum->fnum >> (oct + 3);
+		uint8_t oct = fnum->block;
+		uint16_t etp = fnum->fnum >> (oct + 3);
 		if (etp != prevfreq[ch]) {
 			prevfreq[ch] = etp;
 			port->writeRaw(0, 0x80 | (ch * 32) | (etp & 0xf));
@@ -63,7 +63,7 @@ void CDCSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	}
 }
 
-void CDCSG::UpdateVoice(UINT8 ch)
+void CDCSG::UpdateVoice(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	switch (ch) {
@@ -80,9 +80,9 @@ void CDCSG::UpdateVoice(UINT8 ch)
 	}
 }
 
-UINT8 CDCSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t CDCSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
-	UINT8 ret = 0xff;
+	uint8_t ret = 0xff;
 	if (voice && voice->AL == 1) {
 		ret = 3;
 	}

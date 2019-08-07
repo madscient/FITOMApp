@@ -8,12 +8,12 @@
 class COPL4ML : public CSoundDevice
 {
 protected:
-	virtual ISoundDevice::FNUM GetFnumber(UINT8 ch, SINT16 offset);
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdatePanpot(UINT8 ch);
+	virtual ISoundDevice::FNUM GetFnumber(uint8_t ch, int16_t offset);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdatePanpot(uint8_t ch);
 public:
 	COPL4ML(CPort* pt, int fsamp);
 	virtual void Init();

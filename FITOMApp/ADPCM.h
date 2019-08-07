@@ -5,10 +5,10 @@
 
 struct ADPCMVOICE {
 	TCHAR name[32];		//program name
-	UINT32 staddr;		//Start address (bit unit)
-	UINT32 length;		//length (bit unit)
-	UINT32 loopstart;	//offset from start
-	UINT32 loopend;		//offset from start
+	uint32_t staddr;		//Start address (bit unit)
+	uint32_t length;		//length (bit unit)
+	uint32_t loopstart;	//offset from start
+	uint32_t loopend;		//offset from start
 };
 
 class CAdPcmBase : public CSoundDevice
@@ -18,22 +18,22 @@ protected:
 	size_t maxmem;
 	size_t usedmem;
 	size_t boundary;
-	UINT32 fmaster;
-	UINT8 parentdev;
-	UINT8 fcode;
+	uint32_t fmaster;
+	uint8_t parentdev;
+	uint8_t fcode;
 
-	virtual void UpdateVolExp(UINT8 ch) {};
-	virtual void UpdateVoice(UINT8 ch) {};
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum) {};
-	virtual void UpdatePanpot(UINT8 ch) {};
-	virtual void UpdateSustain(UINT8 ch) {};
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon) {};
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev) {};
+	virtual void UpdateVolExp(uint8_t ch) {};
+	virtual void UpdateVoice(uint8_t ch) {};
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum) {};
+	virtual void UpdatePanpot(uint8_t ch) {};
+	virtual void UpdateSustain(uint8_t ch) {};
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon) {};
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev) {};
 public:
-	CAdPcmBase(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev);
+	CAdPcmBase(uint8_t devid, CPort* pt, size_t regsize, int fsamp, int devide, int offset, size_t memsize, uint8_t maxch, uint8_t pardev);
 	virtual void Init() = 0;
-	virtual UINT8 GetParentDev() { return parentdev; };
-	virtual void LoadVoice(int prog, UINT8* data, size_t length) = 0;
+	virtual uint8_t GetParentDev() { return parentdev; };
+	virtual void LoadVoice(int prog, uint8_t* data, size_t length) = 0;
 	void Debug();
 };
 

@@ -32,9 +32,9 @@ protected:
 	CFITOMConfig* theConfig;
 	BOOL bInit;
 	BOOL bModified;
-	UINT32 theDevice;
-	UINT32 theBank;
-	UINT32 theProg;
+	uint32_t theDevice;
+	uint32_t theBank;
+	uint32_t theProg;
 	FMVOICE theVoice;
 	FMVOICE orgVoice;
 	CInstCh* pICh;
@@ -191,9 +191,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	void SetDevice(UINT32 dev);
-	void SetBank(UINT32 bank);
-	void SetProg(UINT32 prog);
+	void SetDevice(uint32_t dev);
+	void SetBank(uint32_t bank);
+	void SetProg(uint32_t prog);
 	CListCtrl lstCommon;
 	CListCtrl lstOper1;
 	CListCtrl lstOper2;

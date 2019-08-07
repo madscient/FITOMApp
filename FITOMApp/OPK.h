@@ -6,14 +6,14 @@
 
 class COPK : public CSoundDevice {
 protected:
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdatePanpot(UINT8 ch);
-	virtual void UpdateSustain(UINT8 ch);
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	static const UINT8 chofs[8];
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdatePanpot(uint8_t ch);
+	virtual void UpdateSustain(uint8_t ch);
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev);
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	static const uint8_t chofs[8];
 public:
 	COPK(CPort* pt, int fsamp);
 	virtual void Init();
@@ -26,17 +26,17 @@ public:
 
 class COPKRhythm : public CRhythmDevice {
 protected:
-	UINT8 RhythmOnMap;
-	UINT8 RhythmOffMap;
+	uint8_t RhythmOnMap;
+	uint8_t RhythmOffMap;
 	//Updater
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum = 0) {};
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdatePanpot(UINT8 ch) {};
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum = 0) {};
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdatePanpot(uint8_t ch) {};
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
 public:
 	virtual void Init();
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	virtual uint8_t QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 	COPKRhythm(COPK* parent);
 };
 

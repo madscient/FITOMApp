@@ -1,7 +1,7 @@
 #include "STDAFX.H"
 #include "Port.h"
 
-void CPort::writeBurst(UINT16 addr, BYTE* data, size_t length)
+void CPort::writeBurst(uint16_t addr, BYTE* data, size_t length)
 {
 	for (size_t i = 0; i < length; i++) {
 		writeRaw(addr, data[i]);
@@ -9,26 +9,26 @@ void CPort::writeBurst(UINT16 addr, BYTE* data, size_t length)
 }
 
 //-----------------------------------------------------------
-CMappedPort::CMappedPort(CPort* pt, UINT32 addr, UINT32 range) : CMappedPort()
+CMappedPort::CMappedPort(CPort* pt, uint32_t addr, uint32_t range) : CMappedPort()
 {
 	Map(pt, addr, range);
 }
 
-UINT32 CMappedPort::GetNextAddress()
+uint32_t CMappedPort::GetNextAddress()
 {
-	UINT32 ret = 0;
+	uint32_t ret = 0;
 	for (int i = 0; i < ports.size(); i++) {
 		ret = max(ret, (ports[i].addr + ports[i].range));
 	}
 	return ret;
 }
 
-UINT32 CMappedPort::Append(CPort* pt, UINT32 range)
+uint32_t CMappedPort::Append(CPort* pt, uint32_t range)
 {
 	return Map(pt, GetNextAddress(), range);
 }
 
-UINT32 CMappedPort::Map(CPort* pt, UINT32 addr, UINT32 range)
+uint32_t CMappedPort::Map(CPort* pt, uint32_t addr, uint32_t range)
 {
 	PORTMAP ptmap;
 	ptmap.port = pt;
@@ -38,7 +38,7 @@ UINT32 CMappedPort::Map(CPort* pt, UINT32 addr, UINT32 range)
 	return addr;
 }
 
-int CMappedPort::GetPortIndex(UINT32 addr)
+int CMappedPort::GetPortIndex(uint32_t addr)
 {
 	for (int i = 0; i < ports.size(); i++) {
 		if (ports[i].addr <= addr && addr < (ports[i].addr + ports[i].range)) {
@@ -48,7 +48,7 @@ int CMappedPort::GetPortIndex(UINT32 addr)
 	return -1;
 }
 
-CPort* CMappedPort::GetSubPort(UINT32 addr)
+CPort* CMappedPort::GetSubPort(uint32_t addr)
 {
 	int i = GetPortIndex(addr);
 	if (i < 0 || i > ports.size()) {
@@ -57,7 +57,7 @@ CPort* CMappedPort::GetSubPort(UINT32 addr)
 	return ports[i].port;
 }
 
-void CMappedPort::write(UINT16 addr, UINT16 data)
+void CMappedPort::write(uint16_t addr, uint16_t data)
 {
 	int i = GetPortIndex(addr);
 	if (i >= 0) {
@@ -65,9 +65,9 @@ void CMappedPort::write(UINT16 addr, UINT16 data)
 	}
 }
 
-UINT8 CMappedPort::read(UINT16 addr)
+uint8_t CMappedPort::read(uint16_t addr)
 {
-	UINT8 ret = 0;
+	uint8_t ret = 0;
 	int i = GetPortIndex(addr);
 	if (i >= 0) {
 		ret = ports[i].port->read(addr - ports[i].addr);

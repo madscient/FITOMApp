@@ -20,7 +20,7 @@ CW32MidiIn::CW32MidiIn(LPCTSTR name) : rpt(0), wpt(0)
 	MMRESULT res = midiInOpen(&hIn, dev, (DWORD_PTR)CW32MidiIn::MidiInProc, (DWORD_PTR)this, CALLBACK_FUNCTION);
 	if (res != MMSYSERR_NOERROR) { throw new CResourceException() ; }
 	mhdr.dwFlags = 0;
-	mhdr.lpData = (LPSTR)(new UINT8[RING_MAX]);
+	mhdr.lpData = (LPSTR)(new uint8_t[RING_MAX]);
 	mhdr.dwBufferLength = RING_MAX;
 	midiInPrepareHeader(hIn, &mhdr, sizeof(MIDIHDR));
 	midiInStart(hIn);
@@ -34,14 +34,14 @@ CW32MidiIn::~CW32MidiIn()
 	midiInClose(hIn);
 }
 
-UINT8 CW32MidiIn::IsReceived(void)
+uint8_t CW32MidiIn::IsReceived(void)
 {
     return (wpt!=rpt);
 }
 
-UINT8 CW32MidiIn::Read(void)
+uint8_t CW32MidiIn::Read(void)
 {
-	UINT8 ret = 0;
+	uint8_t ret = 0;
 	ret = buf[rpt];
 	rpt = (rpt + 1) & (RING_MAX - 1);
 	return ret;
@@ -163,7 +163,7 @@ void CALLBACK CW32MidiOut::MidiOutProc(HMIDIOUT hMidiOut, UINT wMsg, DWORD dwIns
 	}
 }
 
-void CW32MidiOut::Send(UINT8 data)
+void CW32MidiOut::Send(uint8_t data)
 {
 	Send(&data, 1);
 }
@@ -176,7 +176,7 @@ void CW32MidiOut::Send(void* msg, size_t len)
 		txout++;
 		LPMIDIHDR mhdr = new MIDIHDR;
 		mhdr->dwFlags = 0;
-		mhdr->lpData = (LPSTR)(new UINT8[len]);
+		mhdr->lpData = (LPSTR)(new uint8_t[len]);
 		mhdr->dwBufferLength = len;
 		memcpy(mhdr->lpData, msg, len);
 		midiOutPrepareHeader(hOut, mhdr, sizeof(MIDIHDR));
@@ -184,9 +184,9 @@ void CW32MidiOut::Send(void* msg, size_t len)
 	}
 }
 
-UINT8 CW32MidiOut::IsTxBusy()
+uint8_t CW32MidiOut::IsTxBusy()
 {
-	return UINT8(txout);
+	return uint8_t(txout);
 }
 
 CW32RsMidi::CW32RsMidi(LPCTSTR name)
@@ -215,7 +215,7 @@ CW32RsMidi::~CW32RsMidi()
 	CloseHandle(hCom);
 }
 
-UINT8 CW32RsMidi::IsReceived()
+uint8_t CW32RsMidi::IsReceived()
 {
 	DWORD errors;
 	COMSTAT comStat;
@@ -223,15 +223,15 @@ UINT8 CW32RsMidi::IsReceived()
 	return (comStat.cbInQue > 0);
 }
 
-UINT8 CW32RsMidi::Read()
+uint8_t CW32RsMidi::Read()
 {
-	UINT8 ret = 0;
+	uint8_t ret = 0;
 	DWORD numberOfPut;
 	ReadFile(hCom, &ret, sizeof(ret), &numberOfPut, NULL);
 	return ret;
 }
 
-UINT8 CW32RsMidi::IsTxBusy()
+uint8_t CW32RsMidi::IsTxBusy()
 {
 	DWORD errors;
 	COMSTAT comStat;
@@ -245,7 +245,7 @@ void CW32RsMidi::Send(void* msg, size_t len)
 	WriteFile(hCom, msg, len, &ret, NULL);
 }
 
-void CW32RsMidi::Send(UINT8 data)
+void CW32RsMidi::Send(uint8_t data)
 {
 	Send(&data, 1);
 }

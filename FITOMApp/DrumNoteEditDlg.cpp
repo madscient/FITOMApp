@@ -97,14 +97,14 @@ BOOL CDrumNoteEditDlg::OnInitDialog()
 		cmbDevice.AddString(_T("(NONE)"));
 		cmbDevice.SetItemData(0, DEVICE_NONE);
 		for (int i = 0; i < theConfig->GetLogDevs(); i++) {
-			UINT32 did = theConfig->GetDeviceUniqID(theConfig->GetLogDeviceFromIndex(i));
+			uint32_t did = theConfig->GetDeviceUniqID(theConfig->GetLogDeviceFromIndex(i));
 			str.Format(_T("%02X:%s"), did & 0xff, CFITOM::GetDeviceNameFromID(did));
 			int k = cmbDevice.AddString(LPCTSTR(str));
 			cmbDevice.SetItemData(k, did);
 		}
 		/*
 		for (int i = 0; i < theConfig->GetPhyDevs(); i++) {
-			UINT32 phyid = theConfig->GetDeviceUniqID(theConfig->GetPhysDeviceFromIndex(i), TRUE);
+			uint32_t phyid = theConfig->GetDeviceUniqID(theConfig->GetPhysDeviceFromIndex(i), TRUE);
 			BOOL regist = TRUE;
 			for (int j = 0; j < cmbDevice.GetCount(); j++) {
 				if (phyid == cmbDevice.GetItemData(j)) {
@@ -125,7 +125,7 @@ BOOL CDrumNoteEditDlg::OnInitDialog()
 		*/
 		for (int i = 0; i < theConfig->GetPcmDevs(); i++) {
 			CAdPcmBase* pdev = theConfig->GetPCMDeviceFromIndex(i);
-			UINT32 phyid = theConfig->GetDeviceUniqID(pdev);
+			uint32_t phyid = theConfig->GetDeviceUniqID(pdev);
 			DWORD ifid = (phyid >> 16) & 0xff;
 			DWORD slid = (phyid >> 8) & 0xff;
 			TCHAR devname[64];
@@ -195,7 +195,7 @@ void CDrumNoteEditDlg::Refresh()
 			spnGate.SetPos(theDrum.gate);
 		}
 		if (edtTune.GetSafeHwnd() != wndFocused->GetSafeHwnd()) {
-			spnTune.SetPos((SINT16)theDrum.fnum);
+			spnTune.SetPos((int16_t)theDrum.fnum);
 		}
 	}
 }
@@ -203,7 +203,7 @@ void CDrumNoteEditDlg::Refresh()
 void CDrumNoteEditDlg::Update()
 {
 	CString str;
-	theDrum.fnum = (UINT16)spnTune.GetPos();
+	theDrum.fnum = (uint16_t)spnTune.GetPos();
 	edtNoteName.GetWindowText(str);
 	StringCchCopy(theDrum.name, _countof(theDrum.name), LPCTSTR(str));
 	theDrum.devID = cmbDevice.GetItemData(cmbDevice.GetCurSel());

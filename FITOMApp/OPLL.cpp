@@ -11,7 +11,7 @@
 #define GET_RV(v,o)	(4)
 #define IS_KEY(ch) (GetReg(0x20 + ch, 0) & 0x10)
 
-COPLL::COPLL(CPort* pt, UINT8 mode, int fsamp, UINT8 devtype) :
+COPLL::COPLL(CPort* pt, uint8_t mode, int fsamp, uint8_t devtype) :
 CSoundDevice(devtype, 9, fsamp, 72, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x40)
 {
 	ops = 2;
@@ -29,18 +29,18 @@ void COPLL::Init()
 {
 }
 
-void COPLL::SetVoice(UINT8 ch, FMVOICE* voice, int update)
+void COPLL::SetVoice(uint8_t ch, FMVOICE* voice, int update)
 {
 	update = (voice->AL & 0x40) ? update : -1;
 	CSoundDevice::SetVoice(ch, voice, update);
 }
 
-void COPLL::UpdateVoice(UINT8 ch)
+void COPLL::UpdateVoice(uint8_t ch)
 {
-	UINT8 tmp;
+	uint8_t tmp;
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 
-	UINT8 inst = 0;
+	uint8_t inst = 0;
 	if (voice->AL & 0x40) {//Preset Instrument
 		inst = voice->AL & 0xf;
 	} else {//User Instrument
@@ -64,33 +64,33 @@ void COPLL::UpdateVoice(UINT8 ch)
 	SetReg(0x30 + ch, (inst << 4) | (GetReg(0x30 + ch, 0) & 0x0f));
 }
 
-void COPLL::UpdateVolExp(UINT8 ch)
+void COPLL::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	UINT8 evol = CalcLinearLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
+	uint8_t evol = CalcLinearLevel(attr->GetEffectiveLevel(), voice->op[1].TL);
 	attr->baseTL[1] = evol;
 	evol = Linear2dB(evol, RANGE48DB, STEP150DB, 4);
 	SetReg(0x30 + ch, (GetReg(0x30 + ch, 0) & 0xf0) | evol, 0);
 }
 
-void COPLL::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void COPLL::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
-	SetReg(0x10 + ch, UINT8((fnum->fnum>>2) & 0xff), 1);
+	SetReg(0x10 + ch, uint8_t((fnum->fnum>>2) & 0xff), 1);
 	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0x30) |
-		(fnum->block << 1) | UINT8(fnum->fnum >> 10), 1);
+		(fnum->block << 1) | uint8_t(fnum->fnum >> 10), 1);
 }
 
-void COPLL::UpdateSustain(UINT8 ch)
+void COPLL::UpdateSustain(uint8_t ch)
 {
-	UINT8 sus = GetChAttribute(ch)->GetParent()->GetSustain() ? 0x20 : 0;
-	UINT8 tmp = GetReg(0x20 + ch, 0) & 0xdf;
+	uint8_t sus = GetChAttribute(ch)->GetParent()->GetSustain() ? 0x20 : 0;
+	uint8_t tmp = GetReg(0x20 + ch, 0) & 0xdf;
 	SetReg(0x20 + ch, sus | tmp);
 }
 
-void COPLL::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void COPLL::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	lev = (lev > 63) ? 63 : lev & 0x3f;
 	if (op == 0) {
@@ -100,9 +100,9 @@ void COPLL::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 	}
 }
 
-void COPLL::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPLL::UpdateKey(uint8_t ch, uint8_t keyon)
 {
-	UINT8 tmp;
+	uint8_t tmp;
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 
 	if (!(voice->AL & 0x40)) {//Preset Instrument
@@ -117,7 +117,7 @@ void COPLL::UpdateKey(UINT8 ch, UINT8 keyon)
 	SetReg(0x20 + ch, tmp | (keyon ? 0x10 : 0));
 }
 
-void COPLL::TimerCallBack(UINT32 tick)
+void COPLL::TimerCallBack(uint32_t tick)
 {
 	CSoundDevice::TimerCallBack(tick);
 #if 0
@@ -132,24 +132,24 @@ void COPLL::TimerCallBack(UINT32 tick)
 #endif
 }
 
-COPLLP::COPLLP(CPort* pt, UINT8 mode, int fsamp) : COPLL(pt, mode, fsamp, DEVICE_OPLLP)
+COPLLP::COPLLP(CPort* pt, uint8_t mode, int fsamp) : COPLL(pt, mode, fsamp, DEVICE_OPLLP)
 {
 }
 
-COPLLX::COPLLX(CPort* pt, UINT8 mode, int fsamp) : COPLL(pt, mode, fsamp, DEVICE_OPLLX)
+COPLLX::COPLLX(CPort* pt, uint8_t mode, int fsamp) : COPLL(pt, mode, fsamp, DEVICE_OPLLX)
 {
 }
 
-COPLL2::COPLL2(CPort* pt, UINT8 mode, int fsamp) : COPLL(pt, mode, fsamp, DEVICE_OPLL2)
+COPLL2::COPLL2(CPort* pt, uint8_t mode, int fsamp) : COPLL(pt, mode, fsamp, DEVICE_OPLL2)
 {
 }
 
-void COPLL2::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void COPLL2::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
-	SetReg(0x10 + ch, (fnum->block << 5)|UINT8((fnum->fnum>>6)&0xff), 0);
-	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0xf0) | UINT8((fnum->fnum>>2)&0xf), 0);
+	SetReg(0x10 + ch, (fnum->block << 5)|uint8_t((fnum->fnum>>6)&0xff), 0);
+	SetReg(0x20 + ch, (GetReg(0x20 + ch, 0) & 0xf0) | uint8_t((fnum->fnum>>2)&0xf), 0);
 }
 
 
@@ -157,10 +157,10 @@ void COPLL2::UpdateFreq(UINT8 ch, const FNUM* fnum)
 ISoundDevice::FNUM COPLLRhythm::RhythmFnum[3] = {
 	ISoundDevice::FNUM(2, 0x480), ISoundDevice::FNUM(2, 0x540), ISoundDevice::FNUM(0, 0x700)
 };
-UINT8 COPLLRhythm::RhythmReg[] = { 0x37, 0x38, 0x38, 0x37, 0x36, };
-UINT8 COPLLRhythm::RhythmMapCh[] = { 7, 8, 8, 7, 6, };
+uint8_t COPLLRhythm::RhythmReg[] = { 0x37, 0x38, 0x38, 0x37, 0x36, };
+uint8_t COPLLRhythm::RhythmMapCh[] = { 7, 8, 8, 7, 6, };
 
-UINT8 COPLLRhythm::RhythmFreq[3] = { 47, 60, 53, };
+uint8_t COPLLRhythm::RhythmFreq[3] = { 47, 60, 53, };
 
 
 COPLLRhythm::COPLLRhythm(COPLL* parent) : CRhythmDevice(parent, DEVICE_OPLL_RHY, 5)
@@ -173,15 +173,15 @@ void COPLLRhythm::Init()
 	SetReg(0x0e, 0x20);
 }
 
-void COPLLRhythm::UpdateVolExp(UINT8 ch)
+void COPLLRhythm::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	//SetReg(0x0e, 0x20);
 	if (attr) {
-		UINT8 evol = Linear2dB(CalcLinearLevel(attr->volume, 127 - attr->velocity), RANGE48DB, STEP150DB, 4);
-		UINT16 addr = RhythmReg[ch];
-		UINT8 vch = RhythmMapCh[ch];
-		UINT8 mask = (ch & 5) ? 0xf0 : 0x0f;
+		uint8_t evol = Linear2dB(CalcLinearLevel(attr->GetVolume(), 127 - attr->velocity), RANGE48DB, STEP150DB, 4);
+		uint16_t addr = RhythmReg[ch];
+		uint8_t vch = RhythmMapCh[ch];
+		uint8_t mask = (ch & 5) ? 0xf0 : 0x0f;
 		evol = (ch & 5) ? evol : (evol << 4);
 
 		SetReg(addr, (GetReg(addr, 0) & mask) | evol);
@@ -189,17 +189,17 @@ void COPLLRhythm::UpdateVolExp(UINT8 ch)
 	}
 }
 
-void COPLLRhythm::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void COPLLRhythm::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
-	UINT8 vch = RhythmMapCh[ch];
+	uint8_t vch = RhythmMapCh[ch];
 	fnum = fnum ? fnum : &RhythmFnum[vch - 6];
 	((COPLL*)pParent)->UpdateFreq(vch, fnum);
 }
 
-void COPLLRhythm::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPLLRhythm::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	if (ch < chs) {
-		UINT8 keymask = ~(1 << ch);
+		uint8_t keymask = ~(1 << ch);
 		SetReg(0x0e, (GetReg(0x0e, 0) & keymask) | 0x20);
 		if (keyon) {
 			SetReg(0x0e, (GetReg(0x0e, 0) & keymask) | 0x20 | (1 << ch));
@@ -207,9 +207,9 @@ void COPLLRhythm::UpdateKey(UINT8 ch, UINT8 keyon)
 	}
 }
 
-UINT8 COPLLRhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t COPLLRhythm::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
-	UINT8 ret = 0xff;
+	uint8_t ret = 0xff;
 	if (voice) {
 		int num = voice->AL & 0x7;
 		int inuse = GetReg(0x0e, 0) & (1 << num);

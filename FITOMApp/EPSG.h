@@ -7,15 +7,15 @@
 class CEPSG : public CPSGBase
 {
 protected:
-	UINT8 prevvol[3];
-	UINT16 prevfreq[3];
-	virtual void UpdateKey(UINT8 ch, UINT8 keyon);
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateVoice(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdateTL(UINT8 ch, UINT8 op, UINT8 lev);
-	virtual void EGOff(UINT8 ch);
-	UINT8 prevmix;
+	uint8_t prevvol[3];
+	uint16_t prevfreq[3];
+	virtual void UpdateKey(uint8_t ch, uint8_t keyon);
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateVoice(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdateTL(uint8_t ch, uint8_t op, uint8_t lev);
+	virtual void EGOff(uint8_t ch);
+	uint8_t prevmix;
 public:
 	CEPSG(CPort* pt, int fsamp = 0);
 	virtual void Init();

@@ -2,7 +2,7 @@
 #include "ADPCM.h"
 #include "MIDI.h"
 
-CAdPcmBase::CAdPcmBase(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, int offset, size_t memsize, UINT8 maxch, UINT8 pardev)
+CAdPcmBase::CAdPcmBase(uint8_t devid, CPort* pt, size_t regsize, int fsamp, int devide, int offset, size_t memsize, uint8_t maxch, uint8_t pardev)
 	: CSoundDevice(devid, maxch, fsamp, devide, offset, FnumTableType::DeltaN, pt, regsize)
 	, maxmem(memsize), usedmem(0), boundary(0), parentdev(pardev), fcode(fsamp)
 {

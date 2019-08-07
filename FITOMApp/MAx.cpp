@@ -55,7 +55,7 @@ void CSD1::Init()
 	port->flush();
 }
 
-void CSD1::SetVoice(UINT8 ch, FMVOICE* voice, int update)
+void CSD1::SetVoice(uint8_t ch, FMVOICE* voice, int update)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
@@ -119,7 +119,7 @@ void CSD1::UpdatePresetTone()
 	port->flush();
 }
 
-void CSD1::UpdateVoice(UINT8 ch)
+void CSD1::UpdateVoice(uint8_t ch)
 {
 	if (Instrument[ch] > 15) {
 		SetVoice(ch, GetChAttribute(ch)->GetVoice(), 1);
@@ -128,19 +128,19 @@ void CSD1::UpdateVoice(UINT8 ch)
 	port->write(0x0f, (GetChAttribute(ch)->IsRunning() ? 0x40 : 0) | Instrument[ch] & 0xf);
 }
 
-void CSD1::UpdateVolExp(UINT8 ch)
+void CSD1::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	UINT8 evol = CalcVolExpVel(127, attr->express, attr->velocity);
+	uint8_t evol = CalcVolExpVel(127, attr->GetExpress(), attr->velocity);
 	evol = 31 - Linear2dB(evol, RANGE48DB, STEP075DB, 5);
-	UINT8 cvol = 31 - Linear2dB(attr->volume, RANGE48DB, STEP075DB, 5);
+	uint8_t cvol = 31 - Linear2dB(attr->GetVolume(), RANGE48DB, STEP075DB, 5);
 	port->write(0x0b, ch);
 	port->write(0x0c, evol << 2);
 	port->write(0x10, (cvol << 2) | 1);
 }
 
-void CSD1::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CSD1::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
@@ -152,17 +152,17 @@ void CSD1::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	port->write(0x13, 0x00);// FRAC 
 }
 
-void CSD1::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void CSD1::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 }
 
-void CSD1::UpdateKey(UINT8 ch, UINT8 keyon)
+void CSD1::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	port->write(0x0b, ch);
 	port->write(0x0f, (Instrument[ch] & 0xf) | (keyon ? 0x40 : 0));
 }
 
-void CSD1::ResetChannel(UINT8 ch)
+void CSD1::ResetChannel(uint8_t ch)
 {
 	port->write(0x0b, ch);
 	port->write(0x0f, 0x30);
@@ -175,7 +175,7 @@ void CSD1::register_dump()
 		fprintf(stderr, _T("\n%04X: "), i);
 		for (int j = 0; j < 16; j++) {
 			port->write(21, i * 16 + j);	//reg addr
-			UINT8 data = port->read(22);
+			uint8_t data = port->read(22);
 			fprintf(stderr, _T("%02X "), data);
 		}
 	}

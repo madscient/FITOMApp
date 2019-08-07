@@ -3,12 +3,12 @@
 
 #define YMDELTA_OFFSET	448
 
-CYmDelta::CYmDelta(UINT8 devid, CPort* pt, size_t regsize, int fsamp, int devide, size_t memsize, UINT8 pardev, const REGMAP& regset)
+CYmDelta::CYmDelta(uint8_t devid, CPort* pt, size_t regsize, int fsamp, int devide, size_t memsize, uint8_t pardev, const REGMAP& regset)
 	: CAdPcmBase(devid, pt, regsize, fsamp, devide, YMDELTA_OFFSET, memsize, 1, pardev), regmap(regset)
 {
 }
 
-UINT16 CYmDelta::GetDeltaN(int off)
+uint16_t CYmDelta::GetDeltaN(int off)
 {
 	int oct = 0;
 	while (off > 1216) {
@@ -22,7 +22,7 @@ UINT16 CYmDelta::GetDeltaN(int off)
 	return ret;
 }
 
-ISoundDevice::FNUM CYmDelta::GetFnumber(UINT8 ch, SINT16 offset)
+ISoundDevice::FNUM CYmDelta::GetFnumber(uint8_t ch, int16_t offset)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	int index = attr->GetNoteIndex(MasterTune + (NoteOffset * 64) + offset);
@@ -33,10 +33,10 @@ ISoundDevice::FNUM CYmDelta::GetFnumber(UINT8 ch, SINT16 offset)
 	return ret;
 }
 
-void CYmDelta::LoadVoice(int prog, UINT8* data, size_t length)
+void CYmDelta::LoadVoice(int prog, uint8_t* data, size_t length)
 {
-	UINT32 st = 0;
-	UINT32 ed = 0;
+	uint32_t st = 0;
+	uint32_t ed = 0;
 	if (prog) {
 		st = adpcmvoice[prog - 1].staddr + adpcmvoice[prog - 1].length;
 	}
@@ -72,11 +72,11 @@ void CYmDelta::LoadVoice(int prog, UINT8* data, size_t length)
 	SetReg(regmap.control1, 0);
 }
 
-void CYmDelta::PlayPCM(UINT8 ch, UINT8 num, UINT8 volume, SINT8 pan, SINT32 offset)
+void CYmDelta::PlayPCM(uint8_t ch, uint8_t num, uint8_t volume, int8_t pan, int32_t offset)
 {
 	if (num < 128 && adpcmvoice[num].length != 0) {
 		pan /= 16;
-		UINT8 chena = 0;
+		uint8_t chena = 0;
 		if (pan >= 4) { //R
 			chena = 0x40;
 		}
@@ -86,9 +86,9 @@ void CYmDelta::PlayPCM(UINT8 ch, UINT8 num, UINT8 volume, SINT8 pan, SINT32 offs
 		else { //C
 			chena = 0xc0;
 		}
-		UINT32 st = adpcmvoice[num].staddr;
-		UINT32 ed = st + adpcmvoice[num].length - 1;
-		UINT32 deltan = GetDeltaN(offset);
+		uint32_t st = adpcmvoice[num].staddr;
+		uint32_t ed = st + adpcmvoice[num].length - 1;
+		uint32_t deltan = GetDeltaN(offset);
 		SetReg(regmap.flag, 0x1b);
 		SetReg(regmap.flag, 0x80);
 		SetReg(regmap.control1, 0x20);
@@ -106,7 +106,7 @@ void CYmDelta::PlayPCM(UINT8 ch, UINT8 num, UINT8 volume, SINT8 pan, SINT32 offs
 	}
 }
 
-void CYmDelta::StopPCM(UINT8 ch, UINT8 num)
+void CYmDelta::StopPCM(uint8_t ch, uint8_t num)
 {
 	SetReg(regmap.control1, GetReg(regmap.control1, 0) & 0x7f);
 	SetReg(regmap.control1, 0);
@@ -114,7 +114,7 @@ void CYmDelta::StopPCM(UINT8 ch, UINT8 num)
 	SetReg(regmap.control1, 0);
 }
 
-void CYmDelta::UpdateKey(UINT8 ch, UINT8 keyon)
+void CYmDelta::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	if (ch < chs) {
 		StopPCM(ch, 0);
@@ -126,14 +126,14 @@ void CYmDelta::UpdateKey(UINT8 ch, UINT8 keyon)
 	}
 }
 
-void CYmDelta::UpdateVolExp(UINT8 ch)
+void CYmDelta::UpdateVolExp(uint8_t ch)
 {
-	UINT8 volume = CalcLinearLevel(GetChAttribute(ch)->GetEffectiveLevel(), 0);
+	uint8_t volume = CalcLinearLevel(GetChAttribute(ch)->GetEffectiveLevel(), 0);
 	volume = (volume) << 1;
 	SetReg(regmap.volume, volume);
 }
 
-void CYmDelta::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CYmDelta::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	fnum = fnum ? fnum : attr->GetLastFnumber();
@@ -141,10 +141,10 @@ void CYmDelta::UpdateFreq(UINT8 ch, const FNUM* fnum)
 	SetReg(regmap.deltanMSB, (fnum->fnum >> 8) & 0xff);
 }
 
-void CYmDelta::UpdatePanpot(UINT8 ch)
+void CYmDelta::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
-	UINT8 chena = 0;
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
+	uint8_t chena = 0;
 	if (pan >= 4) { //R
 		chena = 0x40;
 	}
@@ -157,13 +157,13 @@ void CYmDelta::UpdatePanpot(UINT8 ch)
 	SetReg(regmap.control2, regmap.ctrl2init | (chena & regmap.panmask));
 }
 
-void CYmDelta::UpdateVoice(UINT8 ch)
+void CYmDelta::UpdateVoice(uint8_t ch)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
 	if (adpcmvoice[num].length) {
-		UINT32 st = adpcmvoice[num].staddr;
-		UINT32 ed = st + adpcmvoice[num].length - 1;
+		uint32_t st = adpcmvoice[num].staddr;
+		uint32_t ed = st + adpcmvoice[num].length - 1;
 		SetReg(regmap.startLSB, (st >> 5) & 0xff);
 		SetReg(regmap.startMSB, (st >> 13) & 0xff);
 		SetReg(regmap.endLSB, (ed >> 5) & 0xff);
@@ -205,7 +205,7 @@ void CAdPcm2608::Init()
 }
 
 //CAdPcm2610B YM2610 aka OPNB ADPCM_B
-CAdPcm2610B::CAdPcm2610B(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
+CAdPcm2610B::CAdPcm2610B(CPort* pt, int fsamp, size_t memsize, uint8_t pardev)
 	: CYmDelta(DEVICE_ADPCMB, pt, 0x20, fsamp, 144, memsize, pardev,
 	{ 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0xff, 0xff, 0xff, 0x19, 0x1a, 0x1b, 0x1c, 0x01, 0x00, 0xc0 })
 {
@@ -216,10 +216,10 @@ void CAdPcm2610B::Init()
 {
 }
 
-void CAdPcm2610B::LoadVoice(int prog, UINT8* data, size_t length)
+void CAdPcm2610B::LoadVoice(int prog, uint8_t* data, size_t length)
 {
-	UINT32 st = 0;
-	UINT32 ed = 0;
+	uint32_t st = 0;
+	uint32_t ed = 0;
 	if (prog) {
 		st = adpcmvoice[prog - 1].staddr + adpcmvoice[prog - 1].length;
 	}
@@ -239,12 +239,12 @@ void CAdPcm2610B::LoadVoice(int prog, UINT8* data, size_t length)
 	}
 }
 
-void CAdPcm2610B::UpdateVoice(UINT8 ch)
+void CAdPcm2610B::UpdateVoice(uint8_t ch)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
-	UINT32 st = adpcmvoice[num].staddr;
-	UINT32 ed = st + adpcmvoice[num].length - 1;
+	uint32_t st = adpcmvoice[num].staddr;
+	uint32_t ed = st + adpcmvoice[num].length - 1;
 	SetReg(regmap.startLSB, (st >> 8) & 0xff);
 	SetReg(regmap.startMSB, (st >> 16) & 0xff);
 	SetReg(regmap.endLSB, (ed >> 8) & 0xff);
@@ -252,7 +252,7 @@ void CAdPcm2610B::UpdateVoice(UINT8 ch)
 }
 
 //CAdPcm2610A YM2610 aka OPNB ADPCM_A
-CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, UINT8 pardev)
+CAdPcm2610A::CAdPcm2610A(CPort* pt, int fsamp, size_t memsize, uint8_t pardev)
 	: CAdPcmBase(DEVICE_ADPCMA, pt, 0x30, fsamp, 0, YMDELTA_OFFSET, memsize, 6, pardev)
 {
 	boundary = 0x100000;
@@ -264,10 +264,10 @@ void CAdPcm2610A::Init()
 	SetReg(0, 0);
 }
 
-void CAdPcm2610A::LoadVoice(int prog, UINT8* data, size_t length)
+void CAdPcm2610A::LoadVoice(int prog, uint8_t* data, size_t length)
 {
-	UINT32 st = 0;
-	UINT32 ed = 0;
+	uint32_t st = 0;
+	uint32_t ed = 0;
 	if (prog) {
 		st = adpcmvoice[prog - 1].staddr + adpcmvoice[prog - 1].length;
 	}
@@ -290,29 +290,29 @@ void CAdPcm2610A::LoadVoice(int prog, UINT8* data, size_t length)
 	}
 }
 
-void CAdPcm2610A::UpdateKey(UINT8 ch, UINT8 keyon)
+void CAdPcm2610A::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	if (keyon) {
 		SetReg(0x00, (1 << ch), 1);
 	}
 }
 
-void CAdPcm2610A::UpdateVolExp(UINT8 ch)
+void CAdPcm2610A::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	UINT8 evol = 31 - Linear2dB(CalcVolExpVel(attr->velocity, attr->express, 127), RANGE24DB, STEP075DB, 5);
+	uint8_t evol = 31 - Linear2dB(CalcVolExpVel(attr->velocity, attr->GetExpress(), 127), RANGE24DB, STEP075DB, 5);
 	SetReg(0x08 + ch, (GetReg(0x8 + ch, 0) & 0xe0) | evol, 1);
 
-	evol = 63 - Linear2dB(CalcLinearLevel(attr->volume, 0), RANGE48DB, STEP075DB, 6);
+	evol = 63 - Linear2dB(CalcLinearLevel(attr->GetVolume(), 0), RANGE48DB, STEP075DB, 6);
 	if (GetReg(0x01, 0) != evol) {
 		SetReg(0x01, evol);
 	}
 }
 
-void CAdPcm2610A::UpdatePanpot(UINT8 ch)
+void CAdPcm2610A::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
-	UINT8 chena = 0;
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
+	uint8_t chena = 0;
 	if (pan >= 4) { //R
 		chena = 0x40;
 	}
@@ -325,13 +325,13 @@ void CAdPcm2610A::UpdatePanpot(UINT8 ch)
 	SetReg(0x08 + ch, (GetReg(0x8 + ch, 0) & 0x3f) | chena, 1);
 }
 
-void CAdPcm2610A::UpdateVoice(UINT8 ch)
+void CAdPcm2610A::UpdateVoice(uint8_t ch)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	int num = voice->AL;
 	if (adpcmvoice[num].length) {
-		UINT32 st = adpcmvoice[num].staddr;
-		UINT32 ed = st + adpcmvoice[num].length - 1;
+		uint32_t st = adpcmvoice[num].staddr;
+		uint32_t ed = st + adpcmvoice[num].length - 1;
 		SetReg(0x10 + ch, (st >> 8) & 0xff, 1);
 		SetReg(0x18 + ch, (st >> 16) & 0xff, 1);
 		SetReg(0x20 + ch, (ed >> 8) & 0xff, 1);

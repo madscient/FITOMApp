@@ -11,29 +11,29 @@ void CSAA::Init()
 {
 }
 
-void CSAA::UpdateVolExp(UINT8 ch)
+void CSAA::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
-		UINT8 evol = attr->GetEffectiveLevel();
-		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+		uint8_t evol = attr->GetEffectiveLevel();
+		int16_t lev = int16_t(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
-		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127 - UINT8(lev)), RANGE48DB, STEP300DB, 4);
+		evol = 15 - Linear2dB(CalcLinearLevel(evol, 127 - uint8_t(lev)), RANGE48DB, STEP300DB, 4);
 		SetReg(0xaa + ch, evol & 0xf, 1);
 	}
 }
 
-void CSAA::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CSAA::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> (oct + 2);
-	SetReg(ch * 2 + 0xa0, UINT8(etp & 0xff), 1);
-	SetReg(ch * 2 + 0xa1, UINT8(etp >> 8), 1);
+	uint8_t oct = fnum->block;
+	uint16_t etp = fnum->fnum >> (oct + 2);
+	SetReg(ch * 2 + 0xa0, uint8_t(etp & 0xff), 1);
+	SetReg(ch * 2 + 0xa1, uint8_t(etp >> 8), 1);
 }
 
-void CSAA::UpdateVoice(UINT8 ch)
+void CSAA::UpdateVoice(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -46,7 +46,7 @@ void CSAA::UpdateVoice(UINT8 ch)
 	}
 }
 
-void CSAA::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void CSAA::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	switch (op) {
@@ -58,7 +58,7 @@ void CSAA::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 	}
 }
 
-void CSAA::SetReg(UINT16 reg, UINT8 data, UINT8 v)
+void CSAA::SetReg(uint16_t reg, uint8_t data, uint8_t v)
 {
 	if (!v && regbak) {
 		v = (regbak[reg] != data);

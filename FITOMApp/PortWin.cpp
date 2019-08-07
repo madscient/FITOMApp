@@ -10,7 +10,7 @@ CSCCIPort::CSCCIPort(scciInterface* pif, SoundChip* pchip, size_t maxreg) : pInt
 {
 }
 
-void CSCCIPort::write(UINT16 addr, UINT16 data)
+void CSCCIPort::write(uint16_t addr, uint16_t data)
 {
 	if (pChip) {
 		pChip->setRegister(DWORD(addr), DWORD(data));
@@ -22,15 +22,15 @@ void CSCCIPort::write(UINT16 addr, UINT16 data)
 	}
 }
 
-UINT8 CSCCIPort::read(UINT16 addr)
+uint8_t CSCCIPort::read(uint16_t addr)
 {
 	if (pChip && addr < regsize) {
-		return UINT8(pChip->getRegister(DWORD(addr)));
+		return uint8_t(pChip->getRegister(DWORD(addr)));
 	}
 	return 255;
 }
 
-UINT8 CSCCIPort::status()
+uint8_t CSCCIPort::status()
 {
 	return 0;
 }
@@ -77,7 +77,7 @@ CFTPort::CFTPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHandle(0)
 {
 }
 
-CFTPort::CFTPort(CFTInterface* pif, UINT32 index, UINT32 cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
+CFTPort::CFTPort(CFTInterface* pif, uint32_t index, uint32_t cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
 {
 	assert(pif && pif->IsValid() && index < pif->GetChannels() && cs < 5);
 }
@@ -86,10 +86,10 @@ CFTPort::~CFTPort(void)
 {
 }
 
-void CFTPort::write(UINT16 addr, UINT16 data)
+void CFTPort::write(uint16_t addr, uint16_t data)
 {
-	UINT32 sizeToTransfer = 0;
-	UINT32 sizeTransfered = 0;
+	uint32_t sizeToTransfer = 0;
+	uint32_t sizeTransfered = 0;
 	FT_STATUS status;
 	BYTE buf[2];
 
@@ -107,7 +107,7 @@ void CFTPort::write(UINT16 addr, UINT16 data)
 #endif
 }
 
-void CFTPort::writeBurst(UINT16 addr, BYTE* buf, size_t length)
+void CFTPort::writeBurst(uint16_t addr, BYTE* buf, size_t length)
 {
 	BYTE* newbuf = new BYTE[length + 1];
 	newbuf[0] = BYTE(addr);
@@ -133,9 +133,9 @@ void CFTPort::writeBurst(BYTE* buf, size_t length)
 #endif
 }
 
-UINT8 CFTPort::read(UINT16 addr)
+uint8_t CFTPort::read(uint16_t addr)
 {
-	UINT8 ret = 0;
+	uint8_t ret = 0;
 #ifdef DEBUG
 	TCHAR str[80];
 	StringCchPrintf(str, _countof(str), _T("read %08x %03x=%02x\n"), physical_id, addr, ret);
@@ -144,7 +144,7 @@ UINT8 CFTPort::read(UINT16 addr)
 	return ret;
 }
 
-UINT8 CFTPort::status()
+uint8_t CFTPort::status()
 {
 	return 0;
 }
@@ -203,11 +203,11 @@ CDebugPort::CDebugPort() : chipname(0), regsize(0), regbak(0)
 
 CDebugPort::CDebugPort(const TCHAR* name, size_t maxreg) : chipname(name), regsize(maxreg)
 {
-	regbak = new UINT8[maxreg];
+	regbak = new uint8_t[maxreg];
 	::ZeroMemory(regbak, maxreg);
 }
 
-UINT8 CDebugPort::status()
+uint8_t CDebugPort::status()
 {
 	return 0;
 }
@@ -220,15 +220,15 @@ int CDebugPort::GetDesc(TCHAR* str, int len)
 	return ++ret;
 }
 
-void CDebugPort::write(UINT16 addr, UINT16 data)
+void CDebugPort::write(uint16_t addr, uint16_t data)
 {
 	TCHAR str[80];
 	StringCchPrintf(str, 80, _T("reg %s %03x %02x\n"), chipname, addr, data);
 	OutputDebugString(str);
-	regbak[addr] = UINT8(data);
+	regbak[addr] = uint8_t(data);
 }
 
-UINT8 CDebugPort::read(UINT16 addr)
+uint8_t CDebugPort::read(uint16_t addr)
 {
 	return (addr < regsize) ? regbak[addr] : 0;
 }

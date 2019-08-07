@@ -1,8 +1,8 @@
 #include "STDAFX.h"
 #include "OPN.h"
 
-UINT8 COPN::map[] = {0, 8, 4, 12};
-UINT8 COPN::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
+uint8_t COPN::map[] = {0, 8, 4, 12};
+uint8_t COPN::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 
 #define GET_AR(v,o)	(v->op[o].AR >> 2)
 #define GET_DR(v,o)	(v->op[o].DR >> 2)
@@ -12,7 +12,7 @@ UINT8 COPN::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 #define GET_TL(v,o)	(v->op[o].TL)
 #define GET_RV(v,o)	(v->op[o].REV >> 3)
 
-COPN::COPN(CPort* pt, int fsamp, UINT8 devtype) :
+COPN::COPN(CPort* pt, int fsamp, uint8_t devtype) :
 CSoundDevice(devtype, 3, fsamp, 144, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100), fxena(true)
 {
 //	if (pt) { pt->reset(); }
@@ -28,7 +28,7 @@ void COPN::Init()
 	}
 }
 
-UINT8 COPN::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t COPN::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
 	CHATTR* attr = GetChAttribute(2);
 	if (fxena && voice && (voice->AL & 8) != 0) {//FX mode enabled
@@ -42,11 +42,11 @@ UINT8 COPN::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 	return CSoundDevice::QueryCh(parent, voice, mode);
 }
 
-void COPN::UpdateVoice(UINT8 ch)
+void COPN::UpdateVoice(uint8_t ch)
 {
-	UINT8	tmp;
-	UINT8	i;
-	UINT8 ex = 0;
+	uint8_t	tmp;
+	uint8_t	i;
+	uint8_t ex = 0;
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 
 	if (fxena && ch == 2) {
@@ -71,14 +71,14 @@ void COPN::UpdateVoice(UINT8 ch)
 	UpdateVolExp(ch);
 }
 
-void COPN::UpdateVolExp(UINT8 ch)
+void COPN::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	UINT8 evol = attr->GetEffectiveLevel();
+	uint8_t evol = attr->GetEffectiveLevel();
 	FMVOICE* voice = attr->GetVoice();
 	for (int i=0; i<4; i++) {
 		if (carmsk[voice->AL&7] & (1<<i)) {
-			UINT8 tl = CalcLinearLevel(evol, voice->op[i].TL);
+			uint8_t tl = CalcLinearLevel(evol, voice->op[i].TL);
 			attr->baseTL[i] = tl;
 			tl = Linear2dB(tl, RANGE96DB, STEP075DB, 7);
 			SetReg(0x40 + map[i] + ch, tl, 0);
@@ -86,45 +86,45 @@ void COPN::UpdateVolExp(UINT8 ch)
 	}
 }
 
-void COPN::UpdateFnumber(UINT8 ch, int update)
+void COPN::UpdateFnumber(uint8_t ch, int update)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	if (fxena && ch == 2 && (voice->AL & 8)) {
 		for (int i = 0; i < 4; i++) {
-			SINT32 off = (voice->op[i].DT2 | (voice->op[i].DT3 << 7));
+			int32_t off = (voice->op[i].DT2 | (voice->op[i].DT3 << 7));
 			off = off - 8192;
-			PseudoDT[i] = GetFnumber(ch, SINT16(off));
+			PseudoDT[i] = GetFnumber(ch, int16_t(off));
 		}
 	}
 	CSoundDevice::UpdateFnumber(ch, update);
 }
 
-void COPN::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void COPN::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	if (fxena && ch == 2 && (voice->AL & 8)) {
-		SetReg(0xad, (PseudoDT[0].block << 3) | UINT8(PseudoDT[0].fnum >> 8), 1);
-		SetReg(0xa9, UINT8(PseudoDT[0].fnum & 0xff), 1);
-		SetReg(0xae, (PseudoDT[1].block << 3) | UINT8(PseudoDT[1].fnum >> 8), 1);
-		SetReg(0xaa, UINT8(PseudoDT[1].fnum & 0xff), 1);
-		SetReg(0xac, (PseudoDT[2].block << 3) | UINT8(PseudoDT[2].fnum >> 8), 1);
-		SetReg(0xa8, UINT8(PseudoDT[2].fnum & 0xff), 1);
-		SetReg(0xa6, (PseudoDT[3].block << 3) | UINT8(PseudoDT[3].fnum >> 8), 1);
-		SetReg(0xa2, UINT8(PseudoDT[3].fnum & 0xff), 1);
+		SetReg(0xad, (PseudoDT[0].block << 3) | uint8_t(PseudoDT[0].fnum >> 8), 1);
+		SetReg(0xa9, uint8_t(PseudoDT[0].fnum & 0xff), 1);
+		SetReg(0xae, (PseudoDT[1].block << 3) | uint8_t(PseudoDT[1].fnum >> 8), 1);
+		SetReg(0xaa, uint8_t(PseudoDT[1].fnum & 0xff), 1);
+		SetReg(0xac, (PseudoDT[2].block << 3) | uint8_t(PseudoDT[2].fnum >> 8), 1);
+		SetReg(0xa8, uint8_t(PseudoDT[2].fnum & 0xff), 1);
+		SetReg(0xa6, (PseudoDT[3].block << 3) | uint8_t(PseudoDT[3].fnum >> 8), 1);
+		SetReg(0xa2, uint8_t(PseudoDT[3].fnum & 0xff), 1);
 	}
 	else {
 		fnum = fnum ? fnum : attr->GetLastFnumber();
-		SetReg(0xa4 + ch, (fnum->block << 3) | UINT8(fnum->fnum >> 8), 1);
-		SetReg(0xa0 + ch, UINT8(fnum->fnum & 0xff), 1);
+		SetReg(0xa4 + ch, (fnum->block << 3) | uint8_t(fnum->fnum >> 8), 1);
+		SetReg(0xa0 + ch, uint8_t(fnum->fnum & 0xff), 1);
 	}
 }
 
-void COPN::UpdatePanpot(UINT8 ch)
+void COPN::UpdatePanpot(uint8_t ch)
 {
-	int pan = (GetChAttribute(ch)->panpot) / 8;
-	UINT8 chena = 0;
+	int pan = (GetChAttribute(ch)->GetPanpot()) / 8;
+	uint8_t chena = 0;
 	if (pan >= 4) { //R
 		chena = 0x40;
 	}
@@ -139,31 +139,31 @@ void COPN::UpdatePanpot(UINT8 ch)
 	}
 }
 
-void COPN::UpdateSustain(UINT8 ch)
+void COPN::UpdateSustain(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
 	for (int i=0; i<4; i++) {
-		UINT8 rr = (parent && parent->GetSustain() ? GET_RV(voice, i) : GET_RR(voice, i)) & 0xf;
-		UINT8 tmp = (GET_SL(voice, i) << 4) | rr;
+		uint8_t rr = (parent && parent->GetSustain() ? GET_RV(voice, i) : GET_RR(voice, i)) & 0xf;
+		uint8_t tmp = (GET_SL(voice, i) << 4) | rr;
 		SetReg(0x80 + map[i] + ch, tmp);
 	}
 }
 
-void COPN::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void COPN::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	SetReg(0x40 + map[op] + ch, lev, 0);
 }
 
-void COPN::UpdateKey(UINT8 ch, UINT8 keyon)
+void COPN::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	CMidiCh* parent = attr->GetParent();
 	if (keyon && parent && parent->GetForceDamp()) {
 		for (int i=0; i<4; i++) {
-			UINT8 tmp = (GET_SL(voice, i) << 4) | 0xf;
+			uint8_t tmp = (GET_SL(voice, i) << 4) | 0xf;
 			SetReg(0x80 + map[i] + ch, tmp);
 		}
 	} else {
@@ -173,10 +173,10 @@ void COPN::UpdateKey(UINT8 ch, UINT8 keyon)
 #ifdef _DEBUG
 	const FNUM* fnum = attr->GetLastFnumber();
 	if (fnum) {
-		UINT8 acth = GetReg(0xa4 + ch, 0);
-		UINT8 actl = GetReg(0xa0 + ch, 0);
-		UINT8 actblk = (acth >> 3) & 0x7;
-		UINT16 actfnum = ((acth & 7) << 8) | actl;
+		uint8_t acth = GetReg(0xa4 + ch, 0);
+		uint8_t actl = GetReg(0xa0 + ch, 0);
+		uint8_t actblk = (acth >> 3) & 0x7;
+		uint16_t actfnum = ((acth & 7) << 8) | actl;
 		if (fnum->block != actblk || fnum->fnum != actfnum) {
 			int oh_my_god = 1;
 			fprintf(stderr, _T("Fnum not match: attr=%02X%04X, act=%02X%04X\n"), fnum->block, fnum->fnum, actblk, actfnum);

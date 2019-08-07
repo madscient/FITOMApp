@@ -238,12 +238,12 @@ BEGIN_MESSAGE_MAP(CVoiceEditDlg, CDialogEx)
 	ON_WM_VSCROLL()
 END_MESSAGE_MAP()
 
-void CVoiceEditDlg::SetDevice(UINT32 dev)
+void CVoiceEditDlg::SetDevice(uint32_t dev)
 {
 	theDevice = dev;
 	if (bInit && theDevice > 0) {
 		CString tmp;
-		UINT8 did = theDevice & 0xff;
+		uint8_t did = theDevice & 0xff;
 		TCHAR devname[64];
 		theConfig->GetDeviceName(theDevice, devname, _countof(devname));
 		tmp.Format(_T("%02X:%s"), did, devname);
@@ -251,7 +251,7 @@ void CVoiceEditDlg::SetDevice(UINT32 dev)
 	}
 }
 
-void CVoiceEditDlg::SetBank(UINT32 bank)
+void CVoiceEditDlg::SetBank(uint32_t bank)
 {
 	theBank = bank;
 	if (bInit && theDevice > 0) {
@@ -261,11 +261,11 @@ void CVoiceEditDlg::SetBank(UINT32 bank)
 	}
 }
 
-void CVoiceEditDlg::SetProg(UINT32 prog)
+void CVoiceEditDlg::SetProg(uint32_t prog)
 {
 	theProg = prog;
 
-	UINT32 vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
+	uint32_t vg = CFITOM::GetDeviceVoiceGroupMask(theDevice);
 	if (bInit && theBank >= 0 && theDevice > 0) {
 		TCHAR tmp[64];
 		theConfig->GetVoiceName(theDevice, theBank, theProg, tmp, _countof(tmp));
@@ -762,7 +762,7 @@ void CVoiceEditDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			break;
 		}
 		for (int i = 0; i < 5; i++) {
-			UINT32 sender = pScrollBar->GetDlgCtrlID();
+			uint32_t sender = pScrollBar->GetDlgCtrlID();
 			if (sender == sliders[i]) {
 				OnChangeSlider(i, (int)nPos);
 			}

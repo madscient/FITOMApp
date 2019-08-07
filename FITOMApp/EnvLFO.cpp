@@ -3,7 +3,7 @@
 #include <math.h>
 
 namespace ROM {
-static SINT8 sintable[] = {
+static int8_t sintable[] = {
 	0,3,6,9,13,16,19,22,25,28,31,34,37,40,43,
 	46,49,52,54,57,60,63,65,68,71,73,76,78,80,83,
 	85,87,89,91,93,95,97,99,101,102,104,105,107,108,110,
@@ -22,12 +22,12 @@ static SINT8 sintable[] = {
 	-46,-43,-40,-37,-34,-31,-28,-25,-22,-19,-16,-13,-9,-6,-3,
 };
 
-static UINT8 speedstep[] = {
+static uint8_t speedstep[] = {
 	1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 20, 24, 30, 40, 48, 60, 80, 120
 };
 
 /*
-extern const UINT8 VolCurveLin[] = {	//0.75dB step;127=-96dB
+extern const uint8_t VolCurveLin[] = {	//0.75dB step;127=-96dB
 	127,56,48,43,40,37,35,34,32,31,29,28,27,26,26,25,
 	24,23,23,22,21,21,20,20,19,19,18,18,18,17,17,16,
 	16,16,15,15,15,14,14,14,13,13,13,13,12,12,12,12,
@@ -58,7 +58,7 @@ extern const double GM2dB[] = {
 	-0.984898996, -0.840734026, -0.697755611, -0.555944381, -0.415281432, -0.275748318, -0.137327034, 0,
 };
 
-extern const UINT8 VolCurveLin[] = {	//0.75dB step;127=-96dB
+extern const uint8_t VolCurveLin[] = {	//0.75dB step;127=-96dB
 	127, 112, 96, 86, 80, 74, 70, 67, 64, 61, 58, 56, 54, 52, 51, 49,
 	47, 46, 45, 44, 42, 41, 40, 39, 38, 37, 36, 35, 35, 34, 33, 32,
 	31, 31, 30, 29, 29, 28, 27, 27, 26, 26, 25, 25, 24, 24, 23, 23,
@@ -69,7 +69,7 @@ extern const UINT8 VolCurveLin[] = {	//0.75dB step;127=-96dB
 	2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
 };
 
-extern const UINT8 VolCurveInv[] = {
+extern const uint8_t VolCurveInv[] = {
 	127,121,115,104,96,90,85,80,77,73,71,68,66,63,61,59,
 	58,56,54,53,51,50,49,48,46,45,44,43,42,41,40,39,
 	39,38,37,36,35,35,34,33,32,32,31,30,30,29,29,28,
@@ -85,7 +85,7 @@ extern const UINT8 VolCurveInv[] = {
 #define ABSAMP	120
 #define TABLEN	240
 
-extern SINT8 GetLFOWave(UINT8 waveform, UINT8 speed, UINT16 phase)
+extern int8_t GetLFOWave(uint8_t waveform, uint8_t speed, uint16_t phase)
 {
 	signed int ret = 0;
 	unsigned short spp = (phase % TABLEN) * ROM::speedstep[speed%sizeof(ROM::speedstep)];
@@ -119,7 +119,7 @@ extern SINT8 GetLFOWave(UINT8 waveform, UINT8 speed, UINT16 phase)
 		ret = (((phase*ROM::speedstep[speed%sizeof(ROM::speedstep)]) < (TABLEN / 2))) ? ph : ABSAMP;
 		break;
 	case 5://one shot delta
-		if (phase < UINT16(TABLEN/2)) {
+		if (phase < uint16_t(TABLEN/2)) {
 			if (0 <= ph && ph < (TABLEN / 4)) {
 				ret = ph << 1;
 			}
@@ -132,7 +132,7 @@ extern SINT8 GetLFOWave(UINT8 waveform, UINT8 speed, UINT16 phase)
 	return ret;
 }
 
-extern UINT8 CalcVolExpVel(int vol, int exp, int vel)
+extern uint8_t CalcVolExpVel(int vol, int exp, int vel)
 {
 	double dvol = ROM::GM2dB[vol];
 	double dexp = ROM::GM2dB[exp];
@@ -142,20 +142,20 @@ extern UINT8 CalcVolExpVel(int vol, int exp, int vel)
 	int evol = round(deff);
 	evol = max(0, evol);
 	evol = min(127, evol);
-	return (UINT8)evol;
+	return (uint8_t)evol;
 }
 
 /*
-extern UINT8 CalcEffectiveLevel(UINT8 vev, UINT8 tl)
+extern uint8_t CalcEffectiveLevel(uint8_t vev, uint8_t tl)
 {
 	tl = 127 - tl;
-	UINT16 evol = (UINT16(vev) + UINT16(tl)) >> 1;
-	return UINT8(127-evol);
+	uint16_t evol = (uint16_t(vev) + uint16_t(tl)) >> 1;
+	return uint8_t(127-evol);
 }
 */
 
 //vev:0(min)-127(max), tl(att), ret=0(min)-127(max)
-extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl)
+extern uint8_t CalcLinearLevel(uint8_t vev, uint8_t tl)
 {
 	double dvev = ROM::GM2dB[vev];
 	double dtl = double(tl) * (-0.75);
@@ -167,16 +167,16 @@ extern UINT8 CalcLinearLevel(UINT8 vev, UINT8 tl)
 }
 
 // evol 0(min)-127(max), ret=tl(att)
-extern UINT8 Linear2dB(UINT8 evol, int range, int step, int bw)
+extern uint8_t Linear2dB(uint8_t evol, int range, int step, int bw)
 {
 	evol = evol & step;
-	UINT8 ret;
-	UINT8 lim = (127 >> range);
+	uint8_t ret;
+	uint8_t lim = (127 >> range);
 	if (evol == 0) {
 		ret = lim;
 	}
 	else {
-		ret = round(ROM::GM2dB[UINT8(evol)] / -0.75);
+		ret = round(ROM::GM2dB[uint8_t(evol)] / -0.75);
 		ret = min(ret, lim - 1);
 	}
 	ret >>= 7 - range - bw;
@@ -216,7 +216,7 @@ int ISoundDevice::CEnvelope::Update()
 {
 	if (!param) return 0;
 	int ret = 1;
-	SINT16 tmp = value;
+	int16_t tmp = value;
 	switch (phase) {
 	case EG_ATTACK:
 		tmp += param->AR;
@@ -291,18 +291,18 @@ ISoundDevice::CLFOControl::CLFOControl()
 {
 }
 
-void ISoundDevice::CLFOControl::Start(UINT8 dly, UINT8 rt)
+void ISoundDevice::CLFOControl::Start(uint8_t dly, uint8_t rt)
 {
-	delay = UINT16(dly) << 2;
+	delay = uint16_t(dly) << 2;
 	rate = rt;
 	status = LFO_DELAYING;
 	value = 0;
 	count = 0;
 }
 
-void ISoundDevice::CLFOControl::SetParam(UINT8 dly, UINT8 rt)
+void ISoundDevice::CLFOControl::SetParam(uint8_t dly, uint8_t rt)
 {
-	delay = UINT16(dly) << 2;
+	delay = uint16_t(dly) << 2;
 	rate = rt;
 }
 

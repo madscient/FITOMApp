@@ -20,8 +20,8 @@ public:
 protected:
 	CFITOMConfig* theConfig;
 	FMVOICE theVoice;
-	UINT32 theDevice;
-	UINT32 theType;
+	uint32_t theDevice;
+	uint32_t theType;
 	int typeidx;
 	CInstCh* pICh;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
@@ -40,9 +40,9 @@ public:
 	CEdit edtOP;
 	CEdit edtLFO;
 	void SetVoice(FMVOICE* voice);
-	void SetDevice(UINT32 dev);
+	void SetDevice(uint32_t dev);
 	void GetVoice(FMVOICE* voice);
-	UINT32 GetType();
+	uint32_t GetType();
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	virtual void OnOK();

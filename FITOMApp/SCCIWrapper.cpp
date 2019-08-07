@@ -7,9 +7,9 @@
 
 namespace ROM {
 	struct DEVIDMAP {
-		const UINT8 devid;
-		const UINT8 voicegroup;
-		const UINT8 voicetype;
+		const uint8_t devid;
+		const uint8_t voicegroup;
+		const uint8_t voicetype;
 		const DWORD regsize;
 		const SC_CHIP_TYPE sctype;
 		const char* chipname;
@@ -222,7 +222,7 @@ const SC_CHIP_TYPE CSCCIWrapper::getScChipTypeFromName(TCHAR* name)
 	return SC_CHIP_TYPE::SC_TYPE_NONE;
 }
 
-const SC_CHIP_TYPE CSCCIWrapper::getScChipType(UINT8 devid)
+const SC_CHIP_TYPE CSCCIWrapper::getScChipType(uint8_t devid)
 {
 	for (int i = 0; ROM::devmap[i].devid != DEVICE_NONE; i++) {
 		if (ROM::devmap[i].devid == devid) {

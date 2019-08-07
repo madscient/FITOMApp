@@ -22,23 +22,23 @@ protected:
 	CFITOMConfig* theConfig;
 	CInstCh* pICh;
 	BOOL bInit;
-	UINT32 theDevice;
-	UINT32 theBank;
-	UINT32 theProg;
+	uint32_t theDevice;
+	uint32_t theBank;
+	uint32_t theProg;
 	void RefreshDevice();
 	void RefreshBank();
 	void RefreshProg();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
-	CString GetBankName(UINT32 device, UINT32 bank);
-	CString GetProgName(UINT32 device, UINT32 bank, UINT32 prog);
+	CString GetBankName(uint32_t device, uint32_t bank);
+	CString GetProgName(uint32_t device, uint32_t bank, uint32_t prog);
 	DECLARE_MESSAGE_MAP()
 public:
-	void SetDevice(UINT32 dev);
-	void SetBank(UINT32 bank);
-	void SetProg(UINT32 prog);
-	UINT32 GetDevice() { return theDevice; };
-	UINT32 GetBank() { return theBank; };
-	UINT32 Getprog() { return theProg; };
+	void SetDevice(uint32_t dev);
+	void SetBank(uint32_t bank);
+	void SetProg(uint32_t prog);
+	uint32_t GetDevice() { return theDevice; };
+	uint32_t GetBank() { return theBank; };
+	uint32_t Getprog() { return theProg; };
 	CComboBox cmbDevice;
 	CComboBox cmbBank;
 	CListCtrl lstProg;

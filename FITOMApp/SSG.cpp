@@ -2,7 +2,7 @@
 #include "SSG.h"
 
 //-------------------------------
-CSSG::CSSG(CPort* pt, int fsamp, UINT8 dev) : CPSGBase(dev, pt, 0x20, 3, fsamp)
+CSSG::CSSG(CPort* pt, int fsamp, uint8_t dev) : CPSGBase(dev, pt, 0x20, 3, fsamp)
 {
 	ops = 2;
 }
@@ -12,29 +12,29 @@ void CSSG::Init()
 	SetReg(0x07, 0x3f, 1);
 }
 
-void CSSG::UpdateVolExp(UINT8 ch)
+void CSSG::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
-		UINT8 evol = attr->GetEffectiveLevel();
-		SINT16 lev = SINT16(lfoTL[ch]) - 64 + egattr[ch].GetValue();
+		uint8_t evol = attr->GetEffectiveLevel();
+		int16_t lev = int16_t(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
 		lev = (lev > 127) ? 127 : lev;
-		evol = 15 - Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[UINT8(lev)]), RANGE48DB, STEP300DB, 4);
+		evol = 15 - Linear2dB(CalcLinearLevel(evol, ROM::VolCurveLin[uint8_t(lev)]), RANGE48DB, STEP300DB, 4);
 		SetReg(8 + ch, evol & 0xf, 0);
 	}
 }
 
-void CSSG::UpdateFreq(UINT8 ch, const FNUM* fnum)
+void CSSG::UpdateFreq(uint8_t ch, const FNUM* fnum)
 {
 	fnum = fnum ? fnum : GetChAttribute(ch)->GetLastFnumber();
-	UINT8 oct = fnum->block;
-	UINT16 etp = fnum->fnum >> (oct + 3);
-	SetReg(ch * 2 + 0, UINT8(etp & 0xff), 0);
-	SetReg(ch * 2 + 1, UINT8(etp >> 8), 0);
+	uint8_t oct = fnum->block;
+	uint16_t etp = fnum->fnum >> (oct + 3);
+	SetReg(ch * 2 + 0, uint8_t(etp & 0xff), 0);
+	SetReg(ch * 2 + 1, uint8_t(etp >> 8), 0);
 }
 
-void CSSG::UpdateKey(UINT8 ch, UINT8 keyon)
+void CSSG::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -51,7 +51,7 @@ void CSSG::UpdateKey(UINT8 ch, UINT8 keyon)
 	}
 }
 
-void CSSG::EGOff(UINT8 ch)
+void CSSG::EGOff(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
@@ -60,9 +60,9 @@ void CSSG::EGOff(UINT8 ch)
 	}
 }
 
-void CSSG::UpdateVoice(UINT8 ch)
+void CSSG::UpdateVoice(uint8_t ch)
 {
-	UINT8 mix = 8;
+	uint8_t mix = 8;
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	switch (voice->AL & 3) {
@@ -92,7 +92,7 @@ void CSSG::UpdateVoice(UINT8 ch)
 	}
 }
 
-void CSSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
+void CSSG::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)
 {
 	FMVOICE* voice = GetChAttribute(ch)->GetVoice();
 	switch (op) {
@@ -103,7 +103,7 @@ void CSSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 		break;
 	case 1:// Noise freq LFO
 		if ((voice->AL & 3)==1 || (voice->AL & 3)==2) {
-			SINT16 frq = SINT16(lev) - 64 + (((voice->NFQ << 2) | (voice->NFQ >> 3)) & 0x7f);
+			int16_t frq = int16_t(lev) - 64 + (((voice->NFQ << 2) | (voice->NFQ >> 3)) & 0x7f);
 			frq = (frq < 0) ? 0 : frq;
 			frq = (frq > 127) ? 127 : frq;
 			SetReg(0x6, lev >> 2, 0);
@@ -112,7 +112,7 @@ void CSSG::UpdateTL(UINT8 ch, UINT8 op, UINT8 lev)
 	}
 }
 
-UINT8 CSSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
+uint8_t CSSG::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 {
 	CHATTR* attr2 = GetChAttribute(2);
 	CHATTR* attr1 = GetChAttribute(1);

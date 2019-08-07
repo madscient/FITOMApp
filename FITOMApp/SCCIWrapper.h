@@ -32,7 +32,7 @@ public:
 	int getInterfaceIDFromIF(SoundInterface* psi);
 	int getSlotIDFromChip(int ifid, SoundChip* pchip);
 	int getInterfaceDesc(TCHAR* str, int len, int id);
-	static const SC_CHIP_TYPE getScChipType(UINT8 devid);
+	static const SC_CHIP_TYPE getScChipType(uint8_t devid);
 	static const SC_CHIP_TYPE getScChipTypeFromName(TCHAR* name);
 };
 

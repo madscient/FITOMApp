@@ -9,14 +9,14 @@ class CDCSG : public CPSGBase
 public:
 	CDCSG(CPort* pt, int fsamp);
 	virtual void Init();
-	virtual UINT8 QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
+	virtual uint8_t QueryCh(CMidiCh* parent, FMVOICE* voice, int mode);
 protected:
-	UINT8 prevnoise;
-	UINT8 prevvol[4];
-	UINT16 prevfreq[4];
-	virtual void UpdateVolExp(UINT8 ch);
-	virtual void UpdateFreq(UINT8 ch, const FNUM* fnum);
-	virtual void UpdateVoice(UINT8 ch);
+	uint8_t prevnoise;
+	uint8_t prevvol[4];
+	uint16_t prevfreq[4];
+	virtual void UpdateVolExp(uint8_t ch);
+	virtual void UpdateFreq(uint8_t ch, const FNUM* fnum);
+	virtual void UpdateVoice(uint8_t ch);
 };
 
 #endif
