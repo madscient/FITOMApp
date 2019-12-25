@@ -13,12 +13,14 @@ ISoundDevice::FNUM COPL::RhythmFnum[] = {
 uint8_t COPL::RhythmFreq[] = { 47, 60, 53, };
 #endif
 
+//OPL Voice macro
 #define GET_AR(v,o)	(v->op[o].AR >> 3)
 #define GET_DR(v,o)	(v->op[o].DR >> 3)
 #define GET_SR(v,o)	(v->op[o].SR >> 3)
 #define GET_RR(v,o)	(v->op[o].RR >> 3)
 #define GET_SL(v,o)	(v->op[o].SL >> 3)
 #define GET_TL(v,o)	(v->op[o].TL)
+#define GET_AM(v,o)	(v->op[o].)
 //#define GET_RV(v,o)	(v->op[o].REV >> 3)
 #define GET_RV(v,o)	(4)
 
