@@ -97,7 +97,7 @@ void CInstCh::CPortaCtrl::Update()
 }
 
 //-----
-CMidiInst::CMidiInst(CMidiIn* port, CFITOM* parent, BOOL clkena)
+CMidiInst::CMidiInst(CMidiIn* port, CFITOM* parent, bool clkena)
 	: currentstatus(0), clockenable(clkena), bMidiProc(FALSE), bTimerProc(FALSE)
 {
 	Parent = parent;

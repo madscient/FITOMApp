@@ -276,7 +276,7 @@ void CVoiceEditDlg::SetProg(uint32_t prog)
 	}
 }
 
-void CVoiceEditDlg::UpdateListCtrl(int op, BOOL bInit)
+void CVoiceEditDlg::UpdateListCtrl(int op, bool bInit)
 {
 	if (op <= 4 && op >= 0) {
 		int i = 0;
@@ -316,7 +316,7 @@ void CVoiceEditDlg::UpdateListCtrl(int op, BOOL bInit)
 
 // CVoiceEditDlg メッセージ ハンドラー
 
-BOOL CVoiceEditDlg::OnInitDialog()
+bool CVoiceEditDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -506,7 +506,7 @@ void CVoiceEditDlg::OnTestButtonUp()
 	pICh->NoteOff(spnNote.GetPos());
 }
 
-BOOL CVoiceEditDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+bool CVoiceEditDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (wParam == IDC_BTN_TEST) {
@@ -619,7 +619,7 @@ void CVoiceEditDlg::OnClickedButtonBank()
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 }
 
-BOOL CVoiceEditDlg::PreTranslateMessage(MSG* pMsg)
+bool CVoiceEditDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (WM_KEYDOWN == pMsg->message)

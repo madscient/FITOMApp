@@ -105,7 +105,7 @@ short* AdpcmEncoder::resampling(DWORD &dSize, DWORD rate){
 	iSmple = 0;
 	short *pResampleDis = pResampleBuff;
 	// リサンプリング後のファイルサイズを算出
-	BOOL	bUpdate = FALSE;
+	bool	bUpdate = FALSE;
 	for (int iCnt = 0; iCnt < iPcmSize; iCnt++){
 		iSmple += static_cast<int>(pPcm[iCnt]);		// サンプルを加算する
 		iSampleCnt++;

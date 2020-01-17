@@ -22,7 +22,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	CFITOMConfig* theConfig;
 	UINT_PTR hTimer;
-	void UpdateList(BOOL binit=FALSE);
+	void UpdateList(bool binit=FALSE);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnSelendokComboDevice();
@@ -30,10 +30,10 @@ public:
 	virtual void PostNcDestroy();
 	virtual void OnOK();
 	virtual void OnCancel();
-	virtual BOOL OnInitDialog();
+	virtual bool OnInitDialog();
 	CComboBox cmbDevice;
 	CListCtrl lstDevice;
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual bool PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedButtonReset();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

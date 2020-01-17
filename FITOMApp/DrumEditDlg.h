@@ -26,11 +26,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	virtual void OnOK();
 	void Refresh();
-	BOOL bModified;
+	bool bModified;
 public:
 	void SetProg(int prog) { theProg = prog; };
 	int GetProg() { return theProg; };
-	virtual BOOL OnInitDialog();
+	virtual bool OnInitDialog();
 	CListCtrl lstDrumNote;
 	LRESULT OnKickIdle(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedBtnPick();

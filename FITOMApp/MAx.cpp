@@ -59,7 +59,7 @@ void CSD1::SetVoice(uint8_t ch, FMVOICE* voice, int update)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
-		BOOL changed = attr->SetVoice(voice);
+		bool changed = attr->SetVoice(voice);
 		if (1 || changed) {
 			int inst = -1;
 			for (int i = 0; i < 16; i++) {

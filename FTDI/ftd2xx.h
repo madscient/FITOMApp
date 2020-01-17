@@ -1102,12 +1102,12 @@ extern "C" {
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_CloseHandle(
+		bool WINAPI FT_W32_CloseHandle(
 		FT_HANDLE ftHandle
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_ReadFile(
+		bool WINAPI FT_W32_ReadFile(
 		FT_HANDLE ftHandle,
 		LPVOID lpBuffer,
 		DWORD nBufferSize,
@@ -1116,7 +1116,7 @@ extern "C" {
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_WriteFile(
+		bool WINAPI FT_W32_WriteFile(
 		FT_HANDLE ftHandle,
 		LPVOID lpBuffer,
 		DWORD nBufferSize,
@@ -1130,15 +1130,15 @@ extern "C" {
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_GetOverlappedResult(
+		bool WINAPI FT_W32_GetOverlappedResult(
 		FT_HANDLE ftHandle,
 		LPOVERLAPPED lpOverlapped,
 		LPDWORD lpdwBytesTransferred,
-		BOOL bWait
+		bool bWait
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_CancelIo(
+		bool WINAPI FT_W32_CancelIo(
 		FT_HANDLE ftHandle
 		);
 
@@ -1200,85 +1200,85 @@ extern "C" {
 
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_ClearCommBreak(
+		bool WINAPI FT_W32_ClearCommBreak(
 		FT_HANDLE ftHandle
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_ClearCommError(
+		bool WINAPI FT_W32_ClearCommError(
 		FT_HANDLE ftHandle,
 		LPDWORD lpdwErrors,
 		LPFTCOMSTAT lpftComstat
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_EscapeCommFunction(
+		bool WINAPI FT_W32_EscapeCommFunction(
 		FT_HANDLE ftHandle,
 		DWORD dwFunc
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_GetCommModemStatus(
+		bool WINAPI FT_W32_GetCommModemStatus(
 		FT_HANDLE ftHandle,
 		LPDWORD lpdwModemStatus
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_GetCommState(
+		bool WINAPI FT_W32_GetCommState(
 		FT_HANDLE ftHandle,
 		LPFTDCB lpftDcb
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_GetCommTimeouts(
+		bool WINAPI FT_W32_GetCommTimeouts(
 		FT_HANDLE ftHandle,
 		FTTIMEOUTS *pTimeouts
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_PurgeComm(
+		bool WINAPI FT_W32_PurgeComm(
 		FT_HANDLE ftHandle,
 		DWORD dwMask
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_SetCommBreak(
+		bool WINAPI FT_W32_SetCommBreak(
 		FT_HANDLE ftHandle
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_SetCommMask(
+		bool WINAPI FT_W32_SetCommMask(
 		FT_HANDLE ftHandle,
 		ULONG ulEventMask
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_GetCommMask(
+		bool WINAPI FT_W32_GetCommMask(
 		FT_HANDLE ftHandle,
 		LPDWORD lpdwEventMask
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_SetCommState(
+		bool WINAPI FT_W32_SetCommState(
 		FT_HANDLE ftHandle,
 		LPFTDCB lpftDcb
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_SetCommTimeouts(
+		bool WINAPI FT_W32_SetCommTimeouts(
 		FT_HANDLE ftHandle,
 		FTTIMEOUTS *pTimeouts
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_SetupComm(
+		bool WINAPI FT_W32_SetupComm(
 		FT_HANDLE ftHandle,
 		DWORD dwReadBufferSize,
 		DWORD dwWriteBufferSize
 		);
 
 	FTD2XX_API
-		BOOL WINAPI FT_W32_WaitCommEvent(
+		bool WINAPI FT_W32_WaitCommEvent(
 		FT_HANDLE ftHandle,
 		PULONG pulEvent,
 		LPOVERLAPPED lpOverlapped

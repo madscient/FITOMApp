@@ -86,7 +86,7 @@ void CDrumNoteEditDlg::OnOK()
 	CDialogEx::OnOK();
 }
 
-BOOL CDrumNoteEditDlg::OnInitDialog()
+bool CDrumNoteEditDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -105,7 +105,7 @@ BOOL CDrumNoteEditDlg::OnInitDialog()
 		/*
 		for (int i = 0; i < theConfig->GetPhyDevs(); i++) {
 			uint32_t phyid = theConfig->GetDeviceUniqID(theConfig->GetPhysDeviceFromIndex(i), TRUE);
-			BOOL regist = TRUE;
+			bool regist = TRUE;
 			for (int j = 0; j < cmbDevice.GetCount(); j++) {
 				if (phyid == cmbDevice.GetItemData(j)) {
 					regist = FALSE;

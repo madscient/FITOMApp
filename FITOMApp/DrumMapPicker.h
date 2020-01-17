@@ -25,7 +25,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnDblclkDrummapList(NMHDR *pNMHDR, LRESULT *pResult);
-	virtual BOOL OnInitDialog();
+	virtual bool OnInitDialog();
 	virtual void OnOK();
 	void SetProg(int prog) { theProg = prog; };
 	int GetProg() { return theProg; };

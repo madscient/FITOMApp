@@ -70,8 +70,8 @@ public:
 	CSoundDevice* GetLogicalDeviceFromID(uint8_t devid) const { return theConfig ? theConfig->GetLogDeviceFromID(devid) : 0; };
 	CSoundDevice* GetLogicalDeviceFromIndex(uint8_t i) const { return theConfig ? theConfig->GetLogDeviceFromIndex(i) : 0; };
 	CAdPcmBase* GetPCMDeviceFromIndex(uint8_t i) const { return theConfig ? theConfig->GetPCMDeviceFromIndex(i) : 0; };
-	BOOL isPcmDevice(uint32_t uid) { return theConfig ? theConfig->isPcmDevice(uid) : 0; };
-	BOOL isPcmDevice(CSoundDevice* pdev) { return theConfig ? theConfig->isPcmDevice(pdev) : 0; };
+	bool isPcmDevice(uint32_t uid) { return theConfig ? theConfig->isPcmDevice(uid) : 0; };
+	bool isPcmDevice(CSoundDevice* pdev) { return theConfig ? theConfig->isPcmDevice(pdev) : 0; };
 	uint32_t GetDeviceUniqID(CSoundDevice* pdev) { return theConfig ? theConfig->GetDeviceUniqID(pdev) : 0; };
 	uint32_t GetDeviceUniqID(CAdPcmBase* pdev) { return theConfig ? theConfig->GetDeviceUniqID(pdev) : 0; };
 	CSoundDevice* GetDeviceFromUniqID(uint32_t uid) { return theConfig ? theConfig->GetDeviceFromUniqID(uid) : 0; };
@@ -91,27 +91,27 @@ public:
 	void ResetAllCtrl();
 
 	//Command shell
-	typedef BOOL(CFITOM::*cmdfunc)(TCHAR* cmd, TCHAR* result, int reslen);
+	typedef bool(CFITOM::*cmdfunc)(TCHAR* cmd, TCHAR* result, int reslen);
 
 	typedef struct {
 		const char* cmd;
 		cmdfunc func;
 	} cmdvect;
-	BOOL CmdProc(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSetVoice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetVoice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetMidiStatus(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetDeviceStatus(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSendMidi(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetPhysicalDevice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetLogicalDevice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetMidiDevice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSetPcmVoice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetPcmVoice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSetWaveForm(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetWaveForm(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSetDeviceReg(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetDeviceReg(TCHAR* cmd, TCHAR* result, int reslen);
+	bool CmdProc(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdSetVoice(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetVoice(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetMidiStatus(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetDeviceStatus(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdSendMidi(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetPhysicalDevice(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetLogicalDevice(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetMidiDevice(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdSetPcmVoice(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetPcmVoice(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdSetWaveForm(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetWaveForm(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdSetDeviceReg(TCHAR* cmd, TCHAR* result, int reslen);
+	bool cmdGetDeviceReg(TCHAR* cmd, TCHAR* result, int reslen);
 
 	//Static utils
 	static const DWORD GetDeviceVoiceType(DWORD device);

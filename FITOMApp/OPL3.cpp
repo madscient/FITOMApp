@@ -186,8 +186,8 @@ void COPL3::UpdateKey(uint8_t ch, uint8_t keyon)
 	for (int i = 0; i < 4; i++) {
 		tmp = (GetReg(rop + 0x20 + dch + opmap[i], 0)) & 0xdf;
 		SetReg(0x20 + dch + opmap[i], tmp | (keyon ? 0 : 0x20), 1);
-		BOOL isCarrier = (1 << i) & carmsk[voice->AL & 0xf];
-		BOOL isSustained = (parent && parent->GetSustain());
+		bool isCarrier = (1 << i) & carmsk[voice->AL & 0xf];
+		bool isSustained = (parent && parent->GetSustain());
 		uint8_t rr = (isSustained && isCarrier) ? GET_RV(voice, i) : GET_RR(voice, i);
 		uint8_t sr = keyon ? GET_SR(voice, i) : rr;
 

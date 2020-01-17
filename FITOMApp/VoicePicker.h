@@ -21,7 +21,7 @@ public:
 protected:
 	CFITOMConfig* theConfig;
 	CInstCh* pICh;
-	BOOL bInit;
+	bool bInit;
 	uint32_t theDevice;
 	uint32_t theBank;
 	uint32_t theProg;
@@ -45,7 +45,7 @@ public:
 	LRESULT OnKickIdle(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnSelendokComboDevice();
 	afx_msg void OnSelendokComboBank();
-	virtual BOOL OnInitDialog();
+	virtual bool OnInitDialog();
 //	afx_msg void OnOK(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnDblclkListProgs(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void OnOK();

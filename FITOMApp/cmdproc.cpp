@@ -19,81 +19,81 @@ CFITOM::cmdvect CFITOM::commandtable[] = {
 { "GetDeviceReg", &CFITOM::cmdGetDeviceReg, },
 };
 
-BOOL CFITOM::cmdSetVoice(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdSetVoice(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetVoice(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetVoice(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetMidiStatus(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetMidiStatus(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetDeviceStatus(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetDeviceStatus(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdSendMidi(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdSendMidi(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetPhysicalDevice(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetPhysicalDevice(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetLogicalDevice(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetLogicalDevice(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetMidiDevice(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetMidiDevice(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdSetPcmVoice(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdSetPcmVoice(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetPcmVoice(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetPcmVoice(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdSetWaveForm(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdSetWaveForm(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetWaveForm(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetWaveForm(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdSetDeviceReg(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdSetDeviceReg(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
-BOOL CFITOM::cmdGetDeviceReg(TCHAR * cmd, TCHAR * result, int reslen)
+bool CFITOM::cmdGetDeviceReg(TCHAR * cmd, TCHAR * result, int reslen)
 {
 	return 0;
 }
 
 
 
-BOOL CFITOM::CmdProc(TCHAR* cmd, TCHAR* result, int reslen)
+bool CFITOM::CmdProc(TCHAR* cmd, TCHAR* result, int reslen)
 {
-	BOOL ret = false;
+	bool ret = false;
 	TCHAR cmdstr[128];
 	TCHAR param[65536];
 	sscanf_s(cmd, _T("%s %[^\n]"), cmdstr, _countof(cmdstr), param, _countof(param));

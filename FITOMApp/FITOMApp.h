@@ -29,7 +29,7 @@ protected:
 	HANDLE hPolling;
 	HANDLE hCommand;
 	volatile uint32_t lltickcount;
-	volatile BOOL bRunning;
+	volatile bool bRunning;
 	CFITOM* theFitom;
 	CFITOMConfigWin32* theConfig;
 	static ERROR_MAP errmap[];
@@ -63,10 +63,10 @@ public:
 	CFITOMConfig* GetConfig() { return theConfig; };
 	void VoiceCopy(FMVOICE* voice);
 	void DrumCopy(DRUMMAP* drumnote);
-	BOOL IsVoiceInClipBoard();
-	BOOL IsDrumInClipBoard();
-	BOOL GetVoiceFromClipBoard(FMVOICE* voice);
-	BOOL GetDrumFromClipBoard(DRUMMAP* voice);
+	bool IsVoiceInClipBoard();
+	bool IsDrumInClipBoard();
+	bool GetVoiceFromClipBoard(FMVOICE* voice);
+	bool GetDrumFromClipBoard(DRUMMAP* voice);
 	void ResetInterface();
 	void InitDevice();
 
@@ -80,12 +80,12 @@ public:
 	static unsigned int CALLBACK CommandProc(void* params);
 // オーバーライド
 public:
-	virtual BOOL InitInstance();
+	virtual bool InitInstance();
 
 // 実装
 
 	DECLARE_MESSAGE_MAP()
-	virtual BOOL OnIdle(LONG lCount);
+	virtual bool OnIdle(LONG lCount);
 };
 
 extern CFITOMApp theApp;

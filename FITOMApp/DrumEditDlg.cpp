@@ -74,7 +74,7 @@ void CDrumEditDlg::OnBtnSave()
 	bModified = FALSE;
 }
 
-BOOL CDrumEditDlg::OnInitDialog()
+bool CDrumEditDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 

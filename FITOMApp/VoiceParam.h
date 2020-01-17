@@ -53,23 +53,3 @@ struct FMVOICE {
 };
 
 #pragma pack()
-
-class CFMVoice {
-protected:
-	FMVOICE	theVoice;
-public:
-	CFMVoice(FMVOICE& fmv);
-	size_t GetName(TCHAR* buf, size_t size);
-	uint8_t GetFB();
-	uint8_t GetAL();
-	int16_t GetLFODepth();
-	uint8_t GetLFOFreq();
-	uint8_t GetLFOWave();
-	uint8_t GetLFODelay();
-	uint8_t GetLFORate();
-	uint8_t GetAMS();
-	uint8_t GetPMS();
-
-	uint8_t GetAR(uint8_t op);
-	uint8_t GetDR(uint8_t op);
-};

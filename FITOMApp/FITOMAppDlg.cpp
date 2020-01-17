@@ -86,7 +86,7 @@ END_MESSAGE_MAP()
 
 // CFITOMAppDlg メッセージ ハンドラー
 
-BOOL CFITOMAppDlg::OnInitDialog()
+bool CFITOMAppDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -99,7 +99,7 @@ BOOL CFITOMAppDlg::OnInitDialog()
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
 	if (pSysMenu != NULL)
 	{
-		BOOL bNameValid;
+		bool bNameValid;
 		CString strAboutMenu;
 		bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
 		ASSERT(bNameValid);
@@ -223,7 +223,7 @@ void CFITOMAppDlg::OnVEdit()
 }
 
 
-BOOL CFITOMAppDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+bool CFITOMAppDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	return CDialogEx::OnCommand(wParam, lParam);

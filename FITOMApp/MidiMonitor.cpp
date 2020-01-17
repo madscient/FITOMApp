@@ -78,7 +78,7 @@ void CMidiMonitor::OnCancel()
 }
 
 
-BOOL CMidiMonitor::OnInitDialog()
+bool CMidiMonitor::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -160,7 +160,7 @@ void CMidiMonitor::UpdateStat(int ch, chstat* stat)
 {
 	CString tmp;
 	CFMBank* pbank = theConfig->GetFMBank(CFITOM::GetDeviceVoiceGroupMask(stat->dev), stat->bank);
-	BOOL bDevChanged = FALSE;
+	bool bDevChanged = FALSE;
 	if (prevstat[ch].dev != stat->dev) {
 		TCHAR tmpdev[64];
 		theConfig->GetDeviceName(stat->dev, tmpdev, _countof(tmpdev));
@@ -210,7 +210,7 @@ void CMidiMonitor::OnDblclkListMidich(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-BOOL CMidiMonitor::PreTranslateMessage(MSG* pMsg)
+bool CMidiMonitor::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (WM_KEYDOWN == pMsg->message)

@@ -83,7 +83,7 @@ void CDevMonitor::OnCancel()
 }
 
 
-BOOL CDevMonitor::OnInitDialog()
+bool CDevMonitor::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -123,7 +123,7 @@ BOOL CDevMonitor::OnInitDialog()
 }
 
 
-BOOL CDevMonitor::PreTranslateMessage(MSG* pMsg)
+bool CDevMonitor::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (WM_KEYDOWN == pMsg->message)
@@ -145,7 +145,7 @@ static LPCTSTR statstr[] = {
 	_T("DISABLED"), _T("EMPTY"), _T("ASSIGNED"), _T("RUNNING"), 0,
 };
 
-void CDevMonitor::UpdateList(BOOL binit)
+void CDevMonitor::UpdateList(bool binit)
 {
 	if (binit) {
 		lstDevice.DeleteAllItems();

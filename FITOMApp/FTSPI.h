@@ -21,14 +21,14 @@ public:
 
 class CFTInterface {
 protected:
-	BOOL bValid;
+	bool bValid;
 	FTHINFO FTChannel;
 	virtual void BufferPush(BYTE data);
 	virtual void BufferPush(BYTE* buf, uint32_t length);
 public:
 	CFTInterface();
 	~CFTInterface();
-	virtual BOOL IsValid() { return bValid; };
+	virtual bool IsValid() { return bValid; };
 	virtual void GetInterfaceDesc(TCHAR* str, int len);
 	virtual FT_HANDLE GetHandle() { return FTChannel.ftHandle; };
 	virtual FT_STATUS BufferFlush();

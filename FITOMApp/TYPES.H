@@ -27,10 +27,15 @@ typedef CHAR TCHAR;
 #define _T(x) x
 #endif
 
-#ifndef _WIN32
+#if !defined(_WIN32)
 typedef unsigned int UINT;
 typedef uint32_t uint32_t;
 typedef wchar_t WCHAR;
+#ifdef _UNICODE
+typedef WCHAR TCHAR;
+#else
+typedef CHAR TCHAR;
+#endif
 typedef bool BOOL;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;

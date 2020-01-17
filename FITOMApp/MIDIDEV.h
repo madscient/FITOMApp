@@ -11,7 +11,7 @@ protected:
 public:
 	CMidiIn() : pMidiInst(0) {};
 	~CMidiIn() {};
-	virtual BOOL RegistInterrupt(CMidiInst* pInst) { return FALSE; }
+	virtual bool RegistInterrupt(CMidiInst* pInst) { return FALSE; }
 	virtual uint8_t IsReceived() = 0;
 	virtual uint8_t Read() = 0;
 	virtual const char* GetDescriptor() = 0;
@@ -97,7 +97,7 @@ public:
 	virtual uint8_t	Read();
 	static void CALLBACK MidiInProc(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2);
 	virtual const char* GetDescriptor() { return desc; };
-	virtual BOOL RegistInterrupt(CMidiInst* pInst) { pMidiInst = pInst; return TRUE; };
+	virtual bool RegistInterrupt(CMidiInst* pInst) { pMidiInst = pInst; return TRUE; };
 protected:
 	int AddBuffer(BYTE msg);
 	int AddBuffer(DWORD msg);

@@ -31,7 +31,7 @@ CMidiChCtrlDlg::CMultiCtrl::CMultiCtrl
 	SetRange(min, max);
 }
 
-BOOL CMidiChCtrlDlg::CMultiCtrl::Attach(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int))
+bool CMidiChCtrlDlg::CMultiCtrl::Attach(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int))
 {
 	pParent = par;
 	if (!Edit.SubclassDlgItem(idedt, pParent)) { return FALSE; }
@@ -67,7 +67,7 @@ void CMidiChCtrlDlg::CMultiCtrl::SetRange(int min, int max)
 	}
 }
 
-BOOL CMidiChCtrlDlg::CMultiCtrl::IsMember(int id)
+bool CMidiChCtrlDlg::CMultiCtrl::IsMember(int id)
 {
 	if (isValid) {
 		if (id == Edit.GetDlgCtrlID() || id == Spin.GetDlgCtrlID() || id == Slider.GetDlgCtrlID()) {
@@ -77,7 +77,7 @@ BOOL CMidiChCtrlDlg::CMultiCtrl::IsMember(int id)
 	return FALSE;
 }
 
-BOOL CMidiChCtrlDlg::CChecker::Attach(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int))
+bool CMidiChCtrlDlg::CChecker::Attach(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int))
 {
 	if (!Btn.SubclassDlgItem(id, par)) { return FALSE; }
 	pParent = par;
@@ -148,9 +148,9 @@ CMidiChCtrlDlg::~CMidiChCtrlDlg()
 {
 }
 
-BOOL CMidiChCtrlDlg::CMultiCtrl::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+bool CMidiChCtrlDlg::CMultiCtrl::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 {
-	BOOL res = FALSE;
+	bool res = FALSE;
 	int val = value;
 	TCHAR tmp[32];
 	switch (wParam) {
@@ -220,7 +220,7 @@ void CMidiChCtrlDlg::OnOK()
 }
 
 
-BOOL CMidiChCtrlDlg::OnInitDialog()
+bool CMidiChCtrlDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -552,7 +552,7 @@ void CMidiChCtrlDlg::OnBnClickedCheck(UINT id)
 	}
 }
 
-BOOL CMidiChCtrlDlg::PreTranslateMessage(MSG* pMsg)
+bool CMidiChCtrlDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (WM_KEYDOWN == pMsg->message)

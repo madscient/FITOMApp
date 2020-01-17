@@ -105,7 +105,7 @@ void CDlgVoicePicker::SetProg(uint32_t prog)
 	}
 }
 
-BOOL CDlgVoicePicker::OnInitDialog()
+bool CDlgVoicePicker::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	bInit = TRUE;
@@ -181,7 +181,7 @@ void CDlgVoicePicker::RefreshBank()
 {
 	cmbBank.ResetContent();
 	CString tmp;
-	BOOL isPcm = theConfig->isPcmDevice(theDevice);
+	bool isPcm = theConfig->isPcmDevice(theDevice);
 	UINT vg = CFITOM::GetDeviceVoiceGroupMask(theDevice & 0xff);
 	if (!(vg & VOICE_GROUP_RHYTHM)) {
 		for (int i = 0; i < MAX_BANK; i++) {
@@ -323,7 +323,7 @@ void CDlgVoicePicker::OnRdblclkListProgs(NMHDR *pNMHDR, LRESULT *pResult)
 	theProg = lstProg.GetSelectionMark();
 	BeginWaitCursor();
 	uint8_t devm = theDevice & 0xff;
-	BOOL isPcm = theConfig->isPcmDevice(theDevice);
+	bool isPcm = theConfig->isPcmDevice(theDevice);
 	pICh->BankSelMSB(devm);
 	pICh->BankSelLSB(theBank);
 	pICh->ProgChange(theProg);

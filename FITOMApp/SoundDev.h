@@ -119,7 +119,7 @@ protected:
 		CMidiCh* GetParent() const { return parent; }
 		FMVOICE* GetVoice() const { return (FMVOICE* const)&voice; };
 		uint32_t GetVoiceID() const { return voice.ID; };
-		BOOL SetVoice(FMVOICE* vc);
+		bool SetVoice(FMVOICE* vc);
 		void SetVoiceID(uint32_t vcid);
 		void Init();
 		void Assign(CMidiCh* parch);

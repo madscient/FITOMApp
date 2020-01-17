@@ -34,9 +34,9 @@ protected:
 	CButton btnStart;
 	CButton btnMidiMon;
 	CButton btnDevMon;
-	BOOL bMidMon;
+	bool bMidMon;
 	// 生成された、メッセージ割り当て関数
-	virtual BOOL OnInitDialog();
+	virtual bool OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
@@ -49,7 +49,7 @@ public:
 	afx_msg void OnConfig();
 	afx_msg void OnMidiMon();
 	afx_msg void OnVEdit();
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+	virtual bool OnCommand(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedButtonDedit();
 	CSliderCtrl sldMasterVol;
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
