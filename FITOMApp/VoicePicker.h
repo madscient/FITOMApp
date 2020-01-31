@@ -45,7 +45,7 @@ public:
 	LRESULT OnKickIdle(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnSelendokComboDevice();
 	afx_msg void OnSelendokComboBank();
-	virtual bool OnInitDialog();
+	virtual BOOL OnInitDialog();
 //	afx_msg void OnOK(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnDblclkListProgs(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void OnOK();

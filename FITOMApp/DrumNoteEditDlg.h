@@ -46,7 +46,7 @@ public:
 	afx_msg void OnBtnTest();
 	afx_msg void OnUpdateBtnTest(CCmdUI *pCmdUI);
 	virtual void OnOK();
-	virtual bool OnInitDialog();
+	virtual BOOL OnInitDialog();
 	LRESULT OnKickIdle(WPARAM wParam, LPARAM lParam);
 	CSpinButtonCtrl spnPanpot;
 	CSpinButtonCtrl spnGate;

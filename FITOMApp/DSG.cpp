@@ -36,7 +36,7 @@ void CDSG::UpdateVoice(uint8_t ch)
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
 	uint8_t tmp = GetReg(0x8 + ch, 0) & 0x10;
-	SetReg(0x8 + ch, tmp | ((voice->op[0].EGT & 0x3) << 5) | (voice->op[0].WS & 0x7), 1);
+	SetReg(0x8 + ch, tmp | ((voice->AL & 0x3) << 5) | (voice->op[0].WS & 0x7), 1);
 }
 
 void CDSG::UpdateTL(uint8_t ch, uint8_t op, uint8_t lev)

@@ -83,7 +83,7 @@ void CDevMonitor::OnCancel()
 }
 
 
-bool CDevMonitor::OnInitDialog()
+BOOL CDevMonitor::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -123,7 +123,7 @@ bool CDevMonitor::OnInitDialog()
 }
 
 
-bool CDevMonitor::PreTranslateMessage(MSG* pMsg)
+BOOL CDevMonitor::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (WM_KEYDOWN == pMsg->message)

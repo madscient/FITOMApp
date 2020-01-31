@@ -60,7 +60,7 @@ private:
 	static int step_adj[];
 	//buffers
 	short* inBuffer;	//temp work buffer, used correct byte order and downsample
-	byte* outBuffer;	//output buffer, this is your PCM file, save it
+	::byte* outBuffer;	//output buffer, this is your PCM file, save it
 
 								//decode stuff
 	int* jedi_table;
@@ -76,8 +76,8 @@ private:
 	int previndex = 0; //previous index, initial condition must be 0
 
 	void jedi_table_init();
-	byte YM2610_ADPCM_A_Encode(short sample);
-	short YM2610_ADPCM_A_Decode(byte code);
+	uint8_t YM2610_ADPCM_A_Encode(short sample);
+	short YM2610_ADPCM_A_Decode(uint8_t code);
 	void YM_encode();
 };
 

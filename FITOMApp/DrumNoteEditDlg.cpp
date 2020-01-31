@@ -86,7 +86,7 @@ void CDrumNoteEditDlg::OnOK()
 	CDialogEx::OnOK();
 }
 
-bool CDrumNoteEditDlg::OnInitDialog()
+BOOL CDrumNoteEditDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 

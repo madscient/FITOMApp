@@ -80,12 +80,12 @@ public:
 	static unsigned int CALLBACK CommandProc(void* params);
 // オーバーライド
 public:
-	virtual bool InitInstance();
+	virtual BOOL InitInstance();
 
 // 実装
 
 	DECLARE_MESSAGE_MAP()
-	virtual bool OnIdle(LONG lCount);
+	virtual BOOL OnIdle(LONG lCount);
 };
 
 extern CFITOMApp theApp;

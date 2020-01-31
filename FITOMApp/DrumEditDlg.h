@@ -30,7 +30,7 @@ protected:
 public:
 	void SetProg(int prog) { theProg = prog; };
 	int GetProg() { return theProg; };
-	virtual bool OnInitDialog();
+	virtual BOOL OnInitDialog();
 	CListCtrl lstDrumNote;
 	LRESULT OnKickIdle(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedBtnPick();

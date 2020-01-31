@@ -42,7 +42,7 @@ void CFMS::UpdateVoice(uint8_t ch)
 	{
 		uint8_t fb = i ? (voice->FB & 0x70) : (voice->FB << 4);
 		SetReg(0x00 + ch + (i<<4), fb | voice->op[i].MUL);
-		tmp = (voice->op[i].WS & 3) | (voice->op[i].EGS ? 0x10 : 0) | 0x0c;
+		tmp = (voice->op[i].WS & 3) | (voice->op[i].SR ? 0x10 : 0) | 0x0c;
 		SetReg(0x20 + ch + (i<<4), tmp);
 		SetReg(0x40 + ch, 0);	//Pitch LFO (currently disabled)
 		SetReg(0x60 + ch, 0);	//Pitch LFO (currently disabled)

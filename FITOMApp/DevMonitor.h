@@ -30,10 +30,10 @@ public:
 	virtual void PostNcDestroy();
 	virtual void OnOK();
 	virtual void OnCancel();
-	virtual bool OnInitDialog();
+	virtual BOOL OnInitDialog();
 	CComboBox cmbDevice;
 	CListCtrl lstDevice;
-	virtual bool PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedButtonReset();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

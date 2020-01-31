@@ -11,7 +11,15 @@ uint8_t COPM::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 #define GET_RR(v,o)	(v->op[o].RR >> 3)
 #define GET_SL(v,o)	(v->op[o].SL >> 3)
 #define GET_TL(v,o)	(v->op[o].TL)
+#define GET_AM(v,o)	(v->op[o].AVF & 1)
+#define GET_VIB(v,o) ((v->op[o].AVF >> 1) & 1)
+#define GET_FIX(v,o) ((v->op[o].AVF >> 2) & 1)
+#define GET_KSL(v,o) ((v->op[o].KS >> 4) & 3)
+#define GET_KSR(v,o) (v->op[o].KS & 3)
+#define GET_ML(v,o)	(v->op[o].ML & 0xf)
 #define GET_RV(v,o)	(v->op[o].REV)
+#define GET_AMS(v) (v->APS >> 4)
+#define GET_PMS(v) (v->APS & 7)
 
 COPM::COPM(CPort* pt, int fsamp) : CSoundDevice(DEVICE_OPM, 8, 0, 0, 0, FnumTableType::none, pt, 0x100), lfos(1)
 {
@@ -67,13 +75,13 @@ void COPM::UpdateVoice(uint8_t ch)
 
 	for (i=0; i<4; i++)
 	{
-		uint8_t ofm = voice->op[map[i]].DM0;
+		uint8_t ofm = GET_FIX(voice, map[i]);
 		tmp = ((voice->op[map[i]].DT1 & 0x7) << 4) | (voice->op[map[i]].MUL & 0xf);
 		SetReg(0x40 + i * 8 + ch, tmp);
 		SetReg(0x60 + i * 8 + ch, GET_TL(voice, map[i]));
-		tmp = ((voice->op[map[i]].KSR & 0x3) << 6) | GET_AR(voice, map[i]) | (ofm ? 0x20 : 0);
+		tmp = (GET_KSR(voice, map[i]) << 6) | GET_AR(voice, map[i]) | (ofm ? 0x20 : 0);
 		SetReg(0x80 + i * 8 + ch, tmp);
-		tmp = ((voice->op[map[i]].AM & 0x1) << 7) | GET_DR(voice, map[i]);
+		tmp = (GET_AM(voice, map[i]) << 7) | GET_DR(voice, map[i]);
 		SetReg(0xa0 + i * 8 + ch, tmp);
 		tmp = (ofm ? 0 : ((voice->op[map[i]].DT2 & 0x3) << 6)) | GET_SR(voice, map[i]);
 		SetReg(0xc0 + i * 8 + ch, tmp);
@@ -200,7 +208,7 @@ void COPM::EnableDevPM(uint8_t ch, uint8_t on)
 		}
 		lfores[0].parent = parent;
 		lfores[0].used |= (1 << ch);
-		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x3) | (voice->PMS << 4));
+		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x3) | (GET_PMS(voice) << 4));
 	} else if (ch < chs) {
 		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x3));
 		lfores[0].used &= ~uint32_t(1 << ch);
@@ -226,7 +234,7 @@ void COPM::EnableDevAM(uint8_t ch, uint8_t on)
 		}
 		lfores[0].parent = parent;
 		lfores[0].used |= (1 << ch);
-		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x70) | (voice->AMS));
+		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x70) | GET_AMS(voice));
 	} else if (ch < chs) {
 		SetReg(0x38 + ch, (GetReg(0x38 + ch, 0) & 0x70));
 		lfores[0].used &= ~uint32_t(1 << ch);
@@ -349,7 +357,7 @@ void COPZ::UpdateVoice(uint8_t ch)
 	FMVOICE* voice = attr->GetVoice();
 	for (int i = 0; i < 4; i++) {
 		uint8_t tmp;
-		uint8_t ofm = voice->op[map[i]].DM0;
+		uint8_t ofm = GET_FIX(voice, map[i]);
 		tmp = 0x80 | ((voice->op[map[i]].WS & 0x7) << 4) | (voice->op[map[i]].DT3 & 0xf);
 		SetReg(0x40 + i * 8 + ch, tmp);
 		//tmp = ((voice->op[map[i]].EGS & 0x3) << 6) | GET_RV(voice, map[i]) | 0x20;

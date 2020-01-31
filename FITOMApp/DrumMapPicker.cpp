@@ -46,7 +46,7 @@ void CDrumMapPicker::OnDblclkDrummapList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-bool CDrumMapPicker::OnInitDialog()
+BOOL CDrumMapPicker::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 

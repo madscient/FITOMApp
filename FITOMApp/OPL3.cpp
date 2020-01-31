@@ -9,7 +9,13 @@ uint8_t COPL3::carmsk[] = { 0x2, 0x3, 0x8, 0xc, 0x8, 0x9, 0xa, 0xd, 0xa, 0xe, 0x
 #define GET_SR(v,o)	(v->op[o].SR >> 3)
 #define GET_RR(v,o)	(v->op[o].RR >> 3)
 #define GET_SL(v,o)	(v->op[o].SL >> 3)
-#define GET_TL(v,o)	(v->op[o].TL)
+#define GET_TL(v,o)	((v->op[o].TL) < 64 ? (v->op[o].TL) :63)
+#define GET_AM(v,o)	(v->op[o].AVF & 1)
+#define GET_VIB(v,o) ((v->op[o].AVF >> 1) & 1)
+#define GET_FIX(v,o) ((v->op[o].AVF >> 2) & 1)
+#define GET_KSL(v,o) ((v->op[o].KS >> 4) & 3)
+#define GET_KSR(v,o) (v->op[o].KS & 1)
+#define GET_ML(v,o)	(v->op[o].ML & 0xf)
 //#define GET_RV(v,o)	(v->op[o].REV >> 3)
 #define GET_RV(v,o)	(4)
 
@@ -36,12 +42,12 @@ void COPL3::UpdateVoice(uint8_t ch)
 
 	for(i=0; i<4; i++)
 	{
-		tmp = ((voice->op[i].AM & 0x1) << 7) | ((voice->op[i].VIB & 0x1) << 6) |
-			(GET_SR(voice, i)?0:0x20) | ((voice->op[i].KSR & 0x1) << 4) |
+		tmp = (GET_AM(voice, i) << 7) | (GET_VIB(voice, i) << 6) |
+			(GET_SR(voice, i) ? 0:0x20) | (GET_KSR(voice, i) << 4) |
 			(voice->op[i].MUL & 0x0F);
 		SetReg(rop + 0x20 + opmap[i] + dch, tmp);
 
-		tmp = (uint8_t)((voice->op[i].KSL << 6) | GET_TL(voice, i));
+		tmp = (uint8_t)((GET_KSR(voice, i) << 6) | GET_TL(voice, i));
 		SetReg(rop + 0x40 + opmap[i] + dch, tmp);
 
 		tmp = (GET_AR(voice, i) << 4) | GET_DR(voice, i);
@@ -84,7 +90,7 @@ void COPL3::UpdateVolExp(uint8_t ch)
 			tl = CalcLinearLevel(evol, voice->op[i].TL);
 			attr->baseTL[i] = tl;
 			tl = Linear2dB(tl, RANGE48DB, STEP075DB, 6);
-			tmp = (uint8_t)((voice->op[i].KSL << 6) | tl);
+			tmp = (uint8_t)((GET_KSL(voice, i) << 6) | tl);
 			SetReg(rop + 0x40 + opmap[i] + dch, tmp, 0);
 		}
 	}
