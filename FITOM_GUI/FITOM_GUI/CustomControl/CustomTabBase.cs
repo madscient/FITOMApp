@@ -203,14 +203,14 @@ namespace FITOM_GUI.CustomControl
                 {
                     if (i == index)
                     {
-                        //tabPanelList[selected][i].Visible = true;
+                        tabPanelList[selected][i].Visible = true;
                         tabPanelList[selected][i].BringToFront();
                         tabPanelList[selected][i].Select();
                         tabPanelList[selected][i].Focus();
                     }
                     else
                     {
-                        //tabPanelList[selected][i].Visible = false;
+                        tabPanelList[selected][i].Visible = false;
                     }
                 }
                 if (tabButtons[selected] != null)

@@ -64,7 +64,7 @@
     <Compile Include="CustomControl\CustomButtonBase.Designer.cs">
       <DependentUpon>CustomButtonBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\CustomControllData.cs" />
+    <Compile Include="CustomControl\CustomControlData.cs" />
     <Compile Include="CustomControl\CustomFastControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -76,6 +76,12 @@
     </Compile>
     <Compile Include="CustomControl\CustomFastPanel.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControl\CustomInputBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\CustomInputBox.Designer.cs">
+      <DependentUpon>CustomInputBox.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\CustomPictureButton.cs">
       <SubType>Component</SubType>
@@ -89,16 +95,17 @@
     <Compile Include="CustomControl\CustomTabBase.designer.cs">
       <DependentUpon>CustomTabBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\CustomTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControl\CustomTextBox.Designer.cs">
+      <DependentUpon>CustomTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomDialog\CustomDialogBase.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CustomDialog\CustomDialogBase.Designer.cs">
       <DependentUpon>CustomDialogBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DataClass\FMVoiceData.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FMVoiceData.xsd</DependentUpon>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -156,6 +163,18 @@
     <Compile Include="UserPanel\UserPanelBase.Designer.cs">
       <DependentUpon>UserPanelBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserPanel\VoiceEditPanel\GeneralPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanel\VoiceEditPanel\GeneralPanel.Designer.cs">
+      <DependentUpon>GeneralPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserPanel\VoiceEditPanel\VoicePanelBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserPanel\VoiceEditPanel\VoicePanelBase.Designer.cs">
+      <DependentUpon>VoicePanelBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserPanel\VoicePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -168,8 +187,14 @@
     <Compile Include="VoiceEditForm.Designer.cs">
       <DependentUpon>VoiceEditForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CustomControl\CustomInputBox.resx">
+      <DependentUpon>CustomInputBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\CustomTabBase.resx">
       <DependentUpon>CustomTabBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\CustomTextBox.resx">
+      <DependentUpon>CustomTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomDialog\CustomDialogBase.resx">
       <DependentUpon>CustomDialogBase.cs</DependentUpon>
@@ -199,21 +224,19 @@
     <EmbeddedResource Include="UserPanel\UserPanelBase.resx">
       <DependentUpon>UserPanelBase.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserPanel\VoiceEditPanel\GeneralPanel.resx">
+      <DependentUpon>GeneralPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanel\VoiceEditPanel\VoicePanelBase.resx">
+      <DependentUpon>VoicePanelBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserPanel\VoicePanel.resx">
+      <DependentUpon>VoicePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VoiceEditForm.resx">
       <DependentUpon>VoiceEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="DataClass\FMVoiceData.xsc">
-      <DependentUpon>FMVoiceData.xsd</DependentUpon>
-    </None>
-    <None Include="DataClass\FMVoiceData.xsd">
-      <SubType>Designer</SubType>
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>FMVoiceData.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="DataClass\FMVoiceData.xss">
-      <DependentUpon>FMVoiceData.xsd</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
