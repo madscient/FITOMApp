@@ -33,7 +33,7 @@ void COPK::UpdateVoice(uint8_t ch)
 	for (int i=0; i<2; i++) {
 		uint8_t tmp;
 		tmp = (GetReg(0x10 + chofs[ch] + (i * 2), 0) & 0x90) | voice->op[i].MUL;
-		SetReg(0x10 + chofs[ch] + (i * 2), tmp | (voice->op[i].VIB ? 0x40 : 0) | (voice->op[i].WS ? 0x20 : 0), 1);
+		SetReg(0x10 + chofs[ch] + (i * 2), tmp | (voice->op[i].AVF ? 0x40 : 0) | (voice->op[i].WS ? 0x20 : 0), 1);
 		tmp = GET_TL(voice, i);
 		if (!i) {
 			//tmp = (tmp << 1) | (voice->NFQ ? 1: 0);
