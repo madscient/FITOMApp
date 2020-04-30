@@ -1388,23 +1388,19 @@ int CFITOMConfig::ParseOPMVoice(FMVOICE* voice, int index, std::vector<int>& par
 	if (0 <= k && k < 4 && param.size() > 10) {
 		voice->op[k].AR = (param[0] & 31) << 2;
 		voice->op[k].DR = (param[1] & 31) << 2;
-		voice->op[k].SR = (param[2] & 31) << 2;
-		voice->op[k].RR = (param[3] & 15) << 3;
-		voice->op[k].SL = (param[4] & 15) << 3;
-		voice->op[k].TL = (param[5] & 127);
-		voice->op[k].KSL = (param[6] & 3);
+		voice->op[k].SL = (param[2] & 15) << 3;
+		voice->op[k].SR = (param[3] & 31) << 2;
+		voice->op[k].RR = (param[4] & 15) << 3;
+		voice->op[k].SRR = (param[5] & 15) << 3;
+		voice->op[k].TL = (param[6] & 127);
+		voice->op[k].EGR = (param[7] & 127);
+		voice->op[k].KS = (param[8]);
+		voice->op[k].WS = (param[9] & 15);
+		voice->op[k].AVF = (param[10] & 7);
 		voice->op[k].MUL = (param[7] & 15);
-		voice->op[k].DT1 = (param[8] & 7);
-		voice->op[k].DT2 = (param[9] & 3);
-		voice->op[k].AM = (param[10] & 1);
-	}
-	else if (4 <= k && k < 8 && param.size() > 4) {
-		k -= 4;
-		voice->op[k].DM0 = (param[0] & 1);
-		voice->op[k].DT3 = (param[1] & 15);
-		voice->op[k].WS = (param[2] & 7);
-		voice->op[k].REV = (param[3] & 15);
-		voice->op[k].EGS = (param[4] & 127);
+		voice->op[k].DT1 = (param[17] & 7);
+		voice->op[k].DT2 = (param[18] & 3);
+		voice->op[k].DT3 = (param[19] & 15);
 	}
 	else if (index == 0 && param.size() > 3) {
 		voice->AL = (param[0] & 7) | ((param[2] & 1) << 3);
@@ -1420,16 +1416,19 @@ int CFITOMConfig::ParseOPNVoice(FMVOICE* voice, int index, std::vector<int>& par
 	if (0 <= k && k < 4 && param.size() > 10) {
 		voice->op[k].AR = (param[0] & 31) << 2;
 		voice->op[k].DR = (param[1] & 31) << 2;
-		voice->op[k].SR = (param[2] & 31) << 2;
-		voice->op[k].RR = (param[3] & 15) << 3;
-		voice->op[k].SL = (param[4] & 15) << 3;
-		voice->op[k].TL = (param[5] & 127);
-		voice->op[k].KSL = (param[6] & 3);
+		voice->op[k].SL = (param[2] & 15) << 3;
+		voice->op[k].SR = (param[3] & 31) << 2;
+		voice->op[k].RR = (param[4] & 15) << 3;
+		voice->op[k].SRR = (param[5] & 15) << 3;
+		voice->op[k].TL = (param[6] & 127);
+		voice->op[k].EGR = (param[7] & 127);
+		voice->op[k].KS = (param[8]);
+		voice->op[k].WS = (param[9] & 15);
+		voice->op[k].AVF = (param[10] & 7);
 		voice->op[k].MUL = (param[7] & 15);
-		voice->op[k].DT1 = (param[8] & 7);
-		voice->op[k].EGT = (param[9] & 15);
-		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 0;
+		voice->op[k].DT1 = (param[17] & 7);
+		voice->op[k].DT2 = (param[18] & 3);
+		voice->op[k].DT3 = (param[19] & 15);
 	}
 	else if (index == 0 && param.size() > 1) {
 		voice->AL = (param[0] & 7);
@@ -1445,18 +1444,18 @@ int CFITOMConfig::ParseOPL2Voice(FMVOICE* voice, int index, std::vector<int>& pa
 		voice->op[k].AR = (param[0] & 15) << 3;
 		voice->op[k].DR = (param[1] & 15) << 3;
 		voice->op[k].SR = (param[2] & 15) << 3;
-		voice->op[k].RR = (param[3] & 15) << 3;
-		voice->op[k].SL = (param[4] & 15) << 3;
-		voice->op[k].TL = (param[5] & 63);
-		voice->op[k].KSL = (param[6] & 7) >> 1;
-		voice->op[k].KSR = (param[6] & 1);
-		voice->op[k].MUL = (param[7] & 15);
-		voice->op[k].DT1 = ((param[8] + 8192) & 0x3fff) >> 7;
-		voice->op[k].DT2 = ((param[8] + 8192) & 0x7f);
+		voice->op[k].SL = (param[3] & 15) << 3;
+		voice->op[k].RR = (param[4] & 15) << 3;
+		voice->op[k].SRR = (param[5] & 15) << 3;
+		voice->op[k].TL = (param[6] & 63);
+		voice->op[k].EGR = (param[7]);
+		voice->op[k].KS = (param[8]);
 		voice->op[k].WS = (param[9] & 7);
-		voice->op[k].VIB = (param[10] >> 1) & 1;
-		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 0;
+		voice->op[k].AVF = (param[10] & 7);
+		voice->op[k].MUL = (param[16] & 15);
+		voice->op[k].DT1 = ((param[17] + 8192) & 0x3fff) >> 7;
+		voice->op[k].DT2 = ((param[17] + 8192) & 0x7f);
+		voice->op[k].DT3 = (param[18]);
 	}
 	else if (index == 0 && param.size() > 1) {
 		voice->AL = (param[0] & 7);
@@ -1472,18 +1471,18 @@ int CFITOMConfig::ParseOPL3Voice(FMVOICE* voice, int index, std::vector<int>& pa
 		voice->op[k].AR = (param[0] & 15) << 3;
 		voice->op[k].DR = (param[1] & 15) << 3;
 		voice->op[k].SR = (param[2] & 15) << 3;
-		voice->op[k].RR = (param[3] & 15) << 3;
-		voice->op[k].SL = (param[4] & 15) << 3;
-		voice->op[k].TL = (param[5] & 63);
-		voice->op[k].KSL = (param[6] & 7) >> 1;
-		voice->op[k].KSR = (param[6] & 1);
-		voice->op[k].MUL = (param[7] & 15);
-		voice->op[k].DT1 = ((param[8] + 8192) & 0x3fff) >> 7;
-		voice->op[k].DT2 = ((param[8] + 8192) & 0x7f);
+		voice->op[k].SL = (param[3] & 15) << 3;
+		voice->op[k].RR = (param[4] & 15) << 3;
+		voice->op[k].SRR = (param[5] & 15) << 3;
+		voice->op[k].TL = (param[6] & 63);
+		voice->op[k].EGR = (param[7]);
+		voice->op[k].KS = (param[8]);
 		voice->op[k].WS = (param[9] & 7);
-		voice->op[k].VIB = (param[10] >> 1) & 1;
-		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 0;
+		voice->op[k].AVF = (param[10] & 7);
+		voice->op[k].MUL = (param[16] & 15);
+		voice->op[k].DT1 = ((param[17] + 8192) & 0x3fff) >> 7;
+		voice->op[k].DT2 = ((param[17] + 8192) & 0x7f);
+		voice->op[k].DT3 = (param[18]);
 	}
 	else if (index == 0 && param.size() > 2) {
 		voice->AL = (param[0] & 15);
@@ -1499,24 +1498,22 @@ int CFITOMConfig::ParseMA3Voice(FMVOICE* voice, int index, std::vector<int>& par
 		voice->op[k].AR = (param[0] & 15) << 3;
 		voice->op[k].DR = (param[1] & 15) << 3;
 		voice->op[k].SR = (param[2] & 15) << 3;
-		voice->op[k].RR = (param[3] & 15) << 3;
-		voice->op[k].SL = (param[4] & 15) << 3;
-		voice->op[k].TL = (param[5] & 63);
-		voice->op[k].KSL = (param[6] & 7) >> 1;
-		voice->op[k].KSR = (param[6] & 1);
-		voice->op[k].MUL = (param[7] & 15);
-		voice->op[k].DT1 = (param[8] & 7);
-		voice->op[k].DT2 = 0;
-		voice->op[k].WS = (param[9] & 31);
-		voice->op[k].VIB = (param[10] >> 4) & 15;
-		voice->op[k].AM = (param[10] & 15);
-		voice->op[k].REV = 0;
+		voice->op[k].SL = (param[3] & 15) << 3;
+		voice->op[k].RR = (param[4] & 15) << 3;
+		voice->op[k].SRR = (param[5] & 15) << 3;
+		voice->op[k].TL = (param[6] & 63);
+		voice->op[k].EGR = (param[7]);
+		voice->op[k].KS = (param[8]);
+		voice->op[k].WS = (param[9] & 7);
+		voice->op[k].AVF = (param[10] & 7);
+		voice->op[k].MUL = (param[16] & 15);
+		voice->op[k].DT1 = ((param[17] + 8192) & 0x3fff) >> 7;
+		voice->op[k].DT2 = ((param[17] + 8192) & 0x7f);
+		voice->op[k].DT3 = (param[18]);
 	}
 	else if (index == 0 && param.size() > 4) {
 		voice->AL = (param[0] & 7);
 		voice->FB = (param[1] & 7) | ((param[2] & 7) << 3);
-		voice->AMS = (param[3]) & 3;	//LFO
-		voice->PMS = (param[4]) & 3;	//BO
 	}
 	return 0;
 }
@@ -1528,18 +1525,18 @@ int CFITOMConfig::ParseOPLLVoice(FMVOICE* voice, int index, std::vector<int>& pa
 		voice->op[k].AR = (param[0] & 15) << 3;
 		voice->op[k].DR = (param[1] & 15) << 3;
 		voice->op[k].SR = (param[2] & 15) << 3;
-		voice->op[k].RR = (param[3] & 15) << 3;
-		voice->op[k].SL = (param[4] & 15) << 3;
-		voice->op[k].TL = (param[5] & 63);
-		voice->op[k].KSL = (param[6] & 7) >> 1;
-		voice->op[k].KSR = (param[6] & 1);
-		voice->op[k].MUL = (param[7] & 15);
-		voice->op[k].DT1 = ((param[8] + 8192) & 0x3fff) >> 7;
-		voice->op[k].DT2 = ((param[8] + 8192) & 0x7f);
+		voice->op[k].SL = (param[3] & 15) << 3;
+		voice->op[k].RR = (param[4] & 15) << 3;
+		voice->op[k].SRR = (param[5] & 15) << 3;
+		voice->op[k].TL = (param[6] & 63);
+		voice->op[k].EGR = (param[7]);
+		voice->op[k].KS = (param[8]);
 		voice->op[k].WS = (param[9] & 7);
-		voice->op[k].VIB = (param[10] >> 1) & 1;
-		voice->op[k].AM = (param[10] & 1);
-		voice->op[k].REV = 0;
+		voice->op[k].AVF = (param[10] & 7);
+		voice->op[k].MUL = (param[16] & 15);
+		voice->op[k].DT1 = ((param[17] + 8192) & 0x3fff) >> 7;
+		voice->op[k].DT2 = ((param[17] + 8192) & 0x7f);
+		voice->op[k].DT3 = (param[18]);
 	}
 	else if (index == 0) {
 		if (param.size() == 1 && param[0]) {
@@ -1557,20 +1554,21 @@ int CFITOMConfig::ParsePSGVoice(FMVOICE* voice, int index, std::vector<int>& par
 {
 	int k = index - 1;
 	if (k == 0 && param.size() > 9) {
-		voice->op[k].AR = (param[0] & 127);
-		voice->op[k].DR = (param[1] & 127);
-		voice->op[k].SR = (param[2] & 127);
-		voice->op[k].RR = (param[3] & 127);
-		voice->op[k].SL = (param[4] & 127);
-		voice->op[k].EGS = (param[5] & 127);
-		voice->op[k].EGT = (param[6] & 127);
-		voice->op[k].DT1 = (param[7] >> 4);	// Noise AND Mask
-		voice->op[k].DT2 = (param[7] & 15);
-		voice->op[k].DM0 = (param[8] >> 4);	// Noise OR Mask
-		voice->op[k].DT3 = (param[8] & 15);
-		voice->op[k].WS = (param[9] & 15);
-		voice->op[k].MUL = (param[10] & 127); // Noise Select
-		voice->op[k].REV = 0;
+		voice->op[k].AR = (param[0] & 15) << 3;
+		voice->op[k].DR = (param[1] & 15) << 3;
+		voice->op[k].SR = (param[2] & 15) << 3;
+		voice->op[k].SL = (param[3] & 15) << 3;
+		voice->op[k].RR = (param[4] & 15) << 3;
+		voice->op[k].SRR = (param[5] & 15) << 3;
+		voice->op[k].TL = (param[6] & 63);
+		voice->op[k].EGR = (param[7]);
+		voice->op[k].KS = (param[8]);
+		voice->op[k].WS = (param[9] & 7);
+		voice->op[k].AVF = (param[10] & 7);
+		voice->op[k].MUL = (param[16] & 15);
+		voice->op[k].DT1 = ((param[17] + 8192) & 0x3fff) >> 7;
+		voice->op[k].DT2 = ((param[17] + 8192) & 0x7f);
+		voice->op[k].DT3 = (param[18]);
 	}
 	else if (index == 0 && param.size() > 2) {
 		voice->AL = param[0] & 127;
@@ -1628,13 +1626,13 @@ int CFITOMConfig::BuildOPMVoice(FMVOICE* voice, int index, TCHAR* result, size_t
 	if (k < 4) {
 		strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 			% (voice->op[k].AR >> 2) % (voice->op[k].DR >> 2) % (voice->op[k].SR >> 2) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-			% int(voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].DT2) % int(voice->op[k].AM)
+			% int(voice->op[k].TL) % int(voice->op[k].KS) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].DT2) % int(voice->op[k].AVF)
 			).str();
 	}
 	else if (k < 8) {
 		k -= 4;
 		strres = (boost::format(_T("%3i %3i %3i %3i %3i")) %
-			int(voice->op[k].DM0) % int(voice->op[k].DT3) % int(voice->op[k].WS) % int(voice->op[k].REV) % int(voice->op[k].EGS)).str();
+			int(voice->op[k].AVF) % int(voice->op[k].DT3) % int(voice->op[k].WS) % int(voice->op[k].EGR) % int(voice->op[k].EGR)).str();
 	}
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
@@ -1649,7 +1647,7 @@ int CFITOMConfig::BuildOPNVoice(FMVOICE* voice, int index, TCHAR* result, size_t
 	int k = index - 1;
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 2) % (voice->op[k].DR >> 2) % (voice->op[k].SR >> 2) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% int(voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].EGT) % int(voice->op[k].AM)).str();
+		% int(voice->op[k].TL) % int(voice->op[k].KS) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].EGR) % int(voice->op[k].AVF)).str();
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
@@ -1664,7 +1662,7 @@ int CFITOMConfig::BuildOPL2Voice(FMVOICE* voice, int index, TCHAR* result, size_
 	int pdt = ((voice->op[k].DT1 << 7) | voice->op[k].DT2) - 8192;
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% min(63, voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
+		% min(63, voice->op[k].TL) % int(voice->op[k].KS) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].AVF << 1) | voice->op[k].AVF)).str();
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
@@ -1679,7 +1677,7 @@ int CFITOMConfig::BuildOPL3Voice(FMVOICE* voice, int index, TCHAR* result, size_
 	int pdt = ((voice->op[k].DT1 << 7) | voice->op[k].DT2) - 8192;
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% min(63, voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
+		% min(63, voice->op[k].TL) % int(voice->op[k].KS) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].AVF << 1) | voice->op[k].AVF)).str();
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
@@ -1687,13 +1685,13 @@ int CFITOMConfig::BuildMA3Voice(FMVOICE* voice, int index, TCHAR* result, size_t
 {
 	std::tstring strres;
 	if (index == 0) {
-		strres = (boost::format(_T("%3i %3i %3i %3i %3i")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7) % (voice->AMS & 3) % (voice->PMS & 3)).str();
+		strres = (boost::format(_T("%3i %3i %3i %3i %3i")) % (voice->AL & 15) % (voice->FB & 7) % ((voice->FB >> 3) & 7) % (voice->APS & 3) % (voice->APS & 3)).str();
 		return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 	}
 	int k = index - 1;
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% min(63, voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].WS) % ((voice->op[k].AM << 4) | voice->op[k].VIB)).str();
+		% min(63, voice->op[k].TL) % int(voice->op[k].KS) % int(voice->op[k].MUL) % int(voice->op[k].DT1) % int(voice->op[k].WS) % ((voice->op[k].AVF << 4) | voice->op[k].AVF)).str();
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
@@ -1714,7 +1712,7 @@ int CFITOMConfig::BuildOPLLVoice(FMVOICE* voice, int index, TCHAR* result, size_
 	int pdt = ((voice->op[k].DT1 << 7) | voice->op[k].DT2) - 8192;
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% (voice->op[k].AR >> 3) % (voice->op[k].DR >> 3) % (voice->op[k].SR >> 3) % (voice->op[k].RR >> 3) % (voice->op[k].SL >> 3)
-		% min(63, voice->op[k].TL) % int(voice->op[k].KSL) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].VIB << 1) | voice->op[k].AM)).str();
+		% min(63, voice->op[k].TL) % int(voice->op[k].KS) % int(voice->op[k].MUL) % pdt % int(voice->op[k].WS) % ((voice->op[k].AVF << 1) | voice->op[k].AVF)).str();
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 
@@ -1730,7 +1728,7 @@ int CFITOMConfig::BuildPSGVoice(FMVOICE* voice, int index, TCHAR* result, size_t
 	int NOM = (voice->op[k].DT3 << 4) | (voice->op[k].DT3 & 15);
 	strres = (boost::format(_T("%3i %3i %3i %3i %3i %3i %3i %3i %3i %3i %3i"))
 		% int(voice->op[k].AR) % int(voice->op[k].DR) % int(voice->op[k].SR) % int(voice->op[k].RR) % int(voice->op[k].SL)
-		% int(voice->op[k].EGS) % int(voice->op[k].EGT) % NAM % NOM % int(voice->op[k].WS) % int(voice->op[k].MUL)).str();
+		% int(voice->op[k].KS) % int(voice->op[k].EGR) % NAM % NOM % int(voice->op[k].WS) % int(voice->op[k].MUL)).str();
 	return tcslen(tcsncpy(result, strres.c_str(), length - 1));
 }
 

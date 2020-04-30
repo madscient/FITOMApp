@@ -145,7 +145,7 @@ static LPCTSTR statstr[] = {
 	_T("DISABLED"), _T("EMPTY"), _T("ASSIGNED"), _T("RUNNING"), 0,
 };
 
-void CDevMonitor::UpdateList(BOOL binit)
+void CDevMonitor::UpdateList(bool binit)
 {
 	if (binit) {
 		lstDevice.DeleteAllItems();

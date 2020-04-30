@@ -34,6 +34,10 @@ namespace FITOM_GUI
             {
                 new HomePanel(), new MidiMonitorPanel(), new DeviceMonitorPanel(), new VoicePanel(), new DrumSetPanel(), new SystemSettingPanel(),
             };
+            foreach (UserPanelBase panel in panels)
+            {
+                panel2.Controls.Add(panel);
+            }
             mainTab.AddPanels(buttons, panels);
             mainTab.SelectPanel(0);
         }

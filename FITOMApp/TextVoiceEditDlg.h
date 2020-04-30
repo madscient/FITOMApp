@@ -43,8 +43,8 @@ public:
 	void SetDevice(uint32_t dev);
 	void GetVoice(FMVOICE* voice);
 	uint32_t GetType();
-	virtual BOOL OnInitDialog();
-	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+	virtual bool OnInitDialog();
+	virtual bool OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	virtual void OnOK();
 	virtual void OnCancel();
 	afx_msg void OnSelendokCmbType();

@@ -10,7 +10,13 @@ uint8_t COPN::carmsk[] = { 0x8, 0x8, 0x8, 0x8, 0xa, 0xe, 0xe, 0xf, };
 #define GET_RR(v,o)	(v->op[o].RR >> 3)
 #define GET_SL(v,o)	(v->op[o].SL >> 3)
 #define GET_TL(v,o)	(v->op[o].TL)
-#define GET_RV(v,o)	(v->op[o].REV >> 3)
+#define GET_AM(v,o)	(v->op[o].AVF & 1)
+#define GET_VIB(v,o) ((v->op[o].AVF >> 1) & 1)
+#define GET_FIX(v,o) ((v->op[o].AVF >> 2) & 1)
+#define GET_KSL(v,o) ((v->op[o].KS >> 4) & 3)
+#define GET_KSR(v,o) (v->op[o].KS & 3)
+#define GET_ML(v,o)	(v->op[o].ML & 0xf)
+#define GET_RV(v,o)	(v->op[o].SRR & 0xf)
 
 COPN::COPN(CPort* pt, int fsamp, uint8_t devtype) :
 CSoundDevice(devtype, 3, fsamp, 144, FNUM_OFFSET, FnumTableType::Fnumber, pt, 0x100), fxena(true)
@@ -59,14 +65,14 @@ void COPN::UpdateVoice(uint8_t ch)
 		tmp = ((voice->op[i].DT1 & 0x7) << 4) | (voice->op[i].MUL & 0xf);
 		SetReg(0x30 + map[i] + ch, tmp);
 		SetReg(0x40 + map[i] + ch, GET_TL(voice, i));
-		tmp = ((voice->op[i].KSR & 0x3) << 6) | GET_AR(voice, i);
+		tmp = (GET_KSR(voice, i) << 6) | GET_AR(voice, i);
 		SetReg(0x50 + map[i] + ch, tmp);
-		tmp = ((voice->op[i].AM & 0x1) << 7) | GET_DR(voice, i);
+		tmp = (GET_AM(voice, i) << 7) | GET_DR(voice, i);
 		SetReg(0x60 + map[i] + ch, tmp);
 		SetReg(0x70 + map[i] + ch, GET_SR(voice, i));
 		tmp = (GET_SL(voice, i) << 4) | GET_RR(voice, i);
 		SetReg(0x80 + map[i] + ch, tmp);
-		SetReg(0x90 + map[i] + ch, voice->op[i].EGT);
+		SetReg(0x90 + map[i] + ch, voice->op[i].WS);
 	}
 	UpdateVolExp(ch);
 }

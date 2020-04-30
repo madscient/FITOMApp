@@ -390,11 +390,11 @@ protected:
 	uint16_t Control();
 	uint16_t SysMsg();
 	uint16_t ChannelMap();
-	BOOL clockenable;
-	volatile BOOL bMidiProc;
-	volatile BOOL bTimerProc;
+	bool clockenable;
+	volatile bool bMidiProc;
+	volatile bool bTimerProc;
 public:
-	CMidiInst(CMidiIn* port, CFITOM* parent, BOOL clkena);
+	CMidiInst(CMidiIn* port, CFITOM* parent, bool clkena);
 	~CMidiInst();
 	CMidiCh* GetMidiCh(uint8_t nch);
 	void SetParent(CFITOM* parent);

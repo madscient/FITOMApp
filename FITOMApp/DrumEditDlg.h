@@ -26,7 +26,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	virtual void OnOK();
 	void Refresh();
-	BOOL bModified;
+	bool bModified;
 public:
 	void SetProg(int prog) { theProg = prog; };
 	int GetProg() { return theProg; };

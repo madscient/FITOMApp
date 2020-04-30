@@ -231,6 +231,9 @@
     <ClInclude Include="StretchPicture.h">
       <Filter>ヘッダー ファイル\Win32 GUI</Filter>
     </ClInclude>
+    <ClInclude Include="VoiceParam.h">
+      <Filter>ヘッダー ファイル\FITOM core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -28,7 +28,7 @@ void CEPSG::Init()
 void CEPSG::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
+	if (!(attr->GetVoice()->FB & 0x8)) {
 		uint8_t evol = attr->GetEffectiveLevel();
 		int16_t lev = int16_t(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
@@ -47,7 +47,7 @@ void CEPSG::UpdateKey(uint8_t ch, uint8_t keyon)
 	CPSGBase::UpdateKey(ch, keyon);
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	if (voice->op[0].EGT & 0x8) {
+	if (voice->FB & 0x8) {
 		if (keyon) {
 			UpdateVoice(ch);
 		}
@@ -64,7 +64,7 @@ void CEPSG::EGOff(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	if (!(voice->op[0].EGT & 0x8)) {
+	if (!(voice->FB & 0x8)) {
 		NoteOff(ch);
 	}
 }
@@ -110,10 +110,10 @@ void CEPSG::UpdateVoice(uint8_t ch)
 	}
 
 	bool hwenv23 = false;
-	if (voice->op[0].EGT & 0x8) {	//HW env
+	if (voice->FB & 0x8) {	//HW env
 		SetReg(0x8 + ch, 0x20, 1);
 		if (ch == 0) {
-			SetReg(0xd, 0xa0 | (voice->op[0].EGT & 0xf), 1);
+			SetReg(0xd, 0xa0 | (voice->FB & 0xf), 1);
 			SetReg(0xb, (((voice->op[0].SL << 4) & 0xf0) | (voice->op[0].RR & 0xf)), 1);
 			SetReg(0xc, (((voice->op[0].DR << 4) & 0xf0) | (voice->op[0].SR & 0xf)), 1);
 		}
@@ -127,7 +127,7 @@ void CEPSG::UpdateVoice(uint8_t ch)
 	if (hwenv23) {
 		SetReg(0x0 + (ch - 1) * 2, (((voice->op[0].SL << 4) & 0xf0) | (voice->op[0].RR & 0xf)), 1);
 		SetReg(0x1 + (ch - 1) * 2, (((voice->op[0].DR << 4) & 0xf0) | (voice->op[0].SR & 0xf)), 1);
-		SetReg(0x3 + ch, (voice->op[0].EGT & 0xf), 1);
+		SetReg(0x3 + ch, (voice->FB & 0xf), 1);
 	}
 	SetReg(0xd, 0xa0 | (GetReg(0xd, 0) & 0xf), 1);	//Bank select A
 }

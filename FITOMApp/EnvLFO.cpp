@@ -192,7 +192,7 @@ void ISoundDevice::CEnvelope::Start(const FMOP* env)
 {
 	param = env;
 	phase = EG_ATTACK;
-	value = param->EGS;
+	value = param->TL;
 	count = 0;
 }
 

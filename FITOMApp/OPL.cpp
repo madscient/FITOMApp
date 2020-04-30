@@ -13,12 +13,18 @@ ISoundDevice::FNUM COPL::RhythmFnum[] = {
 uint8_t COPL::RhythmFreq[] = { 47, 60, 53, };
 #endif
 
+//OPL Voice macro
 #define GET_AR(v,o)	(v->op[o].AR >> 3)
 #define GET_DR(v,o)	(v->op[o].DR >> 3)
 #define GET_SR(v,o)	(v->op[o].SR >> 3)
 #define GET_RR(v,o)	(v->op[o].RR >> 3)
 #define GET_SL(v,o)	(v->op[o].SL >> 3)
-#define GET_TL(v,o)	(v->op[o].TL)
+#define GET_TL(v,o)	((v->op[o].TL) < 64 ? (v->op[o].TL) :63)
+#define GET_AM(v,o)	(v->op[o].AVF & 1)
+#define GET_VIB(v,o) ((v->op[o].AVF >> 1) & 1)
+#define GET_FIX(v,o) ((v->op[o].AVF >> 2) & 1)
+#define GET_KSL(v,o) ((v->op[o].KS >> 4) & 3)
+#define GET_KSR(v,o) (v->op[o].KS & 1)
 //#define GET_RV(v,o)	(v->op[o].REV >> 3)
 #define GET_RV(v,o)	(4)
 
@@ -46,12 +52,12 @@ void COPL::UpdateVoice(uint8_t ch)
 
 	for(i=0; i<2; i++)
 	{
-		tmp = ((voice->op[i].AM & 0x1) << 7) | ((voice->op[i].VIB & 0x1) << 6) |
-			(GET_SR(voice, i)?0:0x20) | ((voice->op[i].KSR & 0x1) << 4) |
+		tmp = (GET_AM(voice, i) << 7) | (GET_VIB(voice, i) << 6) |
+			(GET_SR(voice, i)?0:0x20) | (GET_KSR(voice, i) << 4) |
 			(voice->op[i].MUL & 0x0F);
 		SetReg(0x20 + i * 3 + map[ch], tmp);
 
-		tmp = (uint8_t)((voice->op[i].KSL << 6) | GET_TL(voice, i));
+		tmp = (uint8_t)((GET_KSL(voice, i) << 6) | GET_TL(voice, i));
 		SetReg(0x40 + i * 3 + map[ch], tmp);
 
 		tmp = (GET_AR(voice, i) << 4) | GET_DR(voice, i);
@@ -88,13 +94,13 @@ void COPL::UpdateVolExp(uint8_t ch)
 		tl = CalcLinearLevel(evol, voice->op[0].TL);
 		attr->baseTL[0] = tl;
 		tl = Linear2dB(tl, RANGE48DB, STEP075DB, 6);
-		tmp = (uint8_t)((voice->op[0].KSL << 6) | tl);
+		tmp = (uint8_t)((GET_KSL(voice, 0) << 6) | tl);
 		SetReg(0x40 + map[ch], tmp, 0);
 	}
 	tl = CalcLinearLevel(evol, voice->op[1].TL);
 	attr->baseTL[1] = tl;
 	tl = Linear2dB(tl, RANGE48DB, STEP075DB, 6);
-	tmp = (uint8_t)((voice->op[1].KSL << 6) | tl);
+	tmp = (uint8_t)((GET_KSL(voice, 1) << 6) | tl);
 	SetReg(0x43 + map[ch], tmp, 0);
 }
 
@@ -155,8 +161,8 @@ void COPL::UpdateKey(uint8_t ch, uint8_t keyon)
 	for (int i=0; i<2; i++) {
 		tmp = (GetReg(0x20 + i * 3 + map[ch], 0)) & 0xdf;
 		SetReg(0x20 + i * 3 + map[ch], tmp | (keyon ? 0 : 0x20), 1);
-		BOOL isCarrier = (i == 1) || (voice->AL & 1);
-		BOOL isSustained = (parent && parent->GetSustain());
+		bool isCarrier = (i == 1) || (voice->AL & 1);
+		bool isSustained = (parent && parent->GetSustain());
 		uint8_t rr = (isSustained && isCarrier) ? GET_RV(voice, i) : GET_RR(voice, i);
 		uint8_t sr = keyon ? GET_SR(voice, i) : rr;
 		tmp = (GET_SL(voice, i) << 4) | (sr & 0xf);

@@ -39,7 +39,7 @@ protected:
 	uint32_t prevDev;
 	uint32_t prevBank;
 public:
-	virtual BOOL OnInitDialog();
+	virtual bool OnInitDialog();
 	virtual void PostNcDestroy();
 	afx_msg void OnSelendokComboDevice();
 	afx_msg void OnSelendokComboBank();
@@ -85,7 +85,7 @@ public:
 	CComboBox cmbProg;
 	class CChecker {
 	protected:
-		BOOL isValid;
+		bool isValid;
 		CButton Btn;
 		CMidiChCtrlDlg* pParent;
 		int (CMidiChCtrlDlg::*pGetter)();
@@ -93,16 +93,16 @@ public:
 	public:
 		CChecker() : pParent(0), pGetter(0), pSetter(0){};
 		CChecker(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int)) { isValid = Attach(par, id, pget, pset); };
-		BOOL Attach(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int));
-		BOOL IsMember(int id) { return (isValid && id == Btn.GetDlgCtrlID()); };
+		bool Attach(CMidiChCtrlDlg* par, UINT id, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int));
+		bool IsMember(int id) { return (isValid && id == Btn.GetDlgCtrlID()); };
 		void OnClicked() { (pParent->*pSetter)(Checked()); };
-		BOOL Checked() { return isValid && Btn.GetCheck(); };
+		bool Checked() { return isValid && Btn.GetCheck(); };
 		void UpdateState() { isValid ? Btn.SetCheck((pParent->*pGetter)()!=0) : void(); };
 	};
 	class CMultiCtrl {
 	protected:
 		int value;
-		BOOL isValid;
+		bool isValid;
 		CMidiChCtrlDlg* pParent;
 		int (CMidiChCtrlDlg::*pGetter)();
 		void (CMidiChCtrlDlg::*pSetter)(int val);
@@ -110,14 +110,14 @@ public:
 		CEdit Edit;
 		CSpinButtonCtrl Spin;
 		CSliderCtrl Slider;
-		BOOL IsMember(int id);
+		bool IsMember(int id);
 		void SetValue();
 		int GetValue() { return value; };
 		void SetRange(int min, int max);
-		BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+		bool OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 		CMultiCtrl();
 		CMultiCtrl(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int), int min, int max);
-		BOOL Attach(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int));
+		bool Attach(CMidiChCtrlDlg* par, UINT idedt, UINT idspn, UINT idsld, int(CMidiChCtrlDlg::*pget)(), void(CMidiChCtrlDlg::*pset)(int));
 	};
 	CMultiCtrl* pMulCtrl[numMultiCtrl];
 	CChecker* pChecker[numChecker];
@@ -130,6 +130,6 @@ public:
 	afx_msg void OnEnChangeEdit(UINT id);
 	afx_msg void OnDeltaposSpin(UINT id, NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedCheck(UINT id);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual bool PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedBtnReset();
 };

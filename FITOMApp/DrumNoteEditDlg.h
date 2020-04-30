@@ -27,9 +27,9 @@ protected:
 	DRUMMAP theDrum;
 	int theProg;
 	int theNote;
-	BOOL bModified;
-	BOOL bInitialized;
-	BOOL bUpdating;
+	bool bModified;
+	bool bInitialized;
+	bool bUpdating;
 	void Refresh();
 	void Update();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート

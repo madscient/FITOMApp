@@ -3,70 +3,9 @@
 
 #include "Port.h"
 #include "Fnum.h"
+#include "VoiceParam.h"
 
 #define FNUM_OFFSET	(-576)	//Fnum算出基点(440Hz)とノートNo基点(60=O4C)との差分(100/64セント単位)
-
-#pragma pack(1)
-
-struct FMOP {
-	//EG parameter
-	uint8_t	AR;  // 00:Attack Rate: 4bit OPL / 5bit OPN/OPM
-	uint8_t	DR;  // 01:Decay Rate: 4bit OPL / 5bit OPN/OPM
-	uint8_t	SL;  // 02:Sustain Level: 4bit OPL/OPN/OPM
-	uint8_t	SR;  // 03:Sustain Rate: 1bit OPL / 5bit OPN/OPM
-	uint8_t	RR;  // 04:Release Rate: 4bit OPL/OPN/OPM
-	uint8_t	REV; // 05:Reverberation: OPZ / SRR sustain release rate
-	uint8_t	TL;  // 06:Total Level: 6bit OPL / 7bit OPN/OPM
-	uint8_t	EGT; // 07:SSG EG type: 4bit OPN
-	uint8_t	EGS; // 08:EG bias: OPZ
-	uint8_t	KSL; // 09:Key Scale Level: 2bit OPL / none OPN/OPM
-	uint8_t	KSR; // 10:Key Scale Rate: 1bit OPL / 2bit OPN/OPM
-	uint8_t	WS;  // 11:Wave Select: 1bit OPLL / 2bit OPL2 / 3bit OPL3 / none OPN/OPM / 3bit OPZ
-	//LFO parameter
-	uint8_t	AM;  // 12:AM enable: 1bit OPL/OPNA/OPM
-	uint8_t	VIB; // 13:Vibrato: 1bit OPL/OPNA
-	uint8_t	SLF; // 14:Soft LFO frequency 0-15
-	uint8_t	SLW; // 15:Soft LFO waveform 0:up saw/1:square/2:delta/3:s&h/4:down saw1/5:delta1/6:sin
-	uint8_t	SLD; // 16:Soft LFO depth: 0 to 63, 64-127 for -64 to -1
-	uint8_t	SLY; // 17:Soft LFO delay: 0-127 in 20ms unit
-	uint8_t	SLR; // 18:Soft LFO rate: 0-127
-	//Osc frequency
-	uint8_t	DM0; // 19:Oscilator fixed freq (OPZ)
-	uint8_t	MUL; // 20:Multiple: 4bit OPL/OPN/OPM
-	uint8_t	DT1; // 21:Detune1: none OPL / 4bit OPN/OPM
-	uint8_t	DT2; // 22:Detune2: none OPL/OPN / 3bit OPM
-	uint8_t	DT3; // 23:fine frequency: 4bit OPZ ratio mode
-	//Velocity sensitivity
-	uint8_t	VTL; // 24:Velocity sensitivity for TL
-	uint8_t	VAR; // 25:Velocity sensitivity for AR
-	uint8_t	VDR; // 26:Velocity sensitivity for DR
-	uint8_t	VSL; // 27:Velocity sensitivity for SL
-	uint8_t	VSR; // 28:Velocity sensitivity for SR
-	uint8_t	VRR; // 29:Velocity sensitivity for RR
-	uint8_t	VLD; // 30:Velocity sensitivity for LFO Depth
-	uint8_t	VLR; // 31:Velocity sensitivity for LFO Rate
-};
-
-struct FMVOICE {
-	FMVOICE() : ID(0xffffffffUL) { name[0] = '\0'; };
-	uint32_t	ID;  //00:ID
-	char	name[32];//04:name
-	uint8_t	FB;  // 36:Feedback: 3bit OPL/OPN/OPM
-	uint8_t	AL;  // 37:Algorythm: 1bit OPL / 4bit OPL3 / 3bit OPN/OPM/MA3
-	uint8_t	AMS; // 38:AM Sensitivity: none OPL / 2bit OPM
-	uint8_t	PMS; // 39:PM Sensitivity: none OPL / 3bit OPM
-	uint8_t	LDM; // 40:LFO Depth MSB: 0 to 8191, 8192-16383 for -8192 to -1
-	uint8_t	LDL; // 41:LFO Depth LSB: 0 to 8191, 8192-16383 for -8192 to -1
-	uint8_t	LFO; // 42:LFO frequency
-	uint8_t	LWF; // 43:LFO Wave form 0:up saw/1:square/2:delta/3:s&h/4:down saw1/5:delta1/6:sin
-	uint8_t	LFS; // 44:LFO sync: HW LFO sync flag
-	uint8_t	LFD; // 45:LFO delay: 0-127 in 20ms unit
-	uint8_t	LFR; // 46:LFO rate: 0-127
-	uint8_t	NFQ; // 47:Noise frequency: 5bit OPM/OPP/OPZ/SSG | H-LFO freq: 2bit MA3
-	FMOP	op[4];
-};
-
-#pragma pack()
 
 class CMidiCh;
 extern int8_t GetLFOWave(uint8_t waveform, uint8_t speed, uint16_t phase);
@@ -180,7 +119,7 @@ protected:
 		CMidiCh* GetParent() const { return parent; }
 		FMVOICE* GetVoice() const { return (FMVOICE* const)&voice; };
 		uint32_t GetVoiceID() const { return voice.ID; };
-		BOOL SetVoice(FMVOICE* vc);
+		bool SetVoice(FMVOICE* vc);
 		void SetVoiceID(uint32_t vcid);
 		void Init();
 		void Assign(CMidiCh* parch);
@@ -257,6 +196,12 @@ public:
 	//Callback
 	virtual void PollingCallBack() = 0;
 	virtual void TimerCallBack(uint32_t tick) = 0;
+
+	//Voice Parameter
+	virtual void AdjustAR(uint8_t ch, int adj) = 0;
+	virtual void AdjustDR(uint8_t ch, int adj) = 0;
+	virtual void AdjustSR(uint8_t ch, int adj) = 0;
+	virtual void AdjustRR(uint8_t ch, int adj) = 0;
 };
 
 class CSoundDevice : public ISoundDevice {
@@ -360,6 +305,12 @@ public:
 	//Callback
 	virtual void PollingCallBack();
 	virtual void TimerCallBack(uint32_t tick);
+
+	//Voice Parameter
+	virtual void AdjustAR(uint8_t ch, int adj) {};
+	virtual void AdjustDR(uint8_t ch, int adj) {};
+	virtual void AdjustSR(uint8_t ch, int adj) {};
+	virtual void AdjustRR(uint8_t ch, int adj) {};
 };
 typedef CSoundDevice* CSoundDevicePtr;
 

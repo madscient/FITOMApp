@@ -93,7 +93,7 @@ void CSoundDevice::CHATTR::Enable(int ena)
 	}
 }
 
-BOOL CSoundDevice::CHATTR::SetVoice(FMVOICE* vc)
+bool CSoundDevice::CHATTR::SetVoice(FMVOICE* vc)
 {
 	if (memcmp(&voice, vc, sizeof(FMVOICE)) == 0) {
 		return FALSE;
@@ -251,7 +251,7 @@ void CSoundDevice::SetVoice(uint8_t ch, FMVOICE* voice, int update)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
-		BOOL changed = attr->SetVoice(voice);
+		bool changed = attr->SetVoice(voice);
 		if (changed) {
 			for (int i = 0; i < ops; i++) {
 				attr->baseTL[i] = voice->op[i].TL;

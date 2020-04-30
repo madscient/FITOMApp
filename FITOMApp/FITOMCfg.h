@@ -191,8 +191,8 @@ public:
 	CSoundDevice* GetDeviceFromUniqID(uint32_t uid);
 	uint32_t GetDeviceUniqID(CSoundDevice* pdev, int phys = 0);
 	uint32_t GetDeviceUniqID(CAdPcmBase* pdev);
-	BOOL isPcmDevice(uint32_t uid) { return GetPCMDeviceFromID(uid) != 0; };
-	BOOL isPcmDevice(CSoundDevice* pdev) { return GetPcmDeviceIndex((CAdPcmBase*)pdev) >= 0; };
+	bool isPcmDevice(uint32_t uid) { return GetPCMDeviceFromID(uid) != 0; };
+	bool isPcmDevice(CSoundDevice* pdev) { return GetPcmDeviceIndex((CAdPcmBase*)pdev) >= 0; };
 	void SetChannelMap(int ch, int devid, int pol) { if (ch < 16) { channelMap[ch].device_id = devid; channelMap[ch].polyphon = pol; } };
 	ChannelMap* const GetChannelMap(int ch) { return (ch < 16) ? &channelMap[ch] : 0; };
 	int GetChannelMapDevice(int ch) { return (ch < 16) ? channelMap[ch].device_id : -1; };

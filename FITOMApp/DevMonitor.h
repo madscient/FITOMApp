@@ -22,7 +22,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	CFITOMConfig* theConfig;
 	UINT_PTR hTimer;
-	void UpdateList(BOOL binit=FALSE);
+	void UpdateList(bool binit=FALSE);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnSelendokComboDevice();

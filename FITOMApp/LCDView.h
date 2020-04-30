@@ -25,7 +25,7 @@ public:
 	afx_msg void OnPaint();
 	void SetDot(BYTE dot[16][16]);
 	void SetCap(char* cap);
-	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
+	afx_msg void OnShowWindow(bool bShow, UINT nStatus);
 };
 
 

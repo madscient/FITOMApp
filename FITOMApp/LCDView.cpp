@@ -264,7 +264,7 @@ void CLCDView::DrawDot(int x, int y, bool dot)
 	}
 }
 
-void CLCDView::OnShowWindow(BOOL bShow, UINT nStatus)
+void CLCDView::OnShowWindow(bool bShow, UINT nStatus)
 {
 	CStatic::OnShowWindow(bShow, nStatus);
 

@@ -105,7 +105,7 @@ short* AdpcmEncoder::resampling(DWORD &dSize, DWORD rate){
 	iSmple = 0;
 	short *pResampleDis = pResampleBuff;
 	// リサンプリング後のファイルサイズを算出
-	BOOL	bUpdate = FALSE;
+	bool	bUpdate = FALSE;
 	for (int iCnt = 0; iCnt < iPcmSize; iCnt++){
 		iSmple += static_cast<int>(pPcm[iCnt]);		// サンプルを加算する
 		iSampleCnt++;
@@ -222,7 +222,7 @@ void Ym2610AEncoder::jedi_table_init()
 }
 
 //decode sub, returns decoded 12bit data
-short Ym2610AEncoder::YM2610_ADPCM_A_Decode(byte code)
+short Ym2610AEncoder::YM2610_ADPCM_A_Decode(uint8_t code)
 {
 	acc += jedi_table[decstep + code];
 	if ((acc & ~0x7ff) != 0) // acc is > 2047
@@ -235,10 +235,10 @@ short Ym2610AEncoder::YM2610_ADPCM_A_Decode(byte code)
 }
 
 // our encoding sub, returns ADPCM nibble
-byte Ym2610AEncoder::YM2610_ADPCM_A_Encode(short sample)
+uint8_t Ym2610AEncoder::YM2610_ADPCM_A_Encode(short sample)
 {
 	int tempstep;
-	byte code;
+	uint8_t code;
 
 	predsample = prevsample;
 	index = previndex;
@@ -305,7 +305,7 @@ int Ym2610AEncoder::encode(short *pSrc, unsigned char *pDis, DWORD iSampleSize)
 	//actual encoding
 	for (i = 0; i < iSampleSize; i += 2)
 	{
-		pDis[i / 2] = (byte)((YM2610_ADPCM_A_Encode(inBuffer[i]) << 4) | YM2610_ADPCM_A_Encode(inBuffer[i + 1]));
+		pDis[i / 2] = (uint8_t)((YM2610_ADPCM_A_Encode(inBuffer[i]) << 4) | YM2610_ADPCM_A_Encode(inBuffer[i + 1]));
 	}
 	delete[] inBuffer;
 	return 0;

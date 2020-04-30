@@ -21,7 +21,7 @@ public:
 protected:
 	CFITOMConfig* theConfig;
 	CInstCh* pICh;
-	BOOL bInit;
+	bool bInit;
 	uint32_t theDevice;
 	uint32_t theBank;
 	uint32_t theProg;

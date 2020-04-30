@@ -30,8 +30,8 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV サポート
 	CFITOMConfig* theConfig;
-	BOOL bInit;
-	BOOL bModified;
+	bool bInit;
+	bool bModified;
 	uint32_t theDevice;
 	uint32_t theBank;
 	uint32_t theProg;
@@ -61,7 +61,7 @@ protected:
 	static ImgView waveimg[];
 	CListCtrl* lstctls[5];
 
-	void UpdateListCtrl(int op, BOOL bInit=FALSE);
+	void UpdateListCtrl(int op, bool bInit=FALSE);
 	void UpdateVoiceView(FMVOICE* voice);
 	void UpdateAlgoView(int vg, int op);
 	void UpdateWaveView(int vg, int op);
@@ -201,7 +201,7 @@ public:
 	CListCtrl lstOper4;
 	afx_msg void OnTestButtonDown();
 	afx_msg void OnTestButtonUp();
-	virtual BOOL OnInitDialog();
+	virtual bool OnInitDialog();
 	virtual void OnOK();
 	CEdit edtName;
 	afx_msg void OnBnClickedButtonPick();
@@ -210,7 +210,7 @@ public:
 	CEdit edtBank;
 	CEdit edtProg;
 	CTestButton btnTest;
-	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+	virtual bool OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	CSpinButtonCtrl spnVelocity;
 	CSpinButtonCtrl spnNote;
 	LRESULT OnKickIdle(WPARAM wParam, LPARAM lParam);
@@ -221,7 +221,7 @@ public:
 	afx_msg void OnClkListOpparam4(NMHDR *pNMHDR, LRESULT *pResult);
 
 	afx_msg void OnClickedButtonBank();
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual bool PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnChangeEditName();
 	afx_msg void OnVoiceCopy();

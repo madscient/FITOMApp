@@ -100,7 +100,7 @@ uint32_t CTextVoiceEditDlg::GetType()
 // CTextVoiceEditDlg メッセージ ハンドラー
 
 
-BOOL CTextVoiceEditDlg::OnInitDialog()
+bool CTextVoiceEditDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	// TODO: ここに初期化を追加してください
@@ -120,7 +120,7 @@ BOOL CTextVoiceEditDlg::OnInitDialog()
 }
 
 
-BOOL CTextVoiceEditDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+bool CTextVoiceEditDlg::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (wParam == IDC_BTN_TEST) {

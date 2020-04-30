@@ -1,6 +1,9 @@
 #include "STDAFX.h"
 #include "OPN.h"
 
+#define GET_AMS(v) ((v->APS >> 4) & 3)
+#define GET_PMS(v) (v->APS & 7)
+
 COPN2::COPN2(CPort* pt1, CPort* pt2, int fsamp, uint8_t devtype)
 	: CSpanDevice(new COPN(pt1, fsamp, devtype), new COPN(pt2, fsamp, devtype))
 {
@@ -26,7 +29,7 @@ void COPN2::UpdateVoice(uint8_t ch)
 	CSpanDevice::UpdateVoice(ch);
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	tmp = 0xc0 | (voice->AMS << 4) | voice->PMS;
+	tmp = 0xc0 | (GET_AMS(voice) << 4) | GET_PMS(voice);
 	chips[chres[ch].dev]->SetReg(0xb4 + (chres[ch].ch), tmp&0xc0);
 }
 

@@ -59,7 +59,7 @@ void CSD1::SetVoice(uint8_t ch, FMVOICE* voice, int update)
 {
 	if (ch < chs) {
 		CHATTR* attr = GetChAttribute(ch);
-		BOOL changed = attr->SetVoice(voice);
+		bool changed = attr->SetVoice(voice);
 		if (1 || changed) {
 			int inst = -1;
 			for (int i = 0; i < 16; i++) {
@@ -90,17 +90,16 @@ void CSD1::UpdatePresetTone()
 	tonebuf[idx++] = 0x07;	//Register Address
 	tonebuf[idx++] = 0x90;	//Header: Tone table size (always 16)
 	for (int i = 0; i < 16; i++) {
-		tonebuf[idx++] = PresetTone[i].PMS;	//1-0:Basic Octave
-		tonebuf[idx++] = (PresetTone[i].AMS << 6) | (PresetTone[i].AL & 0x7);	//7-6:LFO|2-0:AL
+		tonebuf[idx++] = PresetTone[i].APS & 7;	//1-0:Basic Octave
+		tonebuf[idx++] = ((PresetTone[i].APS << 2) & 0xc0) | (PresetTone[i].AL & 0x7);	//7-6:LFO|2-0:AL
 		for (int j = 0; j < 4; j++) {
 			BYTE tmp;
 			tmp = (PresetTone[i].op[j].RR == 0) ? 0x04 : 0;	//SUS
-			tonebuf[idx++] = ((PresetTone[i].op[j].SR << 1) & 0xf0) | (PresetTone[i].op[j].KSR & 1) | tmp;	//[+0]7-4:SR|3:SUS|0:KSR
+			tonebuf[idx++] = ((PresetTone[i].op[j].SR << 1) & 0xf0) | ((PresetTone[i].op[j].KS & 2) >> 1) | tmp;	//[+0]7-4:SR|3:SUS|0:KSR
 			tonebuf[idx++] = ((PresetTone[i].op[j].RR << 1) & 0xf0) | (PresetTone[i].op[j].DR >> 3);	//[+1]7-4:RR|3-0:DR
 			tonebuf[idx++] = ((PresetTone[i].op[j].AR << 1) & 0xf0) | (PresetTone[i].op[j].SL >> 3);	//[+2]7-4:AR|3-0:SL
-			tonebuf[idx++] = ((PresetTone[i].op[j].TL << 1) & 0xfc) | (PresetTone[i].op[j].KSL & 3);	//[+3]7-2:TL|1-0:KSL
-			tmp = ((PresetTone[i].op[j].VIB & 1) | ((PresetTone[i].op[j].AM & 1) << 4)) << 2;
-			tonebuf[idx++] = ((PresetTone[i].op[j].AM & 0x6) << 3) | ((PresetTone[i].op[j].VIB & 0x6) >> 1) | tmp;	//[+4]6-5:DAM|4:EAM|2-1:DVB|0:EVB
+			tonebuf[idx++] = ((PresetTone[i].op[j].TL << 1) & 0xfc) | (PresetTone[i].op[j].KS >> 4);	//[+3]7-2:TL|1-0:KSL
+			tonebuf[idx++] = PresetTone[i].op[j].AVF;	//[+4]6-5:DAM|4:EAM|2-1:DVB|0:EVB
 			tonebuf[idx++] = ((PresetTone[i].op[j].MUL << 4) & 0xf0) | (PresetTone[i].op[j].DT1 & 7);	//[+5]7-4:MUL|2-0:DT1
 			switch (j) {
 			case 0: tmp = PresetTone[i].FB & 0x7; break;

@@ -76,7 +76,7 @@ void SplashMessage(LPCTSTR str)
 
 // CFITOMApp 初期化
 
-BOOL CFITOMApp::InitInstance()
+bool CFITOMApp::InitInstance()
 {
 	// アプリケーション マニフェストが visual スタイルを有効にするために、
 	// ComCtl32.dll Version 6 以降の使用を指定する場合は、
@@ -281,7 +281,7 @@ unsigned int CFITOMApp::CommandProc(void* params)
 	struct sockaddr_in client;
 	int len;
 	SOCKET sock;
-	BOOL yes = 1;
+	bool yes = 1;
 
 	char buf[65536];
 	char inbuf[65536];
@@ -343,12 +343,12 @@ void CFITOMApp::VoiceCopy(FMVOICE* voice)
 	*clipvoice = *voice;
 }
 
-BOOL CFITOMApp::IsVoiceInClipBoard()
+bool CFITOMApp::IsVoiceInClipBoard()
 {
 	return (clipvoice != 0);
 }
 
-BOOL CFITOMApp::GetVoiceFromClipBoard(FMVOICE* voice)
+bool CFITOMApp::GetVoiceFromClipBoard(FMVOICE* voice)
 {
 	if (clipvoice) {
 		*voice = *clipvoice;
@@ -367,12 +367,12 @@ void CFITOMApp::DrumCopy(DRUMMAP* drumnote)
 	*clipdrum = *drumnote;
 }
 
-BOOL CFITOMApp::IsDrumInClipBoard()
+bool CFITOMApp::IsDrumInClipBoard()
 {
 	return (clipdrum != 0);
 }
 
-BOOL CFITOMApp::GetDrumFromClipBoard(DRUMMAP* Drum)
+bool CFITOMApp::GetDrumFromClipBoard(DRUMMAP* Drum)
 {
 	if (clipdrum) {
 		*Drum = *clipdrum;
@@ -850,7 +850,7 @@ void CFITOMApp::SaveDrumMap(CDrumBank* bank, int num)
 	}
 }
 
-BOOL CFITOMApp::OnIdle(LONG lCount)
+bool CFITOMApp::OnIdle(LONG lCount)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	//if (theFitom && bRunning) {
