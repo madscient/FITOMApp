@@ -570,6 +570,17 @@ ISoundDevice::FNUM CSoundDevice::GetFnumber(uint8_t ch, int16_t offset)
 		int oct = (-NoteOffset / 12) - 1;
 
 		// normalize
+		if (index < 0) {
+			int div = (-index) / 768;
+			oct -= div + 1;
+			index += (div + 1) * 768;
+		}
+		if (index >= 768) {
+			int div = index / 768;
+			index = index % 768;
+			oct += div;
+		}
+#if 0
 		while (index < 0) {
 			oct--;
 			index += 768;
@@ -578,6 +589,8 @@ ISoundDevice::FNUM CSoundDevice::GetFnumber(uint8_t ch, int16_t offset)
 			oct++;
 			index -= 768;
 		}
+#endif
+		assert(0 <= index && index < 768);
 		ret.fnum = Fnum[index];
 		if (oct < 0) {
 			ret.fnum = (ret.fnum >> (-oct));

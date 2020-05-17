@@ -42,6 +42,7 @@
 #include "types.h"
 #include <afxdlgs.h>
 #include <Strsafe.h>
+#include <assert.h>
 
 #ifdef _UNICODE
 #if defined _M_IX86

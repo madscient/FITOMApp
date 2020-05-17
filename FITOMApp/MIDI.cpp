@@ -929,7 +929,7 @@ void CInstCh::UpdateFineTune()
 {
 	if (Device) {
 		for (int i=0; i<timbres; i++) {
-			Note[i].fine = int16_t(BendRange) * (int16_t(PitchBend>>7)-64) + (int16_t(Tuning>>7)-64);
+			Note[i].fine = (int32_t(BendRange) * (int32_t(PitchBend) - 8192) + (int32_t(Tuning) - 8192)) / 128;
 			if (Portamento.IsEnable()) {
 				Device->SetNoteFine(Note[i].ch, Portamento.GetCurrentNote(), Portamento.GetCurrentFine()+Note[i].fine, 1);
 			} else {
