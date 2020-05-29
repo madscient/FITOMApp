@@ -43,10 +43,10 @@ protected:
 	CFITOM* theFitom;
 	CFITOMConfig* theConfig;
 public:
-	virtual bool OnInitDialog();
+	virtual BOOL OnInitDialog();
 	CComboBox cmbMidiIn;
 	CListCtrl lstMidiMon;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDblclkListMidich(NMHDR *pNMHDR, LRESULT *pResult);
-	virtual bool PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

@@ -194,7 +194,6 @@
     <ClCompile Include="FMS.cpp" />
     <ClCompile Include="Fnum.cpp" />
     <ClCompile Include="FTSPI.cpp" />
-    <ClCompile Include="LCDView.cpp" />
     <ClCompile Include="MasterVolumeCtrl.cpp" />
     <ClCompile Include="MasVolWin.cpp" />
     <ClCompile Include="MAx.cpp" />
@@ -225,10 +224,8 @@
     <ClCompile Include="StretchPicture.cpp" />
     <ClCompile Include="SysCtlDlg.cpp" />
     <ClCompile Include="TestButton.cpp" />
-    <ClCompile Include="TextVoiceEditDlg.cpp" />
     <ClCompile Include="Unison.cpp" />
     <ClCompile Include="VoiceBank.cpp" />
-    <ClCompile Include="VoiceEditDlg.cpp" />
     <ClCompile Include="VoicePicker.cpp" />
     <ClCompile Include="FITOMApp.cpp" />
     <ClCompile Include="FITOMAppDlg.cpp" />

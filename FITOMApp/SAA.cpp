@@ -14,7 +14,7 @@ void CSAA::Init()
 void CSAA::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
+	if (!(attr->GetVoice()->FB & 0x8)) {
 		uint8_t evol = attr->GetEffectiveLevel();
 		int16_t lev = int16_t(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;

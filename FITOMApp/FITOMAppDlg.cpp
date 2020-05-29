@@ -86,7 +86,7 @@ END_MESSAGE_MAP()
 
 // CFITOMAppDlg メッセージ ハンドラー
 
-bool CFITOMAppDlg::OnInitDialog()
+BOOL CFITOMAppDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -223,7 +223,7 @@ void CFITOMAppDlg::OnVEdit()
 }
 
 
-bool CFITOMAppDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+BOOL CFITOMAppDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	return CDialogEx::OnCommand(wParam, lParam);

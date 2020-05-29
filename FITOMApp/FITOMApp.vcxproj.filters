@@ -332,9 +332,6 @@
     <ClCompile Include="FITOMAppDlg.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
-    <ClCompile Include="LCDView.cpp">
-      <Filter>ソース ファイル\Win32 GUI</Filter>
-    </ClCompile>
     <ClCompile Include="MidiChCtrlDlg.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
@@ -348,12 +345,6 @@
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
     <ClCompile Include="TestButton.cpp">
-      <Filter>ソース ファイル\Win32 GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="TextVoiceEditDlg.cpp">
-      <Filter>ソース ファイル\Win32 GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="VoiceEditDlg.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
     <ClCompile Include="VoicePicker.cpp">

@@ -220,7 +220,7 @@ void CMidiChCtrlDlg::OnOK()
 }
 
 
-bool CMidiChCtrlDlg::OnInitDialog()
+BOOL CMidiChCtrlDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -552,7 +552,7 @@ void CMidiChCtrlDlg::OnBnClickedCheck(UINT id)
 	}
 }
 
-bool CMidiChCtrlDlg::PreTranslateMessage(MSG* pMsg)
+BOOL CMidiChCtrlDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (WM_KEYDOWN == pMsg->message)

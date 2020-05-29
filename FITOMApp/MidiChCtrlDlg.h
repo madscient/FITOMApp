@@ -39,7 +39,7 @@ protected:
 	uint32_t prevDev;
 	uint32_t prevBank;
 public:
-	virtual bool OnInitDialog();
+	virtual BOOL OnInitDialog();
 	virtual void PostNcDestroy();
 	afx_msg void OnSelendokComboDevice();
 	afx_msg void OnSelendokComboBank();
@@ -130,6 +130,6 @@ public:
 	afx_msg void OnEnChangeEdit(UINT id);
 	afx_msg void OnDeltaposSpin(UINT id, NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedCheck(UINT id);
-	virtual bool PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedBtnReset();
 };

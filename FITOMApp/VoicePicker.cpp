@@ -105,7 +105,7 @@ void CDlgVoicePicker::SetProg(uint32_t prog)
 	}
 }
 
-bool CDlgVoicePicker::OnInitDialog()
+BOOL CDlgVoicePicker::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	bInit = TRUE;

@@ -201,7 +201,7 @@ public:
 	CListCtrl lstOper4;
 	afx_msg void OnTestButtonDown();
 	afx_msg void OnTestButtonUp();
-	virtual bool OnInitDialog();
+	virtual BOOL OnInitDialog();
 	virtual void OnOK();
 	CEdit edtName;
 	afx_msg void OnBnClickedButtonPick();
@@ -210,7 +210,7 @@ public:
 	CEdit edtBank;
 	CEdit edtProg;
 	CTestButton btnTest;
-	virtual bool OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	CSpinButtonCtrl spnVelocity;
 	CSpinButtonCtrl spnNote;
 	LRESULT OnKickIdle(WPARAM wParam, LPARAM lParam);
@@ -221,7 +221,7 @@ public:
 	afx_msg void OnClkListOpparam4(NMHDR *pNMHDR, LRESULT *pResult);
 
 	afx_msg void OnClickedButtonBank();
-	virtual bool PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnChangeEditName();
 	afx_msg void OnVoiceCopy();

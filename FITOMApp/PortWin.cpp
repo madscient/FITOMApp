@@ -79,7 +79,7 @@ CFTPort::CFTPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHandle(0)
 
 CFTPort::CFTPort(CFTInterface* pif, uint32_t index, uint32_t cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
 {
-	assert(pif && pif->IsValid() && index < pif->GetChannels() && cs < 5);
+	//assert(pif && pif->IsValid() && index < pif->GetChannels() && cs < 5);
 }
 
 CFTPort::~CFTPort(void)
@@ -98,7 +98,7 @@ void CFTPort::write(uint16_t addr, uint16_t data)
 	/* Write command EWEN(with CS_High -> CS_Low) */
 	sizeToTransfer = 2;
 	sizeTransfered = 0;
-	status = pInterface->BufferedWrite(chidx, buf, sizeToTransfer, csidx);
+	status = pInterface->BufferedWrite(buf, sizeToTransfer, csidx);
 	//pInterface->SPI_Flush(chidx);
 #ifdef DEBUG
 	TCHAR str[80];
@@ -118,7 +118,7 @@ void CFTPort::writeBurst(uint16_t addr, BYTE* buf, size_t length)
 
 void CFTPort::writeBurst(BYTE* buf, size_t length)
 {
-	FT_STATUS status = pInterface->BufferedWrite(chidx, buf, length, csidx);
+	FT_STATUS status = pInterface->BufferedWrite(buf, length, csidx);
 	//pInterface->SPI_Flush(chidx);
 	assert(status == FT_OK);
 #ifdef DEBUG
@@ -152,7 +152,7 @@ uint8_t CFTPort::status()
 void CFTPort::flush()
 {
 	if (pInterface) {
-		pInterface->BufferFlush(chidx);
+		pInterface->BufferFlush();
 #ifdef DEBUG
 		TCHAR str[80];
 		StringCchPrintf(str, _countof(str), _T("flush %08x\n"), physical_id);
@@ -164,11 +164,11 @@ void CFTPort::flush()
 void CFTPort::reset()
 {
 	if (pInterface) {
-		pInterface->FT_WriteGPIO(chidx, 0xff, 0xff);
+		pInterface->FT_WriteGPIO(0xff, 0xff);
 		::Sleep(2);
-		pInterface->FT_WriteGPIO(chidx, 0xff, 0x00);
+		pInterface->FT_WriteGPIO(0xff, 0x00);
 		::Sleep(2);
-		pInterface->FT_WriteGPIO(chidx, 0xff, 0xff);
+		pInterface->FT_WriteGPIO(0xff, 0xff);
 	}
 #ifdef DEBUG
 	TCHAR str[80];

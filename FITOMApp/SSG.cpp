@@ -15,7 +15,7 @@ void CSSG::Init()
 void CSSG::UpdateVolExp(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
-	if (!(attr->GetVoice()->op[0].EGT & 0x8)) {
+	if (!(attr->GetVoice()->FB & 0x8)) {
 		uint8_t evol = attr->GetEffectiveLevel();
 		int16_t lev = int16_t(lfoTL[ch]) - 64 + egattr[ch].GetValue();
 		lev = (lev < 0) ? 0 : lev;
@@ -38,7 +38,7 @@ void CSSG::UpdateKey(uint8_t ch, uint8_t keyon)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	if (voice->op[0].EGT & 0x8) {
+	if (voice->FB & 0x8) {
 		if (keyon) {
 			UpdateVoice(ch);
 		}
@@ -55,7 +55,7 @@ void CSSG::EGOff(uint8_t ch)
 {
 	CHATTR* attr = GetChAttribute(ch);
 	FMVOICE* voice = attr->GetVoice();
-	if (!(voice->op[0].EGT & 0x8)) {
+	if (!(voice->FB & 0x8)) {
 		NoteOff(ch);
 	}
 }
@@ -84,11 +84,11 @@ void CSSG::UpdateVoice(uint8_t ch)
 	if (mix==1 || mix==0) {
 		SetReg(0x6, voice->NFQ, 1);
 	}
-	if (voice->op[0].EGT & 0x8) {	//HW env
-		SetReg(0x8+ch, (GetReg(0x8+ch, 0) & 0xe0) | 0x10 | voice->op[0].EGT, 1);
+	if (voice->FB & 0x8) {	//HW env
+		SetReg(0x8+ch, (GetReg(0x8+ch, 0) & 0xe0) | 0x10 | voice->FB, 1);
 		SetReg(0xb, (((voice->op[0].SL << 4) & 0xf0) | (voice->op[0].RR & 0xf)), 1);
 		SetReg(0xc, (((voice->op[0].DR << 4) & 0xf0) | (voice->op[0].SR & 0xf)), 1);
-		SetReg(0xd,  (voice->op[0].EGT & 0xf), 1);
+		SetReg(0xd,  (voice->FB & 0xf), 1);
 	}
 }
 

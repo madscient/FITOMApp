@@ -76,7 +76,7 @@ void SplashMessage(LPCTSTR str)
 
 // CFITOMApp 初期化
 
-bool CFITOMApp::InitInstance()
+BOOL CFITOMApp::InitInstance()
 {
 	// アプリケーション マニフェストが visual スタイルを有効にするために、
 	// ComCtl32.dll Version 6 以降の使用を指定する場合は、
@@ -850,7 +850,7 @@ void CFITOMApp::SaveDrumMap(CDrumBank* bank, int num)
 	}
 }
 
-bool CFITOMApp::OnIdle(LONG lCount)
+BOOL CFITOMApp::OnIdle(LONG lCount)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	//if (theFitom && bRunning) {

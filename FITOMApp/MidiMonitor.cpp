@@ -78,7 +78,7 @@ void CMidiMonitor::OnCancel()
 }
 
 
-bool CMidiMonitor::OnInitDialog()
+BOOL CMidiMonitor::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -210,7 +210,7 @@ void CMidiMonitor::OnDblclkListMidich(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-bool CMidiMonitor::PreTranslateMessage(MSG* pMsg)
+BOOL CMidiMonitor::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: ここに特定なコードを追加するか、もしくは基底クラスを呼び出してください。
 	if (WM_KEYDOWN == pMsg->message)
