@@ -8,9 +8,6 @@
 #include "afxdialogex.h"
 #include "MidiMonitor.h"
 #include "DevMonitor.h"
-#include "VoiceEditDlg.h"
-#include "DrumMapPicker.h"
-#include "DrumEditDlg.h"
 #include "SysCtlDlg.h"
 
 #ifdef _DEBUG
@@ -213,6 +210,8 @@ void CFITOMAppDlg::OnMidiMon()
 void CFITOMAppDlg::OnVEdit()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	//ボイスエディタ起動
+	/*
 	CVoiceEditDlg dlg(this);
 	dlg.SetDevice(theFitom->GetLogicalDeviceFromIndex(0)->GetDevice());
 	dlg.SetBank(0);
@@ -220,6 +219,7 @@ void CFITOMAppDlg::OnVEdit()
 	if (dlg.DoModal() == IDOK) {
 
 	}
+	*/
 }
 
 
@@ -233,6 +233,8 @@ BOOL CFITOMAppDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 void CFITOMAppDlg::OnBnClickedButtonDedit()
 {
 	// TODO: ここにコントロール通知ハンドラー コードを追加します。
+	//ドラムマップエディタ起動
+	/*
 	CDrumMapPicker mdlg(this);
 	mdlg.SetProg(0);
 	if (mdlg.DoModal() == IDOK) {
@@ -242,6 +244,7 @@ void CFITOMAppDlg::OnBnClickedButtonDedit()
 
 		}
 	}
+	*/
 }
 
 void CFITOMAppDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)

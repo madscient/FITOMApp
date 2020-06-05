@@ -204,8 +204,10 @@ void CMidiMonitor::OnDblclkListMidich(NMHDR *pNMHDR, LRESULT *pResult)
 		LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 		// TODO: ここにコントロール通知ハンドラー コードを追加します。
 		*pResult = 0;
+		/*
 		CMidiChCtrlDlg* pDlg = new CMidiChCtrlDlg(theFitom, cmbMidiIn.GetCurSel(), pNMItemActivate->iItem, this);
 		pDlg->ShowWindow(SW_SHOW);
+		*/
 	}
 }
 

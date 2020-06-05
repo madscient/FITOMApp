@@ -317,22 +317,10 @@
     <ClCompile Include="DevMonitor.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
-    <ClCompile Include="DrumEditDlg.cpp">
-      <Filter>ソース ファイル\Win32 GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="DrumMapPicker.cpp">
-      <Filter>ソース ファイル\Win32 GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="DrumNoteEditDlg.cpp">
-      <Filter>ソース ファイル\Win32 GUI</Filter>
-    </ClCompile>
     <ClCompile Include="FITOMApp.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
     <ClCompile Include="FITOMAppDlg.cpp">
-      <Filter>ソース ファイル\Win32 GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="MidiChCtrlDlg.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
     <ClCompile Include="MidiMonitor.cpp">
@@ -345,9 +333,6 @@
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
     <ClCompile Include="TestButton.cpp">
-      <Filter>ソース ファイル\Win32 GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="VoicePicker.cpp">
       <Filter>ソース ファイル\Win32 GUI</Filter>
     </ClCompile>
     <ClCompile Include="codec.cpp">

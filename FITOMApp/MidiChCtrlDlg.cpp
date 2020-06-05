@@ -11,7 +11,6 @@
 #include "MidiChCtrlDlg.h"
 #include "afxdialogex.h"
 #include "VoicePicker.h"
-#include "VoiceEditDlg.h"
 #include "DrumEditDlg.h"
 //#include "SCCIWrapper.h"
 #include "FITOMCfg.h"
@@ -457,6 +456,7 @@ void CMidiChCtrlDlg::OnBnClickedBtnVedit()
 		}
 	}
 	else {
+		/* ボイスエディタ起動
 		CVoiceEditDlg dlg(m_pParentWnd);
 		dlg.SetDevice(devid);
 		dlg.SetBank(cmbBank.GetCurSel());
@@ -464,6 +464,7 @@ void CMidiChCtrlDlg::OnBnClickedBtnVedit()
 		if (dlg.DoModal() == IDOK) {
 
 		}
+		*/
 	}
 }
 
