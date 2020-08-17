@@ -15,22 +15,22 @@ struct FMOP {
 	uint8_t	KS;  // 08:Key Scale Level: 2bit OPL / none OPN/OPM | Key Scale Rate: 1bit OPL / 2bit OPN/OPM
 	uint8_t	WS;  // 09:Wave Select: 1bit OPLL / 2bit OPL2 / 3bit OPL3 / none OPN/OPM / 3bit OPZ | SSGEG
 	//LFO parameter
-	uint8_t	AVF; // 10:AM enable: 1bit OPL/OPNA/OPM | Vibrato: 1bit OPL/OPNA | Oscilator fixed freq (OPZ)
-	uint8_t	SLF; // 11:Soft LFO frequency 0-15
-	uint8_t	SLW; // 12:Soft LFO waveform 0:up saw/1:square/2:delta/3:s&h/4:down saw1/5:delta1/6:sin
-	uint8_t	SLD; // 13:Soft LFO depth: 0 to 63, 64-127 for -64 to -1
-	uint8_t	SLY; // 14:Soft LFO delay: 0-127 in 20ms unit
-	uint8_t	SLR; // 15:Soft LFO rate: 0-127
+	uint8_t	AVF; // 10:AM enable: 1bit OPL/OPNA/OPM | Vibrato: 1bit OPL/OPNA
+	uint8_t	SLF; // 11:Soft LFO waveform 0:up saw/1:square/2:delta/3:s&h/4:down saw1/5:delta1/6:sin | frequency 0-15
+	uint8_t	SLD; // 12:Soft LFO depth: 0 to 63, 64-127 for -64 to -1
+	uint8_t	SLY; // 13:Soft LFO delay: 0-127 in 20ms unit
+	uint8_t	SLR; // 14:Soft LFO rate: 0-127
 	//Osc frequency
-	uint8_t	MUL; // 16:Multiple: 4bit OPL/OPN/OPM
-	uint8_t	DT1; // 17:Detune1: none OPL / 4bit OPN/OPM
-	uint8_t	DT2; // 18:Detune2: none OPL/OPN / 3bit OPM
-	uint8_t	DT3; // 19:fine frequency: 4bit OPZ ratio mode
+	uint8_t	MUL; // 15:Freq mode 0:Ratio/1:Fix:2:Cent | Multiple: 4bit OPL/OPN/OPM
+	uint8_t	DT1; // 16:Detune1: none OPL / 4bit OPN/OPM
+	uint8_t	DT2; // 17:Detune2: none OPL/OPN / 3bit OPM
+	uint8_t	DT3; // 18:fine frequency: 4bit OPZ ratio mode
 	//Velocity scale
-	uint8_t VSP; // 20:Velocity scale level 2bit (pattern No.) | Velocity sensitivity rate 2bit
-	uint8_t VLT; // 21:Velocity level threshold 7bit
-	uint8_t VRT; // 22:Velocity rate threshold 7bit
-	uint8_t PAD; // 23:padding
+	uint8_t VSP; // 19:Velocity scale level 2bit (pattern No.) | Velocity sensitivity rate 2bit
+	uint8_t VLT; // 20:Velocity level threshold 7bit
+	uint8_t VRT; // 21:Velocity rate threshold 7bit
+	uint8_t PAD1; // 22:padding
+	uint8_t PAD2; // 23:padding
 };
 
 struct FMVOICE {
@@ -41,14 +41,14 @@ struct FMVOICE {
 	uint8_t	AL;  // 21:Algorythm: 1bit OPL / 4bit OPL3 / 3bit OPN/OPM/MA3
 	uint8_t	LDM; // 22:LFO Depth MSB: 0 to 8191, 8192-16383 for -8192 to -1
 	uint8_t	LDL; // 23:LFO Depth LSB: 0 to 8191, 8192-16383 for -8192 to -1
-	uint8_t	LFO; // 24:LFO frequency
-	uint8_t	LWF; // 25:LFO Wave form 0:up saw/1:square/2:delta/3:s&h/4:down saw1/5:delta1/6:sin
-	uint8_t	LFD; // 26:LFO delay: 0-127 in 20ms unit
-	uint8_t	LFR; // 27:LFO rate: 0-127
-	uint8_t	APS; // 28:AM Sensitivity: none OPL / 2bit OPM | PM Sensitivity: none OPL / 3bit OPM
-	uint8_t	NFQ; // 29:Noise frequency: 5bit OPM/OPP/OPZ/SSG | H-LFO freq: 2bit MA3
-	uint8_t PD0; // 30: padding
-	uint8_t PD1; // 31: padding
+	uint8_t	LFO; // 24:LFO Wave form 0:up saw/1:square/2:delta/3:s&h/4:down saw1/5:delta1/6:sin | frequency
+	uint8_t	LFD; // 25:LFO delay: 0-127 in 20ms unit
+	uint8_t	LFR; // 26:LFO rate: 0-127
+	uint8_t LFQM; // 27: HW LFO Freq (MSB)
+	uint8_t LFQL: // 28: HW LFO Freq (LSB) | H-LFO freq: 2bit MA3
+	uint8_t	APS; // 29:AM Sensitivity: none OPL / 2bit OPM | PM Sensitivity: none OPL / 3bit OPM
+	uint8_t	NFQ; // 30:Noise frequency: 5bit OPM/OPP/OPZ/SSG
+	uint8_t PAD; // 31: padding
 	FMOP	op[4];
 };
 
