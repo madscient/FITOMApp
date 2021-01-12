@@ -395,7 +395,7 @@ uint8_t CSoundDevice::QueryCh(CMidiCh* parent, FMVOICE* voice, int mode)
 		for (int i=0; i<chs; i++) {
 			attr = GetChAttribute(tmp);
 			if (attr && attr->IsAutoAssignable() && (mode ? attr->IsAvailable() : attr->IsEnable())
-				&& memcmp(voice, attr->GetVoice(), sizeof(FMVOICE)) == 0 && attr->GetParent() == parent) {
+				&& attr->GetVoice()->ID && voice->ID == attr->GetVoice()->ID && attr->GetParent() == parent) {
 				ret = tmp;
 #if defined(_DEBUG) || defined(_CONSOLE)
 				fprintf(stderr, _T("QueryCh:%i:mached parent and voice\n"), ret);

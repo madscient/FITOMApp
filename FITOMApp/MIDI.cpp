@@ -1211,6 +1211,7 @@ void CInstCh::SetVoiceData(uint8_t data)
 	if (Device)
 	{
 		((uint8_t*)&voice)[VoiceAddr&0x7f] = data;
+		voice.ID = 0;	//Invalidate
 		Device->ResetVoice(this, &voice, -1);
 		/*
 		for (int i=0; i<timbres; i++) {
