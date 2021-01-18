@@ -952,15 +952,8 @@ int CFITOMConfig::LoadDeviceConfig()
 	//SCCI devices
 	int res = 0;
 	std::tstring devcfgmode = fitom_ini.get<std::tstring>(_T("Device.mode"), _T(""));
-	if (devcfgmode.compare(_T("MANUAL")) == 0 || devcfgmode.empty()) {
-		int devices = 64;
-		for (int i = 0; i < devices; i++) {
-			std::tstring strkeyname = (boost::format(_T("Device.device%1%")) % i).str();
-			boost::optional<std::tstring> valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
-			if (valparam && CreateDevice(valparam.get().c_str()) == 0) {
-				res++;
-			}
-		}
+	if (devcfgmode.compare(_T("MANUAL")) == 0) {
+		res = ManualDeviceConfig();
 	}
 	else {
 		res = AutoDeviceConfig();

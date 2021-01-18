@@ -2,6 +2,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 
 #include "FITOM.h"
 #include "SoundDev.h"
@@ -166,6 +167,24 @@ int CFITOMConfigWin32::AutoDeviceConfig()
 			for (int j = 0; j < pScci->getSoundChipCount(i); j++) {
 				res += CreateSCCIDevice(i, j);
 			}
+		}
+	}
+	return res;
+}
+
+int CFITOMConfigWin32::ManualDeviceConfig()
+{
+	int devices = 64;
+	int res = 0;
+	std::tstring devscciena = fitom_ini.get<std::tstring>(_T("Device.SCCIEnable"), _T(""));
+	if (devscciena.compare(_T("true")) == 0) {
+		pScci = new CSCCIWrapper();
+	}
+	for (int i = 0; i < devices; i++) {
+		std::tstring strkeyname = (boost::format(_T("Device.device%1%")) % i).str();
+		boost::optional<std::tstring> valparam = fitom_ini.get_optional<std::tstring>(strkeyname);
+		if (valparam && CreateDevice(valparam.value().c_str()) == 0) {
+			res++;
 		}
 	}
 	return res;

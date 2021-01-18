@@ -144,6 +144,7 @@ protected:
 	int BuildLogDevice();
 	virtual int isSpannable(CSoundDevice* src, CSoundDevice* tgt);
 	virtual int AutoDeviceConfig() = 0;
+	virtual int ManualDeviceConfig() = 0;
 
 public:
 	CFITOMConfig(LPCTSTR strinifile);
@@ -267,6 +268,7 @@ protected:
 	CFTSPI* pFtspi;
 	int g_devno;
 	virtual int AutoDeviceConfig();
+	virtual int ManualDeviceConfig();
 public:
 	CFITOMConfigWin32(LPCTSTR strinifile);
 	~CFITOMConfigWin32();
