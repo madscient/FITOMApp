@@ -1302,7 +1302,7 @@ void CRhythmCh::NoteOn(uint8_t note, uint8_t vel, DRUMMAP* dm)
 		}
 		//Inst Rhythm
 		Parent->GetVoice(&dv, dm->devID, dm->bank, dm->prog);
-		uint8_t ch = dm->device->AllocCh(this, &dv);
+		uint8_t ch = (dm->ch < 0) ? dm->device->AllocCh(this, &dv) : dm->ch;
 		if (ch != 0xff) {
 			dm->device->SetExpress(ch, 127);
 			dm->device->SetVolume(ch, Volume, 0);

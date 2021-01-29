@@ -26,6 +26,7 @@ struct DRUMMAP {
 	CSoundDevice* device;
 	TCHAR name[16];
 	uint32_t devID;
+	int32_t	ch;
 	uint8_t bank;
 	uint8_t prog;
 	int8_t pan;

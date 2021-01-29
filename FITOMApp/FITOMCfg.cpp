@@ -1123,7 +1123,6 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 	if (fname) {
 		bank->SetFileName(fname);
 	}
-
 	int ret = 0;
 	boost::system::error_code err;
 	bool exists = boost::filesystem::exists(boost::filesystem::path(fname), err);
@@ -1145,6 +1144,7 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 				int bkno = 0;
 				int num = 0;
 				int fnum = 0;
+				int ch = -1;
 				std::tstring strdevname;
 				std::tstring strnotename;
 				std::tstring strnote;
@@ -1153,6 +1153,7 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 				std::vector<std::tstring> lstparam;
 				boost::split(lstparam, strtmp, boost::is_any_of(_T(",")));
 				if (lstparam.size() > 6) {
+					//Inst.name,Dev.name,BankNo,ProgNo,Fnum,Panpot,GateTime,CH
 					strnotename = lstparam[0];
 					strdevname = lstparam[1];
 					bkno = std::stoi(lstparam[2]);
@@ -1160,9 +1161,10 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 					strnote = lstparam[4];
 					pan = std::stoi(lstparam[5]);
 					gate = std::stoi(lstparam[6]);
+					ch = (lstparam.size() > 7) ? std::stoi(lstparam[7]) : -1;
 					std::vector<std::tstring> lstnote;
 					boost::split(lstnote, strnote, boost::is_any_of(_T(":")));
-					if (lstnote.size() > 1) {
+					if (lstnote.size() > 1 && strnote[0] != '#') {
 						num = std::stoi(lstnote[0]);
 						fnum = std::stoi(lstnote[1]);
 					}
@@ -1216,6 +1218,7 @@ int CFITOMConfig::LoadDrumBank(CDrumBank* bank, LPCTSTR fname)
 					drumnote.gate = uint16_t(gate);
 					drumnote.num = uint8_t(num);
 					drumnote.fnum = uint16_t(fnum);
+					drumnote.ch = ch;
 					bank->SetVoice(note, &drumnote);
 				}
 			}
