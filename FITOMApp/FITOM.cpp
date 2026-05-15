@@ -12,8 +12,7 @@
 #include "SCCIWrapper.h"
 #include "FITOMCfg.h"
 #include "tables.h"
-#include "../pthread/semaphore.h"
-#include "../pthread/pthread.h"
+#include <boost/thread.hpp>
 
 const char* FITOMTITLE = "FITOM Windows";
 

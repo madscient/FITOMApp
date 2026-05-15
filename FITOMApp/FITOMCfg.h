@@ -5,12 +5,13 @@ struct FMVOICE;
 #include <boost/property_tree/ptree.hpp>
 #include <vector>
 #include <queue>
+#include <string>
 
 class CMasterVolumeCtrl;
 
 class CFITOMDeviceConfig {
 public:
-	CFITOMDeviceConfig(LPCTSTR cfgstr);
+	CFITOMDeviceConfig(const std::string& cfgstr);
 	~CFITOMDeviceConfig() {};
 	DWORD ifid; // Interface ID (on SCCI)
 	DWORD slid; // Slot ID (on SCCI)

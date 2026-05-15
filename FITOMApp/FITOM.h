@@ -21,6 +21,8 @@ class CSCCIWrapper;
 
 #include "Port.h"
 #include "FITOMCfg.h"
+#include <string>
+#include <boost/thread.hpp>
 
 struct DeviceControlSlice {
 	CPort* port;
@@ -35,10 +37,7 @@ protected:
 	CFITOMConfig* theConfig;
 	volatile int timerprocessing;
 	volatile int pollprocessing;
-	TCHAR profile[MAX_PATH];
-	BYTE LCDdot[11][16][16];
-	BYTE LCDstr[17];
-	int LCDdisp;
+	std::string profile;
 
 	//Configuration
 	int ImportConfig(CFITOMConfig* config);
@@ -89,29 +88,6 @@ public:
 	//Utility
 	void AllNoteOff();
 	void ResetAllCtrl();
-
-	//Command shell
-	typedef BOOL(CFITOM::*cmdfunc)(TCHAR* cmd, TCHAR* result, int reslen);
-
-	typedef struct {
-		const char* cmd;
-		cmdfunc func;
-	} cmdvect;
-	BOOL CmdProc(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSetVoice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetVoice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetMidiStatus(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetDeviceStatus(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSendMidi(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetPhysicalDevice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetLogicalDevice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetMidiDevice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSetPcmVoice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetPcmVoice(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSetWaveForm(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetWaveForm(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdSetDeviceReg(TCHAR* cmd, TCHAR* result, int reslen);
-	BOOL cmdGetDeviceReg(TCHAR* cmd, TCHAR* result, int reslen);
 
 	//Static utils
 	static const DWORD GetDeviceVoiceType(DWORD device);
