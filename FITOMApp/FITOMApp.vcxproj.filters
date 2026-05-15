@@ -426,6 +426,7 @@
     <None Include="res\FITOMApp.rc2">
       <Filter>リソース ファイル</Filter>
     </None>
+    <None Include="fitom_config.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

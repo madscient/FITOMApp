@@ -1,0 +1,18 @@
+{
+  "interfaces": [
+    {
+      "name": "Re:birth1.0",
+      "type": "FTPAR",
+      "maxslots": 16,
+      "clock": 0,
+      "modules": [
+        {
+          "slot": 0,
+          "type": "OPL3",
+          "panpot": 3,
+          "clock": 14318180
+        }
+      ]
+    }
+  ]
+}
