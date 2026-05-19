@@ -73,20 +73,20 @@ int CSCCIPort::GetPanpot()
 	return pci->dSoundLocation;
 }
 
-CFTPort::CFTPort() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHandle(0)
+CFT825Port::CFT825Port() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHandle(0)
 {
 }
 
-CFTPort::CFTPort(CFTInterface* pif, uint32_t index, uint32_t cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
+CFT825Port::CFT825Port(CFT232HSPI* pif, uint32_t index, uint32_t cs, size_t maxreg)	: csidx(cs), chidx(index), pInterface(pif)
 {
 	//assert(pif && pif->IsValid() && index < pif->GetChannels() && cs < 5);
 }
 
-CFTPort::~CFTPort(void)
+CFT825Port::~CFT825Port(void)
 {
 }
 
-void CFTPort::write(uint16_t addr, uint16_t data)
+void CFT825Port::write(uint16_t addr, uint16_t data)
 {
 	uint32_t sizeToTransfer = 0;
 	uint32_t sizeTransfered = 0;
@@ -107,7 +107,7 @@ void CFTPort::write(uint16_t addr, uint16_t data)
 #endif
 }
 
-void CFTPort::writeBurst(uint16_t addr, BYTE* buf, size_t length)
+void CFT825Port::writeBurst(uint16_t addr, BYTE* buf, size_t length)
 {
 	BYTE* newbuf = new BYTE[length + 1];
 	newbuf[0] = BYTE(addr);
@@ -116,7 +116,7 @@ void CFTPort::writeBurst(uint16_t addr, BYTE* buf, size_t length)
 	delete[] newbuf;
 }
 
-void CFTPort::writeBurst(BYTE* buf, size_t length)
+void CFT825Port::writeBurst(BYTE* buf, size_t length)
 {
 	FT_STATUS status = pInterface->BufferedWrite( buf, length, csidx);
 	//pInterface->SPI_Flush(chidx);
@@ -133,7 +133,7 @@ void CFTPort::writeBurst(BYTE* buf, size_t length)
 #endif
 }
 
-uint8_t CFTPort::read(uint16_t addr)
+uint8_t CFT825Port::read(uint16_t addr)
 {
 	uint8_t ret = 0;
 #ifdef DEBUG
@@ -144,12 +144,12 @@ uint8_t CFTPort::read(uint16_t addr)
 	return ret;
 }
 
-uint8_t CFTPort::status()
+uint8_t CFT825Port::status()
 {
 	return 0;
 }
 
-void CFTPort::flush()
+void CFT825Port::flush()
 {
 	if (pInterface) {
 		pInterface->BufferFlush();
@@ -161,7 +161,7 @@ void CFTPort::flush()
 	}
 }
 
-void CFTPort::reset()
+void CFT825Port::reset()
 {
 	if (pInterface) {
 		pInterface->FT_WriteGPIO( 0xff, 0xff);
@@ -177,22 +177,22 @@ void CFTPort::reset()
 #endif
 }
 
-int CFTPort::GetClock()
+int CFT825Port::GetClock()
 {
 	return 0;
 }
 
-int CFTPort::GetDesc(TCHAR* str, int len)
+int CFT825Port::GetDesc(TCHAR* str, int len)
 {
 	return sprintf_s(str, len, _T("FTSPI:%i:%i"), chidx, csidx);
 }
 
-int CFTPort::GetPanpot()
+int CFT825Port::GetPanpot()
 {
 	return 0;
 }
 
-void CFTPort::GetInterfaceDesc(TCHAR* str, int len)
+void CFT825Port::GetInterfaceDesc(TCHAR* str, int len)
 {
 	pInterface->GetInterfaceDesc(str, len);
 }

@@ -8,6 +8,7 @@
 #include "FTSPI.h"
 #endif
 
+#include <string>
 #include <vector>
 
 class CPort
@@ -25,10 +26,10 @@ public:
 	virtual uint8_t status() = 0;
 	virtual void reset() = 0;
 	virtual void flush() {};
-	virtual int GetDesc(TCHAR* str, int len) = 0;
+	virtual std::string GetDesc() = 0;
 	virtual int GetClock() = 0;
 	virtual int GetPanpot() = 0;
-	virtual void GetInterfaceDesc(TCHAR* str, int len) = 0;
+	virtual std::string GetInterfaceDesc() = 0;
 	virtual uint32_t GetPhysicalId() { return physical_id; };
 	virtual void SetPhysicalId(uint32_t id) { physical_id = id; };
 };
@@ -116,18 +117,21 @@ public:
 };
 
 class CFTInterface;
-class CFTPort : public CPort
+class CFT232HSPI;
+class CFT245Rebirth;
+
+class CFT825Port : public CPort
 {
 protected:
-	CFTInterface * pInterface;
+	CFT232HSPI* pInterface;
 	size_t regsize;
 	uint32_t chidx;
 	uint32_t csidx;
 	FT_HANDLE ftHandle;
 public:
-	CFTPort();
-	CFTPort(CFTInterface* pif, uint32_t index, uint32_t cs, size_t maxreg);
-	~CFTPort(void);
+	CFT825Port();
+	CFT825Port(CFT232HSPI* pif, uint32_t index, uint32_t cs, size_t maxreg);
+	~CFT825Port(void);
 	virtual void writeBurst(uint16_t addr, BYTE* buf, size_t length);
 	virtual void writeBurst(BYTE* buf, size_t length);
 	virtual void write(uint16_t addr, uint16_t data);
@@ -136,6 +140,28 @@ public:
 	virtual uint8_t status();
 	virtual void reset();
 	virtual void flush();
+	virtual int GetClock();
+	virtual int GetPanpot();
+	virtual void GetInterfaceDesc(TCHAR* str, int len);
+	virtual int GetDesc(TCHAR* str, int len);
+};
+
+class CRebirthPort : public CPort
+{
+protected:
+	CFT245Rebirth* pInterface;
+	size_t regsize;
+	uint32_t addr;
+	uint32_t slot;
+	FT_HANDLE ftHandle;
+public:
+	CRebirthPort();
+	CRebirthPort(CFT245Rebirth* pif, uint32_t slot, uint32_t addr, size_t maxreg);
+	~CRebirthPort(void);
+	virtual void write(uint16_t addr, uint16_t data);
+	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
+	virtual uint8_t status();
+	virtual void reset();
 	virtual int GetClock();
 	virtual int GetPanpot();
 	virtual void GetInterfaceDesc(TCHAR* str, int len);
