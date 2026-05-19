@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "FTSPI.h"
+#include <boost/format.hpp>
 
 vector<CFTInterface*> ftInterfaces;
 
@@ -18,16 +19,16 @@ int InitFTInterface()
 
 	for (DWORD i = 0; i < numDevices; i++) {
 		FTHINFO fthinfo;
-		sprintf_s(fthinfo.description, _countof(fthinfo.description), _T("%s(%s)"), devList[i].Description, devList[i].SerialNumber);
+		fthinfo.description = (boost::format("%s(%s)") % devList[i].Description % devList[i].SerialNumber).str();
 		fthinfo.index = i;
 		fthinfo.rptr = fthinfo.wptr = 0;
 		switch (devList[i].Type)
 		{
 		case FT_DEVICE_232H:
-			ftInterfaces.push_back(new CFTSPI(fthinfo));
+			ftInterfaces.push_back(new CFT232HSPI(fthinfo));
 			break;
 		case FT_DEVICE_2232C:
-			ftInterfaces.push_back(new CFTHBE(fthinfo));
+			ftInterfaces.push_back(new CFT2232HBE(fthinfo));
 			break;
 		}
 	}
@@ -41,7 +42,7 @@ FTHINFO& FTHINFO::operator=(FTHINFO& fth)
 	index = fth.index;
 	rptr = fth.rptr;
 	wptr = fth.wptr;
-	memcpy_s(description, _countof(description), fth.description, _countof(fth.description));
+	description = fth.description;
 	memcpy_s(cmdbuf, _countof(cmdbuf), fth.cmdbuf, _countof(fth.cmdbuf));
 	return *this;
 }
@@ -75,9 +76,9 @@ FT_STATUS CFTInterface::BufferedRead(uint8_t* buffer, uint32_t sizeToTransfer, u
 	return ret;
 }
 
-void CFTInterface::GetInterfaceDesc(TCHAR* str, int len)
+std::string CFTInterface::GetInterfaceDesc()
 {
-	sprintf_s(str, len, _T("%s"), FTChannel.description);
+	return FTChannel.description;
 }
 
 FT_STATUS CFTInterface::BufferFlush()
@@ -98,7 +99,7 @@ FT_STATUS CFTInterface::BufferFlush()
 }
 
 
-CFTSPI::CFTSPI(FTHINFO& fth) : CFTInterface()
+CFT232HSPI::CFT232HSPI(FTHINFO& fth) : CFTInterface()
 {
 	FT_STATUS status = FT_OK;
 	FTChannel = fth;
@@ -108,7 +109,7 @@ CFTSPI::CFTSPI(FTHINFO& fth) : CFTInterface()
 	assert(status == FT_OK);
 }
 
-FT_STATUS CFTSPI::Init()
+FT_STATUS CFT232HSPI::Init()
 {
 	FT_STATUS ret = FT_OTHER_ERROR;
 	//ret = FT_SetBaudRate(SPIChannel[index].ftHandle, 2000000L);	//1Mbps
@@ -145,7 +146,7 @@ FT_STATUS CFTSPI::Init()
 }
 
 
-FT_STATUS CFTSPI::BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs)
+FT_STATUS CFT232HSPI::BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs)
 {
 	FT_STATUS ret = FT_OK;
 	uint8_t csmask = ~(1 << (cs + 3));
@@ -165,7 +166,7 @@ FT_STATUS CFTSPI::BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32
 	return ret;
 }
 
-FT_STATUS CFTSPI::FT_WriteGPIO( uint8_t dir, uint8_t value)
+FT_STATUS CFT232HSPI::FT_WriteGPIO( uint8_t dir, uint8_t value)
 {
 	FT_STATUS ret = FT_OK;
 	BufferPush(0x82);	//Set high byte
@@ -175,7 +176,7 @@ FT_STATUS CFTSPI::FT_WriteGPIO( uint8_t dir, uint8_t value)
 	return ret;
 }
 
-void CFTSPI::InitialClear()
+void CFT232HSPI::InitialClear()
 {
 	BufferPush(0x82);	//Set high byte
 	BufferPush(0x00);	//assert IC
@@ -188,7 +189,7 @@ void CFTSPI::InitialClear()
 	BufferFlush();
 }
 
-CFTHBE::CFTHBE(FTHINFO& fth) : CFTInterface()
+CFT2232HBE::CFT2232HBE(FTHINFO& fth) : CFTInterface()
 {
 	FT_STATUS status = FT_OK;
 	FTChannel = fth;
@@ -198,7 +199,7 @@ CFTHBE::CFTHBE(FTHINFO& fth) : CFTInterface()
 	assert(status == FT_OK);
 }
 
-FT_STATUS CFTHBE::Init()
+FT_STATUS CFT2232HBE::Init()
 {
 	FT_STATUS ret = FT_OTHER_ERROR;
 	//ret = FT_SetBaudRate(SPIChannel[index].ftHandle, 2000000L);	//1Mbps
@@ -231,7 +232,7 @@ FT_STATUS CFTHBE::Init()
 }
 
 
-FT_STATUS CFTHBE::BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs)
+FT_STATUS CFT2232HBE::BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs)
 {
 	FT_STATUS ret = FT_OK;
 	uint8_t csmask = ~(1 << (cs + 3));
@@ -251,7 +252,7 @@ FT_STATUS CFTHBE::BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32
 	return ret;
 }
 
-FT_STATUS CFTHBE::FT_WriteGPIO(uint8_t dir, uint8_t value)
+FT_STATUS CFT2232HBE::FT_WriteGPIO(uint8_t dir, uint8_t value)
 {
 	FT_STATUS ret = FT_OK;
 	BufferPush(0x82);	//Set high byte
@@ -261,7 +262,7 @@ FT_STATUS CFTHBE::FT_WriteGPIO(uint8_t dir, uint8_t value)
 	return ret;
 }
 
-void CFTHBE::InitialClear()
+void CFT2232HBE::InitialClear()
 {
 	BufferPush(0x82);	//Set high byte
 	BufferPush(0x00);	//assert IC
@@ -274,3 +275,66 @@ void CFTHBE::InitialClear()
 	BufferFlush();
 }
 
+CFT245Rebirth::CFT245Rebirth(FTHINFO& fth) : CFTInterface()
+{
+	FTChannel = fth;
+	FT_STATUS ftStatus = FT_Open(fth.index, &fth.ftHandle);
+	assert(ftStatus == FT_OK);
+	ftStatus = FT_SetBaudRate(fth.ftHandle, 999999);
+	assert(ftStatus == FT_OK);
+	ftStatus = Init();
+	assert(ftStatus == FT_OK);
+}
+
+FT_STATUS CFT245Rebirth::Init()
+{
+	FT_STATUS ftStatus;
+	ftStatus = FT_SetBitMode(FTChannel.ftHandle, 0x00, 0x0); //RESET
+	if (ftStatus != FT_OK) return ftStatus;
+	ftStatus = FT_SetBitMode(FTChannel.ftHandle, 0xff, 0x1); //Asynchronous Bit Bang
+	if (ftStatus != FT_OK) return ftStatus;
+	ftStatus = FT_SetTimeouts(FTChannel.ftHandle, 100, 100); //ms
+	if (ftStatus != FT_OK) return ftStatus;
+	BufferPush(0x0f);
+	BufferPush(0x7f);
+	BufferPush(0x0f);
+	BufferPush(0x7f);
+	BufferPush(0x0b);
+	BufferPush(0x4b);
+	for (int i = 0; i < 160; i++) BufferPush((i & 16) << 3);
+	BufferPush(0x4f);
+	BufferPush(0x80);
+	BufferFlush();
+	return ftStatus;
+}
+
+FT_STATUS CFT245Rebirth::Write(uint16_t addr, uint8_t data, uint32_t w)
+{
+	UINT8 d = (addr >> 4) & 0xff;
+	UINT8 a = (addr & 0xf);
+	BufferPush(0x00 | (data >> 4));
+	BufferPush(0x10 | (data >> 4));
+	BufferPush(0x00 | (data & 0xf));
+	BufferPush(0x10 | (data & 0xf));
+	BufferPush(0x00 | d);
+	BufferPush(0x20 | d);
+	BufferPush(0x00 | a);
+	BufferPush(0x20 | a);
+
+	BufferPush(0x06);
+	BufferPush(0x46);
+	BufferPush(0x07);
+	BufferPush(0x47);
+	BufferPush(0x0);
+
+	for (int i = 0; i < w; i++) BufferPush(0x80);
+	BufferFlush();
+	return FT_OK;
+}
+
+void CFT245Rebirth::InitialClear()
+{
+	if (FTChannel.ftHandle) {
+		FT_SetBitMode(FTChannel.ftHandle, 0x00, 0x0); //RESET
+	}
+}

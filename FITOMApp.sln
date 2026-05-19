@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36631.11
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FITOMApp", "FITOMApp\FITOMApp.vcxproj", "{B04CDE73-6C3C-46E1-B430-CC893CED7BF6}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scsh", "scsh\scsh.vcxproj", "{9FA0EC53-E016-4088-A473-3A77642636B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FITOM_config", "FITOM_config\FITOM_config.csproj", "{5DD23520-F136-4785-B6BC-C65E36D27748}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FITOM_GUI", "FITOM_GUI\FITOM_GUI\FITOM_GUI.csproj", "{3648D053-DDA7-429B-967A-7DFF22DDF842}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,16 +69,6 @@ Global
 		{5DD23520-F136-4785-B6BC-C65E36D27748}.Release|Win32.Build.0 = Release|Any CPU
 		{5DD23520-F136-4785-B6BC-C65E36D27748}.Release|x64.ActiveCfg = Release|Any CPU
 		{5DD23520-F136-4785-B6BC-C65E36D27748}.Release|x64.Build.0 = Release|Any CPU
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Debug|ARM.ActiveCfg = Debug|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Debug|Win32.ActiveCfg = Debug|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Debug|Win32.Build.0 = Debug|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Debug|x64.ActiveCfg = Debug|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Release|Any CPU.ActiveCfg = Release|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Release|ARM.ActiveCfg = Release|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Release|Win32.ActiveCfg = Release|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Release|Win32.Build.0 = Release|x86
-		{3648D053-DDA7-429B-967A-7DFF22DDF842}.Release|x64.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

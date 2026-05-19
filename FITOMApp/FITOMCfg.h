@@ -263,11 +263,11 @@ public:
 	int AddSD1(CPort* pt, int md, int fs);
 };
 
-class CFTSPI;
+class CFT232HSPI;
 class CFITOMConfigWin32 : public CFITOMConfig {
 protected:
 	CSCCIWrapper* pScci;
-	CFTSPI* pFtspi;
+	CFT232HSPI* pFtspi;
 	int g_devno;
 	virtual int AutoDeviceConfig();
 	virtual int ManualDeviceConfig();
@@ -281,6 +281,6 @@ public:
 	virtual int CreateSCCIDevice(int ifid, int slid);
 	CPort* CreateSCCIPort(int ifid, int slid, int devtype);
 	CSCCIWrapper* GetScci() { return pScci; };
-	CFTSPI* GetFTspi() { return pFtspi; };
+	CFT232HSPI* GetFTspi() { return pFtspi; };
 };
 
