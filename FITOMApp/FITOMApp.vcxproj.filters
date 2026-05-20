@@ -34,6 +34,12 @@
     <Filter Include="ヘッダー ファイル\pthread">
       <UniqueIdentifier>{d08eddee-193a-4cf9-9b53-1d6b5dc0288b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\device">
+      <UniqueIdentifier>{73fb2f41-39f5-43b7-8f7c-de97b7c28acf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\device">
+      <UniqueIdentifier>{b7b4b231-6071-40cf-b0ad-c1bca5421e71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -298,9 +304,6 @@
     </ClCompile>
     <ClCompile Include="PortWin.cpp">
       <Filter>ソース ファイル\Win32 Device</Filter>
-    </ClCompile>
-    <ClCompile Include="SysCtlDlg.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="cmdproc.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>

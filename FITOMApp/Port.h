@@ -168,6 +168,28 @@ public:
 	virtual int GetDesc(TCHAR* str, int len);
 };
 
+class CHBEPort : public CPort
+{
+protected:
+	CFT2232HBE* pInterface;
+	size_t regsize;
+	uint32_t addr;
+	uint32_t slot;
+	FT_HANDLE ftHandle;
+public:
+	CRebirthPort();
+	CRebirthPort(CFT2232HBE* pif, uint32_t slot, uint32_t addr, size_t maxreg);
+	~CRebirthPort(void);
+	virtual void write(uint16_t addr, uint16_t data);
+	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
+	virtual uint8_t status();
+	virtual void reset();
+	virtual int GetClock();
+	virtual int GetPanpot();
+	virtual void GetInterfaceDesc(TCHAR* str, int len);
+	virtual int GetDesc(TCHAR* str, int len);
+};
+
 #endif
 
 #ifdef _LINUX

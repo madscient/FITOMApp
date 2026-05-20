@@ -49,6 +49,7 @@ public:
 	virtual void InitialClear();
 	virtual FT_STATUS BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs);
 	virtual FT_STATUS FT_WriteGPIO(uint8_t dir, uint8_t value);
+	CFT825Port* CreatePort(uint32_t cs);
 };
 
 class CFT2232HBE : public CFTInterface {
@@ -58,6 +59,7 @@ public:
 	virtual void InitialClear();
 	virtual FT_STATUS BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs);
 	virtual FT_STATUS FT_WriteGPIO(uint8_t dir, uint8_t value);
+	CHBEPort* CreatePort(uint32_t addr1, uint32_t addr2);
 };
 
 class CFT245Rebirth : public CFTInterface {
@@ -66,4 +68,5 @@ public:
 	virtual FT_STATUS Init();
 	virtual void InitialClear();
 	virtual FT_STATUS Write(uint16_t addr, uint8_t data, uint32_t wait);
+	CRebirthPort* CreatePort(uint32_t slot, uint32_t addr1, uint32_t addr2);
 };

@@ -46,6 +46,7 @@ enum SC_CHIP_TYPE {
 	SC_TYPE_NBV4,		// NBV4用
 	SC_TYPE_AYB02,		// AYB02用
 	SC_TYPE_8253,		// i8253（及び互換チップ用）
+	SC_TYPE_Y8960,
 	SC_TYPE_OTHER,		// その他デバイス用、アドレスがA0-A3で動作する
 	SC_TYPE_UNKNOWN,	// 開発デバイス向け
 	SC_TYPE_MAX
