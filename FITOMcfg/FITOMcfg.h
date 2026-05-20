@@ -19,8 +19,8 @@
 
 struct chipSymbols {
 	SC_CHIP_TYPE type;
-	LPCTSTR chipname;
-	LPCTSTR chipcode;
+	const char* chipname;
+	const char* chipcode;
 };
 
 class CFITOMcfgApp : public CWinApp

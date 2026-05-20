@@ -76,6 +76,7 @@ extern chipSymbols symbols[] = {
 	{ SC_TYPE_NBV4,	_T("NBV4") _T("NBV4"), },	// NBV4用
 	{ SC_TYPE_AYB02, _T("AYB02"), _T("AYB02"), },		// AYB02用
 	{ SC_TYPE_8253,	_T("i8253"), _T("i8253"), },	// i8253（及び互換チップ用）
+	{ SC_TYPE_Y8960, _T("Y8960"), _T("Y8960")},
 	{ SC_TYPE_OTHER, _T("OTHER"), _T("OTHER"), },
 	{ SC_TYPE_UNKNOWN, _T("UNKNOWN"), _T("UNKNOWN"), },
 	{ SC_TYPE_MAX, 0, 0, },

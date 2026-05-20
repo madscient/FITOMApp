@@ -199,7 +199,6 @@
     <ClCompile Include="SpanDev.cpp" />
     <ClCompile Include="SSG.cpp" />
     <ClCompile Include="Stereo.cpp" />
-    <ClCompile Include="SysCtlDlg.cpp" />
     <ClCompile Include="Unison.cpp" />
     <ClCompile Include="VoiceBank.cpp" />
     <ClCompile Include="stdafx.cpp">
