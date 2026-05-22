@@ -238,3 +238,74 @@ void CSCCIWrapper::InitialClear()
 		pManager->reset();
 	}
 }
+
+CSCCIPort::CSCCIPort() : regsize(0), pInterface(0), pChip(0)
+{
+}
+
+CSCCIPort::CSCCIPort(scciInterface* pif, SoundChip* pchip, size_t maxreg) : pInterface(pif), pChip(pchip), regsize(maxreg)
+{
+}
+
+void CSCCIPort::write(uint16_t addr, uint16_t data)
+{
+	if (pChip) {
+		pChip->setRegister(DWORD(addr), DWORD(data));
+#ifdef DEBUG
+		TCHAR str[80];
+		StringCchPrintf(str, _countof(str), _T("reg %08x %03x %02x\n"), physical_id, addr, data);
+		OutputDebugString(str);
+#endif
+	}
+}
+
+uint8_t CSCCIPort::read(uint16_t addr)
+{
+	if (pChip && addr < regsize) {
+		return uint8_t(pChip->getRegister(DWORD(addr)));
+	}
+	return 255;
+}
+
+uint8_t CSCCIPort::status()
+{
+	return 0;
+}
+
+void CSCCIPort::reset()
+{
+	if (pChip) {
+		pChip->init();
+#ifdef DEBUG
+		TCHAR str[80];
+		StringCchPrintf(str, _countof(str), _T("reset %08x\n"), physical_id);
+		OutputDebugString(str);
+#endif
+	}
+}
+
+std::string CSCCIPort::GetDesc()
+{
+	size_t ret;
+	SCCI_SOUND_CHIP_INFO* pci = pChip->getSoundChipInfo();
+	StringCchPrintf(str, len, _T("SCCI:%08X"), physical_id);
+	StringCchLength(str, STRSAFE_MAX_CCH, &ret);
+	return ++ret;
+}
+
+int CSCCIPort::GetClock()
+{
+	SCCI_SOUND_CHIP_INFO* pci = pChip->getSoundChipInfo();
+	return pci->dClock;
+}
+
+std::string CSCCIPort::GetInterfaceDesc()
+{
+	return pInterface->GetInterfaceDesc();
+}
+
+int CSCCIPort::GetPanpot()
+{
+	SCCI_SOUND_CHIP_INFO* pci = pChip->getSoundChipInfo();
+	return pci->dSoundLocation;
+}

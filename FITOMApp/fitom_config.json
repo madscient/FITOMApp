@@ -1,18 +1,71 @@
 {
   "interfaces": [
     {
-      "name": "Re:birth1.0",
-      "type": "FTPAR",
+      "name": "Re:birth",
       "maxslots": 16,
-      "clock": 0,
+      "clock": 3579545,
       "modules": [
         {
           "slot": 0,
           "type": "OPL3",
           "panpot": 3,
           "clock": 14318180
+        },
+        {
+          "slot": 1,
+          "type": "OPLL",
+          "panpot": 3,
+          "clock": 0
+        },
+        {
+          "slot": 2,
+          "type": "OPLLP",
+          "panpot": 3,
+          "clock": 0
+        },
+        {
+          "slot": 3,
+          "type": "OPLLX",
+          "panpot": 3,
+          "clock": 0
+        },
+        {
+          "slot": 4,
+          "type": "Y8950",
+          "panpot": 3,
+          "clock": 0
+        }
+      ]
+    },
+    {
+      "name": "SPFM",
+      "maxslots": 3,
+      "clock": 0,
+      "modules": [
+        {
+          "slot": 0,
+          "type": "OPM",
+          "panpot": 3,
+          "clock": 4000000
+        },
+        {
+          "slot": 1,
+          "type": "OPNA",
+          "panpot": 3,
+          "clock": 8000000
+        },
+        {
+          "slot": 2,
+          "type": "OPNBB",
+          "panpot": 3,
+          "clock": 8000000
         }
       ]
     }
+  ],
+  "MIDI IN": [
+    {
+      "name": "LoopMIDI0"
+    },
   ]
 }

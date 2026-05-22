@@ -1,77 +1,6 @@
 #include "STDAFX.H"
-#include "SCCIWrapper.h"
-#include "Port.h"
-
-CSCCIPort::CSCCIPort() : regsize(0), pInterface(0), pChip(0)
-{
-}
-
-CSCCIPort::CSCCIPort(scciInterface* pif, SoundChip* pchip, size_t maxreg) : pInterface(pif), pChip(pchip), regsize(maxreg)
-{
-}
-
-void CSCCIPort::write(uint16_t addr, uint16_t data)
-{
-	if (pChip) {
-		pChip->setRegister(DWORD(addr), DWORD(data));
-#ifdef DEBUG
-		TCHAR str[80];
-		StringCchPrintf(str, _countof(str), _T("reg %08x %03x %02x\n"), physical_id, addr, data);
-		OutputDebugString(str);
-#endif
-	}
-}
-
-uint8_t CSCCIPort::read(uint16_t addr)
-{
-	if (pChip && addr < regsize) {
-		return uint8_t(pChip->getRegister(DWORD(addr)));
-	}
-	return 255;
-}
-
-uint8_t CSCCIPort::status()
-{
-	return 0;
-}
-
-void CSCCIPort::reset()
-{
-	if (pChip) {
-		pChip->init();
-#ifdef DEBUG
-		TCHAR str[80];
-		StringCchPrintf(str, _countof(str), _T("reset %08x\n"), physical_id);
-		OutputDebugString(str);
-#endif
-	}
-}
-
-int CSCCIPort::GetDesc(TCHAR* str, int len)
-{
-	size_t ret;
-	SCCI_SOUND_CHIP_INFO* pci = pChip->getSoundChipInfo();
-	StringCchPrintf(str, len, _T("SCCI:%08X"), physical_id);
-	StringCchLength(str, STRSAFE_MAX_CCH, &ret);
-	return ++ret;
-}
-
-int CSCCIPort::GetClock()
-{
-	SCCI_SOUND_CHIP_INFO* pci = pChip->getSoundChipInfo();
-	return pci->dClock;
-}
-
-void CSCCIPort::GetInterfaceDesc(TCHAR* str, int len)
-{
-	sprintf_s(str, len, _T("%s"), pInterface->sii->cInterfaceName);
-}
-
-int CSCCIPort::GetPanpot()
-{
-	SCCI_SOUND_CHIP_INFO* pci = pChip->getSoundChipInfo();
-	return pci->dSoundLocation;
-}
+#include "FTInterface.h"
+#include <boost/format.hpp>
 
 CFT825Port::CFT825Port() : pInterface(0), regsize(0), chidx(0), csidx(0), ftHandle(0)
 {
@@ -100,11 +29,6 @@ void CFT825Port::write(uint16_t addr, uint16_t data)
 	sizeTransfered = 0;
 	status = pInterface->BufferedWrite( buf, sizeToTransfer, csidx);
 	//pInterface->SPI_Flush(chidx);
-#ifdef DEBUG
-	TCHAR str[80];
-	StringCchPrintf(str, _countof(str), _T("reg %08x %03x %02x\n"), physical_id, addr, data);
-	OutputDebugString(str);
-#endif
 }
 
 void CFT825Port::writeBurst(uint16_t addr, BYTE* buf, size_t length)
@@ -121,26 +45,11 @@ void CFT825Port::writeBurst(BYTE* buf, size_t length)
 	FT_STATUS status = pInterface->BufferedWrite( buf, length, csidx);
 	//pInterface->SPI_Flush(chidx);
 	assert(status == FT_OK);
-#ifdef DEBUG
-	TCHAR str[80];
-	StringCchPrintf(str, _countof(str), _T("reg %08x %03x burst %04x\n"), physical_id, length);
-	OutputDebugString(str);
-	for (size_t i = 0; i < length; i++) {
-		StringCchPrintf(str, _countof(str), _T("%02x "), buf[i]);
-		OutputDebugString(str);
-	}
-	OutputDebugString(_T("\n"));
-#endif
 }
 
 uint8_t CFT825Port::read(uint16_t addr)
 {
 	uint8_t ret = 0;
-#ifdef DEBUG
-	TCHAR str[80];
-	StringCchPrintf(str, _countof(str), _T("read %08x %03x=%02x\n"), physical_id, addr, ret);
-	OutputDebugString(str);
-#endif
 	return ret;
 }
 
@@ -153,11 +62,6 @@ void CFT825Port::flush()
 {
 	if (pInterface) {
 		pInterface->BufferFlush();
-#ifdef DEBUG
-		TCHAR str[80];
-		StringCchPrintf(str, _countof(str), _T("flush %08x\n"), physical_id);
-		OutputDebugString(str);
-#endif
 	}
 }
 
@@ -170,11 +74,6 @@ void CFT825Port::reset()
 		::Sleep(2);
 		pInterface->FT_WriteGPIO( 0xff, 0xff);
 	}
-#ifdef DEBUG
-	TCHAR str[80];
-	StringCchPrintf(str, _countof(str), _T("reset %08x\n"), physical_id);
-	OutputDebugString(str);
-#endif
 }
 
 int CFT825Port::GetClock()
@@ -182,9 +81,9 @@ int CFT825Port::GetClock()
 	return 0;
 }
 
-int CFT825Port::GetDesc(TCHAR* str, int len)
+std::string CFT825Port::GetDesc()
 {
-	return sprintf_s(str, len, _T("FTSPI:%i:%i"), chidx, csidx);
+	return (boost::format("%s cs:%d") % pInterface->GetInterfaceDesc() % csidx).str();
 }
 
 int CFT825Port::GetPanpot()
@@ -192,9 +91,69 @@ int CFT825Port::GetPanpot()
 	return 0;
 }
 
-void CFT825Port::GetInterfaceDesc(TCHAR* str, int len)
+std::string CFT825Port::GetInterfaceDesc()
 {
-	pInterface->GetInterfaceDesc(str, len);
+	return pInterface->GetInterfaceDesc();
+}
+
+/// <summary>
+/// CRebirthPort
+/// </summary>
+CRebirthPort::CRebirthPort() : pInterface(0), ctladdr(0), dataddr(0), slot_no(0), regsize(0), regwait(0), datwait(0)
+{
+}
+
+CRebirthPort::CRebirthPort(CFT245Rebirth* pif, uint32_t slot, uint32_t addr1, uint32_t addr2, size_t maxreg)
+	: pInterface(pif), ctladdr(addr1), dataddr(addr2), slot_no(slot), regsize(maxreg), regwait(0), datwait(0)
+{
+	//assert(pif && pif->IsValid() && index < pif->GetChannels() && cs < 5);
+}
+
+CRebirthPort::~CRebirthPort(void)
+{
+}
+
+void CRebirthPort::write(uint16_t addr, uint16_t data)
+{
+	if (pInterface) {
+		pInterface->Write(ctladdr, addr, regwait);	//register
+		pInterface->Write(dataddr, data, datwait);	//data
+	}
+}
+
+uint8_t CRebirthPort::status()
+{
+	return 0;
+}
+
+void CRebirthPort::reset()
+{
+	if (pInterface) {
+		pInterface->InitialClear();
+	}
+}
+
+int CRebirthPort::GetClock()
+{
+	return 0;
+}
+
+std::string CRebirthPort::GetDesc()
+{
+	if (pInterface) {
+		return (boost::format("%s slot:%d ctl:%04x dat:%04x") % pInterface->GetInterfaceDesc() % slot_no % ctladdr % dataddr).str();
+	}
+	return std::string("");
+}
+
+int CRebirthPort::GetPanpot()
+{
+	return 0;
+}
+
+std::string CRebirthPort::GetInterfaceDesc()
+{
+	return (pInterface) ? pInterface->GetInterfaceDesc() : std::string("");
 }
 
 CDebugPort::CDebugPort() : chipname(0), regsize(0), regbak(0)
@@ -212,12 +171,9 @@ uint8_t CDebugPort::status()
 	return 0;
 }
 
-int CDebugPort::GetDesc(TCHAR* str, int len)
+std::string CDebugPort::GetDesc()
 {
-	size_t ret;
-	StringCchPrintf(str, len, _T("Debug:%08X"), physical_id);
-	StringCchLength(str, STRSAFE_MAX_CCH, &ret);
-	return ++ret;
+	return (boost::format("Debug port: physical_id=%08x") % physical_id).str();
 }
 
 void CDebugPort::write(uint16_t addr, uint16_t data)
