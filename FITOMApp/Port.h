@@ -1,13 +1,7 @@
 #ifndef __PORT_H__
 #define __PORT_H__
 
-#ifdef _WIN32
-#include "scci.h"
-#include "SCCIDefines.h"
-#include "SCCIWrapper.h"
-#include "FTSPI.h"
-#endif
-
+#pragma once
 #include <string>
 #include <vector>
 
@@ -55,11 +49,11 @@ public:
 	virtual uint8_t status() { return parent ? parent->status() : 0; };
 	virtual void reset() { parent ? parent->reset() : void(0); };
 	virtual int GetClock() { return parent ? parent->GetClock() : 0; };
-	virtual int GetDesc(TCHAR* str, int len) { return parent ? parent->GetDesc(str, len) : (str[0] = '\0'); };
-	virtual void GetInterfaceDesc(TCHAR* str, int len) { return parent ? parent->GetInterfaceDesc(str, len) : (str[0] = '\0'); };
 	virtual uint32_t GetPhysicalId() { return parent ? parent->GetPhysicalId() : 0; };
 	virtual void SetPhysicalId(uint32_t id) { parent ? parent->SetPhysicalId(id) : void(0); };
 	virtual int GetPanpot() { return parent ? (parent->GetPanpot()) : 0; };
+	virtual std::string GetInterfaceDesc() { return parent->GetInterfaceDesc(); };
+	virtual std::string GetDesc();
 };
 
 class CMappedPort : public CMultiPort
@@ -85,135 +79,14 @@ public:
 	virtual uint8_t read(uint16_t addr);
 	virtual uint8_t status() { return (0 < ports.size()) ? ports[0].port->status() : 0; };
 	virtual void reset();
-	virtual int GetDesc(TCHAR* str, int len);
-	virtual void GetInterfaceDesc(TCHAR* str, int len) {};
 	virtual int GetPanpot() { return (0 < ports.size()) ? ports[0].port->GetPanpot() : 0; };
 	virtual int GetClock() { return (0 < ports.size()) ? ports[0].port->GetClock() : 0; };
 	virtual uint32_t GetPhysicalId() { return 0; };
 	virtual CPort* GetSubPort(int idx) { return (idx < ports.size()) ? ports[idx].port : 0; };
 	virtual int GetPortCount() { return ports.size(); };
+	virtual std::string GetInterfaceDesc();
+	virtual std::string GetDesc();
 };
-
-#ifdef _WIN32
-class CSCCIPort : public CPort
-{
-protected:
-	SoundChip* pChip;
-	scciInterface* pInterface;
-	size_t regsize;
-public:
-	CSCCIPort();
-	CSCCIPort(scciInterface* pif, SoundChip* pchip, size_t maxreg);
-	~CSCCIPort(void) {};
-	virtual void write(uint16_t addr, uint16_t data);
-	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
-	virtual uint8_t read(uint16_t addr);
-	virtual uint8_t status();
-	virtual void reset();
-	virtual int GetClock();
-	virtual int GetPanpot();
-	virtual void GetInterfaceDesc(TCHAR* str, int len);
-	virtual int GetDesc(TCHAR* str, int len);
-};
-
-class CFTInterface;
-class CFT232HSPI;
-class CFT245Rebirth;
-
-class CFT825Port : public CPort
-{
-protected:
-	CFT232HSPI* pInterface;
-	size_t regsize;
-	uint32_t chidx;
-	uint32_t csidx;
-	FT_HANDLE ftHandle;
-public:
-	CFT825Port();
-	CFT825Port(CFT232HSPI* pif, uint32_t index, uint32_t cs, size_t maxreg);
-	~CFT825Port(void);
-	virtual void writeBurst(uint16_t addr, BYTE* buf, size_t length);
-	virtual void writeBurst(BYTE* buf, size_t length);
-	virtual void write(uint16_t addr, uint16_t data);
-	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
-	virtual uint8_t read(uint16_t addr);
-	virtual uint8_t status();
-	virtual void reset();
-	virtual void flush();
-	virtual int GetClock();
-	virtual int GetPanpot();
-	virtual void GetInterfaceDesc(TCHAR* str, int len);
-	virtual int GetDesc(TCHAR* str, int len);
-};
-
-class CRebirthPort : public CPort
-{
-protected:
-	CFT245Rebirth* pInterface;
-	size_t regsize;
-	uint32_t addr;
-	uint32_t slot;
-	FT_HANDLE ftHandle;
-public:
-	CRebirthPort();
-	CRebirthPort(CFT245Rebirth* pif, uint32_t slot, uint32_t addr, size_t maxreg);
-	~CRebirthPort(void);
-	virtual void write(uint16_t addr, uint16_t data);
-	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
-	virtual uint8_t status();
-	virtual void reset();
-	virtual int GetClock();
-	virtual int GetPanpot();
-	virtual void GetInterfaceDesc(TCHAR* str, int len);
-	virtual int GetDesc(TCHAR* str, int len);
-};
-
-class CHBEPort : public CPort
-{
-protected:
-	CFT2232HBE* pInterface;
-	size_t regsize;
-	uint32_t addr;
-	uint32_t slot;
-	FT_HANDLE ftHandle;
-public:
-	CRebirthPort();
-	CRebirthPort(CFT2232HBE* pif, uint32_t slot, uint32_t addr, size_t maxreg);
-	~CRebirthPort(void);
-	virtual void write(uint16_t addr, uint16_t data);
-	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
-	virtual uint8_t status();
-	virtual void reset();
-	virtual int GetClock();
-	virtual int GetPanpot();
-	virtual void GetInterfaceDesc(TCHAR* str, int len);
-	virtual int GetDesc(TCHAR* str, int len);
-};
-
-#endif
-
-#ifdef _LINUX
-class CSPFMUart;
-class CSPFMPort : public CPort
-{
-protected:
-	CSPFMUart* spfm;
-	uint32_t baseSlot;
-	uint32_t baseAddr;
-	uint8_t* regbak;
-	size_t regsize;
-public:
-	CSPFMPort();
-	CSPFMPort(CSPFMUart* puart, uint32_t slot, uint32_t addr, size_t maxreg);
-	~CSPFMPort(void) { delete[] regbak; };
-	virtual void write(uint16_t addr, uint16_t data, int v);
-	virtual uint8_t read(uint16_t addr, int v);
-	virtual uint8_t status();
-	virtual void reset();
-	virtual int GetClock();
-	virtual int GetDesc(TCHAR* str, int len);
-};
-#endif
 
 class CDebugPort : public CPort
 {
@@ -229,7 +102,7 @@ public:
 	virtual uint8_t read(uint16_t addr);
 	virtual uint8_t status();
 	virtual void reset();
-	virtual int GetDesc(TCHAR* str, int len);
+	virtual std::string GetDesc();
 };
 
 

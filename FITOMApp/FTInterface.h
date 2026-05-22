@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "Port.h"
 #include "../FTDI/ftd2xx.h"
 #include <string>
 
@@ -69,4 +70,77 @@ public:
 	virtual void InitialClear();
 	virtual FT_STATUS Write(uint16_t addr, uint8_t data, uint32_t wait);
 	CRebirthPort* CreatePort(uint32_t slot, uint32_t addr1, uint32_t addr2);
+};
+
+class CFT825Port : public CPort
+{
+protected:
+	CFT232HSPI* pInterface;
+	size_t regsize;
+	uint32_t chidx;
+	uint32_t csidx;
+	FT_HANDLE ftHandle;
+public:
+	CFT825Port();
+	CFT825Port(CFT232HSPI* pif, uint32_t index, uint32_t cs, size_t maxreg);
+	~CFT825Port(void);
+	virtual void writeBurst(uint16_t addr, BYTE* buf, size_t length);
+	virtual void writeBurst(BYTE* buf, size_t length);
+	virtual void write(uint16_t addr, uint16_t data);
+	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
+	virtual uint8_t read(uint16_t addr);
+	virtual uint8_t status();
+	virtual void reset();
+	virtual void flush();
+	virtual int GetClock();
+	virtual int GetPanpot();
+	virtual std::string GetInterfaceDesc();
+	virtual std::string GetDesc();
+};
+
+class CRebirthPort : public CPort
+{
+protected:
+	CFT245Rebirth* pInterface;
+	size_t regsize;
+	uint32_t ctladdr;
+	uint32_t dataddr;
+	uint32_t slot_no;
+	uint32_t regwait;
+	uint32_t datwait;
+	FT_HANDLE ftHandle;
+public:
+	CRebirthPort();
+	CRebirthPort(CFT245Rebirth* pif, uint32_t slot, uint32_t addr1, uint32_t addr2, size_t maxreg);
+	~CRebirthPort(void);
+	virtual void write(uint16_t addr, uint16_t data);
+	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
+	virtual uint8_t status();
+	virtual void reset();
+	virtual int GetClock();
+	virtual int GetPanpot();
+	virtual std::string GetInterfaceDesc();
+	virtual std::string GetDesc();
+};
+
+class CHBEPort : public CPort
+{
+protected:
+	CFT2232HBE* pInterface;
+	size_t regsize;
+	uint32_t addr;
+	uint32_t slot;
+	FT_HANDLE ftHandle;
+public:
+	CHBEPort();
+	CHBEPort(CFT2232HBE* pif, uint32_t slot, uint32_t addr, size_t maxreg);
+	~CHBEPort(void);
+	virtual void write(uint16_t addr, uint16_t data);
+	virtual void writeRaw(uint16_t addr, uint16_t data) { write(addr, data); };
+	virtual uint8_t status();
+	virtual void reset();
+	virtual int GetClock();
+	virtual int GetPanpot();
+	virtual void GetInterfaceDesc(TCHAR* str, int len);
+	virtual int GetDesc(TCHAR* str, int len);
 };

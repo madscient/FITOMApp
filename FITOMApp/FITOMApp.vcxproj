@@ -130,7 +130,7 @@
     <ClInclude Include="FITOMdefine.h" />
     <ClInclude Include="FMS.h" />
     <ClInclude Include="Fnum.h" />
-    <ClInclude Include="FTSPI.h" />
+    <ClInclude Include="FTInterface.h" />
     <ClInclude Include="MasterVolumeCtrl.h" />
     <ClInclude Include="MasVolWin.h" />
     <ClInclude Include="MAx.h" />
@@ -173,7 +173,7 @@
     <ClCompile Include="fitom_main.cpp" />
     <ClCompile Include="FMS.cpp" />
     <ClCompile Include="Fnum.cpp" />
-    <ClCompile Include="FTSPI.cpp" />
+    <ClCompile Include="FTInterface.cpp" />
     <ClCompile Include="MasterVolumeCtrl.cpp" />
     <ClCompile Include="MasVolWin.cpp" />
     <ClCompile Include="MAx.cpp" />

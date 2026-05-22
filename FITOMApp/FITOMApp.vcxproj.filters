@@ -159,7 +159,7 @@
     <ClInclude Include="MAx.h">
       <Filter>ヘッダー ファイル\FITOM core</Filter>
     </ClInclude>
-    <ClInclude Include="FTSPI.h">
+    <ClInclude Include="FTInterface.h">
       <Filter>ヘッダー ファイル\Win32 Device</Filter>
     </ClInclude>
     <ClInclude Include="..\FTDI\ftd2xx.h">
@@ -299,7 +299,7 @@
     <ClCompile Include="MAx.cpp">
       <Filter>ソース ファイル\FITOM core</Filter>
     </ClCompile>
-    <ClCompile Include="FTSPI.cpp">
+    <ClCompile Include="FTInterface.cpp">
       <Filter>ソース ファイル\Win32 Device</Filter>
     </ClCompile>
     <ClCompile Include="PortWin.cpp">

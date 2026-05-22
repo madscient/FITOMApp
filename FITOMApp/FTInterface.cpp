@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "FTSPI.h"
+#include "FTInterface.h"
 #include <boost/format.hpp>
 
 vector<CFTInterface*> ftInterfaces;
@@ -78,7 +78,7 @@ FT_STATUS CFTInterface::BufferedRead(uint8_t* buffer, uint32_t sizeToTransfer, u
 
 std::string CFTInterface::GetInterfaceDesc()
 {
-	return FTChannel.description;
+	return (FTChannel.ftHandle ? FTChannel.description : std::string(""));
 }
 
 FT_STATUS CFTInterface::BufferFlush()
