@@ -156,6 +156,10 @@ std::string CRebirthPort::GetInterfaceDesc()
 	return (pInterface) ? pInterface->GetInterfaceDesc() : std::string("");
 }
 
+
+/// <summary>
+/// CDebugPort
+/// </summary>
 CDebugPort::CDebugPort() : chipname(0), regsize(0), regbak(0)
 {
 }

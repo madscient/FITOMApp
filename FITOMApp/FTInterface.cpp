@@ -338,3 +338,8 @@ void CFT245Rebirth::InitialClear()
 		FT_SetBitMode(FTChannel.ftHandle, 0x00, 0x0); //RESET
 	}
 }
+
+CPort* CFT245Rebirth::CreatePort(uint32_t slot, uint32_t addr1, uint32_t addr2, size_t maxreg)
+{
+	return new CRebirthPort(this, slot, addr1, addr2, maxreg);
+}
