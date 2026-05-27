@@ -41,6 +41,7 @@ public:
 	virtual FT_STATUS BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs) { return FT_NOT_SUPPORTED; };
 	virtual FT_STATUS FT_WriteGPIO(uint8_t dir, uint8_t value) { return FT_NOT_SUPPORTED; };
 	virtual FT_STATUS Write(uint16_t addr, uint8_t data, uint32_t wait) { return FT_NOT_SUPPORTED; };
+	virtual CPort* CreatePort(uint32_t slot, uint32_t addr1, uint32_t addr2, size_t maxreg) = 0;
 };
 
 class CFT232HSPI : public CFTInterface {
@@ -50,7 +51,7 @@ public:
 	virtual void InitialClear();
 	virtual FT_STATUS BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs);
 	virtual FT_STATUS FT_WriteGPIO(uint8_t dir, uint8_t value);
-	CFT825Port* CreatePort(uint32_t cs);
+	virtual CPort* CreatePort(uint32_t slot, uint32_t addr1, uint32_t addr2, size_t maxreg);
 };
 
 class CFT2232HBE : public CFTInterface {
@@ -60,7 +61,7 @@ public:
 	virtual void InitialClear();
 	virtual FT_STATUS BufferedWrite(uint8_t* buffer, uint32_t sizeToTransfer, uint32_t cs);
 	virtual FT_STATUS FT_WriteGPIO(uint8_t dir, uint8_t value);
-	CHBEPort* CreatePort(uint32_t addr1, uint32_t addr2);
+	virtual CPort* CreatePort(uint32_t slot, uint32_t addr1, uint32_t addr2, size_t maxreg);
 };
 
 class CFT245Rebirth : public CFTInterface {
@@ -69,7 +70,7 @@ public:
 	virtual FT_STATUS Init();
 	virtual void InitialClear();
 	virtual FT_STATUS Write(uint16_t addr, uint8_t data, uint32_t wait);
-	CRebirthPort* CreatePort(uint32_t slot, uint32_t addr1, uint32_t addr2);
+	virtual CPort* CreatePort(uint32_t slot, uint32_t addr1, uint32_t addr2, size_t maxreg);
 };
 
 class CFT825Port : public CPort
@@ -121,6 +122,7 @@ public:
 	virtual int GetPanpot();
 	virtual std::string GetInterfaceDesc();
 	virtual std::string GetDesc();
+	virtual uint8_t read(uint16_t addr) { return 0xff; };
 };
 
 class CHBEPort : public CPort
